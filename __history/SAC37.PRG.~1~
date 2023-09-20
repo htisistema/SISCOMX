@@ -1,0 +1,167 @@
+*******************************
+* RETIRADA DE DEPOSITOS
+*******************************
+MEMVAR getlist,nivel_acess,mdata_sis,cod_operado,memp_resa,mend_firm,mcid_firm,;
+       mfone_firm,minsc_firm,mcgc_firm
+FUNCTION sac37
+*****************
+LOCAL MPRG:='SAC37',;
+      opcao,lba,cba,i,mdata,mvalor,mdescri1,mdescri2,mtraco,mhora,;
+      mcom_sem:=' '
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mcodemp:=SPACE(3)
+
+IF ! ver_nivel(mprg,'RETIRADA P/DEPOSITO DO CAIXA','13456',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+CLEAR GETS
+
+lba = 06
+cba = 60
+mtraco := REPLI('=',80)
+*--------------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('saccaixa','caix');RETURN NIL;ENDIF
+*--------------------------------------------------------------------------
+op_tela(10,10,18,70,' Retirada p/Depositos ')
+WHILE .T.
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        mensagem('Preencha os Campos - <ESC> p/Retornar ')
+        mdata := mdata_sis
+        mvalor := 0
+        mdescri1 := mdescri2 := SPACE(40)
+        mhora := SPACE(8)
+        opcao = 'S'
+        mcodemp := mcodempresa
+        DEVPOS(1,2);DEVOUT('Cod.Empresa:')
+        DEVPOS(2,2);DEVOUT('Data.......:')
+        DEVPOS(3,2);DEVOUT('Valor R$...:')
+        DEVPOS(4,2);DEVOUT('Descricao..:')
+        setcor(3)
+        DEVPOS(2,15);DEVOUT(mdata)
+        setcor(1)
+        @ 1,15 GET mcodemp PICT "999" VALID ver_emp(mcodemp,,,,'*') WHEN mmult_emp ='S'
+        @ 3,15 GET mvalor PICT '99,999,999.99' VALID IF(EMPTY(mvalor),.F.,.T.)
+        @ 4,15 GET mdescri1 PICT '@!'
+        @ 5,15 GET mdescri2 PICT '@!'
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        IF m_set[1,155] = 'S'
+                mcom_sem := mensagem1('Tipo de Recebimento:',' ','X, ')
+        ENDIF
+        opcao := op_simnao('S','Confirma o Retirada p/Depositos [S/n]:')
+        IF opcao = 'N'
+                LOOP
+        ENDIF
+
+        ********************
+        SELE('caix');ORDSETFOCUS(1)
+        ********************
+        mhora := TIME()
+        IF ADIREG()
+                caix-> empresa := mcodemp
+                caix-> tipo := 'DP'
+                caix-> nota := ' RET.DEP'
+                caix-> data := mdata
+                caix-> venci := mdata
+                caix-> documento := '9999999999'
+                caix-> valor := mvalor * -1
+                caix-> descri1 := mdescri1
+                caix-> descri2 := mdescri2
+                caix-> cod_opera := cod_operado
+                caix-> hora      := mhora
+                caix-> c_s   := mcom_sem
+                COMMIT
+                UNLOCK
+        ELSE
+                atencao('Nao foi possivel acessar o Arquivo !!!')
+                LOOP
+        ENDIF
+        IF ! imp_arq('RETIRADA.REL','R')
+                LOOP
+        ENDIF
+
+        IF m_set[1,67] = 'F'
+                i := 0
+                FOR i = 1 TO m_set[1,68]
+                        imprt(mtipo_imp,'E',2)
+                        DEVPOS(PROW(),01);DEVOUT(memp_resa)
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+1,00);DEVOUT(mend_firm)
+                        DEVPOS(PROW()+1,00);DEVOUT(mcid_firm+  +'Fone: '+mfone_firm)
+                        DEVPOS(PROW()+1,00);DEVOUT('Inscr. '+minsc_firm+'   C.G.C.: '+mcgc_firm)
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+
+                        DEVPOS(PROW()+2,22);DEVOUT('RETIRADA PARA DEPOSITO')
+
+                        DEVPOS(PROW()+2,00);DEVOUT('Data da Retirada :')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(mdata)
+                        DEVPOS(PROW(),PCOL()+3);DEVOUT('Hora: '+mhora)
+
+                        DEVPOS(PROW()+2,00);DEVOUT('Valor da Retirada:')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(LTRIM(TRANSFORM(mvalor,'99,999,999.99')))
+
+                        DEVPOS(PROW()+2,00);DEVOUT('Descricao........:')
+                        DEVPOS(PROW(),17);DEVOUT(mdescri1)
+                        DEVPOS(PROW()+1,17);DEVOUT(mdescri2)
+
+                        DEVPOS(PROW()+4,00);DEVOUT(PADC('...........................           ............................',80))
+                        DEVPOS(PROW()+1,00);DEVOUT(PADC('         C A I X A                              Solicitante       ',80))
+
+                        DEVPOS(PROW()+2,00);DEVOUT(mtraco)
+                        IF m_set[1,68] > 1 .AND. i < m_set[1,68]
+                                DEVPOS(PROW()+3,00);DEVOUT(' ')
+                        ENDIF
+                NEXT
+                EJECT
+                SETPRC(00,00)
+        ELSEIF m_set[1,67] = 'B'
+                mtraco := REPLI('=',60)
+                i := 0
+                FOR i = 1 TO m_set[1,68]
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW(),01);DEVOUT(memp_resa)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(mend_firm)
+                        DEVPOS(PROW()+1,00);DEVOUT(mcid_firm+  +'Fone: '+mfone_firm)
+                        DEVPOS(PROW()+1,00);DEVOUT('Inscr. '+minsc_firm+'   C.G.C.: '+mcgc_firm)
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+2,00);DEVOUT(PADC('RETIRADA PARA DEPOSITO',35))
+                        imprt(mtipo_imp,'C')
+
+                        DEVPOS(PROW()+2,00);DEVOUT('Data da Retirada :')
+                        DEVPOS(PROW(),18);DEVOUT(mdata)
+                        DEVPOS(PROW(),PCOL()+3);DEVOUT('Hora: '+mhora)
+
+                        DEVPOS(PROW()+2,00);DEVOUT('Valor da Retirada:')
+                        DEVPOS(PROW(),18);DEVOUT(LTRIM(TRANSFORM(mvalor,'99,999,999.99')))
+
+                        DEVPOS(PROW()+2,00);DEVOUT('Descricao........:')
+                        DEVPOS(PROW(),17);DEVOUT(mdescri1)
+                        DEVPOS(PROW()+1,17);DEVOUT(mdescri2)
+
+                        DEVPOS(PROW()+3,00);DEVOUT(PADC('...........................',60))
+                        DEVPOS(PROW()+1,00);DEVOUT(PADC('         C A I X A         ',60))
+                        DEVPOS(PROW()+3,00);DEVOUT(PADC('...........................',60))
+                        DEVPOS(PROW()+1,00);DEVOUT(PADC('        Solicitante        ',60))
+
+                        DEVPOS(PROW()+2,00);DEVOUT(mtraco)
+                        IF m_set[1,68] > 1 .AND. i < m_set[1,68]
+                                DEVPOS(PROW()+3,00);DEVOUT(' ')
+                        ENDIF
+                NEXT
+                DEVPOS(PROW()+m_indiv[1,16],00);DEVOUT(' ')
+                SETPRC(00,00)
+        ENDIF
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('RETIRADA.REL')
+ENDDO
+fecha_tela()
+RETURN NIL
+

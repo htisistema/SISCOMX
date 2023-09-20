@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><retConsReciNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_1.5.3</verAplic>
+<nRec>261210000045602</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF><dhRecbto>2021-02-02T09:20:00-03:00</dhRecbto>
+ <protNFe versao="4.00"><infProt Id="NFe1"><tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_1.5.3</verAplic>
+<chNFe>26210207068238000106550010000782571175031428</chNFe>
+<dhRecbto>2021-02-02T09:20:01-03:00</dhRecbto><cStat>231</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: IE do emitente n&#xE3;o vinculada ao CNPJ/CPF</xMotivo>
+</infProt></protNFe></retConsReciNFe>

@@ -1,0 +1,103 @@
+       COMERCIAL DE CONSTRUCAO 2001 LTDA
+AV.C.EUCARISTICO INTERNACIONAL,1179 ANEXO 1265
+  SANTA CRUZ - CARPINA-PE - FONE:81 3621-1058
+CNPJ:70.220.389/0001-66  
+IE:18.1.410.0194668-0  
+IM:04.2101-22          
+01/11/2011 21:19:20                   COO:019972
+ LEITURA MEMÓRIA FISCAL 
+         DATA: 01/10/2011 a 31/10/2011
+Contador Geral de Operação Não-Fiscal:    005312
+Contador de Reduções Z:                     1125
+Contador de Reinício de Operação:            006
+Contador de Fita-detalhe:                 000001
+               REINÍCIO OPERAÇÃO                
+CRO                       DATA       HORA
+001#                    08/08/2007 10:29:46 
+002                     27/08/2007 08:33:05 
+003                     18/09/2007 17:14:59 
+004#                    10/12/2010 17:09:32 
+005                     13/12/2010 10:25:41 
+006                     14/06/2011 08:07:52 
+             IMPRESSÃO FITA DETALHE             
+CFD    DATA       HORA       COOi   COOf
+CNPJ:
+000001 13/12/2010 10:15:54  004590 004602
+CNPJ: 70.220.389/0001-66  
+                    USUÁRIOS                    
+Usuário:0001    CRO:001     08/08/2007 10:29:46 
+CNPJ: 70.220.389/0001-66  
+IE: 18.1.410.0194668-0  
+IM: 04.2101-22          
+GT:                                 2.451.453,38
+                REDUÇõES DIÁRIAS                
+                  Usuário:0001
+CRZ   CRO   COO                 DATA     HORA
+                     VENDA BRUTA DIÁRIA ( R$)
+DT=desconto ICMS           DS=desconto ISSQN
+AT=acréscimo ICMS          AS=acréscimo ISSQN
+CT=canc.ICMS               CS=canc. ISSQN
+ON=operação não-fiscal
+1125  006   019955          19/10/2011 18:08:20 
+                            R$              0,00
+
+1124  006   019953          18/10/2011 18:00:30 
+                            R$              0,00
+
+1123  006   019951          15/10/2011 13:12:36 
+                            R$              0,00
+
+1122  006   019949          14/10/2011 17:55:22 
+                            R$              0,00
+
+1121  006   019947          13/10/2011 18:01:04 
+                            R$              0,00
+
+1120  006   019945          11/10/2011 19:05:05 
+                            R$          5.815,97
+DT=60,13 CT=1078,88 T17,00%=693,34 I1=3983,62 
+1119  006   019874          10/10/2011 18:29:56 
+                            R$              0,00
+
+1118  006   019872          08/10/2011 18:04:27 
+                            R$          6.600,12
+DT=57,15 CT=75,84 T17,00%=2947,54 I1=3519,59 
+1117  006   019788          07/10/2011 11:32:59 
+                            R$              0,00
+
+1116  006   019786          04/10/2011 17:55:19 
+                            R$              0,00
+
+1115  006   019784          03/10/2011 18:01:28 
+                            R$              0,00
+
+1114  006   019782          01/10/2011 12:58:41 
+                            R$              0,00
+
+
+Total do mês 10 de 2011
+Venda Bruta ( R$)                      12.416,09
+DT=117,28 CT=1154,72 T17,00%=3640,88 I1=7503,21 
+
+Número de Reduções Restantes:               0915
+                  DADOS GERAIS                  
+                SOFTWARE BÁSICO                 
+01.01.00                    16/07/2007 10:32:46 
+01.01.01                    10/12/2010 17:07:11 
+MOEDA:  R                   08/08/2007 10:20:48 
+QUANTIDADE: 03              08/08/2007 10:20:48 
+VALOR UNITÁRIO: 03          08/08/2007 10:20:48 
+MFD:6760070738053       
+
+CODIFICAÇÃO GT
+a partir de 08/08/2007 10:20:48 
+0=Q, 1=W, 2=E, 3=R, 4=T, 5=Y, 6=U, 7=I, 8=O, 9=P
+FG!LMDMD MOWDJGCP CKMNJTSP FFSCFBMD EIR8F21P6IHFBEMATECH MP-2100 TH FI ECF-IF
+VERSÃO:01.01.01 ECF:003 LJ:0001
+QQQQQQQQQETYWTYRRO 01/11/2011 21:19:25 
+FAB:BE050775600700008655                     
+
+
+
+
+EAD8A9EC226089DC0C82CF7A8B569DAA70CFACA5ED8F784A8516ED09FEA99D9128B90C7EB275BB4F1DE19CAFAE4628744F75D2749C7DF98F4151527E0836DF963C6C47EAE40E3C5AB56F61EBF43A094DE5697BAA4B8F5248E0C5486CF8A8F121BF01E2216661F34DC3D33F6321FE85E64CF7142382EAE2471A29CCDD4C696C2A4AD

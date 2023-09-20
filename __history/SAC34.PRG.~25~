@@ -1,0 +1,533 @@
+***********************
+* MENU DO PEDIDOS PEDENTES
+***********************
+MEMVAR getlist,nivel_acess,mdata_sis,cod_operado
+
+FUNCTION sac34
+**************
+LOCAL MPRG:='SAC34',;
+      opcao,tecla,lba:=1,cba:=31
+
+PRIVATE mnum_ped := 0,ali:='ped_s'
+
+lba = 01
+cba = 31
+opcao = 0
+setcor(1)
+op_tela(0,0,lba,cba)
+WHILE .T.
+        exibi_prg(mprg)
+        setcor(1)
+        @ 0,0 PROMPT '  0-> Consultar Pedidos Pedente '
+        @ 1,0 PROMPT '  1-> Cancelar Pedidos Pedentes '
+        SET INTEN ON
+        MENU TO opcao
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+
+        DO CASE
+                CASE opcao = 1
+                *        CONSULTA
+                        SAC341(,,'ped_s')       // SAC34.PRG
+                CASE opcao = 2
+                *        CANCELA
+                         sac342('ped_s')       // SAC34.PRG
+        ENDCASE
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+
+************************************ F I M *************************************
+* CANCELAMENTO DE PEDIDOS PEDENTES
+**********************************
+FUNCTION sac342(tp_ali)
+***********************
+LOCAL mprg:='SAC342',;
+      opcao,tela,tecla,lba:=11,cba:=70,mtot_ped,mtempo,m_cod:={},point,;
+      mmotivo,mimp,msaldo_ant:=0,i,cons_ped:={},;
+      nErr, nPos,;
+      vEmp := {},;
+      nCnn,oSql,;
+      cComm, apCode,aret:={}
+
+MEMVAR mdias,mhoras
+PRIVATE mnum_ped,ali
+
+IF ! ver_nivel(mprg,'CANCELAMENTO DE PEDIDOS PEDENTE (EM ABERTO)','1',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+opcao = 0
+ali := tp_ali
+op_tela(10,05,21,75,'CANCELAMENTO DE '+IF(tp_ali = 'ped_s','PEDIDOS','ORCAMENTO')+' PEDENTE')
+WHILE .T.
+        exibi_prg(mprg+'sac34')
+        limpa(00,00,24,80)
+        mensagem('Digite o No.do pedido que deseja cancelar - <ESC>abandonar')
+        mtot_ped := mnum_ped := 0
+        mmotivo := SPACE(40)
+        mimp := SPACE(1)
+        ASIZE(aret,0)
+        @ 9,0 TO 9,cba
+        DEVPOS(1,1);DEVOUT('No.do Pedido:')
+        DEVPOS(2,1);DEVOUT('Valor R$....:')
+        DEVPOS(3,1);DEVOUT('Data pedido.:')
+        DEVPOS(4,1);DEVOUT('Cod.vendedor:')
+        DEVPOS(5,1);DEVOUT('Hora Emissao:')
+        DEVPOS(6,1);DEVOUT('Hora Atual..:')
+        DEVPOS(7,1);DEVOUT('Intervalo...:')
+        DEVPOS(8,1);DEVOUT('Motivo......:')
+        DEVPOS(10,1);DEVOUT('Produto.....:')
+        @ 1,15 GET mnum_ped PICT '999999' VALID IF(EMPTY(mnum_ped),.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+
+        cons_ped:={}
+        sr_getconnection():exec( "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))+" ORDER BY pnum_ped,pcod_merc",,.t.,@cons_ped)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(cons_ped) = 0
+                atencao('PEDIDO nao existe em nossos arquivos')
+                LOOP
+        ELSEIF cons_ped[1,49] = '*'
+                atencao('Este PEDIDO ja foi PAGO')
+                LOOP
+        ENDIF
+        IF cons_ped[1,49] = 'C'
+                atencao('Este pedido foi CANCELADO do dia: '+DTOC(cons_ped[1,50])+' Hrs.: '+cons_ped[1,59]+' Por: '+cons_ped[1,60]+' Motivo:'+cons_ped[1,91])
+                sr_getconnection():exec("UPDATE sacped_s SET ppag = 'C',pdatapag = "+sr_cdbvalue(mdata_sis)+",pautoriz = "+sr_cdbvalue(cod_operado)+",pent_por = "+sr_cdbvalue(cod_operado)+",pent_dat = "+sr_cdbvalue(mdata_sis)+",pmotivo = "+sr_cdbvalue(IF(EMPTY(cons_ped[1,91]),'erro operacao',cons_ped[1,91]))+",phora_pg = "+sr_cdbvalue(TIME())+" WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6)),,.f.)
+                sr_getconnection():exec("UPDATE sacroma SET cancel = 'E' WHERE num_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6)),,.f.)
+                sr_getconnection():exec("UPDATE cnnt_pedido SET status_ped = 'CANCELADO' WHERE codigo = "+sr_cdbvalue(VAL(cons_ped[1,94]))+" AND cod_funcionario = "+sr_cdbvalue(ALLTRIM(cons_ped[1,32])),,.f.)
+                sr_getconnection():exec('COMMIT',,.f.)
+                LOOP
+        ENDIF
+        setcor(3)
+        DEVPOS(3,15);DEVOUT(cons_ped[1,4])
+        DEVPOS(4,15);DEVOUT(cons_ped[1,32])
+        DEVPOS(5,15);DEVOUT(cons_ped[1,47])
+        DEVPOS(6,15);DEVOUT(TIME())
+        mdias := mdata_sis - cons_ped[1,4]
+        mhoras := ELAPTIME(cons_ped[1,47],TIME())
+
+        IF mdias > 0
+                mtempo := STRZERO(mdias,3)+' dias'
+        ELSE
+                mtempo := mhoras
+        ENDIF
+        DEVPOS(7,15);DEVOUT(mtempo)
+        setcor(1)
+        i := 0
+        FOR i = 1 TO LEN(cons_ped)
+                AADD(m_cod,{cons_ped[i,6],cons_ped[i,14],cons_ped[i,80],cons_ped[i,4],cons_ped[i,47],cons_ped[i,32]})
+                mtot_ped := mtot_ped + (cons_ped[i,18] * cons_ped[i,14])
+        NEXT
+        setcor(3)
+        DEVPOS(2,15);DEVOUT(TRANSFORM(mtot_ped,'999,999,999.99'))
+        setcor(1)
+        @ 8,15 GET mmotivo VALID IF(EMPTY(mmotivo),.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        opcao := op_simnao('N','Confirma Cancelamento do Pedido:')
+        IF LASTKEY() = 27 .OR. opcao = 'N'
+                LOOP
+        ENDIF
+        SR_BEGINTRANSACTION()
+        //TRY
+        i := 0
+        FOR i = 1 TO LEN(cons_ped)
+                IF ! EMPTY(cons_ped[i,80])
+                        sr_getconnection():exec("UPDATE merc_det SET venda = NULL,n_ped = NULL WHERE codigo = "+sr_cdbvalue(cons_ped[i,6])+" .AND. chassis = "+sr_cdbvalue(cons_ped[i,80]),,.f.)
+                ENDIF
+                mensagem('Atualizando o SALDO DA MERCADORIA... Aguarde')
+                aret:={}
+                sr_getconnection():exec("SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(cons_ped[i,6]),,.t.,@aret)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(aret) = 0
+                	atencao('Nao foi possivel encontrar este Produto: '+cons_ped[i,6]+' no Banco de dados...')
+			LOOP
+		ENDIF
+                mlinha := aret[1,2]+aret[1,8]+aret[1,9]+aret[1,14]+STRZERO((aret[1,56] + cons_ped[i,14])*1000,13)+STRZERO(iat(aret[1,46])*100,14)+aret[1,68]
+                SR_BEGINTRANSACTION()
+                        sr_getconnection():exec("UPDATE sacmerc SET saldo_mer = "+sr_cdbvalue(aret[1,56] + cons_ped[i,14])+",data_atu = "+sr_cdbvalue(mdata_sis)+",chv_cript = "+sr_cdbvalue(CRIPTO(mlinha,1))+" WHERE cod_merc = "+sr_cdbvalue(cons_ped[i,6]),,.f.)
+                        sr_getconnection():exec('INSERT INTO logproduto (data_sis,data,'+;
+                                        'hora,cod_prod,quantd,saldo_ant,saldo_pos,cod_oper,prog,terminal,'+;
+                                        'processo,ent_sai,SR_DELETED )'+;
+                                        ' VALUES ('+;
+                                        sr_cdbvalue(DATE())+','+; //1
+                                        sr_cdbvalue(mdata_sis)+','+; //2
+                                        sr_cdbvalue(TIME())+','+; //3
+                                        sr_cdbvalue(cons_ped[i,6])+','+; //4
+                                        sr_cdbvalue(cons_ped[i,14])+','+; //5
+                                        sr_cdbvalue(aret[1,56])+','+; //6
+                                        sr_cdbvalue(aret[1,56] + cons_ped[i,14])+','+; //7
+                                        sr_cdbvalue(cod_operado)+','+; //8
+                                        sr_cdbvalue('SAC34')+','+; //9
+                                        sr_cdbvalue(LEFT(NETNAME(),15))+','+; //12
+                                        sr_cdbvalue('CANCELAR PD: '+STRZERO(mnum_ped,6))+','+; //11
+                                        sr_cdbvalue('E')+','+; //11
+                                        sr_cdbvalue(' ')+')',,.f.)
+                        mensagem('Atualizando o OCORRENCIA... Aguarde')
+                                cComm  := "INSERT INTO sacocorr (tipo,documento,data_exe,hora_exe,cod_oper,data_oco,hora_oco,cod_vend,codigo,quantd,saldo_atu,saldo_exe,pedido,obs,sr_deleted) VALUES (?,?,?,?,?,?,?,?,?,? ,? ,? ,? ,? , ' ')"
+                                apCode := SR_SQLParse( cComm, @nErr, @nPos )
+                                cComm  := SR_SQLCodeGen(apCode,{'CAN',STRZERO(mnum_ped,6),mdata_sis,TIME(),cod_operado,cons_ped[i,4],cons_ped[i,47],cons_ped[i,32],cons_ped[i,6],cons_ped[i,14],aret[1,56],aret[1,56] + cons_ped[i,14],'S',mmotivo},sr_getconnection():nsystemid)
+                                sr_getconnection():exec(ccomm,,.f.)
+                        sr_committransaction()
+                SR_ENDTRANSACTION()
+                IF ! EMPTY(cons_ped[i,99])
+                        aret:={}
+                        sr_getconnection():exec("SELECT qtd FROM sacpresen WHERE codcli = "+sr_cdbvalue(cons_ped[i,99])+" AND cod_merc = "+sr_cdbvalue(cons_ped[i,6]),,.t.,@aret)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(aret) = 0
+			     LOOP
+        		ENDIF
+                        sr_getconnection():exec("UPDATE sacpresen SET qtd = "+sr_cdbvalue(aret[1,1] + cons_ped[i,14])+" WHERE cod_merc = "+sr_cdbvalue(cons_ped[i,6])+" AND codcli = "+sr_cdbvalue(cons_ped[i,99]),,.f.)
+                ENDIF
+        NEXT
+        mensagem('Cancelando o PEDIDO... Aguarde')
+        SR_BEGINTRANSACTION()
+                        sr_getconnection():exec("UPDATE sacped_s SET ppag = 'C',pdatapag = "+sr_cdbvalue(mdata_sis)+",pautoriz = "+sr_cdbvalue(cod_operado)+",pent_por = "+sr_cdbvalue(cod_operado)+",pent_dat = "+sr_cdbvalue(mdata_sis)+",pmotivo = "+sr_cdbvalue(mmotivo)+",phora_pg = "+sr_cdbvalue(TIME())+",cod_pres = NULL WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6)),,.f.)
+                        sr_getconnection():exec("UPDATE sacroma SET cancel = 'E' WHERE num_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6)),,.f.)
+                        sr_getconnection():exec("UPDATE sacoss SET pag = NULL,baixa=NULL,num_ped=NULL WHERE num_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6)),,.f.)
+                        sr_getconnection():exec("UPDATE cnnt_pedido SET status_ped = 'CANCELADO' WHERE codigo = "+sr_cdbvalue(ALLTRIM(cons_ped[1,94]))+" AND cod_funcionario = "+sr_cdbvalue(ALLTRIM(cons_ped[1,32])),,.f.)
+                        mensagem('Atualizando o CANCELANDO NO CAIXA... Aguarde')                                               //  1 2 3 4 5 6 7 8
+                        cComm  := "INSERT INTO saccaixa (empresa,tipo,data,nota,descri1,descri2,cod_opera,hora,sr_deleted) VALUES (?,?,?,?,?,?,?,?,' ')"
+                        apCode := SR_SQLParse( cComm, @nErr, @nPos )
+                        cComm  := SR_SQLCodeGen(apCode,{mcodempresa,'CA',mdata_sis,'PD'+STRZERO(mnum_ped,6),'Pedido CANCELADO',' ('+LEFT(mmotivo,37)+')',cod_operado,TIME()},sr_getconnection():nsystemid)
+                        sr_getconnection():exec(ccomm,,.f.)
+                sr_committransaction()
+        SR_ENDTRANSACTION()
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+************************* F I M ******************************************
+* ESTORNO DE ORCAMENTO TRANSFORMADO
+***********************************
+FUNCTION sac343()
+*****************
+LOCAL mprg:='SAC343',;
+      opcao,tela,tecla,lba:=7,cba:=70,mtot_ped,mtempo,m_cod:={},point,;
+      mmotivo,mimp,msaldo_ant:=0,i
+MEMVAR mdias,mhoras
+PRIVATE mnum_ped,ali:='ped_s'
+
+IF ! ver_nivel(mprg,'ESTORNO DE ORCAMENTO TRANSFORMADO','1',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+opcao = 0
+*---------------------------------------------------------------
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('sacorcam','orcam');RETURN NIL;ENDIF
+IF ! AbriArq('sacocorr','ocorr');RETURN NIL;ENDIF
+IF ! AbriArq('merc_det','deta');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('saccaixa','caix');RETURN NIL;ENDIF
+*---------------------------------------------------------------
+op_tela(10,05,17,75,'ESTORNO DE ORCAMENTO TRANSFORMADO')
+WHILE .T.
+        mensagem('Digite o No.do pedido que deseja cancelar - <ESC>abandonar')
+        mtot_ped := mnum_ped := 0
+        mmotivo := SPACE(40)
+        mimp := SPACE(1)
+        DEVPOS(1,1);DEVOUT('No.do Pedido:')
+        DEVPOS(2,1);DEVOUT('Valor R$....:')
+        DEVPOS(3,1);DEVOUT('Data pedido.:')
+        DEVPOS(4,1);DEVOUT('Cod.vendedor:')
+        DEVPOS(5,1);DEVOUT('Hora Emissao:')
+        DEVPOS(6,1);DEVOUT('Hora Atual..:')
+        @ 1,15 GET mnum_ped PICT '999999' VALID IF(EMPTY(mnum_ped),.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        *************
+        SELE('orcam');ORDSETFOCUS(1)
+        GO TOP
+        *************
+
+        IF ! orcam->(DBSEEK(STRZERO(mnum_ped,6)))
+                atencao('PEDIDO nao existe em nossos arquivos')
+                LOOP
+        ENDIF
+        point := RECNO()
+        WHILE STRZERO(mnum_ped,6) = orcam->pnum_ped
+                mtot_ped := mtot_ped + (orcam->pvlr_fat * orcam->pquantd)
+                SKIP
+        ENDDO
+        GO point
+        setcor(3)
+        DEVPOS(2,15);DEVOUT(TRANSFORM(mtot_ped,'999,999,999.99'))
+        DEVPOS(3,15);DEVOUT(orcam->pdat_ped)
+        DEVPOS(4,15);DEVOUT(orcam->pcod_vend)
+        DEVPOS(5,15);DEVOUT(orcam->phora)
+        DEVPOS(6,15);DEVOUT(TIME())
+        setcor(1)
+        opcao := op_simnao('N','Confirma o Estorno do ORCAMENTO:')
+        IF LASTKEY() = 27 .OR. opcao = 'N'
+                LOOP
+        ENDIF
+        BLOQARQ()
+        WHILE STRZERO(mnum_ped,6) = orcam->pnum_ped .AND. ! EOF()
+                orcam->ppag := ' '
+                orcam->pdatapag := CTOD('  /  /  ')
+                limpa(10,15,10,cba-1)
+                SKIP
+        ENDDO
+        DBUNLOCKALL()
+        DBCOMMITALL()
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+************************************ F I M *************************************
+* ESTORNO DE PEDIDOS CANCELADOS
+*******************************
+FUNCTION sac344(tp_ali)
+***********************
+LOCAL mprg:='SAC344(sac34)'
+LOCAL opcao,tela,tecla,lba:=17,cba:=75,mtot_ped,mtempo,m_cod:={},point,;
+      mmotivo,mimp,msaldo_ant:=0,i
+MEMVAR mdias,mhoras
+PRIVATE mnum_ped,ali,cons_ped := {}
+
+IF ! ver_nivel(mprg,'ESTORNO DE PEDIDOS CANCELADOS','1',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+opcao = 0
+ali := tp_ali
+*---------------------------------------------------------------
+IF ! AbriArq('sacocorr','ocorr');RETURN NIL;ENDIF
+*---------------------------------------------------------------
+op_tela(03,05,12,75,'ESTORNO DE '+IF(tp_ali = 'ped_s','PEDIDOS','ORCAMENTO')+' CANCELADOS')
+WHILE .T.
+        exibi_prg(mprg)
+        mensagem('Digite o No.do pedido que deseja cancelar - <ESC>abandonar')
+        mtot_ped := mnum_ped := 0
+        mmotivo := SPACE(40)
+        mimp := SPACE(1)
+        @ 9,0 TO 9,cba
+        DEVPOS(1,1);DEVOUT('No.do Pedido:')
+        DEVPOS(2,1);DEVOUT('Valor R$....:')
+        DEVPOS(3,1);DEVOUT('Data pedido.:')
+        DEVPOS(4,1);DEVOUT('Cod.vendedor:')
+        DEVPOS(5,1);DEVOUT('Data Cancel.:')
+        DEVPOS(6,1);DEVOUT('Hora Cancel.:')
+        DEVPOS(10,1);DEVOUT('Produto.....:')
+        @ 1,15 GET mnum_ped PICT '999999'
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        IF EMPTY(mnum_ped)
+                LOOP
+        ENDIF
+        cons_ped := {}
+        sr_getconnection():exec("SELECT * FROM sacped_s WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))+" AND (sr_deleted is null or sr_deleted = '')",,.t.,@cons_ped)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(cons_ped) = 0
+                atencao('PEDIDO nao existe em nossos arquivos...')
+                LOOP
+        ENDIF
+        IF cons_ped[1,49] = ' '
+                atencao('PEDIDO ja estar em ABERTO...')
+                LOOP
+        ENDIF
+        IF cons_ped[1,49] = '*'
+                atencao('PEDIDO ja foi PAGO...')
+                LOOP
+        ENDIF
+        i := 0
+        FOR i = 1 TO LEN(cons_ped)
+                mtot_ped := mtot_ped + (cons_ped[i,18] * cons_ped[i,14])
+        NEXT
+        setcor(3)
+        DEVPOS(2,15);DEVOUT(TRANSFORM(mtot_ped,'999,999,999.99'))
+        DEVPOS(3,15);DEVOUT(cons_ped[1,4])
+        DEVPOS(4,15);DEVOUT(cons_ped[1,32])
+        DEVPOS(5,15);DEVOUT(DTOC(cons_ped[1,50]))
+        DEVPOS(6,15);DEVOUT(cons_ped[1,59])
+        mdias := mdata_sis - cons_ped[1,4]
+        mhoras := ELAPTIME(cons_ped[1,47],TIME())
+        IF mdias > 0
+                mtempo := STRZERO(mdias,3)+' dias'
+        ELSE
+                mtempo := mhoras
+        ENDIF
+        DEVPOS(7,15);DEVOUT(mtempo)
+        setcor(1)
+        opcao := op_simnao('N','Confirma o Estorno do Pedido CANCELADO:')
+        IF LASTKEY() = 27 .OR. opcao = 'N'
+                LOOP
+        ELSE
+                IF tp_ali = 'ped_s'
+                        IF opcao = 'S'
+                                mensagem('Estornando o PEDIDO CANCELADO... Aguarde')
+                                sr_getconnection():exec("UPDATE sacped_s SET ppag = ' ',pdatapag = NULL,phora_pg = '',pautoriz = '',pent_por = '',pent_dat = NULL,pmotivo = '' WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6)),,.f.)
+                                sr_getconnection():exec("UPDATE cnnt_pedido SET status_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))+" WHERE codigo = "+sr_cdbvalue(cons_ped[1,94])+" AND cod_funcionario = "+sr_cdbvalue(cons_ped[1,32]),,.f.)
+                                mensagem('Atualizando o SALDO DA MERCADORIA... Aguarde')
+                                SR_BEGINTRANSACTION()
+                                        i := 0
+                                        FOR i = 1 TO LEN(cons_ped)
+                                                msaldo_ant := 0
+                                                aret := {}
+                                                sr_getconnection():exec("SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(cons_ped[i,6]),,.t.,@aret)
+                                                sr_getconnection():exec('COMMIT',,.f.)
+		            	                IF LEN(aret) = 0
+		              	                	atencao('Nao foi possivel encontrar este Produto: '+cons_ped[i,6]+' no Banco de dados...')
+			             			LOOP
+				            	ENDIF
+                                                msaldo_ant := aret[1,56]
+                                                sr_getconnection():exec("UPDATE sacmerc SET saldo_mer= "+sr_cdbvalue(aret[1,56] - cons_ped[i,14])+" WHERE cod_merc = "+sr_cdbvalue(cons_ped[i,6]),,.f.)
+                                                sr_getconnection():exec('INSERT INTO logproduto (data_sis,data,'+;
+                                                                'hora,cod_prod,quantd,saldo_ant,saldo_pos,cod_oper,prog,terminal,'+;
+                                                                'processo,ent_sai,SR_DELETED )'+;
+                                                                ' VALUES ('+;
+                                                                sr_cdbvalue(DATE())+','+; //1
+                                                                sr_cdbvalue(mdata_sis)+','+; //2
+                                                                sr_cdbvalue(TIME())+','+; //3
+                                                                sr_cdbvalue(cons_ped[i,6])+','+; //4
+                                                                sr_cdbvalue(cons_ped[i,14])+','+; //5
+                                                                sr_cdbvalue(aret[1,56])+','+; //6
+                                                                sr_cdbvalue(aret[1,56] - cons_ped[i,14])+','+; //7
+                                                                sr_cdbvalue(cod_operado)+','+; //8
+                                                                sr_cdbvalue('SAC344')+','+; //9
+                                                                sr_cdbvalue(LEFT(NETNAME(),15))+','+; //12
+                                                                sr_cdbvalue('ESTORNO CANC.PD: '+STRZERO(mnum_ped,6))+','+; //11
+                                                                sr_cdbvalue('S')+','+; //11
+                                                                sr_cdbvalue(' ')+')',,.f.)
+                                                        limpa(10,15,10,cba-1)
+                                                        *************
+                                                        SELE('ocorr')
+                                                        *************
+                                                        ADIREG()
+                                                        ocorr->tipo     := 'EST'
+                                                        ocorr->documento:= STRZERO(mnum_ped,6)
+                                                        ocorr->data_exe := mdata_sis
+                                                        ocorr->hora_exe := TIME()
+                                                        ocorr->cod_oper := cod_operado
+                                                        ocorr->data_oco := cons_ped[i,4]
+                                                        ocorr->hora_oco := cons_ped[i,47]
+                                                        ocorr->cod_vend := cons_ped[i,32]
+                                                        ocorr->codigo   := cons_ped[i,6]
+                                                        ocorr->quantd   := cons_ped[i,14]
+                                                        ocorr->saldo_atu:= msaldo_ant
+                                                        ocorr->saldo_exe:= aret[1,56]
+                                                        ocorr->pedido   := 'S'
+                                                        ocorr->obs      := 'ESTORNO DE PEDIDO CANCELADO'
+                                        NEXT
+                                        sr_committransaction()
+                                SR_ENDTRANSACTION()
+                                DBUNLOCKALL()
+                                DBCOMMITALL()
+                        ENDIF
+                ENDIF
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+****************************** F I M ************************************************
+* CANCELAMENTO DE ORCAMENTOS PEDENTES
+*************************************
+FUNCTION sac342o(tp_ali)
+************************
+LOCAL mprg:='SAC342O',;
+      opcao,tela,tecla,lba:=11,cba:=70,mtot_ped,mtempo,m_cod:={},point,;
+      mmotivo,mimp,msaldo_ant:=0,i,cons_ped:={},todo_pg:='*',cComm,aret:={}
+
+MEMVAR mdias,mhoras
+PRIVATE mnum_ped,ali
+
+IF ! ver_nivel(mprg,'CANCELAMENTO DE ORCAMENTO PEDENTE (EM ABERTO)','1',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+opcao = 0
+ali := tp_ali
+op_tela(10,05,21,75,'CANCELAMENTO DE ORCAMENTO PEDENTE')
+WHILE .T.
+        limpa(00,00,24,80)
+        mensagem('Digite o No.do Orcamento que deseja cancelar - <ESC>abandonar')
+        mtot_ped := mnum_ped := 0
+        mmotivo := SPACE(40)
+        mimp := SPACE(1)
+        ASIZE(aret,0)
+        @ 9,0 TO 9,cba
+        DEVPOS(1,1);DEVOUT('No.Orcamento:')
+        DEVPOS(2,1);DEVOUT('Valor R$....:')
+        DEVPOS(3,1);DEVOUT('Data........:')
+        DEVPOS(4,1);DEVOUT('Cod.vendedor:')
+        DEVPOS(5,1);DEVOUT('Hora Emissao:')
+        DEVPOS(6,1);DEVOUT('Hora Atual..:')
+        DEVPOS(7,1);DEVOUT('Intervalo...:')
+        DEVPOS(8,1);DEVOUT('Motivo......:')
+        DEVPOS(10,1);DEVOUT('Produto.....:')
+        @ 1,15 GET mnum_ped PICT '999999' VALID IF(EMPTY(mnum_ped),.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        cons_ped:={}
+        sr_getconnection():exec( "SELECT * FROM sacorcam WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))+" ORDER BY pnum_ped,pcod_merc",,.t.,@cons_ped)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(cons_ped) = 0
+                atencao('orcamento nao existe em nossos arquivos')
+                LOOP
+        ELSEIF cons_ped[1,49] = '*'
+                todo_pg := '*'
+                i:=0
+                FOR i = 1 TO LEN(cons_ped)
+                        IF cons_ped[i,49] =  ' '
+                                todo_pg := ' '
+                                EXIT
+                        ENDIF
+                NEXT
+                IF todo_pg = '*'
+                        atencao('Este orcamento ja foi TODO TRANSFORMADO')
+                        LOOP
+                ENDIF
+        ENDIF
+        IF cons_ped[1,49] = 'C'
+                atencao('Este orcamento foi CANCELADO do dia: '+DTOC(cons_ped[1,50])+' Hrs.: '+cons_ped[1,59]+' Por: '+cons_ped[1,60]+' Motivo:'+cons_ped[1,91])
+                sr_getconnection():exec("UPDATE sacorcam SET ppag = 'C',pdatapag = "+sr_cdbvalue(mdata_sis)+",pautoriz = "+sr_cdbvalue(cod_operado)+",pent_por = "+sr_cdbvalue(cod_operado)+",pent_dat = "+sr_cdbvalue(mdata_sis)+",pmotivo = "+sr_cdbvalue(IF(EMPTY(cons_ped[1,91]),'erro operacao',cons_ped[1,91]))+",phora_pg = "+sr_cdbvalue(TIME())+" WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))+" AND (ppag = ' ' OR ppag IS NULL)",,.f.)
+                sr_getconnection():exec('COMMIT',,.f.)
+                LOOP
+        ENDIF
+        setcor(3)
+        DEVPOS(3,15);DEVOUT(cons_ped[1,4])
+        DEVPOS(4,15);DEVOUT(cons_ped[1,32])
+        DEVPOS(5,15);DEVOUT(cons_ped[1,47])
+        DEVPOS(6,15);DEVOUT(TIME())
+        mdias := mdata_sis - cons_ped[1,4]
+        mhoras := ELAPTIME(cons_ped[1,47],TIME())
+
+        IF mdias > 0
+                mtempo := STRZERO(mdias,3)+' dias'
+        ELSE
+                mtempo := mhoras
+        ENDIF
+        DEVPOS(7,15);DEVOUT(mtempo)
+        setcor(1)
+        i := 0
+        FOR i = 1 TO LEN(cons_ped)
+                AADD(m_cod,{cons_ped[i,6],cons_ped[i,14],cons_ped[i,80],cons_ped[i,4],cons_ped[i,47],cons_ped[i,32]})
+                mtot_ped := mtot_ped + (cons_ped[i,18] * cons_ped[i,14])
+        NEXT
+        setcor(3)
+        DEVPOS(2,15);DEVOUT(TRANSFORM(mtot_ped,'999,999,999.99'))
+        setcor(1)
+        @ 8,15 GET mmotivo VALID IF(EMPTY(mmotivo),.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        opcao := op_simnao('N','Confirma Cancelamento do orcamento:')
+        IF LASTKEY() = 27 .OR. opcao = 'N'
+                LOOP
+        ENDIF
+        mensagem('Cancelando o orcamento... Aguarde')
+        sr_getconnection():exec("UPDATE sacorcam SET ppag = 'C',pdatapag = "+sr_cdbvalue(mdata_sis)+",pautoriz = "+sr_cdbvalue(cod_operado)+",pent_por = "+sr_cdbvalue(cod_operado)+",pent_dat = "+sr_cdbvalue(mdata_sis)+",pmotivo = "+sr_cdbvalue(mmotivo)+",phora_pg = "+sr_cdbvalue(TIME())+" WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))+" AND (ppag = ' ' OR ppag IS NULL)",,.f.)
+        sr_getconnection():exec('COMMIT',,.f.)
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+************************* F I M ******************************************

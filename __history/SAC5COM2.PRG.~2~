@@ -1,0 +1,304 @@
+************************************************
+* RELATORIO DE VENDAS E COMISSAO P/PRODUTO
+***********************************************
+MEMVAR getlist,mdata_sis,nivel_acess
+
+FUNCTION sac5com2
+*****************
+LOCAL MPRG:='SAC5COM2',;
+      tela1,lci,cci,lba,cba,li,ci,lb,cb,opcao,mcod_op,mtraco,mcod_cli,;
+      mcod_vend,mcod_merc,mdata1,mdata2,mnum_ped,mpoint:=0,;
+      mqtd_item,mtot_item,mvlr_venda,mtot_venda,mcomissao,mvlr_com,mtot_com,;
+      mqtd_ped,mtot_ped,mtot_med,mperc_venda,mtot_per_ven,mtot_geral,;
+      mpag,mtit,mtipo,i:=0,x:=0,cons_mov:={},cons_sen:={}
+
+PRIVATE mnome_vend,mcom_ven,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+IF ! ver_nivel(mprg,'RELATORIO DE VENDAS E COMISSAO P/PRODUTO','1456',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+mtraco := REPLI('=',132)
+
+lci := cci := 0
+lba := 04
+cba := 70
+*-----------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+//
+IF ! AbriArq('sacmov','mov');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*-----------------------------------------------------
+op_tela(10,10,16,80,' Relatorio de Comissao e Vendas p/Produto ')
+WHILE .T.
+        mtipo_imp := m_indiv[1,18]
+        mtot_geral := mqtd_item := mtot_item := mvlr_venda := mtot_venda := ;
+        mcomissao := mvlr_com := mtot_com := mqtd_ped := mtot_ped := mtot_med := ;
+        mperc_venda := mtot_per_ven := mcod_vend := mcod_merc := mcom_ven := 0
+        mnome_vend := SPACE(30)
+        mdata1 := mdata_sis - 31
+        mdata2 := mdata_sis
+        mensagem('Preencha os Campos - <ESC>p/Abandonar')
+        DEVPOS(lci+1,cci+2);DEVOUT('Codigo Produto.:')
+        DEVPOS(lci+2,cci+2);DEVOUT('Data Inicial...:')
+        DEVPOS(lci+3,cci+2);DEVOUT('Data Final.....:')
+
+        @ lci+1,cci+19 GET mcod_merc PICT '99999' VALID ver_cod(mcod_merc,lci+1,cci+25,.F.)
+        @ lci+2,cci+19 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ lci+3,cci+19 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        mensagem('Aguarde Coletando dados para este Relatorio !!!')
+        
+        cons_sen := {}
+        sr_getconnection():exec("SELECT * FROM insopera WHERE NOT scod_op = '111' AND NOT scod_op = '999'",,.t.,@cons_sen)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(cons_sen) = 0
+                atencao('Nao existe nenhum Vendedor...')
+                LOOP
+        ENDIF        
+        cons_mov := {}
+        cComm  := "SELECT SUM(quantd * vl_vend) FROM sacmov WHERE data_s_e  BETWEEN "+sr_cdbvalue(mdata1)+" AND "+sr_cdbvalue(mdata2)
+        cComm  := ccomm + " AND (tipo = '01' OR tipo = '03') AND cancel IS NULL"
+        cComm  := ccomm + " AND documento NOT LIKE 'TR%'"
+        cComm  := ccomm + " AND documento NOT LIKE 'BL%'"
+        cComm  := ccomm + " AND vl_vend > 0"
+        cComm  := ccomm + " AND ent_sai = 'S'"
+        cComm  := ccomm + " AND NOT cod_vend = '111' AND NOT cod_vend = '999'"
+        sr_getconnection():exec(ccomm,,.t.,@cons_mov)
+        sr_getconnection():exec('COMMIT',,.f.)
+        mtot_geral := cons_mov[1,1]
+
+        mensagem('Espere o Final da Impressao OK !!!')
+        marq := 'SAC5COM2.REL'
+        IF ! imp_arq('SAC5COM2.REL','R')
+                LOOP
+        ENDIF
+
+        mpag := 1
+        mtit := 'Relatorio de Vendas e Comissao (P/PRODUTO)'
+        mtipo := 'periodo: '+DTOC(mdata1)+' a '+DTOC(mdata2)
+        cabecalho(mpag,mtit,mtipo)
+        DEVPOS(PROW()+1,00);DEVOUT(PADC('Produto: '+STRZERO(mcod_merc,5)+' - '+merc->merc,80))
+        imprt(mtipo_imp,'C')
+        DEVPOS(PROW()+1,00);DEVOUT('Vendedor')
+        DEVPOS(PROW(),36);DEVOUT('Qtd.Item')
+        DEVPOS(PROW(),46);DEVOUT('Valor Vendas')
+        DEVPOS(PROW(),60);DEVOUT('% com.')
+        DEVPOS(PROW(),70);DEVOUT('Comissao')
+        DEVPOS(PROW(),82);DEVOUT('Qtd.Ped.')
+        DEVPOS(PROW(),92);DEVOUT('Vlr.Ped./Med.')
+        DEVPOS(PROW(),108);DEVOUT('% Part.Vendas')
+        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        i:=0
+        FOR i = 1 TO LEN(cons_sen)
+                cons_mov := {}
+                cComm  := "SELECT * FROM sacmov"
+                ccomm  := ccomm + " WHERE data_s_e  BETWEEN "+sr_cdbvalue(mdata1)+" AND "+sr_cdbvalue(mdata2)
+                cComm  := ccomm + " AND (tipo = '01' OR tipo = '03') AND cancel IS NULL"
+                cComm  := ccomm + " AND documento NOT LIKE 'TR%'"
+                cComm  := ccomm + " AND documento NOT LIKE 'BL%'"
+                cComm  := ccomm + " AND vl_vend > 0"
+                cComm  := ccomm + " AND ent_sai = 'S'"
+                cComm  := ccomm + " AND cod_vend = "+sr_cdbvalue(cons_sen[i,1])
+                sr_getconnection():exec(ccomm,,.t.,@cons_mov)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(cons_mov) = 0
+                        LOOP
+                ENDIF
+                DEVPOS(PROW()+1,00);DEVOUT(cons_sen[i,1]+'-'+cons_sen[i,2])
+                mnum_ped := SPACE(6)
+                x:=0
+                FOR x = 1 TO LEN(cons_mov)
+                        prog_imp(x,cons_mov[x,10]+' - '+cons_mov[x,11])
+                        mtot_item := mtot_item + cons_mov[x,19]
+                        mtot_venda := mtot_venda + (cons_mov[x,19]*cons_mov[x,23])
+                        mtot_com := mtot_com + iat(((cons_mov[x,19]*cons_mov[x,23]) * (cons_mov[x,29] /100)),2)
+                        IF mnum_ped <> mov->num_ped
+                                mtot_ped := mtot_ped + 1
+                                mqtd_ped := mqtd_ped + 1
+                                mnum_ped := mov->num_ped
+                        ENDIF
+
+                        mqtd_item := mqtd_item + cons_mov[x,19]
+                        mvlr_venda := mvlr_venda + (cons_mov[x,19]*cons_mov[x,23])
+                        mvlr_com := mvlr_com + iat(((cons_mov[x,19]*cons_mov[x,23]) * (cons_mov[x,29] /100)),2)
+                NEXT
+                DEVPOS(PROW(),36);DEVOUT(TRANSFORM(mqtd_item,'999999.99'))
+                DEVPOS(PROW(),46);DEVOUT(TRANSFORM(mvlr_venda,'9,999,999.99'))
+                DEVPOS(PROW(),60);DEVOUT(TRANSFORM((mvlr_com/mvlr_venda)*100,'999.99'))
+                DEVPOS(PROW(),68);DEVOUT(TRANSFORM(mvlr_com,'999,999.99'))
+                DEVPOS(PROW(),82);DEVOUT(TRANSFORM(mqtd_ped,'99999.99'))
+                DEVPOS(PROW(),92);DEVOUT(TRANSFORM(mvlr_venda/mqtd_ped,'99,999,999.99'))
+                DEVPOS(PROW(),108);DEVOUT(TRANSFORM((mvlr_venda/mtot_geral)*100,'99,999,999.99'))
+                mqtd_ped := 0
+                mqtd_item := 0
+                mvlr_venda := 0
+                mvlr_com := 0
+                mcod_vend := mov-> cod_vend
+                //ven(VAL(mov->cod_vend),,,'*')
+        NEXT
+        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        DEVPOS(PROW()+1,00);DEVOUT('T O T A L   G E R A L:')
+        DEVPOS(PROW(),36);DEVOUT(TRANSFORM(mtot_item,'999999.99'))
+        DEVPOS(PROW(),46);DEVOUT(TRANSFORM(mtot_venda,'9,999,999.99'))
+        DEVPOS(PROW(),68);DEVOUT(TRANSFORM(mtot_com,'999,999.99'))
+        DEVPOS(PROW(),82);DEVOUT(TRANSFORM(mtot_ped,'99999.99'))
+        DEVPOS(PROW(),92);DEVOUT(TRANSFORM(mtot_venda/mtot_ped,'99,999,999.99'))
+        DEVPOS(PROW(),108);DEVOUT(TRANSFORM((mtot_venda/mtot_geral)*100,'99,999,999.99'))
+        DEVPOS(PROW()+2,00);DEVOUT(TIME())
+        imprt(mtipo_imp,'N')
+        EJECT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao(marq)
+        /*
+        IF mimp_tipo = 2
+                lertexto(marq)
+        ELSEIF mtipo_imp = 'D'
+                
+        ELSE
+                MYRUN('DOSPRINTER /RAW /DEL '+ALLTRIM(m_indiv[1,5])+'HTI.REL')
+        ENDIF
+        */
+        EXIT
+
+/*        
+        ****************
+        SELE('mov');ORDSETFOCUS(3)
+        GO TOP
+        ****************
+        mov->(DBSEEK(DTOS(mdata1),.T.))
+        IF EOF()
+                atencao('Nao tem movimento de vendedor neste periodo')
+                LOOP
+        ENDIF
+        mensagem('Espere o Final da Impressao OK !!!')
+        marq := 'SAC5COM2.REL'
+        IF ! imp_arq('SAC5COM2.REL','R')
+                LOOP
+        ENDIF
+
+        mpoint := RECNO()
+        WHILE mov->data_s_e <= mdata2 .AND. ! EOF()
+*       WHILE ! EOF()
+                IF mcod_merc <> mov->codigo;
+                   .OR. SUBSTR(mov->documento,1,2) = 'TR';
+                   .OR. SUBSTR(mov->documento,1,2) = 'BL';
+                   .OR. mov->ent_sai <> 'S' .OR. mov->vl_vend = 0;
+                   .OR. mov->tipo <> '02'.OR. mov->cod_vend = '111' .OR. mov->cod_vend = '999'
+                        SKIP
+                        LOOP
+                ENDIF
+                mtot_geral := mtot_geral + (mov->quantd * mov->vl_vend)
+                SKIP
+        ENDDO
+        IF mtot_geral = 0
+                atencao('Nao tem movimento de vendedor neste periodo')
+                LOOP
+        ENDIF
+
+        ****************
+        SELE('mov');ORDSETFOCUS(6)
+        GO TOP
+        ****************
+        mpag := 1
+        mtit := 'Relatorio de Vendas e Comissao (P/PRODUTO)'
+        mtipo := 'periodo: '+DTOC(mdata1)+' a '+DTOC(mdata2)
+        cabecalho(mpag,mtit,mtipo)
+        DEVPOS(PROW()+1,00);DEVOUT(PADC('Produto: '+STRZERO(mcod_merc,5)+' - '+merc->merc,80))
+        imprt(mtipo_imp,'C')
+        DEVPOS(PROW()+1,00);DEVOUT('Vendedor')
+        DEVPOS(PROW(),36);DEVOUT('Qtd.Item')
+        DEVPOS(PROW(),46);DEVOUT('Valor Vendas')
+        DEVPOS(PROW(),60);DEVOUT('% com.')
+        DEVPOS(PROW(),70);DEVOUT('Comissao')
+        DEVPOS(PROW(),82);DEVOUT('Qtd.Ped.')
+        DEVPOS(PROW(),92);DEVOUT('Vlr.Ped./Med.')
+        DEVPOS(PROW(),108);DEVOUT('% Part.Vendas')
+        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        mcod_vend := mov-> cod_vend
+        ven(VAL(mov->cod_vend),,,'*')
+        GO mpoint
+        WHILE ! EOF()
+                IF mov->data_s_e > mdata2 .OR. mov->data_s_e < mdata1;
+                   .OR. mcod_merc <> mov->codigo;
+                   .OR. SUBSTR(mov->documento,1,2) = 'TR';
+                   .OR. SUBSTR(mov->documento,1,2) = 'BL';
+                   .OR. mov->ent_sai <> 'S' .OR. mov->vl_vend = 0 .OR. mov->tipo <> '02';
+                   .OR. mov->cod_vend = '111' .OR. mov->cod_vend = '999'
+                        SKIP
+                        LOOP
+                ENDIF
+                DEVPOS(PROW()+1,00);DEVOUT(mcod_vend+'-'+mnome_vend)
+                mnum_ped := SPACE(6)
+                WHILE mcod_vend = mov->cod_vend
+                        IF mov->data_s_e > mdata2 .OR. mov->data_s_e < mdata1;
+                           .OR. mcod_merc <> mov->codigo;
+                           .OR. SUBSTR(mov->documento,1,2) = 'TR';
+                           .OR. SUBSTR(mov->documento,1,2) = 'BL';
+                           .OR. mov->ent_sai <> 'S' .OR. mov->vl_vend = 0;
+                           .OR. mov->tipo <> '02'.OR. mov->cod_vend = '111';
+                           .OR. mov->cod_vend = '999'
+                                SKIP
+                                LOOP
+                        ENDIF
+                        mtot_item := mtot_item + mov->quantd
+                        mtot_venda := mtot_venda + (mov->quantd*mov->vl_vend)
+                        mtot_com := mtot_com + iat(((mov->quantd*mov->vl_vend) * (mov->comissao /100)),2)
+                        IF mnum_ped <> mov->num_ped
+                                mtot_ped := mtot_ped + 1
+                                mqtd_ped := mqtd_ped + 1
+                                mnum_ped := mov->num_ped
+                        ENDIF
+
+                        mqtd_item := mqtd_item + mov->quantd
+                        mvlr_venda := mvlr_venda + (mov->quantd*mov->vl_vend)
+                        mvlr_com := mvlr_com + iat(((mov->quantd*mov->vl_vend) * (mov->comissao /100)),2)
+                        SKIP
+                ENDDO
+                DEVPOS(PROW(),36);DEVOUT(TRANSFORM(mqtd_item,'999999.99'))
+                DEVPOS(PROW(),46);DEVOUT(TRANSFORM(mvlr_venda,'9,999,999.99'))
+                DEVPOS(PROW(),60);DEVOUT(TRANSFORM((mvlr_com/mvlr_venda)*100,'999.99'))
+                DEVPOS(PROW(),68);DEVOUT(TRANSFORM(mvlr_com,'999,999.99'))
+                DEVPOS(PROW(),82);DEVOUT(TRANSFORM(mqtd_ped,'99999.99'))
+                DEVPOS(PROW(),92);DEVOUT(TRANSFORM(mvlr_venda/mqtd_ped,'99,999,999.99'))
+                DEVPOS(PROW(),108);DEVOUT(TRANSFORM((mvlr_venda/mtot_geral)*100,'99,999,999.99'))
+                mqtd_ped := 0
+                mqtd_item := 0
+                mvlr_venda := 0
+                mvlr_com := 0
+                mcod_vend := mov-> cod_vend
+                ven(VAL(mov->cod_vend),,,'*')
+        ENDDO
+        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        DEVPOS(PROW()+1,00);DEVOUT('T O T A L   G E R A L:')
+        DEVPOS(PROW(),36);DEVOUT(TRANSFORM(mtot_item,'999999.99'))
+        DEVPOS(PROW(),46);DEVOUT(TRANSFORM(mtot_venda,'9,999,999.99'))
+        DEVPOS(PROW(),68);DEVOUT(TRANSFORM(mtot_com,'999,999.99'))
+        DEVPOS(PROW(),82);DEVOUT(TRANSFORM(mtot_ped,'99999.99'))
+        DEVPOS(PROW(),92);DEVOUT(TRANSFORM(mtot_venda/mtot_ped,'99,999,999.99'))
+        DEVPOS(PROW(),108);DEVOUT(TRANSFORM((mtot_venda/mtot_geral)*100,'99,999,999.99'))
+        DEVPOS(PROW()+2,00);DEVOUT(TIME())
+        imprt(mtipo_imp,'N')
+        EJECT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        IF mimp_tipo = 2
+                IF mensagem1('Deseja visualizar o relatorio','S','S,N') = 'S'
+                        lertexto(marq)
+                ENDIF
+        ENDIF
+        EXIT
+*/
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*************************** F I M **********************************************
+

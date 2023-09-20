@@ -1,0 +1,11 @@
+GRAVAR BLOB
+***********
+cFile:=memoread("foto.jpg")
+cContent := strtohex(cFile)
+replace campo with cContent
+
+LER BLOB
+***********
+cFile := campo
+memowrit('meuarquivo',hextostr(cFile))
+

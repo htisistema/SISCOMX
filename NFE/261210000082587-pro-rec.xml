@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><retConsReciNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_1.5.5</verAplic>
+<nRec>261210000082587</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF><dhRecbto>2021-03-01T10:31:55-03:00</dhRecbto>
+ <protNFe versao="4.00"><infProt Id="NFe1"><tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_1.5.5</verAplic>
+<chNFe>26210324494200000106550010000010741313232853</chNFe>
+<dhRecbto>2021-03-01T10:31:55-03:00</dhRecbto><cStat>564</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: Total do Produto / Servi&#xE7;o difere do somat&#xF3;rio dos itens</xMotivo>
+</infProt></protNFe></retConsReciNFe>

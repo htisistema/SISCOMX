@@ -1,0 +1,137 @@
+***********************************
+* FUNCAO CONSULTA DA CONTA CORRENTE
+***********************************
+MEMVAR getlist,nivel_acess,mdata_sis
+FUNCTION sac4cc
+***************
+LOCAL MPRG:='SAC4CC',;
+      lci,cci,lba,cba,li,ci,lb,cb,tela,opcao,mpoint,;
+      mdata1,mdata2,mcod_banco,msaldo,mpag,mtit,mtipo,i,cons_banco,ccomm
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+IF ! ver_nivel(mprg,'CONSULTA DAS CONTAS CORRENTES','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+li := ci := 00
+lb := 03
+cb := 55
+*************************************
+CLOSE ALL
+IF ! AbriArq('sacban1','ban1');RETURN NIL;ENDIF
+IF ! AbriArq('sacban2','ban2');RETURN NIL;ENDIF
+IF ! AbriArq('sacban3','ban3');RETURN NIL;ENDIF
+IF ! AbriArq('sacban4','ban4');RETURN NIL;ENDIF
+IF ! AbriArq('sacban5','ban5');RETURN NIL;ENDIF
+IF ! AbriArq('sacban6','ban6');RETURN NIL;ENDIF
+IF ! AbriArq('sacban7','ban7');RETURN NIL;ENDIF
+IF ! AbriArq('sacban8','ban8');RETURN NIL;ENDIF
+IF ! AbriArq('sacban9','ban9');RETURN NIL;ENDIF
+IF ! AbriArq('sacban10','ban10');RETURN NIL;ENDIF
+IF ! AbriArq('sacban11','ban11');RETURN NIL;ENDIF
+IF ! AbriArq('sacban12','ban12');RETURN NIL;ENDIF
+*************************************
+op_tela(li,ci,lb,cb,' Consulta da Conta Corrente ')
+WHILE .T.
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        setcor(1)
+        mcod_banco := 0
+        mdata1     := CTOD('  /  /  ')
+        mdata2     := mdata_sis
+        DEVPOS(li,ci+1);DEVOUT('Cod. Banco..:')
+        DEVPOS(li+1,ci+1);DEVOUT('Data Inicial:')
+        DEVPOS(li+2,ci+1);DEVOUT('Data Final..:')
+        @ li,ci+15 GET mcod_banco PICT '999' VALID IF(EMPTY(mcod_banco) .OR. mcod_banco > 12,.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        ccomm := "SELECT * FROM sacban"+ALLTRIM(TRANSFORM(mcod_banco,'99'))
+        cons_banco := {}
+        sr_getconnection():exec(ccomm,,.t.,@cons_banco)
+        IF LEN(cons_banco) = 0
+                atencao('Este Banco nao esta Cadastrado')
+                LOOP
+        ENDIF
+        setcor(3)
+        DEVPOS(li,ci+19);DEVOUT(('ban'+ALLTRIM(TRANSFORM(mcod_banco,'99')))->banco)
+        setcor(1)
+        mtit := 'Relatorio da Conta Corrente: Banco:'+STRZERO(mcod_banco,3)+'-'+(SELE())->banco
+        @ li+1,ci+15 GET mdata1 VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ li+2,ci+15 GET mdata2 VALID IF(EMPTY(mdata2) .OR. mdata2 < mdata1,.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        opcao := op_simnao('S','Confirma o periodo de Consulta:')
+        IF opcao = 'N'
+                LOOP
+        ENDIF
+        ccomm := "SELECT * FROM sacban"+ALLTRIM(TRANSFORM(mcod_banco,'99'))
+        cComm := ccomm + " WHERE  data <= "+sr_cdbvalue(mdata2)+" AND  data >= "+sr_cdbvalue(mdata1)
+        ccomm := ccomm + " ORDER BY SR_RECNO"
+        cons_banco := {}
+        sr_getconnection():exec(ccomm,,.t.,@cons_banco)
+        IF LEN(cons_banco) = 0
+                atencao('Nao existe nenhum movimento neste Periodo...')
+                LOOP
+        ENDIF
+        msaldo := 0
+        mtot_lanca := 0
+        IF ! imp_arq('CONTA_CC.REL','R')
+                LOOP
+        ENDIF
+        mpag := 0
+        mtipo := 'Periodo de '+DTOC(mdata1)+' a '+DTOC(mdata2)
+        FOR i = 1 TO LEN(cons_banco)
+                IF mpag = 0 .OR. PROW() >= 57
+                        mpag ++
+                        IF mpag > 1
+                                EJECT
+                        ENDIF
+                        cabecalho(mpag,mtit,mtipo,mprg)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,02);DEVOUT('Data')
+                        DEVPOS(PROW(),09);DEVOUT('Cod.')
+                        DEVPOS(PROW(),16);DEVOUT('Bco.')
+                        DEVPOS(PROW(),21);DEVOUT('Documento')
+                        DEVPOS(PROW(),31);DEVOUT('D/C')
+                        DEVPOS(PROW(),35);DEVOUT('Descricao')
+                        DEVPOS(PROW(),74);DEVOUT('   Credito')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    Debito')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('        Saldo')
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',132))
+                ENDIF
+                DEVPOS(PROW()+1,00);DEVOUT(DTOC(cons_banco[i,1]))
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_banco[i,2])
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(cons_banco[i,4])
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_banco[i,7])
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_banco[i,8])
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_banco[i,10])
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(IF(cons_banco[i,10] = 'C',TRANSFORM(cons_banco[i,9],'999,999.99'),'          '))
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(IF(cons_banco[i,10] = 'D',TRANSFORM(cons_banco[i,9],'999,999.99'),'          '))
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(cons_banco[i,11],'99,999,999.99'))
+                msaldo := cons_banco[i,11]
+        NEXT
+        imprt(mtipo_imp,'N')
+        DEVPOS(PROW()+2,00);DEVOUT('*** RESUMO DA CONSULTA ***')
+        DEVPOS(PROW()+1,00);DEVOUT('Total de Lancamentos:')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT(STRZERO(LEN(cons_banco),6))
+        DEVPOS(PROW()+1,00);DEVOUT('Saldo Total R$:')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(msaldo,'999,999,999.99'))
+        EJECT
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('CONTA_CC.REL')
+        /*
+        IF mimp_tipo = 2
+                lertexto('CONTA_CC.REL')
+        ELSEIF mtipo_imp = 'D'
+                
+        ELSE
+                MYRUN('DOSPRINTER /RAW /DEL '+ALLTRIM(m_indiv[1,5])+'HTI.REL')
+        ENDIF
+        */
+ENDDO
+wvw_lclosewindow()
+RETURN NIL

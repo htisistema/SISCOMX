@@ -1,0 +1,168 @@
+* FUNCAO P/CONSULTAR MERCADORIAS
+********************************
+#include "inkey.ch"              // constantes de codigos das teclas
+
+FUNCTION sac_ncm(cons,mdcri,mvar_atac,mpercentual,prod)
+******************************************************
+LOCAL f4tela,f4tela1,f4lci,f4cci,f4lba,f4cba,f4msele,f4morde,f4men,y,mcod,;
+      oconsprod,ocolprod[9],i,nkey,mteste,f4,lin_br,mopcao:=' ',mprec:=0,mcodmerc,mreg,;
+      local4,mtela_help,mtela_lin,mcor_ant,mvlr_dolar:=1,stop:=' ',;
+      nErr, nPos,cComm,owindows,cons_m:={},m_prod:={},mcondicao:='  ',;
+      mhoras:='',menuid,mvalor_fatura:=0,cons_mov,f4_botao,mindice:=' ',;
+      nBota,mpesquisa:=SPACE(50)
+
+STATIC mdescri:='              ',mdescri1:='              '
+
+MEMVAR mdata_sis,nivel_acess,mcod_merc,mcod_bc,mquantd
+PRIVATE mcod_forn := 0,point:=0,m_pos:={}
+Local4:= Space(0)
+f4 := '*'
+f4lci := 6
+f4cci := 0
+f4lba := 22
+f4cba := 100 //79
+f4msele := SELE()
+f4morde := INDEXORD()
+mcor_ant := SETCOLOR()
+setcor(1)
+exibi_prg('SAC_NCM')
+op_tela(03,00,48,120,memp_resa+SPACE(10)+' NCM / CEST',,1)
+CLEAR GETS
+
+//WvW_PBSetFont( NIL, "Courier New", 15, 0,)
+//f4_botao := wvw_pbCreate(NIL,39,100,40,110, 'FOTOS',NIL,{||teste()})
+
+WvW_PBSetFont( NIL, "Courier New", 15, 0,)
+nBota := wvw_pbCreate(NIL,1,70,2,90,'Inclusao NCM/CEST',NIL,{||sac_ncm1()})
+WVW_PBEnable( NIL, nBota, .T. )
+
+WHILE .T.
+        mcod_bc := SPACE(34)
+        mdescri := SPACE(8)
+        mcondicao := SPACE(7)
+        limpa(0,0,50,120)
+        mensagem('Digite: [CTRL+Y] Apagar ')
+        setcor(1)
+        DEVPOS(00,01);DEVOUT('Pesquisa Geral:')
+        DEVPOS(01,01);DEVOUT('NCM...........:')
+        DEVPOS(02,01);DEVOUT('CEST..........:')
+        setcor(3)
+        @ 04,00 TO 04,120
+        //DEVPOS(04,01);DEVOUT('Descricao                              Codigo Local          Saldo       Preco  Prc.Aprazo     Referencia  Dp IAT IPPT Aliq.')
+        DEVPOS(05,01);DEVOUT('   NCM     CEST     DESCRICAO')
+        @ 06,00 TO 06,120
+        @ 43,00 TO 43,120
+        DEVPOS(44,01);DEVOUT('Total de Produtos:')
+        DEVPOS(44,27);DEVOUT('Tempo da Pesquisa:                                                           ')
+        setcor(1)
+
+        //DEVPOS(04,00);DEVOUT('Cod.Especie...:')
+        @ 00,17 GET mpesquisa PICT '@!KS50'
+        @ 01,17 GET mdescri PICT '@!KS14' WHEN mdcri = NIL .AND. EMPTY(mpesquisa)
+        @ 01,17 GET mcondicao PICT '@!KS14' WHEN SUBSTR(mdescri,1,1) = '*' .AND. EMPTY(mpesquisa)
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                CLEAR GETS
+                RETURN ' '
+        ENDIF
+        mhoras := TIME()
+        mensagem('Escolha o produto e tecle <ENTER> ou <ESC> p/Abandonar')
+        IF EMPTY(mpesquisa) .AND. EMPTY(mdescri) .AND. EMPTY(mcondicao)
+                LOOP
+        ENDIF
+        cComm  := "SELECT * FROM sacncm WHERE "
+        IF ! EMPTY(mpesquisa)
+                ccomm := ccomm + " codigo LIKE "+sr_cdbvalue('%'+ALLTRIM(mpesquisa)+'%');
+                               + " OR cest LIKE "+sr_cdbvalue('%'+ALLTRIM(mpesquisa)+'%');
+                               + " OR descri LIKE "+sr_cdbvalue('%'+ALLTRIM(mpesquisa)+'%')
+        ELSE
+                IF ! EMPTY(mdescri)
+                        ccomm := ccomm + " codigo LIKE "+sr_cdbvalue(ALLTRIM(mdescri)+'%')
+                ENDIF
+                IF ! EMPTY(mcondicao)
+                        ccomm := ccomm + " cest LIKE "+sr_cdbvalue(ALLTRIM(mcondicao)+'%')
+                ENDIF
+        ENDIF
+        ccomm := ccomm + " ORDER BY descri"
+        cons_m := {}
+        sr_getconnection():exec(ccomm,,.t.,@cons_m)
+        IF LEN(cons_m) = 0
+                atencao('Nao foi encontrado nenhum ..')
+                LOOP
+        ENDIF
+        m_prod := {}
+        m_pos  := {}
+        point  := 0
+        DEVPOS(44,20);DEVOUT(STRZERO(LEN(cons_m),5))
+        DEVPOS(44,46);DEVOUT(ELAPTIME(mhoras,TIME()))
+        FOR i = 1 TO LEN(cons_m)
+                AADD(m_prod,cons_m[i,1];
+                           +' '+cons_m[i,10];
+                           +' '+cons_m[i,2])
+                        AADD(m_pos,cons_m[i,1])
+        NEXT
+
+        //WVW_PBEnable( NIL, f4_botao, .T. )
+
+        point := ACHOICE(7,0,42,120,m_prod,,,point)
+
+        DO CASE
+                CASE LASTKEY()=27
+                        LOOP
+                CASE LASTKEY() = 13
+                        sac_ncm1('A')
+        ENDCASE
+END
+RELEASE f4tela,f4tela1,f4lci,f4cci,f4lba,f4cba,f4msele,f4morde,f4men,mcod,;
+        oconsprod,ocolprod[8],i,nkey,mteste
+wvw_lclosewindow()
+CLEAR GETS
+RETURN ' '
+**************** f i m **********************************
+FUNCTION sac_ncm1(mtipo)
+*******************
+LOCAL mncm,mcest,mdescri,cons_c:={}
+
+setcor(1)
+exibi_prg('SAC_NCM1')
+cons_c:={}
+IF mtipo = 'A'
+        op_tela(20,00,24,120,'ALTERACAO NCM/CEST',,1)
+        sr_getconnection():exec("SELECT * FROM sacncm WHERE codigo = "+sr_cdbvalue(m_pos[point]),,.t.,@cons_c)
+ELSE
+        op_tela(20,00,24,120,'INCLUSAO  NCM/CEST',,1)
+ENDIF
+CLEAR GETS
+WHILE .T.
+        mncm := SPACE(8)
+        mcest := SPACE(7)
+        mdescri := SPACE(512)
+        DEVPOS(01,01);DEVOUT('NCM...........:')
+        DEVPOS(02,01);DEVOUT('CEST..........:')
+        DEVPOS(03,01);DEVOUT('DESCRICAO.....:')
+        setcor(1)
+
+        //DEVPOS(04,00);DEVOUT('Cod.Especie...:')
+        @ 01,17 GET mncm PICT '99999999'
+        @ 02,17 GET mcest PICT '9999999'
+        @ 03,17 GET mdescri PICT '@!KS80'
+        READ
+        mop := op_simnao('S','Confirma a INCLUSAO do NCM/CEST:')
+        IF LASTKEY() = 27 .OR. mop = 'N'
+                wvw_lclosewindow()
+                CLEAR GETS
+                RETURN ' '
+        ENDIF
+        sr_getconnection():exec('INSERT INTO sacncm (codigo,cest,descri,SR_DELETED )'+;
+                        ' VALUES ('+;
+                        sr_cdbvalue(mncm)+','+; //1
+                        sr_cdbvalue(mcest)+','+; //2
+                        sr_cdbvalue(mdescri)+','+; //3
+                        sr_cdbvalue(' ')+')',,.f.)
+        sr_getconnection():exec("COMMIT",,.f.)
+        EXIT
+ENDDO
+wvw_lclosewindow()
+CLEAR GETS
+RETURN ' '

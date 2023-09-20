@@ -1,0 +1,20 @@
+Error BASE/1003  No existe la variable: M_DUPP
+Funcoes: CON416.PRG->CON416(72)
+Funcoes: CON41.PRG->CON41(47)
+Funcoes: SAC00.PRG->AFTERINKEY(2347)
+Funcoes: SAC00.PRG->(b)SAC0(1404)
+Funcoes: ->INKEY(0)
+Funcoes: SAC00.PRG->SAC0(1434)
+Funcoes: SACROT1.PRG->SENHA(824)
+Funcoes: SISCOM.PRG->MAIN(1129)
+************************************************************************************************************************
+Data e Hora........: 12/12/22 - 15:46:36
+Empresa............: DOCE GOSTO MAIS
+Sistema/Atualizacao: .: SISCOM :. Sistema Automacao Comercial - v22.12.08
+Usuario do Sistema.: 999
+Nome do Executavel.: C:\HELIO\siachb\SISCOM.EXE
+Nome do Micro......: HELIO1 - Nome Terminal: helio
+Memoria Disponivel.: 2097151 - Espaço em Disco....: 124858474496
+Pasta de Diretorio.: HELIO\siachb
+Sistema Operacional: Windows NT Professional 6.02.9200
+Caminho do Banco...: localhost:C:\HELIO\SIACHB\SISCOM.GDB

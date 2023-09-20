@@ -1,0 +1,2871 @@
+//#define lb1000 "c:\helio\siachb\genericlib.dll"
+#INCLUDE "wingdi.ch"
+#INCLUDE "winuser.ch"
+#INCLUDE "COMMCTRL.CH"
+
+#define RGB(nR,nG,nB) (nR + (nG * 256) + (nB * 256 * 256))
+#define NBotao1  900
+#define NBotao2  901
+#define NBotao3  902
+#define NBotao4  903
+#define NBotao5  904
+#define NBotao6  905
+#define NBotao7  906
+#define NBotao8  907
+#define NBotao9  908
+#define NBotao10 909
+#define NBotao11 910
+
+#define MENUARQ_1  1
+#define MENUARQ_2  2
+#define MENUARQ_3  3
+#define MENUARQ_4  4
+#define MENUARQ_5  5
+#define MENUARQ_6  6
+#define MENUARQ_7  7
+#define MENUARQ_8  8
+#define MENUARQ_9  9
+#define MENUARQ_10 10
+#define MENUARQ_11 11
+#define MENUARQ_12 12
+#define MENUARQ_13 13
+#define MENUARQ_14 14
+#define MENUARQ_15 15
+#define MENUARQ_16 16
+#define MENUARQ_17 17
+#define MENUARQ_18 18
+#define MENUARQ_19 19
+#define MENUARQ_20 20
+#define MENUARQ_21 21
+#define MENUARQ_22 22
+#define MENUARQ_23 23
+#define MENUARQ_24 24
+#define MENUARQ_25 25
+#define MENUARQ_26 26
+#define MENUARQ_27 27
+
+
+#define MENUMOV_1  30
+#define MENUMOV_2  31
+#define MENUMOV_3  32
+#define MENUMOV_4  33
+#define MENUMOV_5  34
+#define MENUMOV_7  35
+#define MENUMOV_10 36
+#define MENUMOV_11 40
+#define MENUMOV_13 42
+#define MENUMOV_14 43
+#define MENUMOV_15 44
+#define MENUMOV_16 45
+#define MENUMOV_17 46
+#define MENUMOV_18 47
+#define MENUMOV_20 49
+#define MENUMOV_21 50
+#define MENUMOV_22 51
+#define MENUMOV_23 52
+#define MENUMOV_24 53
+#define MENUMOV_25 54
+#define MENUMOV_26 55
+#define MENUMOV_27 56
+#define MENUMOV_28 57
+#define MENUMOV_29 58
+#define MENUMOV_30 59
+#define MENUMOV_31 60
+#define MENUMOV_32 61
+#define MENUMOV_33 62
+#define MENUMOV_34 63
+#define MENUMOV_35 64
+#define MENUMOV_36 65
+#define MENUMOV_37 66
+#define MENUMOV_38 67
+#define MENUMOV_39 68
+#define MENUMOV_40 69
+#define MENUMOV_41 70
+#define MENUMOV_42 71
+#define MENUMOV_43 72
+#define MENUMOV_44 73
+#define MENUMOV_45 74
+#define MENUMOV_46 75
+#define MENUMOV_47 76
+#define MENUMOV_48 77
+#define MENUMOV_49 78
+#define MENUMOV_50 79
+#define MENUMOV_51 80
+#define MENUMOV_52 81
+#define MENUMOV_53 82
+#define MENUMOV_54 83
+#define MENUMOV_55 84
+#define MENUMOV_56 85
+#define MENUMOV_57 86
+#define MENUMOV_58 87
+#define MENUMOV_59 88
+#define MENUMOV_60 89
+#define MENUMOV_61 90
+#define MENUMOV_62 91
+#define MENUMOV_63 92
+#define MENUMOV_64 93
+#define MENUMOV_65 94
+#define MENUMOV_66 95
+#define MENUMOV_67 96
+#define MENUMOV_68 97
+#define MENUMOV_69 98
+#define MENUMOV_70 99
+#define MENUMOV_71 100
+#define MENUMOV_72 101
+#define MENUMOV_73 102
+#define MENUMOV_74 103
+#define MENUMOV_75 104
+#define MENUMOV_76 105
+#define MENUMOV_77 106
+#define MENUMOV_78 107
+#define MENUMOV_79 108
+#define MENUMOV_80 109
+#define MENUMOV_81 110
+#define MENUMOV_8  1111
+#define MENUMOV_9  1112
+#define MENUMOV_12 1113
+#define MENUMOV_6  1114
+
+#define MENUMOV_82 111
+#define MENUMOV_83 112
+#define MENUMOV_84 113
+#define MENUMOV_85 114
+#define MENUMOV_86 1140
+
+#define MENUMOV_87 1141
+#define MENUMOV_88 1142
+#define MENUMOV_89 1143
+#define MENUMOV_90 1144
+#define MENUMOV_91 1145
+#define MENUMOV_92 1146
+#define MENUMOV_93 1147
+#define MENUMOV_94 1148
+#define MENUMOV_95 1149
+#define MENUMOV_96 1150
+#define MENUMOV_97 1151
+
+#define MENUPED_1  115
+#define MENUPED_2  116
+#define MENUPED_3  117
+//#define MENUPED_4  118
+#define MENUPED_5  119
+#define MENUPED_6  120
+#define MENUPED_7  121
+#define MENUPED_8  122
+#define MENUPED_9  123
+#define MENUPED_10 124
+#define MENUPED_11 125
+#define MENUPED_12 126
+#define MENUPED_13 127
+#define MENUPED_14 128
+#define MENUPED_15 129
+
+#define MENUPEDC_1 914
+#define MENUPEDC_2 911
+#define MENUPEDC_3 912
+#define MENUPEDC_4 913
+#define MENUPEDC_5 915
+
+#define MENUNF_1 130
+#define MENUNF_2 131
+//#define MENUNF_3 132
+#define MENUNF_4 133
+#define MENUNF_5 134
+//#define MENUNF_6 135
+#define MENUNF_7 136
+#define MENUNF_8 137
+#define MENUNF_9 138
+#define MENUNF_10 139
+#define MENUNF_11 1390
+#define MENUNF_12 1391
+#define MENUNF_13 1392
+#define MENUNF_14 1393
+#define MENUNF_15 1395
+#define MENUNF_16 1396
+#define MENUNF_17 1397
+#define MENUNF_18 1398
+#define MENUNF_19 1399
+#define MENUNF_20 1400
+#define MENUNF_21 1401
+#define MENUNF_22 1402
+#define MENUNF_23 1403
+#define MENUNF_24 1404
+#define MENUNF_25 1405
+#define MENUNF_26 1406
+#define MENUNF_27 1407
+
+#define MENUCTE_1 2130
+
+#define MENUORC_1  140
+#define MENUORC_2  141
+#define MENUORC_3  142
+#define MENUORC_4  143
+#define MENUORC_5  144
+#define MENUORC_6  145
+#define MENUORC_7  146
+#define MENUORC_8  147
+#define MENUORC_9  148
+#define MENUORC_10 149
+#define MENUORC_11 150
+/*
+#define MENUHV_1 170
+#define MENUHV_2 171
+#define MENUHV_3 172
+#define MENUHV_4 173
+*/
+#define MENUDUPP_1  190
+#define MENUDUPP_2  191
+#define MENUDUPP_3  192
+#define MENUDUPP_4  193
+#define MENUDUPP_5  194
+#define MENUDUPP_6  195
+#define MENUDUPP_7  196
+#define MENUDUPP_8  197
+#define MENUDUPP_9  198
+#define MENUDUPP_10 199
+#define MENUDUPP_11 200
+#define MENUDUPP_12 201
+#define MENUDUPP_13 202
+#define MENUDUPP_14 203
+
+#define MENUDUPR_1  230
+#define MENUDUPR_2  231
+#define MENUDUPR_3  232
+#define MENUDUPR_4  233
+#define MENUDUPR_5  234
+#define MENUDUPR_6  235
+#define MENUDUPR_7  236
+#define MENUDUPR_8  237
+#define MENUDUPR_9  238
+#define MENUDUPR_10 239
+#define MENUDUPR_11 240
+#define MENUDUPR_12 241
+#define MENUDUPR_13 242
+#define MENUDUPR_14 243
+
+#define MENUDUPR_20 250
+#define MENUDUPR_21 251
+#define MENUDUPR_22 252
+#define MENUDUPR_23 253
+#define MENUDUPR_24 254
+#define MENUDUPR_25 255
+
+#define MENUDUPR_26 256
+#define MENUDUPR_27 257
+#define MENUDUPR_28 258
+#define MENUDUPR_29 259
+#define MENUDUPR_30 260
+#define MENUDUPR_31 261
+#define MENUDUPR_32 262
+#define MENUDUPR_33 263
+#define MENUDUPR_34 264
+#define MENUDUPR_35 265
+#define MENUDUPR_36 266
+#define MENUDUPR_37 267
+#define MENUDUPR_38 268
+
+#define MENUTROC_1  270
+#define MENUTROC_2  271
+#define MENUTROC_3  272
+
+#define MENUCX_1  400
+#define MENUCX_2  401
+#define MENUCX_3  402
+#define MENUCX_4  403
+#define MENUCX_5  404
+#define MENUCX_6  405
+#define MENUCX_7  406
+#define MENUCX_8  407
+#define MENUCX_9  408
+#define MENUCX_10 409
+#define MENUCX_11 410
+#define MENUCX_12 411
+#define MENUCX_13 412
+#define MENUCX_14 413
+#define MENUCX_15 414
+#define MENUCX_16 415
+#define MENUCX_17 416
+#define MENUCX_18 417
+#define MENUCX_19 418
+#define MENUCX_20 419
+#define MENUCX_21 420
+#define MENUCX_22 421
+#define MENUCX_23 422
+#define MENUCX_24 423
+#define MENUCX_25 424
+#define MENUCX_26 425
+#define MENUCX_27 426
+#define MENUCX_28 427
+#define MENUCX_29 428
+#define MENUCX_30 429
+#define MENUCX_31 430
+#define MENUCX_32 431
+
+#define MENUCONS_1  500
+#define MENUCONS_2  501
+#define MENUCONS_3  502
+#define MENUCONS_4  503
+#define MENUCONS_5  504
+#define MENUCONS_6  505
+#define MENUCONS_7  506
+#define MENUCONS_8  507
+#define MENUCONS_9  508
+#define MENUCONS_10 509
+#define MENUCONS_11 510
+#define MENUCONS_12 511
+#define MENUCONS_13 512
+#define MENUCONS_14 513
+#define MENUCONS_15 514
+#define MENUCONS_16 515
+#define MENUCONS_17 516
+#define MENUCONS_18 517
+#define MENUCONS_19 518
+#define MENUCONS_20 519
+#define MENUCONS_21 520
+#define MENUCONS_22 521
+#define MENUCONS_23 522
+#define MENUCONS_24 523
+#define MENUCONS_25 524
+#define MENUCONS_26 525
+#define MENUCONS_27 526
+#define MENUCONS_28 527
+#define MENUCONS_29 528
+
+#define MENUREL_1  600
+#define MENUREL_2  601
+#define MENUREL_3  602
+#define MENUREL_4  603
+#define MENUREL_5  604
+#define MENUREL_6  605
+#define MENUREL_7  606
+#define MENUREL_8  607
+#define MENUREL_9  608
+#define MENUREL_10 609
+#define MENUREL_11 610
+#define MENUREL_12 611
+#define MENUREL_13 612
+#define MENUREL_14 613
+#define MENUREL_15 614
+#define MENUREL_16 615
+#define MENUREL_17 616
+//#define MENUREL_18 617
+#define MENUREL_19 618
+#define MENUREL_20 619
+#define MENUREL_21 620
+#define MENUREL_22 621
+#define MENUREL_23 622
+#define MENUREL_24 623
+#define MENUREL_25 624
+#define MENUREL_26 625
+#define MENUREL_27 626
+#define MENUREL_28 627
+#define MENUREL_29 628
+#define MENUREL_30 629
+#define MENUREL_31 630
+#define MENUREL_32 631
+#define MENUREL_33 632
+#define MENUREL_34 633
+#define MENUREL_35 634
+#define MENUREL_36 635
+#define MENUREL_37 636
+//#define MENUREL_38 637
+#define MENUREL_39 638
+#define MENUREL_40 639
+#define MENUREL_41 640
+#define MENUREL_42 641
+#define MENUREL_43 642
+#define MENUREL_44 643
+#define MENUREL_45 644
+#define MENUREL_46 645
+#define MENUREL_47 646
+#define MENUREL_48 647
+#define MENUREL_49 648
+#define MENUREL_50 649
+#define MENUREL_51 650
+#define MENUREL_52 651
+#define MENUREL_53 652
+#define MENUREL_54 653
+#define MENUREL_55 654
+#define MENUREL_56 655
+#define MENUREL_57 656
+#define MENUREL_58 657
+#define MENUREL_59 658
+#define MENUREL_60 659
+#define MENUREL_61 660
+#define MENUREL_62 661
+#define MENUREL_63 662
+#define MENUREL_64 663
+#define MENUREL_65 664
+#define MENUREL_66 665
+#define MENUREL_67 666
+#define MENUREL_68 667
+#define MENUREL_69 668
+#define MENUREL_70 960
+#define MENUREL_71 961
+#define MENUREL_72 962
+#define MENUREL_73 963
+#define MENUREL_74 964
+#define MENUREL_75 965
+#define MENUREL_76 966
+
+#define MENUUTIL_1  700
+#define MENUUTIL_2  701
+#define MENUUTIL_3  702
+#define MENUUTIL_4  703
+#define MENUUTIL_5  704
+#define MENUUTIL_6  705
+#define MENUUTIL_7  706
+#define MENUUTIL_8  707
+#define MENUUTIL_9  708
+#define MENUUTIL_10 709
+#define MENUUTIL_11 710
+#define MENUUTIL_12 711
+#define MENUUTIL_13 712 // vago
+#define MENUUTIL_14 713
+#define MENUUTIL_15 714
+#define MENUUTIL_16 715
+#define MENUUTIL_17 716
+#define MENUUTIL_18 717
+#define MENUUTIL_20 719
+#define MENUUTIL_21 720
+//#define MENUUTIL_22 721
+//#define MENUUTIL_23 722
+#define MENUUTIL_24 723
+#define MENUUTIL_25 724
+//#define MENUUTIL_26 725
+//#define MENUUTIL_27 726
+#define MENUUTIL_28 727
+#define MENUUTIL_29 728
+#define MENUUTIL_30 729
+#define MENUUTIL_31 730
+#define MENUUTIL_32 731
+#define MENUUTIL_33 732
+#define MENUUTIL_34 733
+#define MENUUTIL_35 734
+#define MENUUTIL_36 735
+#define MENUUTIL_37 736
+#define MENUUTIL_38 737
+#define MENUUTIL_39 738
+#define MENUUTIL_40 739
+#define MENUUTIL_41 740
+#define MENUUTIL_42 741
+#define MENUUTIL_43 742
+#define MENUUTIL_44 743
+#define MENUUTIL_45 744
+#define MENUUTIL_46 745
+#define MENUUTIL_47 746
+#define MENUUTIL_48 747
+#define MENUUTIL_49 748
+#define MENUUTIL_50 749
+#define MENUUTIL_51 750
+#define MENUUTIL_52 751
+#define MENUUTIL_53 752
+#define MENUUTIL_54 753
+#define MENUUTIL_55 754
+#define MENUUTIL_56 755
+#define MENUUTIL_57 756
+#define MENUUTIL_58 757
+#define MENUUTIL_59 758
+#define MENUUTIL_60 759
+#define MENUUTIL_61 760
+#define MENUUTIL_62 761
+#define MENUUTIL_63 762
+#define MENUUTIL_64 763
+#define MENUUTIL_65 764
+#define MENUUTIL_66 765
+#define MENUUTIL_67 766
+#define MENUUTIL_68 767
+#define MENUUTIL_69 768
+#define MENUUTIL_70 769
+#define MENUUTIL_71 770
+#define MENUUTIL_72 771
+#define MENUUTIL_73 772
+#define MENUUTIL_74 773
+#define MENUUTIL_75 774
+#define MENUUTIL_76 775
+#define MENUUTIL_77 776
+
+#define MENUMEN_1 820
+#define MENUMEN_2 821
+
+#define MENUSAI_1 850
+#define MENUSAI_2 851
+#define MENUSAI_3 852
+
+#define MENUEMP_1 861
+****************
+* MENU PRINCIPAL
+****************
+FUNCTION sac0()
+***************
+MEMVAR mdata_sis,memp_resa,mversao,cod_operado,mcaminho,mol,sistema
+LOCAL opcao,tela,aret:={},i:=0,mdt1,mdt2,mc_prod,mcod_acesso:='',cons_palm := {},ndash
+PRIVATE mcod_vend,mmens,cons_rot:={},hMainMenu,mtela_principal,mcod_merc:=0
+
+WVW_SetPaintRefresh( 50 )
+
+wvw_lclosewindow()
+mn_sac0 := op_tela(00,00,50,120,memp_resa+' - CNPJ: '+mcgc_firm+SPACE(20)+'.: SISCOM '+mversao+' :.'+SPACE(20)+'Data: '+DTOC(mdata_sis)+' - '+ver_dia(mdata_sis)+'   Serie: '+ver_serie(),1,,,)
+
+wvw_maximize(0)
+WVW_CenterWindow(,.T.,.T.)
+//WVW_DrawImage( ,00,00,MAXROW(),MAXCOL(),ALLTRIM(m_indiv[1,3])+'HTILOGO.JPG',.T.,.F.)
+SET CURSOR OFF
+
+setcor(30)
+limpa(0,0,50,120)
+
+//setcor(1)
+//WVW_DrawImage( ,00,00,50,120,ALLTRIM(m_indiv[1,3])+'HTILOGO.JPG',.F.,.F.)
+
+//WVW_DrawImage( ,39,60,46,MAXCOL()-4,ALLTRIM(m_indiv[1,3])+"rodape.JPG",.F.,.F.)
+botao(10,24,40,75)
+IF FILE(ALLTRIM(m_indiv[1,3])+'HTIFIRMA.JPG')
+        WVW_DrawImage( ,10,24,40,75,ALLTRIM(m_indiv[1,3])+'HTIFIRMA.JPG',.T.,.F.)
+ELSEIF FILE(ALLTRIM(m_indiv[1,3])+'HTIFIRMA1.JPG')
+        WVW_DrawImage( ,10,24,40,75,ALLTRIM(m_indiv[1,3])+'HTIFIRMA1.JPG',.T.,.F.)
+ENDIF
+
+botao(04,99,16,MAXCOL()-3)
+IF FILE(ALLTRIM(m_indiv[1,31])+cod_operado+'.jpg')
+        WVW_DrawImage( ,04,99,16,MAXCOL()-3,ALLTRIM(m_indiv[1,31])+cod_operado+'.jpg',.T.,.F.)
+ELSE
+        WVW_DrawImage( ,04,99,16,MAXCOL()-3,ALLTRIM(m_indiv[1,3])+'HTIusu.jpg',.T.,.F.)
+ENDIF
+WVW_DrawLabel(,18,MAXCOL()-16,'Operador: '+cod_operado,,,RGB(25,25,112),RGB(255,250,250), 'times',18,8,,,,,)
+
+WVW_DrawImage( ,32,MAXCOL()-22,47,MAXCOL()-5,ALLTRIM(m_indiv[1,3])+"logohti.JPG",.F.,.F.)
+setcor(1)
+IF m_cfg[2] = 'L'
+        WVW_DrawLabel(,05,45,' L O J A ',,,,, 'times',30,15,,,,,)
+ENDIF        
+IF ALLTRIM(m_indiv[1,44]) = '2'
+        WVW_DrawLabel(,49,MAXCOL()-20,' '+mversao+' ',,,,, 'times',30,15,,,,,)
+ELSE
+        WVW_DrawLabel(,49,MAXCOL()-20,' '+mversao+' ',,,RGB(25,25,112),RGB(255,250,250), 'times',30,15,,,,,)
+ENDIF
+SET CURSOR ON
+
+WvW_PBSetFont( NIL, 'TIMES', 20, 7,)
+ndash  := wvw_pbCreate(NIL, 1,1, 3,21,'ESTATISTICA de Vendedores',,{||sacdash()})
+WVW_PBEnable( NIL, ndash, .T. )
+
+//botao(43,1,49,47)
+//WVW_DrawLabel(,43,2,'* NOVIDADE SEU SERVIDOR PODE SER EM NUVENS ! * ',,,RGB(25,25,112),RGB(255,250,250),'Arial Black',15,9,,,,,)
+//WVW_DrawLabel(,43,2,'* NOVIDADE SEU SERVIDOR PODE SER EM NUVENS ! * ',,,RGB(25,25,112),RGB(255,250,250),'times Black',15,9,,,,,)
+//WVW_DrawLabel(,45,2,'O SISCOM PODE SER UTILIZADO DE QUALQUER COMPUTADOR',,,,, 'lucida console',15,10,,,,,)
+//WVW_DrawLabel(,46,2,'         (DENTRO OU FORA DA SUA EMPRESA) !',,,,, 'lucida console',15,10,,,,,)
+//WVW_DrawLabel(,47,2,'      SEM PREOCUPACAO COM BACKUP E SERVIDOR !',,,,, 'lucida console',15,10,,,,,)
+//WVW_DrawLabel(,48,2,'       ENTRE EM CONTATO COM NOSSO SUPORTE !',,,,, 'lucida console',15,10,,,,,)
+
+
+mtela_principal := WVW_SAVESCREEN(,00,00,MAXROW(),MAXCOL())
+exibi_prg('SAC0')
+opcao:=0
+/*
+IP_EXTERNO()
+buscar_endereco()
+/*
+//FUNCAO PARA FICAR CHECANDO AULGUMA FUNCAO
+cons_senha := {}
+sr_getconnection():exec("SELECT ver_pocket FROM insopera WHERE scod_op = "+sr_cdbvalue(cod_operado),,.t.,@cons_senha)
+IF LEN(cons_senha) > 0 .AND. cons_senha[1,1] = 'S'
+        saccnnt(1)
+        nTask := HB_BACKGROUNDADD( {|| DisplayTime()},120000) // tempo em milisegundos
+        SET BACKGROUND TASKS ON
+        //saccnnt(1)
+        //atencao(hdserial('C:'))
+ENDIF
+*/
+IF m_indiv[1,52] = 'S'
+        set key -7 to sacapphti(1,1)
+ENDIF
+SET KEY 28 TO menu_cons()       // F1 MENU DE CONSULTAS
+SET KEY -30 TO cons_mens()      // ALT+F1
+SET KEY 287 TO alt_senha()      // ALT+S
+SET KEY 289 TO sacc_fin()       // ALT+F
+SET KEY 276 TO alt_data()       // ALT+T
+//SET KEY 274 TO alt_emp()      // ALT+E   ALTERACAO DE EMPRESA
+SET KEY 408 TO fim_prg()        // ALT+seta p/cima
+SET KEY 300 TO fim()            // ALT+Z fim do sistema
+SET KEY -40 TO calend()         // F11
+SET KEY -41 TO calcu()          // F12 calculadora
+SET KEY 278 TO autorizar()      // ALT+U (SACROT)
+SET KEY -34 TO senha_cesso()    // ALT+F5
+//set key 23 to
+set key -5 to Ctrl_v
+//set key 22 to WVW_GetClipboard()
+//set key 3 to Ctrl_c
+
+//SET KEY 270 TO senha_cesso()    // ALT+SETA ESQUEDA
+//SET KEY 280 TO sac3411()        // ALT+O VERIFICA PEDIDOS DO APP...S
+//SETCOLOR('W/B+,B/w,,,GR+/B')
+
+SET KEY 287 TO alt_senha        // ALT+S
+ver_mensa(cod_operado)          // verifica mensagens
+
+//WVW_TBCreate( , .T.,TBSTYLE_TOOLTIPS        , 2,10,10)
+WVW_TBCreate( , .T.,TBSTYLE_WRAPABLE        , 0,2,2)
+//WVW_TBCreate( , .T.,TBSTYLE_ALTDRAG         , 0,20,20)
+//WVW_TBCreate( , .T.,TBSTYLE_LIST            , 0,3,3)
+//atencao(mcam_bitmap+'inicio.bmp')
+//WVW_TBCreate( , .T.,TBSTYLE_FLAT            , 0,55,50)
+//WvW_PBSetFont( NIL, "ARIAL BLACK", 16, 0,)
+
+//WvW_PBSetFont( NIL, "times", 16, 0,)
+
+//WVW_TBCreate( , .T.,TBSTYLE_FLAT            , 0,8,8)
+//WvW_PBSetFont( NIL, "ARIAL BLACK", 20, 0,)
+
+WVW_TBAddButton( ,NBotao1,,'<V> E N D A',1,.T.)
+WVW_TBAddButton( ,NBotao2,,'<R>ecebimento',1,.F.)
+WVW_TBAddButton( ,NBotao3,,'<B>aixa Doc.',1)
+WVW_TBAddButton( ,NBotao4,,'<O>rcamento',1)
+WVW_TBAddButton( ,MENUNF_9,,'<CTRL+E>NF-e',1)
+WVW_TBAddButton( ,MENUNF_16,,'<CTRL+F>NFC-e',1)
+WVW_TBAddButton( ,NBotao5,,'<P>rodutos',1)
+WVW_TBAddButton( ,NBotao8,,'<C>lientes',1)
+WVW_TBAddButton( ,MENUUTIL_76,,'Abre GAVETA',1)
+WVW_TBAddButton( ,NBotao11,,'Demo.Debito',1)
+WVW_TBAddButton( ,NBotao7,,'<D> Senha',1)
+WVW_TBAddButton( ,NBotao9,,'<ESC> Sair',1,.F.)
+/*
+WVW_TBAddButton( ,NBotao1,ALLTRIM(m_indiv[1,3])+'pedido.bmp','<V> E N D A',IF(FILE(ALLTRIM(m_indiv[1,3])+'pedido.bmp'),0,1),.F.)
+WVW_TBAddButton( ,NBotao2,ALLTRIM(m_indiv[1,3])+'recebimento.bmp','<R>ecebimento',IF(FILE(ALLTRIM(m_indiv[1,3])+'recebimento.bmp'),0,1),.F.)
+WVW_TBAddButton( ,NBotao3,ALLTRIM(m_indiv[1,3])+'baixar.bmp','<B>aixa Doc.',IF(FILE(ALLTRIM(m_indiv[1,3])+'baixar.bmp'),0,1))
+WVW_TBAddButton( ,NBotao4,ALLTRIM(m_indiv[1,3])+'orcamento.bmp','<O>rcamento',IF(FILE(ALLTRIM(m_indiv[1,3])+'orcamento.bmp'),0,1))
+WVW_TBAddButton( ,MENUNF_9,ALLTRIM(m_indiv[1,3])+'nfe.bmp','<CTRL+E>NF-e',IF(FILE(ALLTRIM(m_indiv[1,3])+'nfe.bmp'),0,1))
+WVW_TBAddButton( ,MENUNF_16,ALLTRIM(m_indiv[1,3])+'nfce.bmp','<CTRL+F>NFC-e',IF(FILE(ALLTRIM(m_indiv[1,3])+'nfce.bmp'),0,1))
+WVW_TBAddButton( ,NBotao5,ALLTRIM(m_indiv[1,3])+'produto.bmp','<P>rodutos',IF(FILE(ALLTRIM(m_indiv[1,3])+'produto.bmp'),0,1))
+WVW_TBAddButton( ,NBotao8,ALLTRIM(m_indiv[1,3])+'cliente.bmp','<C>lientes',IF(FILE(ALLTRIM(m_indiv[1,3])+'cliente.bmp'),0,1))
+WVW_TBAddButton( ,MENUUTIL_76,ALLTRIM(m_indiv[1,3])+'gaveta.bmp','Abre GAVETA',IF(FILE(ALLTRIM(m_indiv[1,3])+'gaveta.bmp'),0,1))
+WVW_TBAddButton( ,NBotao11,ALLTRIM(m_indiv[1,3])+'recebimento.bmp','Demo.Debito',IF(FILE(ALLTRIM(m_indiv[1,3])+'recebimento.bmp'),0,1))
+WVW_TBAddButton( ,NBotao7,ALLTRIM(m_indiv[1,3])+'senhas.bmp','<D> Senha',IF(FILE(ALLTRIM(m_indiv[1,3])+'senhas.bmp'),0,1))
+WVW_TBAddButton( ,NBotao9,ALLTRIM(m_indiv[1,3])+'sair.bmp','<ESC> Sair',IF(FILE(ALLTRIM(m_indiv[1,3])+'sair.bmp'),0,1),.F.)
+*/
+//IF cod_operado = '999'
+//        WVW_TBAddButton( ,NBotao6,ALLTRIM(m_indiv[1,3])+'hti.bmp','HTI TESTE',IF(FILE(ALLTRIM(m_indiv[1,3])+'hti.bmp'),0,1))
+//ENDIF
+WVW_SBCreate()
+WVW_SBAddPart(,,550,0,.F.)
+WVW_SBSetText(,0,'{SAC0}')
+
+WVW_SBAddPart(,,350,0,.F.)
+WVW_SBSetText(,1,'<< Operador: '+ALLTRIM(cod_operado)+' >>  << Terminal: '+NETNAME()+' >>  << IP Terminal: '+GetIp()+' >>')
+
+WVW_SBAddPart(,,150,0,.F.)
+WVW_SBSetText(,2,'<< IP Servidor: '+ALLTRIM(m_cfg[4])+' >>')
+
+WVW_SBAddPart(,,150,0,.F.)
+IF ! EMPTY(m_set[1,82])
+	IF cod_operado = '999'
+        	WVW_SBSetText(,3,'   ** FIREBIRD ** '+STRZERO(DATE() - CTOD(SUBSTR(m_set[1,82],1,2)+'/'+SUBSTR(m_set[1,82],3,2)+'/'+SUBSTR(m_set[1,82],5,2)),5))
+	ELSE
+        	WVW_SBSetText(,3,'   ** Banco: FIREBIRD **')
+        ENDIF
+ELSE
+        WVW_SBSetText(,3,'   >> Banco: FIREBIRD <<')
+ENDIF
+*/
+/*
+WVW_SBAddPart(,,150,0,.F.)
+WVW_SBSetText(,1,'Operador: '+ALLTRIM(cod_operado))
+WVW_SBAddPart(,,150,0,.F.)
+WVW_SBSetText(,2,'Term.: '+NETNAME())
+WVW_SBAddPart(,,150,0,.F.)
+//atencao('   ** Banco: FIREBIRD ** '+STRZERO(DATE() - CTOD(SUBSTR(m_set[1,82],1,2)+'/'+SUBSTR(m_set[1,82],3,2)+'/'+SUBSTR(m_set[1,82],5,2)),5))
+IF ! EMPTY(m_set[1,82])
+	IF cod_operado = '999'
+        	WVW_SBSetText(,3,'   ** FIREBIRD ** '+STRZERO(DATE() - CTOD(SUBSTR(m_set[1,82],1,2)+'/'+SUBSTR(m_set[1,82],3,2)+'/'+SUBSTR(m_set[1,82],5,2)),5))
+	ELSE
+        	WVW_SBSetText(,3,'   ** Banco: FIREBIRD **')
+        ENDIF
+ELSE
+        WVW_SBSetText(,3,'   >> Banco: FIREBIRD <<')
+ENDIF
+WVW_SBAddPart(,,150,0,.F.)
+WVW_SBSetText(,4,'IP Term.: '+GetIp())
+WVW_SBAddPart(,,250,0,.F.)
+WVW_SBSetText(,5,'IP Serv.: '+ALLTRIM(m_cfg[4]))
+*/
+//ATENCAO('OK')
+
+//WVW_SBAddPart(,,80,0,.F.)
+//WVW_SBSetText(,5,ALLTRIM(m_cfg[4]))
+
+/*
+IF ! EMPTY(m_set[1,82])
+	IF cod_operado = '999'
+        	WVW_SBSetText(,6,'IP:'+getip()+'   ** Banco: FIREBIRD ** '+STRZERO(DATE() - CTOD(SUBSTR(m_set[1,82],1,2)+'/'+SUBSTR(m_set[1,82],3,2)+'/'+SUBSTR(m_set[1,82],5,2)),3))
+	ELSE
+        	WVW_SBSetText(,6,'IP:'+getip()+'   ** Banco: FIREBIRD **')
+        ENDIF
+ELSE
+        WVW_SBSetText(,6,'IP:'+getip()+'   >> Banco: FIREBIRD <<')
+ENDIF
+*/
+setcor(1)
+senha_lib()
+hMainMenu   = WVW_CreateMenu( )
+hSubMenu1   = WVW_CreateMenu( )
+hSubMenu2   = WVW_CreateMenu( )
+hSubMov2_8  = WVW_CreateMenu( )
+hSubMov2_9  = WVW_CreateMenu( )
+hSubMov2_12 = WVW_CreateMenu( )
+hSubMov2_16 = WVW_CreateMenu( )
+hSubMov2_17 = WVW_CreateMenu( )
+hSubMov2_17_1 = WVW_CreateMenu( )
+hSubMov2_19 = WVW_CreateMenu( )
+hSubMov2_19_1 = WVW_CreateMenu( )
+hSubMov2_25 = WVW_CreateMenu( )
+hSubMov2_26 = WVW_CreateMenu( )
+hSubMov2_27 = WVW_CreateMenu( )
+hSubMov2_28 = WVW_CreateMenu( )
+hSubMov2_29 = WVW_CreateMenu( )
+hSubMov2_291 = WVW_CreateMenu( )
+
+hPEDMenu2   = WVW_CreateMenu( )
+hORCMenu2   = WVW_CreateMenu( )
+hNFMenu1   = WVW_CreateMenu( )
+hNFMenu2   = WVW_CreateMenu( )
+hCTEMenu1   = WVW_CreateMenu( )
+hMDFMenu1   = WVW_CreateMenu( )
+//hHVMenu2   = WVW_CreateMenu( )
+hDUPPMenu2   = WVW_CreateMenu( )
+hDUPRMenu2   = WVW_CreateMenu( )
+hDUPRMenu2_1 = WVW_CreateMenu( )
+hTROCMenu2   = WVW_CreateMenu( )
+hTROCMenu21  = WVW_CreateMenu( )
+
+hSubMenu3    = WVW_CreateMenu( )
+hDUPRMenu3   = WVW_CreateMenu( )
+hFechaMenu   = WVW_CreateMenu( )
+hvaleMenu   = WVW_CreateMenu( )
+
+hSubMenu4   = WVW_CreateMenu( )
+
+hSubMenu5   = WVW_CreateMenu( )
+hRELMenu5   = WVW_CreateMenu( )
+hRELmenu5_18= WVW_CreateMenu( )
+hRELmenu5_21= WVW_CreateMenu( )
+hRELmenu5_11= WVW_CreateMenu( )
+hSubEsta= WVW_CreateMenu( )
+hSubComi= WVW_CreateMenu( )
+
+hSubMenu6   = WVW_CreateMenu( )
+hSubMenu6_1 = WVW_CreateMenu( )
+hSubMenu6_2 = WVW_CreateMenu( )
+hSubMenu6_3 = WVW_CreateMenu( )
+hSubMenu6_4 = WVW_CreateMenu( )
+hSubMenu6_5 = WVW_CreateMenu( )
+
+entp_menu2 = WVW_CreateMenu( )
+pedc_menu2 = WVW_CreateMenu( )
+
+hSubMenu7   = WVW_CreateMenu( )
+
+//hSubMenu8   = WVW_CreateMenu( )
+hSubMenu9   = WVW_CreateMenu( )
+hSubMenu10  = WVW_CreateMenu( )
+
+WVW_AppendMenu( hMainMenu   , MF_ENABLED + MF_POPUP , hSubMenu1   , "Arquivos",ALLTRIM(m_indiv[1,3])+'pedido.bmp')
+WVW_AppendMenu( hMainMenu   , IF(enable_dis('hSubMenu2' ,"Movimento",'MN')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hSubMenu2   , "Movimento",)
+WVW_AppendMenu( hMainMenu   , IF(enable_dis('hSubMenu3' ,"Caixa",'MN')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hSubMenu3   , "Caixa",)
+WVW_AppendMenu( hMainMenu   , MF_ENABLED + MF_POPUP , hSubMenu4   , "Consultas",)
+WVW_AppendMenu( hMainMenu   , MF_ENABLED + MF_POPUP , hSubMenu5   , "Relatorios",)
+WVW_AppendMenu( hMainMenu   , IF(enable_dis('hSubMenu6' ,"Utilitarios",'MN')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hSubMenu6   , "Utilitarios",)
+
+WVW_AppendMenu( hMainMenu   , IF(enable_dis('hSubMenu10' ,"APP FORCA VENDA",'MN')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hSubMenu10   , "APP FORCA VENDA",)
+
+WVW_AppendMenu( hMainMenu   , MF_ENABLED + MF_STRING , MENUUTIL_10 , "Suporte Tecnico",)
+
+WVW_AppendMenu( hMainMenu   , IF(mmult_emp = 'S',MF_ENABLED,MF_GRAYED)  + MF_STRING , MENUEMP_1 , "Mudar de EMPRESA",  )
+
+WVW_AppendMenu( hMainMenu   , MF_ENABLED + MF_POPUP , hSubMenu7   , "Mensagem Interna",  )
+WVW_AppendMenu( hMainMenu   , IF(m_indiv[1,49] = 'S',MF_ENABLED,MF_GRAYED) + MF_POPUP , MENUUTIL_76   , "Abre GAVETA",  )
+WVW_AppendMenu( hMainMenu   , MF_ENABLED + MF_POPUP , hSubMenu9   , "Sair",  )
+
+WVW_AppendMenu( hSubMenu1   , MF_ENABLED + MF_STRING , MENUARQ_1 , "0 -> Grupo" )
+WVW_AppendMenu( hSubMenu1   , MF_ENABLED + MF_STRING , MENUARQ_2 , "1 -> Sub_Grupo",  )
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_3' , "2 -> Produto",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_3 , "2 -> Produto",  )
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_4' , "3 -> Cliente/Outros",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_4 , "3 -> Cliente/Outros",  )
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_5' , "4 -> Fornecedor/Outras Despesas",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_5 , "4 -> Fornecedor/Outras Despesas",  )
+WVW_AppendMenu( hSubMenu1   , MF_ENABLED + MF_STRING , MENUARQ_6 , "5 -> Operador/Vendedor",  )
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_7' ,"6 -> Tabelas UF/Imposto",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_7 ,         "6 -> Tabelas UF/Imposto",)
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_8' ,"7 -> Formas Pagamentos (CARTAO)",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_8 , "7 -> Formas Pagamentos (CARTAO)",)
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_9' ,"8 -> Despesas",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_9 ,                   "8 -> Despesas",)
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_10',"9 -> Transportadora",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_10 ,            "9 -> Transportadora",)
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_11',"A -> Operacao de Nota (CFOP)",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_11 ,   "A -> Operacao de Nota (CFOP)",)
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_12',"B -> Financiamentos",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_12 ,            "B -> Financiamentos",)
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_13',"C -> Aliquotas Financiamento",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_13,    "C -> Aliquotas Financiamento",)
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_14',"D -> Bancos (Conta Corrente)",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_14 ,   "D -> Bancos (Conta Corrente)",  )
+
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_15',"E -> Especie Produto",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_15 ,           "E -> Especie Produto",  )
+//WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_16',"F -> Cotacao Dolar",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_16 ,             "F -> Cotacao Dolar",  )
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_17',"G -> Conta de Despesas",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_17 ,         "G -> Conta de Despesas",  )
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_18',"H -> Regioes de Vendedores",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_18 ,     "H -> Regioes de Vendedores",  )
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_19',"I -> Cadastro de Cidades",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_19 ,       "I -> Cadastro de Cidades",  )
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_20',"J -> Classificacao Fiscal",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_20 ,      "J -> Classificacao Fiscal",  )
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_21',"L -> Tabela Condicoes Pagamento",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_21 ,"L -> Tabela Condicoes Pagamento",  )
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_22',"M -> Mensagens p/Observacao",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_22 ,    "M -> Mensagens p/Observacao",  )
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_23',"N -> Profissao/Ramo de Atividade",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_23 ,"N -> Profissao/Ramo de Atividade",  )
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_24',"O -> Cadastro de Bancos",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_24 ,        "O -> Cadastro de Bancos",  )
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_25',"P -> Cadastro de NCM",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUARQ_25 ,           "P -> Cadastro de NCM",  )
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_26',"Q -> CST(Codigo Situacao Tributaria)",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , MENUARQ_26 ,"Q -> CST/CSOSN(Codigo Situacao Tributaria)",)
+WVW_AppendMenu( hSubMenu1   , IF(enable_dis('MENUARQ_27',"R -> Cadastro de Tipo de Documentos (Doc.Receber e Doc.Apagar)",'AR')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , MENUARQ_27 ,"R -> Cadastro de Tipo de Documentos (Doc.Receber e Doc.Apagar)",)
+
+// MENU MOVIMENTO
+
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hPEDmenu2' , "0  -> Pedido de Venda",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hPEDmenu2 ,            "0  -> Pedido de Venda",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hNFmenu1' ,  "1  -> NF-e - Notas Fiscais Eletronica",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hNFmenu1 ,          "1  -> NF-e - Notas Fiscais Eletronica << NF-e >>",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hNFmenu2' ,  "1.1-> NFC-e - Notas Fiscais Consumidor Eletronica",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hNFmenu2 ,"1.1-> NFC-e -Notas Fiscais Consumidor Eletronica << NFC-e >>",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('entp_menu2' , "2  -> Entrada de Mercadoria",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , entp_menu2 ,    "2  -> Entrada de Mercadoria",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('pedc_menu2' , "3  -> Pedido de Compra",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , pedc_menu2 ,         "3  -> Pedido de Compra",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hORCmenu2' , "4  -> Orcamento",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hORCmenu2 ,                  "4  -> Orcamento",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_3' , "5  -> Cheque sem Fundo",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING, MENUMOV_3 ,           "5  -> Cheque sem Fundo",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hCTEmenu1' ,  "6  -> CTE - Controle de Transporte Eletronico",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hCTEmenu1 ,"6  -> CTE - Controle de Transporte Eletronico",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hMDFmenu1' ,  "7  -> MDF - Manifesto Eletronico de Documentos Fiscais",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hMDFmenu1 ,"7  -> MDF - Manifesto Eletronico de Documentos Fiscais",  )
+//WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hHVmenu2',  "7  -> Estoque Haver",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hHVmenu2 ,                "7  -> Estoque Haver",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hDUPPmenu2' ,"8  -> Documentos a PAGAR",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hDUPPmenu2 ,        "8  -> Documentos a PAGAR",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hDUPRmenu2' ,"9  -> Documentos a RECEBER",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hDUPRmenu2 ,      "9  -> Documentos a RECEBER",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_5', "A  -> Balanco",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING, MENUMOV_5 ,                     "A  -> Balanco",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hTROCmenu2' ,"B  -> DEVOLUCAO de Mercadorias (TROCA)",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hTROCmenu2 ,"B -> DEVOLUCAO de Mercadorias (TROCA)",  )
+//WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_7' ,"C -> Formula de PRODUTOS",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_7 ,         "C -> Formula de PRODUTOS",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hSubMov2_8', "D  -> Boleto Bancario/Promissoria",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hSubMov2_8,"D  -> Boleto Bancario/Promissoria",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hSubMov2_9' , "E  -> Conta Corrente Bancaria",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hSubMov2_9 ,  "E  -> Conta Corrente Bancaria",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_10' ,"F  -> Agrupamento de PEDIDOS",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_10 ,    "F  -> Agrupamento de PEDIDOS",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_11' ,"G  -> Detalhe de Mercadoria",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_11 ,     "G  -> Detalhe de Mercadoria",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hSubMov2_12' ,"H  -> Menu de ROMANEIOS CARGAS",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hSubMov2_12 ,"H  -> Menu de ROMANEIOS CARGAS",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_14' ,"J  -> Lista de Faltas de PRODUTO",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_14 ,"J  -> Lista de Faltas de PRODUTO",  )
+//WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hSubMov2_29' ,"K  -> Menu Recebimento de NOTAS",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP  ,hSubMov2_29 ,"K  -> Menu Recebimento de NOTAS",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hSubMov2_16' ,"L  -> Menu Romaneio de PRODUCAO",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hSubMov2_16 ,"L  -> Menu Romaneio de PRODUCAO",  )
+//WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hSubMov2_17' ,"M -> Menu Assistencia PRODUTOS",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hSubMov2_17 ,"M -> Menu Assistencia PRODUTOS",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_18',"N  -> Menu CREDITO DE CLIENTES",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_18 ,   "N  -> Menu CREDITO DE CLIENTES",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hSubMov2_19' ,"O  -> Menu ORDEM DE SERVICOS",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hSubMov2_19 ,  "O  -> Menu ORDEM DE SERVICOS",  )
+//WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_20' ,"P -> Menu SOLICITACAO DE PEDIDO",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_20 ,"P -> Menu SOLICITACAO DE PEDIDO",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_21' ,"Q -> Menu EXPEDICAO DE PEDIDO",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_21 ,  "Q -> Menu EXPEDICAO DE PEDIDO",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_22' ,"R  -> Menu PROTOCOLO NOTAS ENTRADA",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_22,"R  -> Menu PROTOCOLO NOTAS ENTRADA",  )
+//WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_23' ,"S  -> Menu Reajuste Parcial PRODUTOS",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_23 ,"S  -> Menu Reajuste Parcial PRODUTOS",  )
+//WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_24' ,"T -> Menu COTACAO DE PRODUTOS",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_24 ,  "T -> Menu COTACAO DE PRODUTOS",  )
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hSubMov2_25' ,"U  -> MENU APP... PC / CNNT",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hSubMov2_25 ,     "U  -> MENU APP... PC / CNNT",)
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hSubMov2_26' ,"V -> MENU APP da HTI",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hSubMov2_26 ,     "V -> MENU APP da HTI",)
+//WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_28' ,"W -> Lancamento Nota Frete",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_28 ,     "W -> Lancamento Nota Frete",  )
+//WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_29' ,"X -> Lancamento de Controle de KM",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_29 ,"X -> Lancamento de Controle de KM",)
+//WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_79' ,"Y -> Lista de Presente do Cliente",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_79 ,"Y -> Lista de Presente do Cliente",)
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_80' ,"Z  -> COLOCAR E RETIRAR MERCADORIA EM PROMOCAO",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_80 ,"Z  -> COLOCAR E RETIRAR MERCADORIA EM PROMOCAO",)
+//WVW_AppendMenu( hSubMenu2   , IF(enable_dis('hSubMov2_28' ,"MENU DE TABLOIDES DE PROMOCAO",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hSubMov2_28 ,"MENU DE TABLOIDES DE PROMOCAO",)
+WVW_AppendMenu( hSubMenu2   , IF(enable_dis('MENUMOV_92' ,"Gerar Mensalidades dos Clientes",'MV')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , MENUMOV_92 ,"Gerar Mensalidades dos Clientes",)
+
+        // SUB-MENU DO PEDIDOS
+        WVW_AppendMenu( hpedMenu2   , MF_ENABLED + MF_STRING , MENUPED_1  ,  "0-> Emissao PEDIDO",  )
+        WVW_AppendMenu( hpedMenu2   , MF_ENABLED + MF_STRING , MENUPED_2  ,  "1-> Alteracao PEDIDOS",  )
+        WVW_AppendMenu( hpedMenu2   , MF_ENABLED + MF_STRING , MENUPED_3  ,  "2-> 2a.via do PEDIDO",  )
+        WVW_AppendMenu( hpedMenu2   , MF_ENABLED + MF_STRING , MENUPED_5  ,  "3-> Cancelar PEDIDOS",  )
+        WVW_AppendMenu( hpedMenu2   , MF_ENABLED + MF_STRING , MENUPED_6  ,  "4-> Estorno Cancelamento",  )
+        WVW_AppendMenu( hpedMenu2   , IF(enable_dis('MENUPED_7' ,"5-> Entrega de PEDIDOS",'PD')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPED_7   , "5-> Entrega de PEDIDOS",)
+        WVW_AppendMenu( hpedMenu2   , IF(enable_dis('MENUPED_8' ,"6-> TALAO para PEDIDOS",'PD')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPED_8   , "6-> TALAO para PEDIDOS",)
+        WVW_AppendMenu( hpedMenu2   , IF(enable_dis('MENUPED_9' ,"7-> Liberar ou Cancelar",'PD')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPED_9   , "7-> Liberar ou Cancelar",)
+        WVW_AppendMenu( hpedMenu2   , IF(enable_dis('MENUPED_10' ,"8-> Estorno de Liberacao",'PD')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPED_10   , "8-> Estorno de Liberacao",)
+        WVW_AppendMenu( hpedMenu2   , IF(enable_dis('MENUPED_12' ,"9-> Emitir Ticket de Embalagem",'PD')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPED_12   , "9-> Emitir Ticket de Embalagem",)
+        WVW_AppendMenu( hpedMenu2   , IF(enable_dis('MENUPED_13' ,"A-> Emitir Varios PEDIDOS/ORCAMENTOS",'PD')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPED_13   , "A-> Emitir Varios PEDIDOS/ORCAMENTOS",)
+
+        // SUB-MENU NOTA FISCAL                                                                                                                                                                                                      
+        //WVW_AppendMenu( hNFmenu1   , MF_ENABLED + MF_POPUP , hNFmenu2 ,  "0-> Nota Fiscal Formulario ",  )
+        //WVW_AppendMenu( hNFmenu1   , MF_ENABLED + MF_POPUP , hNFmenu3 ,  "1-> Nota Fiscal Eletronica << NFe >>",  )
+                // SUB-MENU NOTA FISCAL ELETRONICA
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('MENUNF_9' ,"0-> Emissao << NF-e >> (CTRL+E)",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_9   , "0-> Emissao << NF-e >> (CTRL+E)",)
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('MENUNF_10 ',"1-> Emissao p/Agrupamento << NF-e >>",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_10   , "1-> Emissao p/Agrupamento << NF-e >>",)
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('MENUNF_13 ',"2-> 2a. Via << NF-e >>",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_13   , "2-> 2a. Via << NF-e >>",)
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('MENUNF_4' ,"3-> Cancelamento Sistema SISCOM",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_4   , "3-> Cancelamento Sistema SISCOM",)
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('MENUNF_5' ,"4-> Alterar/Exclusao",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_5   , "4-> Alterar/Exclusao",)
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('MENUNF_11 ',"5-> Emissao << NF-e >> CORRECAO ",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_11   , "5-> Emissao << NF-e >> CORRECAO ",)
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('MENUNF_12 ',"6-> Manutencao da << NF-e >> ",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_12   , "6-> Manutencao da << NF-e >>",)
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('MENUNF_7  ',"7-> Estorno CANCELAMENTO",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_7   , "7-> Estorno CANCELAMENTO",)
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('MENUNF_8  ',"8-> Ultimo No.da Nota",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_8   , "8-> Ultimo No.da Nota",)
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('MENUNF_14  ',"9-> LOG do ACBRNFEMONITOR",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_14   , "9-> LOG do ACBRNFEMONITOR",)
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('MENUNF_15  ',"A-> CARTA DE CORRECAO NF-e",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_15   , "A-> CARTA DE CORRECAO NF-e",)
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('MENUNF_18  ',"B-> Disponibilidade do SITE DA SEFAZ",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_18   , "B-> Disponibilidade do SITE DA SEFAZ",)
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('hRELmenu5_18 ',"C-> Relatorios de NF-e/NFC-e",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hRELmenu5_18   , "C-> Relatorios de NF-e/NFC-e",)
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('MENUNF_22  ',"D-> Inutilizar numero NOTAS",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_22   , "D-> Inutilizar numero NOTAS",)
+                WVW_AppendMenu( hNFmenu1   , IF(enable_dis('MENUNF_24  ',"E-> BAIXAR XML DOS FORNECEDORES",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_24   , "E-> BAIXAR XML DOS FORNECEDORES",)
+                //WVW_AppendMenu( hNFmenu1   , MF_ENABLED + MF_STRING , MENUNF_25 ,  "F-> CheckList NF-e",)
+
+
+                // SUB-MENU NOTA FISCAL CONSUMIDOR ELETRONICA
+                WVW_AppendMenu( hNFmenu2   , IF(enable_dis('MENUNF_16',"0-> Emissao da NFC-e (CTRL+F)        ",'NC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_16, "0-> Emissao da NFC-e (CTRL+F)        ",)
+                WVW_AppendMenu( hNFmenu2   , IF(enable_dis('MENUNF_17',"1-> Funcoes Administrativa           ",'NC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_17, "1-> Funcoes Administrativa           ",)
+                WVW_AppendMenu( hNFmenu2   , IF(enable_dis('MENUNF_23',"2-> Manutencao da << NFe >>          ",'NC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_23, "2-> Manutencao da << NFe >>          ",)
+                WVW_AppendMenu( hNFmenu2   , IF(enable_dis('MENUNF_18',"3-> Disponibilidade do site da SEFAZ ",'NC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_18, "3-> Disponibilidade do site da SEFAZ ",)
+                WVW_AppendMenu( hNFmenu2   , IF(enable_dis('MENUNF_19',"4-> Ultimo No.da Nota                ",'NC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_19, "4-> Ultimo No.da Nota                ",)
+                WVW_AppendMenu( hNFmenu2   , IF(enable_dis('MENUNF_20',"5-> Relatorio de Movimento NFC-e     ",'NC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_20, "5-> Relatorio de Movimento NFC-e     ",)
+                WVW_AppendMenu( hNFmenu2   , IF(enable_dis('MENUNF_22',"6-> Inutilizar numero NOTAS          ",'NC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_22, "6-> Inutilizar numero NOTAS          ",)
+                WVW_AppendMenu( hNFmenu2   , IF(enable_dis('MENUNF_2 ',"7-> CHECAGEM DAS NFCe na sefaz       ",'NC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_2 , "7-> CHECAGEM DAS NFCe na sefaz       ",)
+
+                /*
+                WVW_AppendMenu( hNFmenu2   , MF_ENABLED + MF_STRING , MENUNF_16 , "0-> Emissao da NFC-e (CTRL+F)        ",  )
+                WVW_AppendMenu( hNFmenu2   , MF_ENABLED + MF_STRING , MENUNF_17 , "1-> Funcoes Administrativa           ",  )
+                WVW_AppendMenu( hNFmenu2   , MF_ENABLED + MF_STRING , MENUNF_23 , "2-> Manutencao da << NFe >>          ",  )
+                WVW_AppendMenu( hNFmenu2   , MF_ENABLED + MF_STRING , MENUNF_18 , "3-> Disponibilidade do site da SEFAZ ",  )
+                WVW_AppendMenu( hNFmenu2   , MF_ENABLED + MF_STRING , MENUNF_19 , "4-> Ultimo No.da Nota                ",  )
+                WVW_AppendMenu( hNFmenu2   , MF_ENABLED + MF_STRING , MENUNF_20 , "5-> Relatorio de Movimento NFC-e     ",  )
+                WVW_AppendMenu( hNFmenu2   , MF_ENABLED + MF_STRING , MENUNF_22 , "6-> Inutilizar numero NOTAS          ",  )
+                //WVW_AppendMenu( hNFmenu2   , MF_ENABLED + MF_STRING , MENUNF_1 ,  "7-> CheckList NFC-e",)
+                */
+
+        // SUB-MENU CTe
+        WVW_AppendMenu( hCTEmenu1   , IF(enable_dis('MENUCTE_1',"0-> Emissao << CTe >> (CTRL+T)",'CT')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCTE_1, "0-> Emissao << CTe >> (CTRL+T)",)
+
+        // SUB-MENU MDFe
+        WVW_AppendMenu( hMDFmenu1   , IF(enable_dis('MENUNF_26  ',"G-> Emissao da MDF-e",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_26   , "G-> Emissao da MDF-e",)
+        WVW_AppendMenu( hMDFmenu1   , IF(enable_dis('MENUNF_21  ',"H-> Manutencao MDF-e",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_21   , "H-> Manutencao MDF-e",)
+        WVW_AppendMenu( hMDFmenu1   , IF(enable_dis('MENUNF_27  ',"I-> Manutencao EVENTOS",'NF')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUNF_27   , "I-> Manutencao EVENTOS",)
+
+
+        // SUB-MENU PEDIDO DE COMPRA
+        WVW_AppendMenu( pedc_menu2   , IF(enable_dis('MENUPEDC_1',"0-> Solicitacao                 ",'PC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPEDC_1, "0-> Solicitacao                 ",)
+        WVW_AppendMenu( pedc_menu2   , IF(enable_dis('MENUPEDC_5',"1-> Solicitacao Pedido Antigo   ",'PC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPEDC_5, "1-> Solicitacao Pedido Antigo   ",)
+        WVW_AppendMenu( pedc_menu2   , IF(enable_dis('MENUPEDC_2',"2-> Alteracao                   ",'PC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPEDC_2, "2-> Alteracao                   ",)
+        WVW_AppendMenu( pedc_menu2   , IF(enable_dis('MENUPEDC_3',"3-> 2a.via                      ",'PC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPEDC_3, "3-> 2a.via                      ",)
+        WVW_AppendMenu( pedc_menu2   , IF(enable_dis('MENUPEDC_4',"4-> Exclusao                    ",'PC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPEDC_4, "4-> Exclusao                    ",)
+
+        /*
+        WVW_AppendMenu( pedc_menu2   , MF_ENABLED + MF_STRING , MENUPEDC_1  ,  "0-> Solicitacao                 ",  )
+        WVW_AppendMenu( pedc_menu2   , MF_ENABLED + MF_STRING , MENUPEDC_5  ,  "1-> Solicitacao Pedido Antigo   ",  )
+        WVW_AppendMenu( pedc_menu2   , MF_ENABLED + MF_STRING , MENUPEDC_2  ,  "2-> Alteracao                   ",  )
+        WVW_AppendMenu( pedc_menu2   , MF_ENABLED + MF_STRING , MENUPEDC_3  ,  "3-> 2a.via                      ",  )
+        WVW_AppendMenu( pedc_menu2   , MF_ENABLED + MF_STRING , MENUPEDC_4  ,  "4-> Exclusao                    ",  )
+        */
+        // SUB-MENU ENTRADA MERCADORIA
+        WVW_AppendMenu( entp_menu2   , IF(enable_dis('MENUMOV_1 ',"1-> Entrada de Mercadoria 1a.     ",'PC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_1 , "1-> Entrada de Mercadoria 1a.     ",)
+        WVW_AppendMenu( entp_menu2   , IF(enable_dis('MENUMOV_2 ',"2-> Entrada de Mercadoria 2a.     ",'PC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_2 , "2-> Entrada de Mercadoria 2a.     ",)
+        WVW_AppendMenu( entp_menu2   , IF(enable_dis('MENUMOV_4 ',"3-> Estorno Entrada de Mercadoria ",'PC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_4 , "3-> Estorno Entrada de Mercadoria ",)
+        WVW_AppendMenu( entp_menu2   , IF(enable_dis('MENUMOV_95',"4-> Entrada pelo XML              ",'PC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_95, "4-> Entrada pelo XML              ",)
+        WVW_AppendMenu( entp_menu2   , IF(enable_dis('MENUCONS_6',"5-> Consulta de Ducomentos        ",'PC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_6, "5-> Consulta de Ducomentos        ",)
+        WVW_AppendMenu( entp_menu2   , IF(enable_dis('MENUMOV_96',"6-> Link Baixar XML's dos Fornecedores << www.fsist.com.br>>",'PC')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_96, "6-> Link Baixar XML's dos Fornecedores << www.fsist.com.br>>",)
+
+        /*
+        WVW_AppendMenu( entp_menu2   , MF_ENABLED + MF_STRING, MENUMOV_1  ,  "1-> Entrada de Mercadoria 1a.     ",  )
+        WVW_AppendMenu( entp_menu2   , MF_ENABLED + MF_STRING, MENUMOV_2  ,  "2-> Entrada de Mercadoria 2a.     ",  )
+        WVW_AppendMenu( entp_menu2   , MF_ENABLED + MF_STRING, MENUMOV_4  ,  "3-> Estorno Entrada de Mercadoria ",  )
+        WVW_AppendMenu( entp_menu2   , MF_ENABLED + MF_STRING, MENUMOV_95 ,  "4-> Entrada pelo XML              ",  )
+        WVW_AppendMenu( entp_menu2   , MF_ENABLED + MF_STRING, MENUCONS_6 ,  "5-> Consulta de Ducomentos        ",  )
+        WVW_AppendMenu( entp_menu2   , MF_ENABLED + MF_STRING, MENUMOV_96 ,  "6-> Link Baixar XML's dos Fornecedores << www.fsist.com.br>>",  )
+        */
+        // SUB-MENU ORCAMENTO                                                                                                                                                                                                        
+        WVW_AppendMenu( horcmenu2   , IF(enable_dis('MENUORC_1'  ,  "0-> Emissao ORCAMENTO ",          'OR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUORC_1  ,  "0-> Emissao ORCAMENTO ",            )
+        WVW_AppendMenu( horcmenu2   , IF(enable_dis('MENUORC_2'  ,  "1-> Alteracao ORCAMENTO ",        'OR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUORC_2  ,  "1-> Alteracao ORCAMENTO ",          )
+        WVW_AppendMenu( horcmenu2   , IF(enable_dis('MENUORC_3'  ,  "2-> 2a.via do ORCAMENTO",         'OR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUORC_3  ,  "2-> 2a.via do ORCAMENTO",           )
+        WVW_AppendMenu( horcmenu2   , IF(enable_dis('MENUORC_5'  ,  "4-> Cancelar ORCAMENTO",          'OR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUORC_5  ,  "4-> Cancelar ORCAMENTO",            )
+        WVW_AppendMenu( horcmenu2   , IF(enable_dis('MENUORC_6'  ,  "5-> Estorno Cancelamento ",       'OR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUORC_6  ,  "5-> Estorno Cancelamento ",         )
+        WVW_AppendMenu( horcmenu2   , IF(enable_dis('MENUORC_7'  ,  "6-> 2a.Via Restante do ORCAMENTO",'OR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUORC_7  ,  "6-> 2a.Via Restante do ORCAMENTO",  )
+        WVW_AppendMenu( horcmenu2   , IF(enable_dis('MENUORC_8'  ,  "7-> Estorno de ORCAMENTO",        'OR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUORC_8  ,  "7-> Estorno de ORCAMENTO",          )
+        WVW_AppendMenu( horcmenu2   , IF(enable_dis('MENUORC_9'  ,  "8-> Liberar ou Cancelar'",        'OR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUORC_9  ,  "8-> Liberar ou Cancelar'",          )
+        WVW_AppendMenu( horcmenu2   , IF(enable_dis('MENUORC_10' ,  "9-> Estorno de Liberacao",        'OR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUORC_10 ,  "9-> Estorno de Liberacao",          )
+        WVW_AppendMenu( horcmenu2   , IF(enable_dis('MENUORC_11' ,  "a-> Exclusao de ORCAMENTO",       'OR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUORC_11 ,  "a-> Exclusao de ORCAMENTO",         )
+
+        // SUB-MENU DO BOLETO BANCARIO
+        WVW_AppendMenu( hSubMov2_8   , IF(enable_dis('MENUMOV_78 ',"0-> Emissao de BOLETOS              ",'BO')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_78 , "0-> Emissao de BOLETOS              ",)
+        WVW_AppendMenu( hSubMov2_8   , IF(enable_dis('MENUDUPR_32',"1-> Baixa com Arquivo Retorno BANCOS",'BO')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_32, "1-> Baixa com Arquivo Retorno BANCOS",)
+        WVW_AppendMenu( hSubMov2_8   , IF(enable_dis('MENUMOV_39 ',"A-> PROMISSORIAS                    ",'BO')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_39 , "A-> PROMISSORIAS                    ",)
+        WVW_AppendMenu( hSubMov2_8   , IF(enable_dis('MENUMOV_40 ',"B-> Duplicata do Sistema            ",'BO')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_40 , "B-> Duplicata do Sistema            ",)
+        WVW_AppendMenu( hSubMov2_8   , IF(enable_dis('MENUMOV_41 ',"C-> Dupplicata Pre-Impressa 1       ",'BO')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_41 , "C-> Dupplicata Pre-Impressa 1       ",)
+        WVW_AppendMenu( hSubMov2_8   , IF(enable_dis('MENUMOV_42 ',"E-> PROMISSORIA AVULSA              ",'BO')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_42 , "E-> PROMISSORIA AVULSA              ",)
+        WVW_AppendMenu( hSubMov2_8   , IF(enable_dis('MENUMOV_43 ',"F-> PROMISSORIA do Sistema          ",'BO')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_43 , "F-> PROMISSORIA do Sistema          ",)
+
+        // SUB-MENU DO CONTA CORRENTE
+        WVW_AppendMenu( hSubMov2_9   , IF(enable_dis('MENUMOV_44' ,'0-> Lancamento de Credito','CR')='E' ,MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_44 ,'  0-> Lancamento de Credito',  )
+        WVW_AppendMenu( hSubMov2_9   , IF(enable_dis('MENUMOV_45' ,'1-> Lancamento de Debito ','CR')='E' ,MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_45 ,'  1-> Lancamento de Debito',  )
+
+        // SUB-MENU DO ROMANEIO DE CARGA
+        WVW_AppendMenu( hSubMov2_12, IF(enable_dis('MENUMOV_46' ,' 0-> Emissao de Romaneios','RO')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_46 ,' 0-> Emissao de Romaneios',    )
+        WVW_AppendMenu( hSubMov2_12, IF(enable_dis('MENUMOV_47' ,' 1-> 2a. Via de Romaneios','RO')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_47 ,' 1-> 2a. Via de Romaneios',    )
+        WVW_AppendMenu( hSubMov2_12, IF(enable_dis('MENUMOV_48' ,' 2-> Alteracao Romaneios', 'RO')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_48 ,' 2-> Alteracao Romaneios',     )
+        WVW_AppendMenu( hSubMov2_12, IF(enable_dis('MENUMOV_49' ,' 3-> Cancelar Romaneio',   'RO')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_49 ,' 3-> Cancelar Romaneio',       )
+        WVW_AppendMenu( hSubMov2_12, IF(enable_dis('MENUMOV_50' ,' 4-> Agrupamento Romaneio','RO')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_50 ,' 4-> Agrupamento Romaneio',    )
+        WVW_AppendMenu( hSubMov2_12, IF(enable_dis('MENUMOV_51' ,' 5-> Relatorio Romaneio',  'RO')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_51 ,' 5-> Relatorio Romaneio',       )
+        WVW_AppendMenu( hSubMov2_12, IF(enable_dis('MENUMOV_97' ,' 6-> Romaneio/PROMOTOR',   'RO')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_97 ,' 6-> Romaneio/PROMOTOR',       )
+
+        // SUB-MENU DO ROMANEIO DE PRODUCAO                                                                       
+        WVW_AppendMenu( hSubMov2_16, IF(enable_dis('MENUMOV_52' ,' 0-> Emissao de Romaneios','RP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_52 ,' 0-> Emissao de Romaneios',   )
+        WVW_AppendMenu( hSubMov2_16, IF(enable_dis('MENUMOV_53' ,' 1-> 2a. Via de Romaneios','RP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_53 ,' 1-> 2a. Via de Romaneios',   )
+        WVW_AppendMenu( hSubMov2_16, IF(enable_dis('MENUMOV_54' ,' 2-> Alteracao Romaneios', 'RP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_54 ,' 2-> Alteracao Romaneios',    )
+        WVW_AppendMenu( hSubMov2_16, IF(enable_dis('MENUMOV_55' ,' 3-> Cancelar Romaneio',   'RP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_55 ,' 3-> Cancelar Romaneio',      )
+        WVW_AppendMenu( hSubMov2_16, IF(enable_dis('MENUMOV_56' ,' 4-> Agrupamento Romaneio','RP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_56 ,' 4-> Agrupamento Romaneio',   )
+        WVW_AppendMenu( hSubMov2_16, IF(enable_dis('MENUMOV_57' ,' 5-> Relatorio Romaneio',  'RP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_57 ,' 5-> Relatorio Romaneio',     )
+                                                                                                                  
+        /*
+        // SUB-MENU DE ASSISTENCIA                                                                                
+        WVW_AppendMenu( hSubMov2_17, MF_ENABLED + MF_STRING , MENUMOV_58 ,' Inclusao de Assistencia',  )
+        WVW_AppendMenu( hSubMov2_17, MF_ENABLED + MF_STRING , MENUMOV_59 ,' Alteracao de Assistencia',  )
+        WVW_AppendMenu( hSubMov2_17, MF_ENABLED + MF_STRING , MENUMOV_60 ,' Exclusao de Assistencia',  )
+        WVW_AppendMenu( hSubMov2_17, MF_ENABLED + MF_STRING , MENUMOV_61 ,' Baixa de Assistencia',  )
+        WVW_AppendMenu( hSubMov2_17, MF_ENABLED + MF_STRING , MENUMOV_62 ,' Estorno de Assistencia',  )
+        WVW_AppendMenu( hSubMov2_17, MF_ENABLED + MF_POPUP ,hSubMov2_17_1 ,' Relatorio de Assistencia',  )
+
+                // SUB-MENU DE ASSISTENCIA RELATORIO
+                WVW_AppendMenu( hSubMov2_17_1, MF_ENABLED + MF_STRING , MENUMOV_63 ,' Assistencia em ABERTO ',  )
+                WVW_AppendMenu( hSubMov2_17_1, MF_ENABLED + MF_STRING , MENUMOV_64 ,' Assistencia BAIXADA',  )
+        */
+        // SUB-MENU DE ORDEM DE SERVICOS
+        WVW_AppendMenu( hSubMov2_19, IF(enable_dis('MENUMOV_65   ',' 0 -> Solicitacao O.S.',      'OS')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_65   ,' 0 -> Solicitacao O.S.',       )
+        WVW_AppendMenu( hSubMov2_19, IF(enable_dis('MENUMOV_66   ',' 1 -> 2a.Via da O.S.',        'OS')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_66   ,' 1 -> 2a.Via da O.S.',         )
+        WVW_AppendMenu( hSubMov2_19, IF(enable_dis('MENUMOV_67   ',' 2 -> Diagnostico TECNICO',   'OS')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_67   ,' 2 -> Diagnostico TECNICO',    )
+        WVW_AppendMenu( hSubMov2_19, IF(enable_dis('MENUMOV_68   ',' 3 -> Inclusao de Produtos',  'OS')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_68   ,' 3 -> Inclusao de Produtos',   )
+        WVW_AppendMenu( hSubMov2_19, IF(enable_dis('MENUMOV_69   ',' 4 -> Consulta da O.S.',      'OS')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_69   ,' 4 -> Consulta da O.S.',       )
+        WVW_AppendMenu( hSubMov2_19, IF(enable_dis('MENUMOV_70   ',' 5 -> Alteracao da O.S.',     'OS')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_70   ,' 5 -> Alteracao da O.S.',      )
+        WVW_AppendMenu( hSubMov2_19, IF(enable_dis('MENUMOV_71   ',' 6 -> Cancelar O.S.',         'OS')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_71   ,' 6 -> Cancelar O.S.',          )
+        WVW_AppendMenu( hSubMov2_19, IF(enable_dis('MENUMOV_72   ',' 7 -> Cadastro de Acessorios','OS')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_72   ,' 7 -> Cadastro de Acessorios', )
+        WVW_AppendMenu( hSubMov2_19, IF(enable_dis('hSubMov2_19_1',' 8 -> Relatorios da O.S.',    'OS')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP  ,hSubMov2_19_1,' 8 -> Relatorios da O.S.',     )
+        WVW_AppendMenu( hSubMov2_19, IF(enable_dis('MENUMOV_93   ',' 9 -> BAIXA de O.S.',         'OS')='E',MF_ENABLED,MF_GRAYED) + MF_STRING ,MENUMOV_93   ,' 9 -> BAIXA de O.S.',          )
+
+                // SUB-MENU DE ORDEM DE SERVICOS RELATORIO
+                WVW_AppendMenu( hSubMov2_19_1, MF_ENABLED + MF_STRING , MENUMOV_73 ,' O.S. em Aberto',  )
+                WVW_AppendMenu( hSubMov2_19_1, MF_ENABLED + MF_STRING , MENUMOV_74 ,' O.S.  Baixado',  )
+                WVW_AppendMenu( hSubMov2_19_1, MF_ENABLED + MF_STRING , MENUMOV_75 ,' O.S.  Canceladas',  )
+                WVW_AppendMenu( hSubMov2_19_1, MF_ENABLED + MF_STRING , MENUMOV_76 ,' Movimento de Produto ',  )
+                WVW_AppendMenu( hSubMov2_19_1, MF_ENABLED + MF_STRING , MENUMOV_77 ,' Resumo dos Produto',  )
+
+        IF m_set[1,100] = 'H'
+                //MENU APP DE VENDA HTI
+                //WVW_AppendMenu( hSubMov2_26, MF_ENABLED + MF_STRING , MENUMOV_6  ,"0 -> Verificar Orcamento via APP DE VENDA",  )
+                WVW_AppendMenu( hSubMov2_26, IF(enable_dis('MENUMOV_17' ,"1 -> Verificar Entrada de Orcamento do APP - H T I",'AP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_17 ,"1 -> Verificar Entrada de Orcamento do APP - H T I",  )
+                WVW_AppendMenu( hSubMov2_26, IF(enable_dis('MENUPED_13' ,"2 -> ** NOVO ** Emitir Varios PEDIDOS/ORCAMENTOS",  'AP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPED_13 ,"2 -> ** NOVO ** Emitir Varios PEDIDOS/ORCAMENTOS",    )
+                WVW_AppendMenu( hSubMov2_26, IF(enable_dis('MENUPED_14' ,"3 -> 2a.via do PEDIDO APP",                         'AP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPED_14 ,"3 -> 2a.via do PEDIDO APP",                           )
+                WVW_AppendMenu( hSubMov2_26, IF(enable_dis('MENUPED_15' ,"4 -> Relatorio APP",                                'AP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPED_15 ,"4 -> Relatorio APP",                                  )
+
+        ELSE
+                //MENU APP... P/PC
+                WVW_AppendMenu( hSubMov2_25, IF(enable_dis('MENUMOV_6 ' ,"0 -> Verificar Orcamento via APP...",             'AP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_6  ,"0 -> Verificar Orcamento via APP...",                 )
+                WVW_AppendMenu( hSubMov2_25, IF(enable_dis('MENUMOV_16' ,"1 -> Verificar Entrada de Orcamento do APP-CNNT", 'AP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUMOV_16 ,"1 -> Verificar Entrada de Orcamento do APP-CNNT",     )
+                WVW_AppendMenu( hSubMov2_25, IF(enable_dis('MENUPED_13' ,"2 -> ** NOVO ** Emitir Varios PEDIDOS/ORCAMENTOS",'AP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUPED_13 ,"2 -> ** NOVO ** Emitir Varios PEDIDOS/ORCAMENTOS",    )
+        ENDIF
+
+        //MENU CONTROLE DE SERIAIS
+        /*
+        WVW_AppendMenu( hSubMov2_26, MF_ENABLED + MF_STRING , MENUMOV_82 ,"0 -> Inclusao de Seriais ",  )
+        WVW_AppendMenu( hSubMov2_26, MF_ENABLED + MF_STRING , MENUMOV_83 ,"1 -> Exportacao de Serial",  )
+        WVW_AppendMenu( hSubMov2_26, MF_ENABLED + MF_STRING , MENUMOV_84 ,"2 -> Exclusao de Serias",  )
+        WVW_AppendMenu( hSubMov2_26, MF_ENABLED + MF_STRING , MENUMOV_85 ,"3 -> Baixa de Seriais",  )
+        WVW_AppendMenu( hSubMov2_26 , MF_ENABLED + MF_POPUP , hSubMov2_27 ,"4 -> Relatorios/Consultas",  )
+        */
+        //MENU TABLOIDES
+        //WVW_AppendMenu( hSubMov2_28, MF_ENABLED + MF_STRING , MENUMOV_87 ," Inclusao de TABLOIDES DE PROMOCAO ",  )
+        //WVW_AppendMenu( hSubMov2_28, MF_ENABLED + MF_STRING , MENUMOV_88 ," Alteracao de TABLOIDES DE PROMOCAO ",  )
+        //WVW_AppendMenu( hSubMov2_28, MF_ENABLED + MF_STRING , MENUMOV_89 ," Exclusao de TABLOIDES DE PROMOCAO ",  )
+        //WVW_AppendMenu( hSubMov2_28, MF_ENABLED + MF_STRING , MENUMOV_90 ," Iniciar/Finalizar TABLOIDES DE PROMOCAO",  )
+        //WVW_AppendMenu( hSubMov2_28, MF_ENABLED + MF_STRING , MENUMOV_91 ," Relatorios/Consultas de TABLOIDES DE PROMOCAO",  )
+
+        //MENU RECEBIMENTO DE NOTAS
+        //WVW_AppendMenu( hSubMov2_29, MF_ENABLED + MF_STRING , MENUMOV_8 ," Recebimento da NOTA FISCAL",  )
+        //WVW_AppendMenu( hSubMov2_29, MF_ENABLED + MF_STRING , MENUMOV_9 ," Associacao para Cadastrar Produto",  )
+        //WVW_AppendMenu( hSubMov2_29, MF_ENABLED + MF_POPUP , hSubMov2_291 ," Relatorio de Recebimento",  )
+        //WVW_AppendMenu( hSubMov2_29, MF_ENABLED + MF_STRING , MENUMOV_15 ," ",  )
+        
+                //WVW_AppendMenu( hSubMov2_291, MF_ENABLED + MF_STRING , MENUMOV_12 ," 2a. Via do Recebimento ",  )
+                //WVW_AppendMenu( hSubMov2_291, MF_ENABLED + MF_STRING , MENUMOV_15 ," Relatorio GERAL ",  )
+                //WVW_AppendMenu( hSubMov2_27, MF_ENABLED + MF_STRING , MENUMOV_86 ,"0 -> Consulta de Serial ",  )
+
+        /*
+        // SUB-MENU ESTOQUE HAVER                                                                                                                                                                                                    
+        WVW_AppendMenu( hHVmenu2   , MF_ENABLED + MF_STRING , MENUHV_1 ,  "1-> ENTRADA",)
+        WVW_AppendMenu( hHVmenu2   , MF_ENABLED + MF_STRING , MENUHV_2 ,  "2-> BAIXA",)                                                                                                                                              
+        WVW_AppendMenu( hHVmenu2   , MF_ENABLED + MF_STRING , MENUHV_3 ,  "3-> ESTORNO",  )                                                                                                                                          
+        WVW_AppendMenu( hHVmenu2   , MF_ENABLED + MF_STRING , MENUHV_4 ,  "4-> ALTERACAO",  )                                                                                                                                        
+        */
+        // SUB-MENU DOC. A PAGAR                                                                                                                                                                                                     
+        WVW_AppendMenu( hDUPPmenu2   , IF(enable_dis('MENUDUPP_1 ' , "Inclusao Documento",        'DP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPP_1  , "Inclusao Documento",                      )
+        WVW_AppendMenu( hDUPPmenu2   , IF(enable_dis('MENUDUPP_2 ' , "Alteracao Documento",       'DP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPP_2  , "Alteracao Documento",                     )
+        WVW_AppendMenu( hDUPPmenu2   , IF(enable_dis('MENUDUPP_3 ' , "Exclusao Documento",        'DP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPP_3  , "Exclusao Documento",                      )
+        WVW_AppendMenu( hDUPPmenu2   , IF(enable_dis('MENUDUPP_4 ' , "Consulta Documento",        'DP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPP_4  , "Consulta Documento",                      )
+        WVW_AppendMenu( hDUPPmenu2   , IF(enable_dis('MENUDUPP_5 ' , "EStorno Documento",         'DP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPP_5  , "EStorno Documento",                       )
+        WVW_AppendMenu( hDUPPmenu2   , IF(enable_dis('MENUDUPP_6 ' , "Baixa Documentos",          'DP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPP_6  , "Baixa Documentos",                        )
+        WVW_AppendMenu( hDUPPmenu2   , IF(enable_dis('MENUDUPP_7 ' , "Baixa Geral Documentos",    'DP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPP_7  , "Baixa Geral Documentos",                  )
+        WVW_AppendMenu( hDUPPmenu2   , IF(enable_dis('MENUDUPP_8 ' , "Relatorios",                'DP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPP_8  , "Relatorios",                              )
+        WVW_AppendMenu( hDUPPmenu2   , IF(enable_dis('MENUDUPP_9 ' , "Inclusao Varios Documentos",'DP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPP_9  , "Inclusao Varios Documentos",              )
+        WVW_AppendMenu( hDUPPmenu2   , IF(enable_dis('MENUDUPP_10' , "Fluxo de Caixa",            'DP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPP_10 , "Fluxo de Caixa",                          )
+        WVW_AppendMenu( hDUPPmenu2   , IF(enable_dis('MENUDUPP_11' , "Agrupamento  Documentos ",                         'DP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPP_11 , "Agrupamento  Documentos ",                               )
+        WVW_AppendMenu( hDUPPmenu2   , IF(enable_dis('MENUDUPP_12' , "EXCLUSAO GERAL de Documentos ",                    'DP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPP_12 , "EXCLUSAO GERAL de Documentos ",                          )
+        WVW_AppendMenu( hDUPPmenu2   , IF(enable_dis('MENUDUPP_13' , "CONFIRMACAO/ESTORNO do Recebimento do Documentos ",'DP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPP_13 , "CONFIRMACAO/ESTORNO do Recebimento do Documentos ",      )
+        WVW_AppendMenu( hDUPPmenu2   , IF(enable_dis('MENUDUPP_14' , "Transferencia de Documentos ",                     'DP')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPP_14 , "Transferencia de Documentos ",                           )
+
+        // SUB-MENU DOC. A RECEBER                                                                                                                                                                                                   
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('MENUDUPR_1 ', "Inclusao Documento",        'DR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_1 , "Inclusao Documento",        )
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('MENUDUPR_2 ', "Alteracao Documento",       'DR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_2 , "Alteracao Documento",       )
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('MENUDUPR_3 ', "Exclusao Documento",        'DR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_3 , "Exclusao Documento",        )
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('MENUDUPR_4 ', "Consulta Documento",        'DR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_4 , "Consulta Documento",        )
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('MENUDUPR_5 ', "EStorno Documento",         'DR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_5 , "EStorno Documento",         )
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('hDUPRmenu2_1',"Baixa Documentos",          'DR')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP  , hDUPRmenu2_1, "Baixa Documentos",         )
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('MENUDUPR_6 ', "Relatorios",                'DR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_6 , "Relatorios",                )
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('MENUDUPR_7 ', "Inclusao Varios Documentos",'DR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_7 , "Inclusao Varios Documentos",)
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('MENUDUPR_8 ', "Cadastro Tipo Documentos",  'DR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_8 , "Cadastro Tipo Documentos",  )
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('MENUDUPR_9 ', "Fluxo de Caixa'",           'DR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_9 , "Fluxo de Caixa'",           )
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('MENUDUPR_10' ,"A Grupamento Documento ",   'DR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_10 ,"A Grupamento Documento ",   )
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('MENUDUPR_11' ,"Inclusao de VaLes",         'DR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_11 ,"Inclusao de VaLes",         )
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('MENUDUPR_12' ,"Processo de Documentos ",   'DR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_12 ,"Processo de Documentos ",   )
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('MENUDUPR_13' ,"Impressao de Documento ",   'DR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_13 ,"Impressao de Documento ",   )
+        WVW_AppendMenu( hDUPRmenu2   , IF(enable_dis('MENUDUPR_14' ,"PRORROGACAO de Documento ", 'DR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_14 ,"PRORROGACAO de Documento ",  )
+                // SUB-MENU BAIXA DE DOCUMENTOS                                                                                                                                                                                      
+        WVW_AppendMenu( hDUPRmenu2_1 , IF(enable_dis('MENUDUPR_20' , "0-> Individual Documento",                   'RB')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_20 , "0-> Individual Documento",                        )
+        WVW_AppendMenu( hDUPRmenu2_1 , IF(enable_dis('MENUDUPR_21' , "1-> Geral Documento",                        'RB')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_21 , "1-> Geral Documento",                             )
+        WVW_AppendMenu( hDUPRmenu2_1 , IF(enable_dis('MENUDUPR_22' , "2-> Estorno Documento",                      'RB')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_22 , "2-> Estorno Documento",                           )
+        WVW_AppendMenu( hDUPRmenu2_1 , IF(enable_dis('MENUDUPR_23' , "3-> Transferencia Documento",                'RB')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_23 , "3-> Transferencia Documento",                     )
+        WVW_AppendMenu( hDUPRmenu2_1 , IF(enable_dis('MENUDUPR_24' , "4-> Baixa Parcial Documento (INDIVIDUAL)",   'RB')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_24 , "4-> Baixa Parcial Documento (INDIVIDUAL)",        )
+        WVW_AppendMenu( hDUPRmenu2_1 , IF(enable_dis('MENUDUPR_25' , "5-> Demonstrativo Debito",                   'RB')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_25 , "5-> Demonstrativo Debito",                        )
+        WVW_AppendMenu( hDUPRmenu2_1 , IF(enable_dis('MENUDUPR_32' , "6-> Baixa com Arquivo Retorno BANCOS",       'RB')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_32 , "6-> Baixa com Arquivo Retorno BANCOS",            )
+        WVW_AppendMenu( hDUPRmenu2_1 , IF(enable_dis('MENUDUPR_34' , "7-> Baixa Parcial Documento (GERAL)",        'RB')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_34 , "7-> Baixa Parcial Documento (GERAL)",             )
+        WVW_AppendMenu( hDUPRmenu2_1 , IF(enable_dis('MENUDUPR_35' , "8-> Baixa Geral Documento com BAIXA PARCIAL",'RB')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_35 , "8-> Baixa Geral Documento com BAIXA PARCIAL",     )
+        WVW_AppendMenu( hDUPRmenu2_1 , IF(enable_dis('MENUDUPR_36' , "9-> 2a.Via de Recibo de Pagamento Documento",'RB')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_36 , "9-> 2a.Via de Recibo de Pagamento Documento",     )
+        WVW_AppendMenu( hDUPRmenu2_1 , IF(enable_dis('MENUDUPR_37' , "A-> Transferencia Documento p/AGRUPAMENTO",  'RB')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_37 , "A-> Transferencia Documento p/AGRUPAMENTO",       )
+
+        // SUB-MENU TROCAS                                                                                                                                                                                                           
+        WVW_AppendMenu( hTROCmenu2   , IF(enable_dis('MENUTROC_1' , "0-> Emissao DEVOLUCAO",   'TR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUTROC_1 , "0-> Emissao DEVOLUCAO",   )
+        WVW_AppendMenu( hTROCmenu2   , IF(enable_dis('MENUTROC_2' , "1-> 2a.Via da DEVOLUCAO", 'TR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUTROC_2 , "1-> 2a.Via da DEVOLUCAO", )
+        WVW_AppendMenu( hTROCmenu2   , IF(enable_dis('MENUTROC_3' , "2-> Estorno da DEVOLUCAO",'TR')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUTROC_3 , "2-> Estorno da DEVOLUCAO",)
+
+// MENU CAIXA
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_1' ,  "0 -> Recebimentos Pedidos",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_1 ,  "0 -> Recebimentos Pedidos   ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_2' ,  "1 -> Recebimento Diversos",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_2 ,  "1 -> Recebimento Diversos   ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('hValeMenu',  "2 -> Vales",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP , hValeMenu ,  "2 -> Vales                  ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_4' ,  "5 -> Despesas",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_4 ,  "5 -> Despesas               ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_5' ,  "6 -> Cancelar/Alteracao Despesas",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_5 ,  "6 -> Cancelar/Alteracao Despesas ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_30',  "7 -> Fechamento e Consulta",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING  ,MENUCX_30,  "7 -> Fechamento e Consulta  ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_7' ,  "8 -> Cancela Pedidos Pedente",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_7 ,  "8 -> Cancela Pedidos Pedente",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_8' ,  "9 -> Faturamento p/Periodo",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_8  , "9 -> Faturamento p/Periodo  ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_9'  , "A -> Fundo Caixa",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_9  , "A -> Fundo Caixa            ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_10' , "B -> Retirada Deposito",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_10 , "B -> Retirada Deposito      ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('hDUPRmenu3', "C -> Baixa Documento Receber",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP  ,hDUPRmenu3 , "C -> Baixa Documento Receber",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_12' , "D -> Estorno Recebimento",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_12 , "D -> Estorno Recebimento    ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_13' , "E -> Despesas Administrativa",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_13 , "E -> Despesas Administrativa",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_14' , "F -> Baixa Documento Apagar",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_14 , "F -> Baixa Documento Apagar ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_15' , "H -> Recibos",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_15 , "H -> Recibos                ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_16' , "I -> Preenchimento Cheques",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_16 , "I -> Preenchimento Cheques  ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_17' , "J -> Emissao de Carnes",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_17 , "J -> Emissao de Carnes      ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_18' , "K -> Emissao de CREDITO",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_18 , "K -> Emissao de CREDITO     ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_19' , "L -> Consulta de CEP'S",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_19 , "L -> Consulta de CEP'S      ",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_21' , "N -> Alterar Lancamento do Caixa",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_21 , "N -> Alterar Lancamento do Caixa",  )
+WVW_AppendMenu( hSubMenu3   , IF(enable_dis('MENUCX_22' , "M -> Relatorio do Caixa por periodo",'CX')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCX_22 , "M -> Relatorio do Caixa por periodo",  )
+
+        // SUB-MENU BAIXA DE DOCUMENTOS *** CAIXA ***
+        //WVW_AppendMenu( hFechaMenu , MF_ENABLED + MF_STRING , MENUCX_30 , "0-> Fechamento do Caixa",  )
+        //WVW_AppendMenu( hFechaMenu , MF_ENABLED + MF_STRING , MENUCX_31 , "1-> Fechamento do Caixa Verificacao ",  )
+
+
+        WVW_AppendMenu( hValeMenu , MF_ENABLED + MF_STRING , MENUCX_3 , '0 -> Vale p/CONTA A RECEBER  ',  )
+        WVW_AppendMenu( hValeMenu , MF_ENABLED + MF_STRING , MENUCX_6 , '1 -> Vale Antigo             ',  )
+        WVW_AppendMenu( hValeMenu , MF_ENABLED + MF_STRING , MENUCX_11, '2 -> Cancel./Alteracao Vales ',  )
+        WVW_AppendMenu( hValeMenu , MF_ENABLED + MF_STRING , MENUCX_32, '3 -> Pagamento de Vales      ',  )
+
+
+        // SUB-MENU BAIXA DE DOCUMENTOS *** CAIXA ***
+        WVW_AppendMenu( hDUPRmenu3 , MF_ENABLED + MF_STRING , MENUDUPR_26 , "0-> Individual Documento",  )
+        WVW_AppendMenu( hDUPRmenu3 , MF_ENABLED + MF_STRING , MENUDUPR_27 , "1-> Geral Documento",  )
+        WVW_AppendMenu( hDUPRmenu3 , MF_ENABLED + MF_STRING , MENUDUPR_28 , "2-> Estorno Documento",  )
+        WVW_AppendMenu( hDUPRmenu3 , MF_ENABLED + MF_STRING , MENUDUPR_29 , "3-> Transferencia Documento",  )
+        WVW_AppendMenu( hDUPRmenu3 , MF_ENABLED + MF_STRING , MENUDUPR_30 , "4-> Baixa Parcial Documento",  )
+        WVW_AppendMenu( hDUPRmenu3 , MF_ENABLED + MF_STRING , MENUDUPR_31 , "5-> Demonstrativo Debito",  )
+        WVW_AppendMenu( hDUPRmenu3 , MF_ENABLED + MF_STRING , MENUDUPR_33 , "6-> Consulta de Juros p/Documento",  )
+        WVW_AppendMenu( hDUPRmenu3 , MF_ENABLED + MF_STRING , MENUDUPR_36 , "7-> 2a.Via de Recibo de Pagamento Documento",  )
+        WVW_AppendMenu( hDUPRmenu3 , MF_ENABLED + MF_STRING , MENUDUPR_38 , "8-> Transferencia Documento p/AGRUPAMENTO",  )
+
+// MENU CONSULTA
+//WVW_AppendMenu( hSubMenu4   , MF_ENABLED + MF_STRING , MENUCONS_10 , "9 -> Saldo Geral de ICM'S",  )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_1 ',  "0 -> Produto",                      'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_1 ,  "0 -> Produto",                            )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('hRELmenu5  ',  "1 -> Movimento",                    'CN')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP  , hRELmenu5  ,  "1 -> Movimento",                          )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_3 ',  "2 -> Cliente",                      'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_3 ,  "2 -> Cliente",                            )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_4 ',  "3 -> Fornecedor/Outras Despesas",   'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_4 ,  "3 -> Fornecedor/Outras Despesas",         )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_5 ',  "4 -> Cheques",                      'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_5 ,  "4 -> Cheques",                            )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_6 ',  "5 -> Documento",                    'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_6 ,  "5 -> Documento",                          )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_7 ',  "6 -> Pedidos",                      'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_7 ,  "6 -> Pedidos",                            )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_8 ' , "7 -> Documentos a RECEBER",         'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_8  , "7 -> Documentos a RECEBER",               )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_9 ' , "8 -> Documentos a PAGAR",           'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_9  , "8 -> Documentos a PAGAR",                 )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_11' , "A -> NF.Emitidas/Recebidas",        'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_11 , "A -> NF.Emitidas/Recebidas",              )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_12' , "B -> Faturamento p/Periodo",        'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_12 , "B -> Faturamento p/Periodo",              )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_13' , "C -> Despesas/Vales/Retiradas",     'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_13 , "C -> Despesas/Vales/Retiradas",           )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_14' , "D -> Fluxo de Caixa",               'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_14 , "D -> Fluxo de Caixa",                     )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_15' , "E -> Calculo de Financiamento",     'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_15 , "E -> Calculo de Financiamento",           )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_16' , "F -> Calculo de Custos",            'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_16 , "F -> Calculo de Custos",                  )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_17' , "G -> Conta Corrente Banco",         'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_17 , "G -> Conta Corrente Banco",               )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_18' , "H -> Consulta Telefone Clientes",   'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_18 , "H -> Consulta Telefone Clientes",         )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUDUPR_33' , "I -> Consulta de Juros p/Documento",'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUDUPR_33 , "I -> Consulta de Juros p/Documento",      )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_19' , "J -> Consulta Recebimento",         'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_19 , "J -> Consulta Recebimento",               )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_20' , "K -> Fechamento Financeiro do Mes", 'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_20 , "K -> Fechamento Financeiro do Mes",       )
+WVW_AppendMenu( hSubMenu4   , IF(enable_dis('MENUCONS_21' , "L -> ESTATISTICA de Vendedores",    'CN')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUCONS_21 , "L -> ESTATISTICA de Vendedores",          )
+
+// MENU RELATORIO
+//WVW_AppendMenu( hSubMenu5   , MF_ENABLED + MF_STRING , MENUREL_2 ,  "2 -> Tabela de Preco Manual",  )
+//WVW_AppendMenu( hSubMenu5   , MF_ENABLED + MF_STRING , MENUREL_16 , "H -> Listagem Estoque HAVER",  )
+//WVW_AppendMenu( hSubMenu5   , MF_ENABLED + MF_STRING , MENUREL_22,  "N -> Relatorio Solicitacoes",  )
+//WVW_AppendMenu( hSubMenu5   , MF_ENABLED + MF_STRING , MENUREL_24 , "P -> Entrada Materia Prima (EXCEL)",  )
+//WVW_AppendMenu( hSubMenu5   , MF_ENABLED + MF_STRING , MENUREL_57 , "Q -> Lista de Presente",  )
+//WVW_AppendMenu( hSubMenu5   , MF_ENABLED + MF_STRING , MENUREL_68 , "T -> Relatorio de PRODUTO COM e SEM ICMS",  )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_1'   , "1 -> Tabela de Preco",                              'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_1 ,  "1 -> Tabela de Preco",                                     )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_4'   , "4 -> Tabela Custo",                                 'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_4 ,  "4 -> Tabela Custo",                                        )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('hRELmenu5'   , "5 -> Movimento Produtos",                           'RL')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP  , hRELmenu5 ,  "5 -> Movimento Produtos",                                  )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('hSubEsta '   , "6 -> Estatisticas",                                 'RL')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP  , hSubEsta   , "6 -> Estatisticas",                                        )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('hSubComi '   , "3 -> Comissoes",                                    'RL')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP  , hSubComi   , "3 -> Comissoes",                                           )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_7'   , "8 -> Cheque s/ Fundo",                              'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_7 ,  "8 -> Cheque s/ Fundo",                                     )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_8'   , "9 -> Recibos",                                      'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_8  , "9 -> Recibos",                                             )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_9'   , "A -> Abaixo do Minimo ou Maximo   ",                'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_9  , "A -> Abaixo do Minimo ou Maximo   ",                       )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_10'  , "B -> Despesa/Vales/Receb/Retirada Deposito ",       'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_10 , "B -> Despesa/Vales/Receb/Retirada Deposito ",              )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('hRELmenu5_11', "C -> Clientes (Estatistica/Ativo/Inativos/Limite)", 'RL')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP  , hRELmenu5_11,"C -> Clientes (Estatistica/Ativo/Inativos/Limite)",        )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_12  ', "D -> Contas a Pagar (Documentos a Pagar)",          'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_12 , "D -> Contas a Pagar (Documentos a Pagar)",                 )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_13  ', "E -> Contas a Receber (Documentos a Receber)",      'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_13 , "E -> Contas a Receber (Documentos a Receber)",             )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_14  ', "F -> Listagem Consultas",                           'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_14 , "F -> Listagem Consultas",                                  )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_15  ', "G -> Listagem p/Balanco",                           'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_15 , "G -> Listagem p/Balanco",                                  )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_17  ', "I -> Relatorio de PEDIDOS/ORCAMENTOS ",             'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_17 , "I -> Relatorio de PEDIDOS/ORCAMENTOS ",                    )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('hRELmenu5_18', "J -> Notas Fiscais",                                'RL')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP  , hRELmenu5_18,"J -> Notas Fiscais",                                       )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_19  ', "K -> Etiquetas",                                    'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_19 , "K -> Etiquetas",                                           )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_20  ', "L -> Planilha p/Cadastro Cliente ",                 'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_20 , "L -> Planilha p/Cadastro Cliente ",                        )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('hRELmenu5_21', "M -> Emissao de Cadastro",                          'RL')='E',MF_ENABLED,MF_GRAYED) + MF_POPUP  , hRELmenu5_21,"M -> Emissao de Cadastro",                                 )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_23  ', "O -> T E X T O",                                    'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_23 , "O -> T E X T O",                                           )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_66  ', "R -> Listagem de Produtos c/Precos Alterados",      'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_66 , "R -> Listagem de Produtos c/Precos Alterados",             )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_67  ', "S -> Relatorio de DEVOLUCAO de PRODUTOS",           'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_67 , "S -> Relatorio de DEVOLUCAO de PRODUTOS",                  )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_6   ', "T -> Relatorio de CREDITOS DE CLIENTES",            'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_6  , "T -> Relatorio de CREDITOS DE CLIENTES",                   )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_11  ', "U -> Relatorio de INVENTARIO DOS PRODUTOS",         'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_11 , "U -> Relatorio de INVENTARIO DOS PRODUTOS",                )
+WVW_AppendMenu( hSubMenu5   ,IF(enable_dis('MENUREL_2   ', "V -> Relatorio de NCM",                             'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_2  , "V -> Relatorio de NCM",                                    )
+
+        // SUB-MENU RELATORIO MOVIMENTO DE PRODUTO E COMISSAO
+        //WVW_AppendMenu( hRELmenu5 , MF_ENABLED + MF_STRING , MENUREL_35 , "A -> Sintetico Clientes CNPJ/CPF",  )
+        //WVW_AppendMenu( hRELmenu5 , MF_ENABLED + MF_STRING , MENUREL_38 , "D -> Movimento Prod.Estoque Haver",)
+        //WVW_AppendMenu( hRELmenu5 , MF_ENABLED + MF_STRING , MENUREL_65 , "K -> Relatorio de Movimento Lista Presente ",  )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_25' , "0 -> Movimento de PRODUTOS",                          'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_25 , "0 -> Movimento de PRODUTOS",                          )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_26' , "1 -> p/Produto/Vendedor",                             'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_26 , "1 -> p/Produto/Vendedor",                             )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_27' , "2 -> Geral",                                          'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_27 , "2 -> Geral",                                          )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_28' , "3 -> Resumo (Entrada/Saida)",                         'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_28 , "3 -> Resumo (Entrada/Saida)",                         )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_29' , "4 -> Resumo (Saidas/Lucros)",                         'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_29 , "4 -> Resumo (Saidas/Lucros)",                         )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_30' , "5 -> por FORNECEDOR",                                 'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_30 , "5 -> por FORNECEDOR",                                 )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_31' , "6 -> por CLIENTE",                                    'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_31 , "6 -> por CLIENTE",                                    )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_33' , "8 -> Resumo de GRUPOS/SUB-GRUPO/FORNECEDOR/VENDEDOR", 'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_33 , "8 -> Resumo de GRUPOS/SUB-GRUPO/FORNECEDOR/VENDEDOR", )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_34' , "9 -> Sintetico de Clientes",                          'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_34 , "9 -> Sintetico de Clientes",                          )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_37' , "C -> Movimento Produto p/SERIAL",                     'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_37 , "C -> Movimento Produto p/SERIAL",                     )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_42' , "H -> Resumo Vendas p/Produto",                        'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_42 , "H -> Resumo Vendas p/Produto",                        )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_46' , "M -> Produto SEM MOVIMENTO",                          'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_46 , "M -> Produto SEM MOVIMENTO",                          )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_47' , "N -> Vendas a Menor",                                 'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_47 , "N -> Vendas a Menor",                                 )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_49' , "P -> Movimento p/Documentos",                         'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_49 , "P -> Movimento p/Documentos",                         )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_50' , "Q -> Sintetico de Fornecedor",                        'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_50 , "Q -> Sintetico de Fornecedor",                        )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_51' , "R -> Comissao de CLIENTE EM DIA",                     'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_51 , "R -> Comissao de CLIENTE EM DIA",                     )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_52' , "S -> Relatorio Entrada Produto",                      'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_52 , "S -> Relatorio Entrada Produto",                      )
+        WVW_AppendMenu( hRELmenu5 ,IF(enable_dis('MENUREL_56' , "U -> Movimento Produto na Producao",                  'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_56 , "U -> Movimento Produto na Producao",                  )
+
+       // MENU ESTATISTICA
+        WVW_AppendMenu( hSubEsta , IF(enable_dis('MENUREL_63' , "0 -> Classificacao das CIDADES (FATURAMENTO) ",'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_63 , "0 -> Classificacao das CIDADES (FATURAMENTO) ",       )
+        WVW_AppendMenu( hSubEsta , IF(enable_dis('MENUREL_43' , "1 -> Classificacao dos PRODUTO",               'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_43 , "1 -> Classificacao dos PRODUTO",                      )
+        WVW_AppendMenu( hSubEsta , IF(enable_dis('MENUREL_53' , "2 -> Classificacao dos CLIENTES",              'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_53 , "2 -> Classificacao dos CLIENTES",                     )
+        WVW_AppendMenu( hSubEsta , IF(enable_dis('MENUREL_59' , "3 -> Classificacao dos FORNECEDORES ",         'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_59 , "3 -> Classificacao dos FORNECEDORES ",                )
+        WVW_AppendMenu( hSubEsta , IF(enable_dis('MENUREL_32' , "4 -> Estatistica Produtos p/Mes (CURVA A,B,C)",'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_32 , "4 -> Estatistica Produtos p/Mes (CURVA A,B,C)",       )
+        WVW_AppendMenu( hSubEsta , IF(enable_dis('MENUREL_36' , "5 -> Estatistica Cliente p/Mes",               'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_36 , "5 -> Estatistica Cliente p/Mes",                      )
+        WVW_AppendMenu( hSubEsta , IF(enable_dis('MENUREL_44' , "6 -> Estatistica Venda p/Dia",                 'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_44 , "6 -> Estatistica Venda p/Dia",                        )
+        WVW_AppendMenu( hSubEsta , IF(enable_dis('MENUREL_48' , "7 -> Estatistica Valor Venda/Preco Tabela ",   'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_48 , "7 -> Estatistica Valor Venda/Preco Tabela ",          )
+        WVW_AppendMenu( hSubEsta , IF(enable_dis('MENUREL_58' , "8 -> Estatistica de Grupos",                   'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_58 , "8 -> Estatistica de Grupos",                          )
+        WVW_AppendMenu( hSubEsta , IF(enable_dis('MENUREL_64' , "9 -> Relatorio de CRM ",                       'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_64 , "9 -> Relatorio de CRM ",                              )
+
+        // MENU COMISSAO
+        WVW_AppendMenu( hSubComi , IF(enable_dis('MENUREL_41' , "0 -> COMISSAO E VENDAS GERAL", 'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_41 , "0 -> COMISSAO E VENDAS GERAL", )
+        WVW_AppendMenu( hSubComi , IF(enable_dis('MENUREL_39' , "1 -> Comissao por Vendedor",   'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_39 , "1 -> Comissao por Vendedor",   )
+        WVW_AppendMenu( hSubComi , IF(enable_dis('MENUREL_40' , "2 -> Venda/Comissao p/Produto",'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_40 , "2 -> Venda/Comissao p/Produto",)
+        WVW_AppendMenu( hSubComi , IF(enable_dis('MENUREL_45' , "3 -> Resumo Produto e Comisao",'RL')='E',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUREL_45 , "3 -> Resumo Produto e Comisao",)
+
+                // SUB-MENU RELATORIO EMISSAO DE CADASTRO                                                                                                                                     
+        WVW_AppendMenu( hRELmenu5_21 , MF_ENABLED + MF_STRING , MENUREL_54 , '  Clientes',)
+        WVW_AppendMenu( hRELmenu5_21 , MF_ENABLED + MF_STRING , MENUREL_55 , '  Fornecedores',)
+
+                // SUB-MENU RELATORIO NFe NFCe
+        WVW_AppendMenu( hRELmenu5_18 , MF_ENABLED + MF_STRING , MENUREL_70 , '  0-> Notas Emitidas       ',)
+        WVW_AppendMenu( hRELmenu5_18 , MF_ENABLED + MF_STRING , MENUREL_71 , '  1-> Notas Interestaduais ',)
+        WVW_AppendMenu( hRELmenu5_18 , MF_ENABLED + MF_STRING , MENUREL_72 , '  2-> Notas Internas       ',)
+        WVW_AppendMenu( hRELmenu5_18 , MF_ENABLED + MF_STRING , MENUREL_73 , '  3-> Resumo das NOTAS     ',)
+        WVW_AppendMenu( hRELmenu5_18 , MF_ENABLED + MF_STRING , MENUREL_74 , '  4-> Notas de Entradas    ',)
+        WVW_AppendMenu( hRELmenu5_18 , MF_ENABLED + MF_STRING , MENUREL_75 , '  5-> Relatorio IPI        ',)
+        WVW_AppendMenu( hRELmenu5_18 , MF_ENABLED + MF_STRING , MENUREL_76 , '  3-> Apuracao de Impostos ',)
+
+                // SUB-MENU RELATORIO DE CLIENTES (ATIVOS, INATIVOS E ESTATISTICA)
+        WVW_AppendMenu( hRELmenu5_11 , MF_ENABLED + MF_STRING , MENUREL_60 , ' Clientes Ativos',)
+        WVW_AppendMenu( hRELmenu5_11 , MF_ENABLED + MF_STRING , MENUREL_61 , ' Clientes Inativos ',)
+        WVW_AppendMenu( hRELmenu5_11 , MF_ENABLED + MF_STRING , MENUREL_62 , ' Estatistica de Compras',)
+        WVW_AppendMenu( hRELmenu5_11 , MF_ENABLED + MF_STRING , MENUREL_69 , ' Cliente Limite Estourado',)
+
+// MENU UTILITARIO
+WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_POPUP , hSubMenu6_1 , "Configuracao Geral",)
+WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_14, "Configuracao INDIVIDUAL TERMINAL",)
+WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_2 , "Niveis de Acessos",)
+WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_4 , "Ler Arquivo DOS",)
+WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_5 , "Calculadora",)
+//WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_6 , "Calendario",)
+WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_7 , "Calculo de Custos ",)
+WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_8 , "Recibo da HTI",)
+//WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_9 , "Relatorio de Visita HTI",)
+WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_10, "Informacoes da HTI",)
+//WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_11, "Relogio de Ponto",)
+WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_56, "Acesso Remoto ShowMyPC",)
+WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_71, "Acesso Remoto Ammyy Admin (AA_v3)",)
+//WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_70, "SICRONIZAR ARQUIVO NCM-IBPT",)
+WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_31, "Senha de Liberacao do SISCOM",)
+WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_73, "Calcular Limite de Credito dos CLIENTES",)
+IF cod_operado = '999'
+        WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_69, "Gerar Arquivo de Liberacao",)
+        //WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_74, "Instalar o FIREBIRD com servico do Windows",)
+        WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_75, "Deixar a BASE DADOS vazio (SISCOM.GDB)",)
+        WVW_AppendMenu( hSubMenu6   , MF_ENABLED + MF_STRING , MENUUTIL_77, "Gerar CODIGO DE ACESSO DE INCLUSAO DA EMPRESA",)
+ENDIF
+
+        //SUB-MENU  UTILITARIO CONFIGURACAO DO SISTEMA
+        WVW_AppendMenu( hSubMenu6_1   , MF_ENABLED + MF_POPUP , hSubMenu6_2 , "Configuracoes do SISTEMA",  )
+        WVW_AppendMenu( hSubMenu6_1   , MF_ENABLED + MF_POPUP , hSubMenu6_3 , "Arquivos Contabil",  )
+        WVW_AppendMenu( hSubMenu6_1   , MF_ENABLED + MF_POPUP , hSubMenu6_4 , "Manutencao do SISTEMA",  )
+        WVW_AppendMenu( hSubMenu6_1   , MF_ENABLED + MF_STRING , MENUUTIL_57, "Fechamento do MES p/o INVENTARIO",  )
+                                                                                                                                                                                                     
+        WVW_AppendMenu( hSubMenu6_2   , MF_ENABLED + MF_STRING , MENUUTIL_12, "0 -> Configuracao do SISTEMA",)
+        WVW_AppendMenu( hSubMenu6_2   , MF_ENABLED + MF_STRING , MENUUTIL_15, "3 -> Configuracao SACCFG.INI e SACBKP.INI",)
+        WVW_AppendMenu( hSubMenu6_2   , MF_ENABLED + MF_STRING , MENUUTIL_18, "4 -> Configuracao HTISIS.BAT",)
+        WVW_AppendMenu( hSubMenu6_2   , MF_ENABLED + MF_STRING , MENUUTIL_16, "5 -> Configuracao da EMPRESA PRINCIPAL",  )
+        //WVW_AppendMenu( hSubMenu6_2   , MF_ENABLED + MF_STRING , MENUUTIL_70, "6 -> SICRONIZAR ARQUIVO NCM-IBPT",)
+        //WVW_AppendMenu( hSubMenu6_4   , IF(ver_serie() = '975976' .OR. cod_operado = '999',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUUTIL_43, "C -> Manutencao ARQUIVO MORTO   ",)
+        IF cod_operado = '999'
+                WVW_AppendMenu( hSubMenu6_2   , MF_ENABLED + MF_STRING , MENUUTIL_69, "Gerar Arquivo de Liberacao",)
+                WVW_AppendMenu( hSubMenu6_2   , MF_ENABLED + MF_STRING , MENUUTIL_77, "Gerar CODIGO DE ACESSO DE INCLUSAO DA EMPRESA",)
+        ENDIF
+
+        WVW_AppendMenu( hSubMenu6_3   , MF_ENABLED + MF_STRING , MENUUTIL_20, "0 -> Arquivo do SEF",)
+        WVW_AppendMenu( hSubMenu6_3   , MF_ENABLED + MF_STRING , MENUUTIL_21, "1 -> Arquivo do SINTEGRA",)
+        //WVW_AppendMenu( hSubMenu6_3   , MF_ENABLED + MF_STRING , MENUUTIL_22, "2 -> Arquivo SCI",)
+        //WVW_AppendMenu( hSubMenu6_3   , MF_ENABLED + MF_STRING , MENUUTIL_23, "3 -> Arquivo da CONTABILIDADE",)
+        WVW_AppendMenu( hSubMenu6_3   , MF_ENABLED + MF_STRING , MENUUTIL_24, "6 -> Cadastro do Contador",)
+        //WVW_AppendMenu( hSubMenu6_3   , MF_ENABLED + MF_STRING , MENUUTIL_25, "8 -> Gerar Arquivo MATERIA PRIMA P/EXCEL ",)
+        //WVW_AppendMenu( hSubMenu6_3   , MF_ENABLED + MF_STRING , MENUUTIL_26, "9 -> Gerar Arquivo p/SERASA",)
+        //WVW_AppendMenu( hSubMenu6_3   , MF_ENABLED + MF_STRING , MENUUTIL_27, "A -> Arquivo do EQUIFAX",)
+        WVW_AppendMenu( hSubMenu6_3   , MF_ENABLED + MF_STRING , MENUUTIL_28, "B -> Arquivo do SEF TESTE 1",)
+        WVW_AppendMenu( hSubMenu6_3   , MF_ENABLED + MF_STRING , MENUUTIL_29, "C -> Arquivo do SEF TESTE TREVO",)
+        //WVW_AppendMenu( hSubMenu6_3   , MF_ENABLED + MF_STRING , MENUUTIL_64, "D -> Arquivo do SPED PIS/CONFIS",)
+        WVW_AppendMenu( hSubMenu6_3   , MF_ENABLED + MF_STRING , MENUUTIL_64, "D -> Arquivo do SPED",)
+        //WVW_AppendMenu( hSubMenu6_3   , MF_ENABLED + MF_STRING , MENUUTIL_70, "E -> SICRONIZAR ARQUIVO NCM-IBPT",)
+
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_30, "0 -> Manutencao dos PRODUTOS",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_32, "1 -> Ajuste de COMISSAO NO PEDIDO",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_33, "2 -> Alterar Vendedor, Operador e Montador ",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_34, "3 -> Ocorrencias do Sistems",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_35, "4 -> Arquivo LOG",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_36, "5 -> EXPORTA Arquivo da TABELA DE PRECO",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_37, "6 -> IMPORTA Arquivo da TABELA DE PRECO",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_38, "7 -> Lancamento de Notas Fiscais  FRETE",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_39, "8 -> Relatorio de INVENTARIO",)
+        //WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_40, "9 -> Controle de VISITAS",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_41, "A -> Atualizacao dos ARQUIVOS do SISTEMA",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_GRAYED  + MF_STRING , MENUUTIL_42, "B -> Manutencao de BALANCO",)
+        WVW_AppendMenu( hSubMenu6_4   , IF(ver_serie() = '975976' .OR. cod_operado = '999',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUUTIL_43, "C -> Manutencao ARQUIVO MORTO   ",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_44, "D -> Manutencao RELOGIO DE PONTO",)
+        //WVW_AppendMenu( hSubMenu6_4   , IF(ver_serie() = '975976' .OR. cod_operado = '999',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUUTIL_45, "F -> Gerar Parcelas de Pagamentos",)
+        WVW_AppendMenu( hSubMenu6_4   , IF(ver_serie() = '975976' .OR. cod_operado = '999',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUUTIL_46, "G -> Emissao de BOLETOS BANCARIOS",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_48, "E -> Converte DBF's para BANCO DE DADOS",)
+        WVW_AppendMenu( hSubMenu6_4   , IF(cod_operado = '999',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUUTIL_49, "F -> Atualizar SACMERC (CODIGO DE BARRA)",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_47, "G -> Converte DBF's para BANCO DE DADOS <<UM por UM>>",)
+        WVW_AppendMenu( hSubMenu6_4   , IF(cod_operado = '999',MF_ENABLED,MF_GRAYED) + MF_STRING , MENUUTIL_50, "H -> EXPORTAR Tabela SQL para 'DBF'",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_51, "I -> Atualizar Clientes Ultimo Pedido",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_52, "J -> Atualizar PRODUTO SUB-GRUPO P/FABRICANTE ",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_53, "L -> Atualizar Arquivo SACMOVNT(vlr_icm,base_icm) ",)
+        //WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_POPUP , hSubMenu6_5,  "M -> Convercao do DB da Empresa para BD SISCOM",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_59, "N -> INUTILIZAR NUMERO DE NF-e e NFC-e",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_61, "O -> Importar arquivo DBF para FIREBIRD",)
+        WVW_AppendMenu( hSubMenu6_4   , MF_ENABLED + MF_STRING , MENUUTIL_54, "P -> Levantamento Fiscal (CORRECAO)",)
+
+        /*
+        //WVW_AppendMenu( hSubMenu6_5   , MF_ENABLED + MF_STRING , MENUUTIL_54, "0 -> Converter DBF'S para DB SISCOM",)
+        WVW_AppendMenu( hSubMenu6_5   , MF_ENABLED + MF_STRING , MENUUTIL_55, "1 -> UPDATE em Tabela (PANDORA)",)
+        WVW_AppendMenu( hSubMenu6_5   , MF_ENABLED + MF_STRING , MENUUTIL_60, "2 -> UPDATE em Tabela (INFOTECH)",)
+        WVW_AppendMenu( hSubMenu6_5   , MF_ENABLED + MF_STRING , MENUUTIL_58, "3 -> UPDATE em CONTA DESPESAS P/FORNECEDOR",)
+        WVW_AppendMenu( hSubMenu6_5   , MF_ENABLED + MF_STRING , MENUUTIL_62, "4 -> UPDATE em Tabela (CAIC)",)
+        WVW_AppendMenu( hSubMenu6_5   , MF_ENABLED + MF_STRING , MENUUTIL_63, "5 -> UPDATE em Tabela (PLANETA NET)",)
+        WVW_AppendMenu( hSubMenu6_5   , MF_ENABLED + MF_STRING , MENUUTIL_65, "6 -> UPDATE em Tabela (GDOC)",)
+        WVW_AppendMenu( hSubMenu6_5   , MF_ENABLED + MF_STRING , MENUUTIL_66, "7 -> UPDATE em Tabela (MATRIX)",)
+        WVW_AppendMenu( hSubMenu6_5   , MF_ENABLED + MF_STRING , MENUUTIL_67, "8 -> UPDATE em Tabela (SYSPDV)",)
+        WVW_AppendMenu( hSubMenu6_5   , MF_ENABLED + MF_STRING , MENUUTIL_68, "9 -> UPDATE em Tabela (MASTERWIN)",)
+        WVW_AppendMenu( hSubMenu6_5   , MF_ENABLED + MF_STRING , MENUUTIL_72, "A -> UPDATE em Tabela (MOVEIS BELO JARDIM)",)
+        */
+WVW_AppendMenu( hSubMenu7   , MF_ENABLED + MF_STRING ,  MENUMEN_1, "0 - Ler Mensagens ou Excluir ",  )
+WVW_AppendMenu( hSubMenu7   , MF_ENABLED + MF_STRING ,  MENUMEN_2, "1 - Enviar Mensagens",  )
+
+WVW_AppendMenu( hSubMenu9   , MF_ENABLED + MF_STRING ,  MENUSAI_1, "Sair do Sistema",  )
+WVW_AppendMenu( hSubMenu9   , MF_ENABLED + MF_STRING ,  MENUSAI_2, "Retornar ao Sistema",  )
+WVW_AppendMenu( hSubMenu9   , MF_ENABLED + MF_STRING ,  MENUSAI_3, "Deixar na SENHA",  )
+
+
+IF m_set[1,100] = 'H'
+        //WVW_AppendMenu( hSubMenu10   , MF_ENABLED + MF_STRING ,  MENUMOV_6 , "0 -> Verificar Orcamento via APP DE VENDA",  )
+        WVW_AppendMenu( hSubMenu10   , MF_ENABLED + MF_STRING ,  MENUMOV_17, "1 -> Verificar Entrada de Orcamento do APP HTI -> H T I",  )
+        WVW_AppendMenu( hSubMenu10   , MF_ENABLED + MF_STRING ,  MENUPED_13, "2 -> ** NOVO ** Emitir Varios PEDIDOS/ORCAMENTOS",  )
+        WVW_AppendMenu( hSubMenu10   , MF_ENABLED + MF_STRING ,  MENUPED_14, "3 -> 2a.via do PEDIDO APP",  )
+        WVW_AppendMenu( hSubMenu10   , MF_ENABLED + MF_STRING ,  MENUPED_15, "4 -> Relatorio APP",  )
+ELSE
+        WVW_AppendMenu( hSubMenu10   , MF_ENABLED + MF_STRING ,  MENUMOV_6 , "0 -> Verificar Orcamento via APP DE VENDA",  )
+        WVW_AppendMenu( hSubMenu10   , MF_ENABLED + MF_STRING ,  MENUMOV_16, "1 -> Verificar Entrada de Orcamento do APP CNNT -> H T I",  )
+        WVW_AppendMenu( hSubMenu10   , MF_ENABLED + MF_STRING ,  MENUPED_13, "2 -> ** NOVO ** Emitir Varios PEDIDOS/ORCAMENTOS",  )
+ENDIF
+WVW_SetMenu(, hMainMenu )
+/*
+WvW_PBSetFont( NIL, 'Arial Black', 16, 10,)
+mpb_fecha := wvw_pbCreate(NIL,20,30,21,50,'  Fechar NF-e ',,{||sac23pd1('1')},,1,.F.)
+WVW_PBEnable( NIL, mpb_fecha, .T. )
+*/
+SETINKEYAFTERBLOCK({|nkey| AfterInkey(nkey)})
+WHILE .T.
+        /*
+        IF EMPTY(m_cfg[6])
+                WVW_SetFont(,'lucida console',12,11,)  // 800X600
+        ELSE
+                WVW_SetFont(,'lucida console',12, 8, )  // 800X600
+        ENDIF
+        */
+        exibi_prg('SAC00')
+        Wvw_SetTitle( ,memp_resa+' - CNPJ: '+mcgc_firm+SPACE(20)+'.: SISCOM '+mversao+' :.'+SPACE(20)+'Data: '+DTOC(mdata_sis)+' - '+ver_dia(mdata_sis))
+        m_indiv:={}
+        sr_getconnection():exec("SELECT * FROM sacindiv WHERE terminal = "+sr_cdbvalue(m_cfg[1]),,.t.,@m_indiv)
+        sr_getconnection():exec('COMMIT',,.f.)
+        m_set:={}
+        sr_getconnection():exec("SELECT * FROM sacsetup",,.t.,@m_set)
+        sr_getconnection():exec('COMMIT',,.f.)
+        //saccnnt(1)
+        //WVW_ShowWindow(mn_sac0 ,3 )
+        WVW_RESTSCREEN(,00,00,MAXROW(),MAXCOL(),mtela_principal,.T.)
+        IF m_indiv[1,52] = 'S'
+                WVW_DrawLabel(,47,30,' <F8> Sincronizar PEDIDO APP',,,RGB(25,25,112),RGB(255,250,250), 'times',22,8,,,,,)
+                cons_palm := {}
+                sr_getconnection():exec("SELECT * FROM CNNT_PEDIDO WHERE importado IS NULL",,.T.,cons_palm)
+                sr_getconnection():exec('COMMIT',,.f.)
+        	IF LEN(cons_palm) > 0
+                        sacapphti(1,1)
+                ENDIF
+        ENDIF
+        ver_mensa(cod_operado,,'*')          // verifica mensagens
+        INKEY(0)
+        setcor(1)
+        IF LASTKEY() = ASC('V') .OR. LASTKEY() = ASC('v')
+                IF m_indiv[1,26] = 'T'
+                        sac23caixa()
+                ELSE
+                        sac23pd1()
+                ENDIF
+                IF m_set[1,169] = 1
+                        alt_senha()
+                ENDIF
+        ELSEIF LASTKEY() = ASC('R') .OR. LASTKEY() = ASC('r')
+                sac30()
+                IF m_set[1,169] = 1
+                        alt_senha()
+                ENDIF
+        ELSEIF LASTKEY() = ASC('B') .OR. LASTKEY() = ASC('b')
+                con251('*')
+                IF m_set[1,169] = 1
+                        alt_senha()
+                ENDIF
+        ELSEIF LASTKEY() = ASC('O') .OR. LASTKEY() = ASC('o')
+                sac23orc()
+                IF m_set[1,169] = 1
+                        alt_senha()
+                ENDIF
+        ELSEIF LASTKEY() = ASC('P') .OR. LASTKEY() = ASC('p')
+                mc_pro := IF(m_set[1,93] <> 'A',f4_merc(,,,,"*"),f4_merc1())
+                IF m_set[1,169] = 1
+                        alt_senha()
+                ENDIF
+        ELSEIF LASTKEY() = ASC('C') .OR. LASTKEY() = ASC('c')
+                f7_cli()
+                IF m_set[1,169] = 1
+                        alt_senha()
+                ENDIF
+        ELSEIF LASTKEY() = 305  //ALT+N
+                atencao('Entre em contato com HTI Sistemas (81)'+mfone_HTI+' para criar um atalho na area de trabalho do SISPDV...')
+        //ELSEIF LASTKEY() = ASC('M') .OR. LASTKEY() = ASC('m') .OR. LASTKEY() = 306  //ALT+M
+        //        sacemail()
+        ELSEIF LASTKEY() = 16  //CTRL+P
+                cons_prod()
+                IF m_set[1,169] = 1
+                        alt_senha()
+                ENDIF
+        ELSEIF LASTKEY() = 274  //ALT+E
+                sacnfce(,1)
+        ELSEIF LASTKEY() = 276  //ALT+T
+                alt_data()
+                IF m_set[1,169] = 1
+                        alt_senha()
+                ENDIF
+        ELSEIF LASTKEY() = 291  //ALT+H
+                alt_tela()
+        ELSEIF LASTKEY() = -30  //ALT+F1
+                ver_e_d()
+                //cons_mens()
+        ELSEIF LASTKEY() = -7  //F8
+                //sacapphti(1,1)
+        ELSEIF LASTKEY() = 408  //ALT+set p/cima
+                fim_prg()
+        ELSEIF LASTKEY() = -41  // F12 calculadora
+                calcu()
+                IF m_set[1,169] = 1
+                        alt_senha()
+                ENDIF
+        ELSEIF LASTKEY() = -40  // F11 CALENDARIO
+                calend()
+                IF m_set[1,169] = 1
+                        alt_senha()
+                ENDIF
+        ELSEIF LASTKEY() = 278  // ALT+U (SACROT)
+                autorizar()
+        ELSEIF LASTKEY() = 274  // ALT+E   ALTERACAO DE EMPRESA
+                alt_emp()
+                WVW_SetTitle(mnum_principal,memp_resa)
+                WVW_SBSetText(mnum_principal,1,'Empresa: '+ALLTRIM(mcodempresa)+'-'+memp_resa)
+        ELSEIF LASTKEY() = 5    // CTRL+E   EMISSAO DE NOTA FISCAL ELETRONICA
+                sac211(,,,'E')
+                IF m_set[1,169] = 1
+                        alt_senha()
+                ENDIF
+        ELSEIF LASTKEY() = 6    // CTRL+F   EMISSAO DE NOTA FISCAL CONSUMIDOR ELETRONICA
+                sacnfce()
+                IF m_set[1,169] = 1
+                        alt_senha()
+                ENDIF
+        ELSEIF LASTKEY() = 20    // CTRL+T   EMISSAO DE CTe
+                saccte()
+                IF m_set[1,169] = 1
+                        alt_senha()
+                ENDIF
+        ELSEIF LASTKEY() = -34  //270  // ALT+seta   ALTERACAO DE EMPRESA
+                senha_cesso()
+                IF m_set[1,169] = 1
+                        alt_senha()
+                ENDIF
+        //ELSEIF LASTKEY() = 280  // ALT+O   VERIFICA PEDIDOS DO P?CKETS
+        //        sac3411()
+        ELSEIF LASTKEY() = ASC('D') .OR. LASTKEY() = ASC('d') .OR. LASTKEY() = 287  //ALT+S
+                alt_senha()
+        ELSEIF LASTKEY() = 27
+                IF 'S' = op_simnao('N','Deseja FINALIZAR O SISTEMA:')
+                        //IF(! EMPTY(macbrlib),Destroy(),'')
+                        EXIT
+                ENDIF
+        ENDIF
+ENDDO
+fim('SISCOM','*')
+RETURN NIL
+************************************** F I M *****************************************
+FUNCTION AfterInkey(nkey)
+**************************
+LOCAL MenuId,mc_pro:=0
+IF nKey=1024
+        setcor(1)
+        MenuId:=WVW_GETLASTMENUEVENT()
+        IF LASTKEY() = 305
+                atencao('Entre em contato com HTI Sistemas (81)'+mfone_HTI+' para criar um atalho na area de trabalho do SISPDV...')
+        ENDIF
+        IF MenuId=NBotao1      // BOTAO EMISSAO DE PEDIDO
+                //demo()
+                IF m_set[1,157] # 'PROVEDOR'
+                        IF m_indiv[1,26] = 'T'
+                                sac23caixa()
+                        ELSE
+                                sac23pd1()
+                        ENDIF
+                ELSE
+                        sacos55(,'I')
+                ENDIF
+        ELSEIF MenuId=NBotao2  // BOTAO RECEBIMENTO DO CAIXA
+                sac30()
+        ELSEIF MenuId=NBotao3  // BOTAO RECEBIMENTO DOCUMENTOS
+                 con251('*')
+        ELSEIF MenuId=NBotao4  // BOTAO P/ORCAMENTO
+                IF m_set[1,157] # 'PROVEDOR'
+                        sac23orc()
+                ELSE
+                        sacos55(,'M')
+                ENDIF
+        ELSEIF MenuId=NBotao5  // CONSULTA DE PRODUTOS
+                mc_pro := IF(m_set[1,93] <> 'A',f4_merc(),f4_merc1())
+                f8_prod(mc_pro,1)
+        //ELSEIF MenuId=NBotao6  // CONSULTA DE EMAIL
+        //        sac23pd1novo()
+        ELSEIF MenuId=NBotao8  // CONSULTA DE CLIENTES
+                f7_cli()
+        ELSEIF MenuId = NBotao11 // Demonstrativo Debito
+                 con252(,'*')
+        ELSEIF MenuId=1900  // INCLUSAO DO PRODUTO
+                sac110()
+        ELSEIF MenuId=2900  // BAIXA DE DOCUMENTO
+                con251('*')
+	ELSEIF MenuId=MENUARQ_1      // GRUPO
+                 sac10('G','*')         
+        ELSEIF MenuId=MENUARQ_2  // SUB-GRUPO
+                 //sac101()       
+                 sac10('S','*')       
+        ELSEIF MenuId=MENUARQ_3
+                IF(m_set[1,93] <> 'A',f4_merc(1),f4_merc1('*'))
+                //('*')
+        ELSEIF MenuId=MENUARQ_4  // CLIENTE
+                *************
+                IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+                IF ! AbriArq('saccep','cep');RETURN NIL;ENDIF
+                IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+                IF ! AbriArq('sactabme','tabme');RETURN NIL;ENDIF
+                IF ! AbriArq('regiao','reg');RETURN NIL;ENDIF
+                IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+                IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+                set_key('cliente')
+                SELE('cli');ORDSETFOCUS(2)
+                GO TOP
+                *************
+                f7_cli('*')
+        ELSEIF MenuId=MENUARQ_5 // FORNECEDOR
+                f6_forn('*')
+        ELSEIF MenuId=MENUARQ_6  // OPERADOR
+                sacsenha('*')
+        ELSEIF MenuId=MENUARQ_7  // ESTADOS
+                sac18()
+        ELSEIF MenuId=MENUARQ_8  // CARTOES
+                sac19('*')
+        ELSEIF MenuId=MENUARQ_9  // DESPESAS
+                sac17()
+        ELSEIF MenuId=MENUARQ_10 // TRANSPORTADORA
+                sac12()
+        ELSEIF MenuId=MENUARQ_11 // CFOP
+                sac1op('*')
+        ELSEIF MenuId=MENUARQ_12 // FINANCIAMENTO
+                sac1fin()
+        ELSEIF MenuId=MENUARQ_13 // ALIQUOTA FINANCIMENTO
+                sac2fin()
+        ELSEIF MenuId=MENUARQ_14 // BANCOS
+                sac1ban()
+        ELSEIF MenuId=MENUARQ_15 //ESPECIE DO PRODUTO
+                sacespe()
+//        ELSEIF MenuId=MENUARQ_16 // COTACAO DO DOLAR
+//                sacdolar()
+        ELSEIF MenuId=MENUARQ_17 // CONTAS DEPESAS
+                f9_conta('*')
+        ELSEIF MenuId=MENUARQ_18 // REGIAO DE VENDEDORES
+                sacreg('*')
+        ELSEIF MenuId=MENUARQ_19 // CADASTRO DE CIDADES
+                saccid('*') 
+        ELSEIF MenuId=MENUARQ_20 // CLASSIFICACAO FISCAL NF
+                sacclf()   
+        ELSEIF MenuId=MENUARQ_21 // CONDICOES DE PAGAMENTOS
+                sac20('*')   
+        ELSEIF MenuId=MENUARQ_22 // MENSAGENS PARA OBS.
+                sacobs('*')    
+        ELSEIF MenuId=MENUARQ_23 // CADASTRO PROFISSAO /RAMO DE ATIVIDADE
+                sacprofi('*')    
+        ELSEIF MenuId=MENUARQ_24 // CADASTRO DE BANCOS
+                sacbanco()
+        ELSEIF MenuId=MENUARQ_25 // CADASTRO DE NCM
+                sac_ncm('*')
+        ELSEIF MenuId=MENUARQ_26 // CADASTRO DE CST
+                saccst('*')
+        ELSEIF MenuId=MENUARQ_27 // CADASTRO DE CST
+                sactipdc()
+// MOVIMENTOS
+        ELSEIF MenuId=MENUMOV_1  // ENTRADA DE PRODUTOS
+                 sac22()         
+        ELSEIF MenuId=MENUMOV_2  // ENTRADA DE PRODUTOS
+                 sac22_1()         
+        ELSEIF MenuId=MENUMOV_3  // CHEQUE SEM FUNDO
+                 sac26()  
+        ELSEIF MenuId=MENUMOV_4  // ESTORNO DE ENTRADA DE MERCADORIA
+                 sac29()
+        ELSEIF MenuId=MENUMOV_95  // ESTORNO DE ENTRADA DE MERCADORIA
+                 sacentxml()
+        ELSEIF MenuId=MENUMOV_96  // CHAMAR UM LINK PARA BAIXAR OS XMLs
+                 //"cmd /c start " + PASTA + PDFDES
+                 MYRUN("cmd /c start www.fsist.com.br/")
+        ELSEIF MenuId=MENUMOV_5 // BALANCO
+                 //sacbal_pin()
+                 sacbal1() 
+        ELSEIF MenuId=MENUMOV_7 // FORMULA DO PRODUTO
+                 sacformula()
+        //ELSEIF MenuId=MENUMOV_8 // EMISSAO DE BOLETOS
+        //         sacrecnf1()
+        //ELSEIF MenuId=MENUMOV_9 // ASSOCIACAO PARA CADASTRAR PRODUTO RECEBIMENTO NOTA ENTRADA
+        //         sacrecnf2()
+        ELSEIF MenuId=MENUMOV_10 // AGRUPAMENTO DE PEDIDOS
+                 sac2ped()
+        ELSEIF MenuId=MENUMOV_11 // DETALHE DO PRODUTO
+                 sacdeta()
+        //ELSEIF MenuId=MENUMOV_12 // 2a. VIA DO RECEBIMENTO NOTA FISCAL
+        //         sacrecnf3()
+        ELSEIF MenuId=MENUMOV_14 // LISTA DE FALTA DE PRODUTOS
+                 sacpdflt() 
+        //ELSEIF MenuId=MENUMOV_15 // RELATORIO GERAL DO RECEBIMENTO NOTA FISCAL
+        //         sacrecnf4()
+        ELSEIF MenuId=MENUMOV_18 // MENU DE CREDITO DE CLIENTE
+                 con24(,'C')    
+        //ELSEIF MenuId=MENUMOV_20 // MENU DE SOLICITACAO DE PEDIDOS
+        //         sacass1('SLPED')
+        ELSEIF MenuId=MENUMOV_21 // MENU DE EXPEDICAO DE PEDIDOS
+                 sacexp()
+        ELSEIF MenuId=MENUMOV_22 // MENU DE PROTOCOLO DE NOTAS ENTRADAS
+                 sacproto()
+        //ELSEIF MenuId=MENUMOV_23 // MENU DE REAJUSTE PARCIAL DE PRODUTOS
+        //         sacrepro()
+        ELSEIF MenuId=MENUMOV_24 // MENU COTACAO DE PRODUTOS
+                 saccotac()
+        //ELSEIF MenuId=MENUMOV_25 // ARQUIVOS PARA APP... PC
+        //         sacpalm()
+        //ELSEIF MenuId=MENUMOV_26 // ARQUIVOS PARA APP... PC
+        //         sacpalm1('*')
+        //ELSEIF MenuId=MENUMOV_27 // LIMPEZA DOS ARQUIVOS PARA APP... PC
+        //         sacpalm('*')
+        ELSEIF MenuId=MENUMOV_6 // VERIFICAR PEDIDOS DO APP... 
+                 sac3411()
+        ELSEIF MenuId=MENUMOV_16 // VERIFICAR PEDIDOS DO CNNT
+                 saccnnt()
+        ELSEIF MenuId=MENUMOV_17 // VERIFICAR APP DE VENDA HTI
+                 sacapphti()
+        ELSEIF MenuId=MENUMOV_28 // LANCAMENTO NOTA FRETE
+                 sacfrete()
+        ELSEIF MenuId=MENUMOV_29 // AGRUPAMENTO ESPECIAL
+                 sactran1()
+        ELSEIF MenuId=MENUMOV_79 // LISTA DE PRESENTE
+                 sacpres()
+        ELSEIF MenuId=MENUMOV_80 // COLOCAR E RETIRAR MERCADORIA EM PROMOCAO  //LANCAMENTO DE PRODUTO NA PRODUCAO
+                 sac25()
+
+//  BOLETO BANCARIO E PROMISSORIA
+        ELSEIF MenuId=MENUMOV_78
+                 sacbole2()
+/*
+        ELSEIF MenuId=MENUMOV_30
+                 sacbole1(,,,'ITAU')
+        ELSEIF MenuId=MENUMOV_31
+                 sacbole1(,,,'UNIBANCO')  
+        ELSEIF MenuId=MENUMOV_32 
+                 sacbole1(,,,'REAL')
+        ELSEIF MenuId=MENUMOV_33 
+                 sacbole1(,,,'REAL','2')  
+        ELSEIF MenuId=MENUMOV_34 
+                 sacbole1(,,,'HSBC') 
+        ELSEIF MenuId=MENUMOV_35 
+                 sacbole1(,,,'BANDEPE')   
+        ELSEIF MenuId=MENUMOV_36 
+                 sacbole1(,,,'BILBAO')    
+        ELSEIF MenuId=MENUMOV_37 
+                 sacbole1(,,,'BRADESCO')       
+        ELSEIF MenuId=MENUMOV_38 
+                 sacbole1(,,,'BB')     
+        ELSEIF MenuId=MENUMOV_39
+                 //sacpromi()
+*/
+        ELSEIF MenuId=MENUMOV_40
+                 sacbole1(,,,'DUPLICATA')   
+        //ELSEIF MenuId=MENUMOV_41
+        //         sacbole1(,,,'DUPLICATA JW')
+        ELSEIF MenuId=MENUMOV_81
+                 sacbole1(,,,'PRE_IMP2')
+        ELSEIF MenuId=MENUMOV_42
+                promi_avul()
+        ELSEIF MenuId=MENUMOV_43
+                 con428(,,,,'P')    
+
+// CONTA CORRENTE
+        ELSEIF MenuId=MENUMOV_44 
+                 sac2cc11()    
+        ELSEIF MenuId=MENUMOV_45 
+                 sac2cc12()            
+
+// ROMANEIO CARGA
+        ELSEIF MenuId=MENUMOV_46 
+                 sac5ped4('roma','norom')
+        ELSEIF MenuId=MENUMOV_47 
+                 sac5rom2('roma','norom')     
+        ELSEIF MenuId=MENUMOV_48 
+                 sac5rom1('roma','norom') 
+        ELSEIF MenuId=MENUMOV_49 
+                 sac5rom3('roma','norom')          
+        ELSEIF MenuId=MENUMOV_50 
+                 sac5rom4('roma','norom')  
+        ELSEIF MenuId=MENUMOV_51 
+                 sac5rom5('roma','norom')             
+        ELSEIF MenuId=MENUMOV_97
+                 sac5rom6()
+
+// ROMANEIO PRODUCAO
+        ELSEIF MenuId=MENUMOV_52 
+                 sac5ped4('produ','nopro')
+        ELSEIF MenuId=MENUMOV_53 
+                 sac5rom2('produ','nopro')     
+        ELSEIF MenuId=MENUMOV_54 
+                 sac5rom1('produ','nopro') 
+        ELSEIF MenuId=MENUMOV_55 
+                 sac5rom3('produ','nopro')          
+        ELSEIF MenuId=MENUMOV_56 
+                 sac5rom4('produ','nopro')  
+        ELSEIF MenuId=MENUMOV_57 
+                 sac5rom5('produ','nopro')             
+/*
+// MENU ASSISTENCIA 
+        ELSEIF MenuId=MENUMOV_58 
+                 sacass10() 
+        ELSEIF MenuId=MENUMOV_59 
+                 sacass11('A')
+        ELSEIF MenuId=MENUMOV_60 
+                 sacass11('E') 
+        ELSEIF MenuId=MENUMOV_61 
+                 sacass11('B')          
+        ELSEIF MenuId=MENUMOV_62 
+                 sacass12()
+        //ELSEIF MenuId=MENUMOV_63 
+        //         sacass2()
+
+
+// MENU ASSISTENCIA RELATORIO
+        ELSEIF MenuId=MENUMOV_63 
+                 sacass20() 
+        ELSEIF MenuId=MENUMOV_64 
+                 sacass21()
+*/
+// MENU ORDEM DE SERVICOS
+        ELSEIF MenuId=MENUMOV_65 
+                 sacos11()
+        ELSEIF MenuId=MENUMOV_66 
+                 sacos15('2')
+        ELSEIF MenuId=MENUMOV_67 
+                 sacos15('D') 
+        ELSEIF MenuId=MENUMOV_68 
+                 os_prod()       //sacos15           
+        ELSEIF MenuId=MENUMOV_69 
+                 sacos15()
+        ELSEIF MenuId=MENUMOV_70 
+                 sacos15('A') 
+        ELSEIF MenuId=MENUMOV_71 
+                 sacos15('E')   
+        ELSEIF MenuId=MENUMOV_72 
+                 sacos2('*')           
+
+// MENU ORDEM DE SERVICOS RELATORIO
+        ELSEIF MenuId=MENUMOV_73 
+                 sacos51()
+        ELSEIF MenuId=MENUMOV_74 
+                 sacos52()
+        ELSEIF MenuId=MENUMOV_75 
+                 sacos54()
+        ELSEIF MenuId=MENUMOV_76 
+                 sacos53()       
+        ELSEIF MenuId=MENUMOV_77 
+                 sacos531()
+
+
+// MENU CONTROLE DE SERIAIS
+        ELSEIF MenuId=MENUMOV_82
+                 sacseri1()
+        ELSEIF MenuId=MENUMOV_83
+                 sacseri2()
+        ELSEIF MenuId=MENUMOV_84
+                 sacseri3()
+        ELSEIF MenuId=MENUMOV_85
+                 sacseri4()
+        ELSEIF MenuId=MENUMOV_86
+                 sacseri5()
+
+/*
+// MENU TABLOIDES DE PROMOCAO
+
+        ELSEIF MenuId=MENUMOV_87
+                 sactabl()
+        ELSEIF MenuId=MENUMOV_88
+                 sactabl1()
+        ELSEIF MenuId=MENUMOV_89
+                 sactabl2()
+        ELSEIF MenuId=MENUMOV_90
+                 sactabl3()
+        ELSEIF MenuId=MENUMOV_91
+                sactabl4()
+*/
+        ELSEIF MenuId=MENUMOV_92
+                sacmens()
+        ELSEIF MenuId=MENUMOV_93
+                sacos55()
+
+// MENU PEDIDOS DE COMPRAS
+        ELSEIF MenuId=MENUPEDC_1
+                 sac22ped()
+        ELSEIF MenuId=MENUPEDC_5
+                 sac231()
+        ELSEIF MenuId=MENUPEDC_2
+                 sac232()
+        ELSEIF MenuId=MENUPEDC_3
+                 sac233()
+        ELSEIF MenuId=MENUPEDC_4
+                 sac234()
+
+// SUB-MENU DO PEDIDOS
+        ELSEIF MenuId=MENUPED_1 // EMISSAO DE PEDIDOS
+                IF m_indiv[1,26] = 'T'
+                        sac23caixa()
+                ELSE
+                        sac23pd1()
+                ENDIF
+        ELSEIF MenuId=MENUPED_2 // ALTERACAO DE PEDIDOS
+                sac23pd1(,,'*')
+                //sac23p2()
+        ELSEIF MenuId=MENUPED_3 // 2A. VIA PEDIDO
+                sac5ped1()
+        ELSEIF MenuId=MENUPED_5 // CANCELAR PEDIDOS
+                sac342('ped_s')
+        ELSEIF MenuId=MENUPED_6 // ESTORNO DE CANCELAMENTO
+                sac344('ped_s')
+        ELSEIF MenuId=MENUPED_7 // ENTREGA DE PEDIDOS
+                sacentre()
+        ELSEIF MenuId=MENUPED_8 // TALAO DE PEDIDOS
+                 //sactpped()
+        ELSEIF MenuId=MENUPED_9 // LIBERAR OU CANCELAR PEDIDOS
+                sac350('P')
+        ELSEIF MenuId=MENUPED_10 // ESTORNO DE LIBERACAO
+                sacexp2('E','P')
+        ELSEIF MenuId=MENUPED_13 // IMPRESSAO DE VARIOS PEDIDOS/ORCAMENTO
+                sac5ped11()
+        ELSEIF MenuId=MENUPED_14 //  2A. VIA PEDIDO APP
+                sac5ped1(,,,,,,1)
+        ELSEIF MenuId=MENUPED_15 // IMPRESSAO DE VARIOS PEDIDOS/ORCAMENTO
+                SACAPPREL()
+// SUB-MENU DA NOTA FISCAL
+        //ELSEIF MenuId=MENUNF_1 // EMISSAO DE NOTA FISCAL
+        //         sac211()
+        //ELSEIF MenuId=MENUNF_2 // EMISSAO DE NF. P/AGRUPAMENTO DE PEDIDOS
+        //         sac2ped(2)
+        //ELSEIF MenuId=MENUNF_3 // 2A. VIA
+        //         sac212()
+        ELSEIF MenuId=MENUNF_2  // CONSULTA DE MOVIMENTO
+                 sacchk_nf()
+        ELSEIF MenuId=MENUNF_4 // CANCELAMENTO NF
+                 sac213()
+        ELSEIF MenuId=MENUNF_5 // ALTERACAO/EXCLUSAO    NF
+                 sac214()         
+        //ELSEIF MenuId=MENUNF_6 // EMISSAO NF CORRECAO
+        //         sac211(,'*')
+        ELSEIF MenuId=MENUNF_7 // ESTORNO CANCELAMENTO NOTA FISCAL
+                 sac215()         
+        ELSEIF MenuId=MENUNF_8 // ULTIMA NOTA FISCAL NUMERACAO
+                 sac211b('NF')
+        ELSEIF MenuId=MENUNF_9 // EMISSAO NOTA FISCAL ELETRONICA
+                 sac211(,,,'E')
+        ELSEIF MenuId=MENUNF_10 // EMISSAO DE NF.ELETRONICA  P/AGRUPAMENTO DE PEDIDOS
+                 sac2ped(2,'E')
+        ELSEIF MenuId=MENUNF_11 // EMISSAO NFE DE CORRECAO
+                 sac211(,'*',,'E')
+        ELSEIF MenuId=MENUNF_12 // CONSULTAR NFE
+                 sac_nfe('NF')
+        ELSEIF MenuId=MENUNF_23 // CONSULTAR NFCE
+                 sac_nfe('NFC')
+        ELSEIF MenuId=MENUNF_13 // 2A. VIA NFE
+                 sac212('E')       
+        ELSEIF MenuId=MENUNF_14 // 2A. VIA NFE
+                lertexto('C:\ACBrMonitorplus\log.txt')
+                //MYRUN('DOSPRINTER /SEL2 /DEL C:\ACBrNFeMonitor\log.txt')
+        ELSEIF MenuId=MENUNF_15 // CARTA DE CORRECA NFE
+                sac216()
+        ELSEIF MenuId=MENUNF_16 //
+                sacnfce()
+        ELSEIF MenuId=MENUNF_17 //funcoes administrativa
+                Veri_Transacao()
+                PADM()
+        ELSEIF MenuId=MENUNF_18 //DISPONIBILIDADE DO SITE DO SEFAZ
+                MYRUN("cmd /c start http://www.nfe.fazenda.gov.br/portal/disponibilidade.aspx?versao=0.00&tipoConteudo=Skeuqr8PQBY=")
+        ELSEIF MenuId=MENUNF_19 // ULTIMA NOTA FISCAL NUMERACAO
+                 sac211b('NFC')
+        ELSEIF MenuId=MENUNF_20 //
+                 sac5not1()
+        ELSEIF MenuId=MENUNF_21 //
+                 sac_nfe('MDFE')
+        ELSEIF MenuId=MENUNF_22 //
+//                 sac5inut()
+        ELSEIF MenuId=MENUNF_24 //
+                MYRUN("cmd /c start https://www.fsist.com.br/")
+        ELSEIF MenuId=MENUNF_25 //
+                sac217()
+        ELSEIF MenuId=MENUNF_26 //
+                sacmdfe()
+        ELSEIF MenuId=MENUNF_27 //
+                sac_nfe('CCE')
+// SUB-MENU DA CTe
+        ELSEIF MenuId=MENUCTE_1 // EMISSAO DE NOTA FISCAL
+                saccte()
+
+// SUB-MENU ORCAMENTO
+        ELSEIF MenuId=MENUORC_1 // EMISSAO DE PEDIDOS
+                sac23orc()
+        ELSEIF MenuId=MENUORC_2 // ALTERACAO DE PEDIDOS
+                 sac23o2()           
+        ELSEIF MenuId=MENUORC_3 // 2A. VIA PEDIDO
+                 sac5ped1(,1)
+        ELSEIF MenuId=MENUORC_5 // CANCELAR PEDIDOS
+                 sac342o('orcam')
+        ELSEIF MenuId=MENUORC_6 // ESTORNO DE CANCELAMENTO
+                 sac344('orcam')    
+        ELSEIF MenuId=MENUORC_7 // ENTREGA DE PEDIDOS
+                 sacreorc()    
+        ELSEIF MenuId=MENUORC_8 // TALAO DE PEDIDOS
+                 sac343() 
+        ELSEIF MenuId=MENUORC_9 // LIBERAR OU CANCELAR PEDIDOS
+                 sac350('O') 
+        ELSEIF MenuId=MENUORC_10 // ESTORNO DE LIBERACAO
+                 sacexp2('E','O')    
+        ELSEIF MenuId=MENUORC_11 // EXCLUSAO DE ORCAMENTOS
+                 sac345()
+/*
+// SUB-MENU EST.HAVER
+        ELSEIF MenuId=MENUHV_1 // ENTRADA ESTOQUE A.V.
+                 sac2av1()
+        ELSEIF MenuId=MENUHV_2 // BAIXA ESTOQUE A.V.
+                 sac2av2()
+        ELSEIF MenuId=MENUHV_3 // ESTORNO ESTOQUE A.V.
+                 sac2av3()
+        ELSEIF MenuId=MENUHV_4 // ALTERACAO ESTOQUE A.V.
+                 sac2av4()
+*/
+// SUB-MENU CONTAS A PAGAR
+        ELSEIF MenuId=MENUDUPP_1 // Inclusao Documento
+                 con211() 
+        ELSEIF MenuId=MENUDUPP_2 // Alteracao Documento
+                 con212()   
+        ELSEIF MenuId=MENUDUPP_3 // Exclusao Documento
+                 con212('*')  
+        ELSEIF MenuId=MENUDUPP_4 // Consulta Documento
+                 con214() 
+        ELSEIF MenuId=MENUDUPP_5 // EStorno Documento
+                 con22('E')   
+        ELSEIF MenuId=MENUDUPP_6 // Baixa Documentos
+                 con22() 
+        ELSEIF MenuId=MENUDUPP_7 // Baixa  Geral Documentos
+                 con221(,'*')        
+        ELSEIF MenuId=MENUDUPP_8 // Relatorios
+                 con41()  
+        ELSEIF MenuId=MENUDUPP_9 // Inclusao  Varios Doc.
+                 con2111()  
+        ELSEIF MenuId=MENUDUPP_10 // Fluxo de Caixa
+                 sac4flu()            
+        ELSEIF MenuId=MENUDUPP_11 // Agrupamento  Doc.
+                 con221()     
+        ELSEIF MenuId=MENUDUPP_12 // EXCLUSAO GERAL DE COD.APAGAR
+                 con221(,'E')
+        ELSEIF MenuId=MENUDUPP_13 // CONFIRMACAO DO RECEBIMENTO DE DOCUMENTOS
+                 con22('C')
+        ELSEIF MenuId=MENUDUPP_14 // TRANSFERENCIA DE DOCUMENTOS
+                 con215()
+
+// SUB-MENU CONTAS A RECEBER
+        ELSEIF MenuId=MENUDUPR_1 // Inclusao Documento
+                 con241()
+        ELSEIF MenuId=MENUDUPR_2 // Alteracao Documento
+                 con251(,'A')   
+        ELSEIF MenuId=MENUDUPR_3 // Alteracao Documento
+                 con251(,'E')   
+        //ELSEIF MenuId=MENUDUPR_3 // Exclusao Documento
+        //         con243()    
+        ELSEIF MenuId=MENUDUPR_4 // Consulta Documento
+                 con244()    
+        ELSEIF MenuId=MENUDUPR_5 // EStorno Documento
+                 con251(,'S')     
+        ELSEIF MenuId=MENUDUPR_6 // Relatorios
+                 con42()     
+        ELSEIF MenuId=MENUDUPR_7 // Inclusao  Varios Doc.
+                IF ! AbriArq('sactipdc','tipdc');RETURN NIL;ENDIF
+                mmens := ' '
+                *****************
+                SELE('tipdc');ORDSETFOCUS(1)
+                GO TOP
+                *****************
+                mmens := tipdc->tipo_doc+'-'+tipdc->descri
+                SKIP
+                WHILE ! EOF()
+                        mmens := mmens + tipdc->tipo_doc+'-'+tipdc->descri
+                        SKIP
+                ENDDO
+
+                con2411()       
+        ELSEIF MenuId=MENUDUPR_8 // Cadastro  Tipo Doc.  
+                sactipdc()                       
+        ELSEIF MenuId=MENUDUPR_9  // Fluxo de Caixa 
+                 sac4flu()        
+        ELSEIF MenuId=MENUDUPR_10 // A Grupamento Documento
+                 con252(,'G')          
+        ELSEIF MenuId=MENUDUPR_11 // Inclusao de VaLes  
+                 con241v()        
+        ELSEIF MenuId=MENUDUPR_12 // Processo de Documentos
+                 con251(,'P')   
+        ELSEIF MenuId=MENUDUPR_13 // Alteracao Documento
+                 con251(,'I')   
+        ELSEIF MenuId=MENUDUPR_14 // PRORROGACAO Documento
+                 con251pro()
+
+// SUB-MENU BAIXA DE DOCUMENTOS *** MOVIMENTO ***
+        ELSEIF MenuId=MENUDUPR_20 // Individual Documento 
+                 con251()   
+        ELSEIF MenuId=MENUDUPR_21 // Geral Documento  
+                 con252()
+        ELSEIF MenuId=MENUDUPR_22 // Estorno Documento 
+                 con251(,'S')           
+        ELSEIF MenuId=MENUDUPR_23 // Transferencia Documento
+                 con253()         
+        ELSEIF MenuId=MENUDUPR_24 // Baixa Parcial Documento
+                 con2511()  
+        ELSEIF MenuId=MENUDUPR_25 // Demonstrativo Debito
+                 con252(,'*')        
+        ELSEIF MenuId=MENUDUPR_32 // BAIXA DE DOC.VIA ARQUIVO RETORNO BANCO
+                 con254()
+        ELSEIF MenuId=MENUDUPR_34 // BAIXA DE PARCIAL DOCUMENTO
+                 con2512()
+        ELSEIF MenuId=MENUDUPR_35 // BAIXA DE GERAL DE DOCUMENTOS COM BAIXA PARCIAL
+                 con2513()
+        ELSEIF MenuId=MENUDUPR_36 // 2a. VIA DO RECIBO DE PAGAMENTO DOCUMENTO
+                 sacrec2()
+        ELSEIF MenuId=MENUDUPR_37 // Transferencia Documento p/agrupamentos
+                 con2531()         
+
+                // SUB-MENU BAIXA DE DOCUMENTOS *** CAIXA ***
+                
+        ELSEIF MenuId=MENUDUPR_26 // Individual Documento 
+                 con251('*')
+        ELSEIF MenuId=MENUDUPR_27 // Geral Documento  
+                 con252('*')
+        ELSEIF MenuId=MENUDUPR_28 // Estorno Documento 
+                 con251(,'S')           
+        ELSEIF MenuId=MENUDUPR_29 // Transferencia Documento
+                 con253('*')         
+        ELSEIF MenuId=MENUDUPR_30 // Baixa Parcial Documento
+                 con2511()  
+        ELSEIF MenuId=MENUDUPR_31 // Demonstrativo Debito 
+                 con252(,'*')        
+        ELSEIF MenuId=MENUDUPR_33 // CONSUILTA DE JUROS NO DOCUMENTO
+                 con253(,'*')
+        ELSEIF MenuId=MENUDUPR_38 // Transferencia Documento p/agrupamentos
+                 con2531('*')         
+
+// SUB-MENU TROCAS
+        ELSEIF MenuId=MENUTROC_1 // Emissao de TROCAS    
+                 sactroc1()
+        ELSEIF MenuId=MENUTROC_2 // 2a.VIA DA TROCA
+                 sactroc1('*')
+        ELSEIF MenuId=MENUTROC_3 // ESTORNO DA TROCA
+                 sactroc1('S')
+
+// CAIXA     
+        ELSEIF MenuId=MENUCX_1  // RECEBIMENTO        
+                 sac30()       
+        ELSEIF MenuId=MENUCX_2  // RECEBIMENTOS DIVERSOS
+                 sac301()
+        ELSEIF MenuId=MENUCX_3  // VALES
+                 con241v('*')
+        ELSEIF MenuId=MENUCX_4  // DESPESAS
+                 sac31_1()     // sac31.prg
+        ELSEIF MenuId=MENUCX_5 // CANCELAMENTO DE DESPESAS
+                 sac31_3()     // sac31.prg
+        ELSEIF MenuId=MENUCX_6
+                 sac31()     // sac31.prg
+        ELSEIF MenuId=MENUCX_7 // CANCELAMENTO DE PEDIDOS
+                 sac34()
+        ELSEIF MenuId=MENUCX_8 // FATURAMENTO POR PERIODO
+                 sac39()
+        ELSEIF MenuId=MENUCX_9 //  FUNDO DE CAIXA
+                 sac36()                                        
+        ELSEIF MenuId=MENUCX_10 // RETIRADA DE DEPOSITO
+                 sac37()
+        ELSEIF MenuId=MENUCX_11 // BAIXA DE DUPLICATA
+                 sac31_4()
+        ELSEIF MenuId=MENUCX_12 // ESTORNO DE RECEBIMENTOS
+                 sac38()
+        ELSEIF MenuId=MENUCX_13 // DESPESAS ADMINISTRATIVA
+                con211('*')        
+        ELSEIF MenuId=MENUCX_14 // BAIXA DE DOCUMENTOS APAGAR
+                con22(,'*')
+        ELSEIF MenuId=MENUCX_15 // EMISSAO DE RECIBOS
+                WHILE .T.
+                        mnitemmenu = 0
+                        op_tela(10,10,16,50,' Menu de Recibos ')
+                        setcor(10)
+                        @ 00,00 PROMPT ' 0-> Recibo Firma                 ' 
+                        @ 01,00 PROMPT ' 1-> Recibo Comissao              ' 
+                        @ 02,00 PROMPT ' 2-> Recibo Pagamento Funcionario ' 
+                        @ 03,00 PROMPT ' 3-> Recibo Pagamento Documento   '
+                        @ 04,00 PROMPT ' 4-> Recibo Avulso                '
+                        @ 05,00 PROMPT ' 5-> Recibo Entrega               ' 
+                        @ 06,00 PROMPT ' 6-> Recibo Entrega (2)           '
+                        MENU TO mnitemmenu
+                        setcor(1)
+                        wvw_lclosewindow()
+                        IF LASTKEY() = 27
+                                EXIT
+                        ENDIF
+                        DO CASE
+                                CASE mnitemmenu = 1
+                                        *********************************
+                                        //
+                                        *********************************
+                                        sacrec()
+                                CASE mnitemmenu = 2
+                                        sacrccom()
+                                CASE mnitemmenu = 3
+                                        sacrec1()       // mesmo prg sacrec.prg
+                                CASE mnitemmenu = 4
+                                        sacrec2()       // mesmo prg sacrec.prg
+                                CASE mnitemmenu = 5
+                                        sacrec3()       // mesmo prg sacrec.prg
+                                CASE mnitemmenu = 6
+                                        *********************************
+                                        IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+                                        IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+                                        *********************************
+                                        sacrec4()       // mesmo prg sacrec.prg
+                                CASE mnitemmenu = 7
+                                        *********************************
+                                        IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+                                        IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+                                        *********************************
+                                        sacrec5()       // mesmo prg sacrec.prg
+                        ENDCASE
+                ENDDO
+
+        ELSEIF MenuId=MENUCX_16 // PREENCHIMENTO DE CHEQUES
+                 saccheq()
+        ELSEIF MenuId=MENUCX_17 // EMISSAO DE CARNES       //prg sac30
+                 emi_carne()
+        ELSEIF MenuId=MENUCX_18 // EMISSAO DE CREDITOS
+                 con241('C','CX')
+        ELSEIF MenuId=MENUCX_19 // CONSULTA DE CEP'S
+                 saccep()
+        //ELSEIF MenuId=MENUCX_20
+        //        atencao('Entre em contato com HTI Sistemas (81)'+mfone_HTI+' para criar um atalho na area de trabalho do SISPDV...')
+        ELSEIF MenuId=MENUCX_21
+                sac35()
+        ELSEIF MenuId=MENUCX_22
+                sac331()
+        ELSEIF MenuId=MENUCX_30 // FECHAMENTO
+                 sac33()
+        ELSEIF MenuId=MENUCX_31 // FECHAMENTO COM VERIFICACAO
+                 sac33(,'*')
+        ELSEIF MenuId=MENUCX_32
+                 sac31_0()
+// CONSULTA
+        ELSEIF MenuId=MENUCONS_1  // CONSULTA DE PRODUTO
+                 sac40()        
+        ELSEIF MenuId=MENUCONS_3  // CONSULTA DE CLIENTE
+                IF ver_serie() = '141302'
+                        sac42ant()
+                ELSE
+                        sac42()
+                ENDIF
+        ELSEIF MenuId=MENUCONS_4  // CONSULTA DE FORNECEDOR
+                 sac43()    
+        ELSEIF MenuId=MENUCONS_5 // CONSULTA DE CHEQUE   
+                 sac45() 
+        ELSEIF MenuId=MENUCONS_6 // CONSULTA P/DOCUMENTO  
+                 sac46()  
+        ELSEIF MenuId=MENUCONS_7 // CONSULTA DE PEDIDOS        
+                 sac5ped()  
+        ELSEIF MenuId=MENUCONS_8 // CONSULTA DUPLICATAS A RECEBER            
+                 con24('*')  
+        ELSEIF MenuId=MENUCONS_9 //  CONSULTA DUPLICATAS A PAGAR    
+                 con214()                                        
+        //ELSEIF MenuId=MENUCONS_10 // SALDO DE ICMS
+        //         sac48()
+        ELSEIF MenuId=MENUCONS_11 // NOTA FISCAL    
+                 sac5not1() 
+        ELSEIF MenuId=MENUCONS_12 // FATURAMENTO P/PERIODO     
+                 sac39() 
+        ELSEIF MenuId=MENUCONS_13 // DESPESAS      
+                sac5des()       
+        ELSEIF MenuId=MENUCONS_14 // FLUXO DE CAIXA      
+                sac4flu()       
+        ELSEIF MenuId=MENUCONS_15 // CONSULTA DE CALCULO DE FINANCIAMENTO    
+                sacc_fin()    
+        ELSEIF MenuId=MENUCONS_16 // CALCULO DE CUSTO     
+                 sac4cal()       
+        ELSEIF MenuId=MENUCONS_17 // CONSULTA CONTAS CORRENTES  
+                 sac4cc()
+        ELSEIF MenuId=MENUCONS_18 // CONSULTA TELEFONES DE CLIENTES
+//                 sac4tel()
+        ELSEIF MenuId=MENUCONS_19 // CONSULTA RECEBIMENTOS
+                 sac38('*')
+        ELSEIF MenuId=MENUCONS_20 // FECHAMENTO FINANCEIRO DO MES
+                 sac4fmes()
+        ELSEIF MenuId=MENUCONS_21 // DASHBOARD
+                 sacdash()
+
+// RELATORIO
+
+        ELSEIF MenuId=MENUREL_1  // TABELA DE PRECOS          
+                 sac51()      
+        ELSEIF MenuId=MENUREL_4  // TABELA DE CUSTOS
+                 sac511()
+        ELSEIF MenuId=MENUREL_2  // TABELA DE PRECOS MANUAL
+                 SAC5NCM()
+        /*
+        ELSEIF MenuId=MENUREL_16 // LISTAGEM DE ESTOQUE HAVER
+                 sac580()
+        */
+        ELSEIF MenuId=hSubEsta // ESTATISTICAS
+        ELSEIF MenuId=hSubComi  // COMISSOES
+        ELSEIF MenuId=MENUREL_6 // LISTAGEM CHEQUE S/ FUNDO
+                 con42_0()
+        ELSEIF MenuId=MENUREL_7 // LISTAGEM CHEQUE S/ FUNDO
+                 sac561()
+        ELSEIF MenuId=MENUREL_8 // EMISSAO DE RECIBOS
+                 mnitemmenu = 0
+                 op_tela(10,10,16,50,' Menu de Recibos ')
+                 WHILE .T.
+                         mensagem("Escolha a opcao ou <ESC>retornar")
+                         setcor(10)
+                         @ 00,00 PROMPT '  0-> Recibo Firma                    ' 
+                         @ 01,00 PROMPT '  1-> Recibo Comissao                 ' 
+                         @ 02,00 PROMPT '  2-> Recibo Pagamento de Funcionario ' 
+                         @ 03,00 PROMPT '  3-> Recibo Pagamento de Documentos  ' 
+                         @ 04,00 PROMPT '  4-> Recibo Avulso                   ' 
+                         @ 05,00 PROMPT '  5-> Recibo Entrega                  ' 
+                         @ 06,00 PROMPT '  6-> Recibo Entrega (2)              '
+                         MENU TO mnitemmenu
+                        setcor(1)
+                         IF LASTKEY() = 27
+                                 wvw_lclosewindow()
+                                 EXIT
+                         ENDIF
+                         DO CASE
+                                 CASE mnitemmenu = 1
+                                         sacrec()
+                                 CASE mnitemmenu = 2
+                                         sacrccom()
+                                 CASE mnitemmenu = 3
+                                         sacrec1()       // mesmo prg sacrec.prg
+                                 CASE mnitemmenu = 4
+                                         sacrec2()       // mesmo prg sacrec.prg
+                                 CASE mnitemmenu = 5
+                                         sacrec3()       // mesmo prg sacrec.prg
+                                 CASE mnitemmenu = 6
+                                         *********************************
+                                         IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+                                         IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+                                         *********************************
+                                         sacrec4()       // mesmo prg sacrec.prg
+                                 CASE mnitemmenu = 7
+                                         *********************************
+                                         IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+                                         IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+                                         *********************************
+                                         sacrec5()       // mesmo prg sacrec.prg
+                         ENDCASE
+                 ENDDO
+                 
+        ELSEIF MenuId=MENUREL_9 //  RELATORIO PRODUTO ABAIXO DO MINIMO
+                 sac5min()                                 
+        ELSEIF MenuId=MENUREL_10 // RELATORIOS DE DESPESAS
+                 sac5des()  
+        ELSEIF MenuId=MENUREL_11 // RELATORIOS DE inventario
+                 sacinventa()
+        ELSEIF MenuId=MENUREL_12 // RELATORIOS DE CONTAS A PAGAR
+                 con41()
+        ELSEIF MenuId=MENUREL_13 // RELATORIOS DE CONTAS A RECEBER
+                con42()   
+        ELSEIF MenuId=MENUREL_14 // LISTAGEM DE CONSULTAS (CLIENTES, FORNECEDORES E OUTROS)
+                sac57()     
+        ELSEIF MenuId=MENUREL_15 // LISTAGEM PARA BALANCO          
+                sac58()    
+        ELSEIF MenuId=MENUREL_17 // RELATORIO DE PEDIDOS
+                 sac5ped()  
+        ELSEIF MenuId=MENUREL_19 // EMISSAO DE ETIQUETAS
+                 sac5etq()     
+        ELSEIF MenuId=MENUREL_20 // PLANILHA DE CADASTRO        
+                 sac5pla1()        
+        //ELSEIF MenuId=MENUREL_21 // EMISSAO DE CADASTROS                
+        //         sac5cad()     
+        //ELSEIF MenuId=MENUREL_22 // RELATORIO DE SOLICITACOES
+        //         sac64()
+        ELSEIF MenuId=MENUREL_23 // EMISSAO DE TEXTO        
+                 texto()   
+        //ELSEIF MenuId=MENUREL_24 // ENTRADA DE MATERIA PRIMA P/EXCEL
+        //         sacperf()
+        //ELSEIF MenuId=MENUREL_57 // LISTA DE PRESENTE
+        //         saclistpre()
+        ELSEIF MenuId=MENUREL_66 // LISTAGEM DE PRODUTOS C/PRECOS ALTERADOS POR DATA
+                 sac513()
+        ELSEIF MenuId=MENUREL_67 // RELATORIO DE DEVOLUCAO DE PRODUTOS
+                 sac5devol()
+        //ELSEIF MenuId=MENUREL_68 // RELATORIO DE PRODUTOS COM E SEM ICMS
+        //         sac591()
+        ELSEIF MenuId=MENUREL_70 // RELATORIO DE NFe NFCe
+                 sac5not1()
+        ELSEIF MenuId=MENUREL_71 // RELATORIO DE NFe NFCe
+                 sac5not2()
+        ELSEIF MenuId=MENUREL_72 // RELATORIO DE NFe NFCe
+                 sac5not3()
+        ELSEIF MenuId=MENUREL_73 // RELATORIO DE NFe NFCe
+                 sac5not6()
+        ELSEIF MenuId=MENUREL_74 // RELATORIO DE NFe NFCe
+                 sac5not7()
+        ELSEIF MenuId=MENUREL_75 // RELATORIO DE NFe NFCe
+                 sac5not8()
+        ELSEIF MenuId=MENUREL_76 // RELATORIO DE NFe NFCe
+                 sac5not4()
+
+
+// SUB-MEU RELATORIO MOVIMENTO DE PRODUTO E COMISSAO
+
+        ELSEIF MenuId=MENUREL_25 // P/PRODUTOS     
+                 sac520()     
+        ELSEIF MenuId=MENUREL_26 // P/PRODUTO/VENDEDOR                            
+                 sac522()          
+        ELSEIF MenuId=MENUREL_27// GERAL   
+                 sac521()             
+        ELSEIF MenuId=MENUREL_28 // GERAL RESUMO ENTRADAS/SAIDAS        
+                 sac523()     
+        ELSEIF MenuId=MENUREL_29 // GERAL RESUMO SAIDAS/LUCROS  
+                 sac5231()    
+        ELSEIF MenuId=MENUREL_30 // RELATORIO MOVIMENTO POR FORNECEDOR     
+                 sac524()   
+        ELSEIF MenuId=MENUREL_31 // RELATORIO MOVIMENTO POR CLIENTE  
+                 sac525()      
+        ELSEIF MenuId=MENUREL_32 // RELATORIO MOVIMENTO POR PRODUTO P/ MESES     
+                 //sac526()
+                 sac5est1()
+        ELSEIF MenuId=MENUREL_33 //  RELATORIO MOVIMENTO POR GRUPO RESUMO     
+                 sac527()                                     
+        ELSEIF MenuId=MENUREL_34 // RELATORIO SINTETICO DE CLIENTES              
+                 sac528()   
+        //ELSEIF MenuId=MENUREL_35 // RELATORIO SINTETICO DE CLIENTES C/CGC OU CPF
+        //         sac528_1()
+        ELSEIF MenuId=MENUREL_36 // RELATORIO MOVIMENTO POR CLIENTES P/ MESES        
+                 sac529()        
+        ELSEIF MenuId=MENUREL_37 // RELATORIO MOVIMENTO DE PRODUTO P/SERIAL 
+                sac530()         
+        //ELSEIF MenuId=MENUREL_38 // RELATORIO MOVIMENTO DE PRODUTO ESTOQUE HAVER
+        //        sac533()
+        ELSEIF MenuId=MENUREL_39 // P/VENDEDOR           
+                sac5com1()      
+        ELSEIF MenuId=MENUREL_40 // P/PRODUTO     
+                 sac5com2()          
+        ELSEIF MenuId=MENUREL_41 // POSICAO VENDAS E COMISSOES
+                 sac5com3()       
+        ELSEIF MenuId=MENUREL_42 // GERAL      
+                 sac5com4()      
+        ELSEIF MenuId=MENUREL_43 // CLASSIFICACAO DOS PRODUTOS MAIS VENDIDOS       
+                 sac5com5()     //prg sac5com4.prg         
+        ELSEIF MenuId=MENUREL_44 // ESTATISTICA DE VENDAS POR DIA         
+                 sac5com6()          
+        ELSEIF MenuId=MENUREL_45 // RESUMO DE PRODUTO E COMISSAO     
+                 sac5com7()       
+        ELSEIF MenuId=MENUREL_46 // PRODUTOS SEM MOVIMENTOS          
+                 sac59()        
+        ELSEIF MenuId=MENUREL_47 // VENDAS A MENOR    
+                 sac54()   
+        ELSEIF MenuId=MENUREL_48 // ESTATISTICA VLR.VENDIDO/PRECO TABELA         
+                 sac541()               
+        ELSEIF MenuId=MENUREL_49 // MOVIMENTOC P/DOCUMENTOS    
+                 sac542()               
+        ELSEIF MenuId=MENUREL_50 // MOVIMENTOC SINTETICO FORNECEDOR  
+                 sac534()                 
+        ELSEIF MenuId=MENUREL_51 // MOVIMENTO COMISSAO DA PERFILPLAST    
+                 sac5perf()        
+        ELSEIF MenuId=MENUREL_52 // ENTRADA DE PRODUTO                 
+                 sac543()              
+        ELSEIF MenuId=MENUREL_53 // CLISSIFICACAO DOS CLIENTES                       
+                 sac5com8()                  
+        //ELSEIF MenuId=MENUREL_56 // MOVIMENTO PRODUTO PRODUCAO
+        //         sac55()
+        ELSEIF MenuId=MENUREL_58 // ESTATISTICA DE GRUPOS
+                 sac5291()
+        ELSEIF MenuId=MENUREL_59 // CLISSIFICACAO DOS FORNECEDORES
+                 sac5com9()
+
+// SUB-MEU RELATORIO EMISSAO DE CADASTRO
+
+        ELSEIF MenuId=MENUREL_54 // P/PRODUTOS     
+                 sac5cad1()
+        ELSEIF MenuId=MENUREL_55 // FORNECEDORES
+                 sac5cad2()
+
+// SUB-MEU RELATORIO CLIENTES ATIVOS, INATIVOS E ESTATISTACA
+
+        ELSEIF MenuId=MENUREL_60
+                *        CLIENTES ATIVOS
+                sac5cli1()
+        ELSEIF MenuId=MENUREL_61
+                *       CLIENTES INATIVOS
+                sac5cli2()
+        ELSEIF MenuId=MENUREL_62
+                *       ESTATISTICA DE COMPRAS
+                sac5cli3()
+        ELSEIF MenuId=MENUREL_63
+                *       CLISSIFICACAO DAS CIDADES (FATURAMENTO)
+                sac5com10()
+        ELSEIF MenuId=MENUREL_64
+                *       RELATORIO DE CRM
+                sac5com11()
+        //ELSEIF MenuId=MENUREL_65
+                *       RELATORIO DE MOV. LISTA DE PRESENTE
+        //        sac5listpre()
+        ELSEIF MenuId=MENUREL_69
+                *       RELATORIO DE MOV. LISTA DE PRESENTE
+                sac5cli4()
+
+// UTILITARIO
+
+        ELSEIF MenuId=MENUUTIL_2  
+                 f3_nivel()
+        ELSEIF MenuId=MENUUTIL_4
+                 sacler()
+        ELSEIF MenuId=MENUUTIL_5 
+		 calcu()  
+        ELSEIF MenuId=MENUUTIL_6 
+                 cale()
+        ELSEIF MenuId=MENUUTIL_7 
+                 saccalc()
+        ELSEIF MenuId=MENUUTIL_8 
+                 sac63()
+        //ELSEIF MenuId=MENUUTIL_9
+        //         sac62()
+        ELSEIF MenuId=MENUUTIL_10 .OR. MenuId = NBotao6
+                 tela('SISCOM - Sistema Integrado de Automacao Comercial',1)
+        //ELSEIF MenuId=MENUUTIL_11
+        //         sacrl()
+        ELSEIF MenuId=MENUUTIL_12       //CONFIGURACAO DO SISTEMA
+                 sac610()
+        ELSEIF MenuId=MENUUTIL_14       //CONFIGURACAO INDIVIDUAL TERM.
+                 sac611()
+        ELSEIF MenuId=MENUUTIL_15       //CONFIGURAR NIVEL ACESSO      
+                 saccfg()
+        ELSEIF MenuId=MENUUTIL_16       //CONFIGURACAO DA EMPRESA PRINCIPAL              
+                 incl_firma()         
+        ELSEIF MenuId=MENUUTIL_17       //CADASTRO DE EMPRESAS      
+                 sacemp('*')     
+        ELSEIF MenuId=MENUUTIL_18       //CONFIGURACAO DO HTISIS.BAT
+                marq := ALLTRIM(m_indiv[1,6])+'HTISIS.BAT'
+                IF ! SR_PhFile((marq)) 
+                        atencao('Nao foi possivel encontrar este ARQUIVO, Verifique o caminho do SACCFG')
+                ENDIF
+                MYRUN('NOTEPAD.EXE '+marq)
+        ELSEIF MenuId=MENUUTIL_20       //arquivo SEF            
+                 sacsef1()
+        ELSEIF MenuId=MENUUTIL_21       //SINTEGRA    
+                 sacsint()     
+        //ELSEIF MenuId=MENUUTIL_22       //SCI
+        //         sacsci()
+        //ELSEIF MenuId=MENUUTIL_23       //CONTABILIDADE
+        //         saccont()
+        ELSEIF MenuId=MENUUTIL_24       //CADASTRO DO CONTADOR     
+                 sacsef_c()        
+        //ELSEIF MenuId=MENUUTIL_25       //Gerar Arquivo MAT.PRIMA P/EXCEL
+        //         sacperf()
+        //ELSEIF MenuId=MENUUTIL_26       //GERAR ARQUIVO PARA O SERASA
+        //         sacsera()
+        //ELSEIF MenuId=MENUUTIL_27       //GERAR ARQUIVO PARA O EQUIFAX
+        //         sacequi()
+        ELSEIF MenuId=MENUUTIL_28       //ARQUIVO SEF COM2001
+                 sacsef3()
+        ELSEIF MenuId=MENUUTIL_29       //ARQUIVO SEF ANT.
+                 sacsef2()
+
+
+        ELSEIF MenuId=MENUUTIL_30       //REAJUSTE PRODUTOS
+                 sac27()    
+        ELSEIF MenuId=MENUUTIL_31       //SENHA DE LIBERACAO DO SISCOM
+                senha_lib('*')
+        ELSEIF MenuId=MENUUTIL_73       //CALCULAR LIMITE DE CRED. CLIENTE PELA MEDIA
+                sac_limcli()
+        ELSEIF MenuId=MENUUTIL_32       //AJUSTE DE COMISSAO NO PEDIDO
+                 sac5pe11()      
+        ELSEIF MenuId=MENUUTIL_33       //ALTERAR VENDEDOR, OPERADOR E MONTADOR NO PEDIDO  
+                 sacaltco()            
+        ELSEIF MenuId=MENUUTIL_34       //OCORRENCIA DO SISTEMA        
+                 ocorre()         
+        ELSEIF MenuId=MENUUTIL_35       //CONSULTA DE LOG     
+                 saclog1()         
+        ELSEIF MenuId=MENUUTIL_36       //EXPORTA TABELA DE PRODUTOS
+                 sacexpor()    
+        ELSEIF MenuId=MENUUTIL_37       //IMPORTA TABELA DE PRODUTOS  
+                 sacimpor()   
+        ELSEIF MenuId=MENUUTIL_38       //LANCAMENTO NOTA DE FRETES             
+                 sacfrete()   
+        ELSEIF MenuId=MENUUTIL_39       //RELATORIO INVENTARIO     
+                 sacinve()       
+        //ELSEIF MenuId=MENUUTIL_40       //CONTROLE DE VISITA
+        //         sac621()
+        ELSEIF MenuId=MENUUTIL_41       //ATUALIZACAO DE ARQUIVOS DE DADOS              
+                 sac_dbf('*')       
+                 saccdx()     
+        //ELSEIF MenuId=MENUUTIL_42       //MANUTENCAO DE BALANCOS    
+        //         sacbal()       
+        ELSEIF MenuId=MENUUTIL_43       //ATUALIZAR ARQ. MORTO   
+                 sacatual()      
+        //ELSEIF MenuId=MENUUTIL_44       //RELOGIO DE PONTO
+        //         sacrl()
+        //ELSEIF MenuId=MENUUTIL_45       //GERAR PARCELAS CLIENTES HTI
+        //         sacparce()
+        ELSEIF MenuId=MENUUTIL_46       //EMISSAO DE RECIBOS DA HTI                 
+                 hti_impbol()
+        ELSEIF MenuId=MENUUTIL_48       //CONVERTER DBF's PARA BANCO DE DADOS
+                 dbf2sql()
+        ELSEIF MenuId=MENUUTIL_49       //ATUALIZAR SACMERC (NULL)
+                 saccript()
+        ELSEIF MenuId=MENUUTIL_47       //
+                 dbf_sql()
+        ELSEIF MenuId=MENUUTIL_50       //
+                expor_arq()
+        ELSEIF MenuId=MENUUTIL_51       //
+                saccliatu()
+        ELSEIF MenuId=MENUUTIL_52       //
+                sacproatu()
+        ELSEIF MenuId=MENUUTIL_53       //
+                sacmovnt()
+        //ELSEIF MenuId=MENUUTIL_54       //
+        //        sac5lev_fis()
+        //ELSEIF MenuId=MENUUTIL_55       //
+        //        sacpandora()
+        ELSEIF MenuId=MENUUTIL_56
+                IF ! FILE('show.exe')
+                        atencao('Nao foi possivel encontrar o programa especifico, favor entrar em contato com a HTI Sistemas (81)'+mfone_HTI+' ou baixa o aplicativo pelo site: www.htisistemas.com')
+                ELSE
+                        MYRUN2('show.exe')
+                ENDIF
+        ELSEIF MenuId=MENUUTIL_71
+                IF ! FILE('AA_v3.exe')
+                        atencao('Nao foi possivel encontrar o programa especifico, favor entrar em contato com a HTI Sistemas (81)'+mfone_HTI+' ou baixa o aplicativo pelo site: www.htisistemas.com')
+                ELSE
+                        MYRUN2('AA_v3.exe')
+                ENDIF
+        ELSEIF MenuId=MENUUTIL_57
+		inventario()
+        //ELSEIF MenuId=MENUUTIL_60       //
+        //        sacinfotech()
+        //ELSEIF MenuId=MENUUTIL_58       //
+        //        sacup_forn()
+        ELSEIF MenuId=MENUUTIL_59       //
+                nfe_inutilizar('NFE')
+                /*
+
+                FCLOSE(mArq)
+                IF ! FILE('HTIAUX.INI')
+                        mArq        := FCREATE('HTIAUX.INI')
+                        sLinhas     :=  CRIPTO('HTI',1)+m_qp+;
+                                        CRIPTO('000000000000000000',1)+m_qp+;
+                                        md5_sispdv+m_qp+;
+                                        md5_ini
+                        FWRITE( mArq, @sLinhas, LEN( sLinhas ) )
+                        FCLOSE(mArq)
+                ENDIF
+                */
+
+        ELSEIF MenuId=MENUUTIL_61
+                imp_dbf()
+        //ELSEIF MenuId=MENUUTIL_62
+        //        saccaic()
+        //ELSEIF MenuId=MENUUTIL_63
+        //        sacplaneta()
+        ELSEIF MenuId=MENUUTIL_64
+                //sped_pc()
+                sped()
+        //ELSEIF MenuId=MENUUTIL_65
+        //        sacgdoc()
+        //ELSEIF MenuId=MENUUTIL_66
+        //        sacmatrix()
+        //ELSEIF MenuId=MENUUTIL_67
+        //        sacSYSPDV()
+        //ELSEIF MenuId=MENUUTIL_68
+        //        sacmasterwin()
+        //ELSEIF MenuId=MENUUTIL_72
+        //        sacmovbelo()
+        ELSEIF MenuId=MENUUTIL_69
+                arq_acesso()
+        //ELSEIF MenuId=MENUUTIL_70
+        //        arq_ncm()
+        /*
+        ELSEIF MenuId=MENUUTIL_74
+                atencao('1. Ir para o DOS e depois para o diret?rio BIN do Firebird, devemos instalar o servi?o e depois coloc?-lo em execu??o:'+m_qp+m_qp+;
+                        '2. Pode estar neste caminho: C:\Program Files (x86)\Firebird\Firebird_1_5\bin'+m_qp+m_qp+;
+                        '3. Criar um atalho do DOS e no campo INICIAR EM colocar: C:\Program Files (x86)\Firebird\Firebird_1_5\bin'+m_qp+m_qp+;
+                        'Digite: instsvc i ?s ?a ?g <enter>'+m_qp+;
+                        'Digite: instsvc sta <enter>'+m_qp+;
+                        'O primeiro comando cria o servi?o do Firebird no Windows. O segundo, inicia o servi?o.')
+        */
+        ELSEIF MenuId=MENUUTIL_75
+                IF 'S' = op_simnao('N','A T E N C A O esta rotina apaga varias tabelas e nao tem retorno muito CUIDADO:')
+                        op_tela(10,10,12,60,'APAGANDO AS TABELAS PARA DEIXAR VAZIO',,1)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: LOGPRODUTO       ')
+                        sr_getconnection():exec("DELETE FROM logproduto",,.f.)
+                        DEVPOS(1,1);DEVOUT("Aguarde apagando a tabela: R's              ")
+                        sr_getconnection():exec("DELETE FROM r1",,.f.)
+                        sr_getconnection():exec("DELETE FROM r2",,.f.)
+                        sr_getconnection():exec("DELETE FROM r3",,.f.)
+                        sr_getconnection():exec("DELETE FROM r4",,.f.)
+                        sr_getconnection():exec("DELETE FROM r5",,.f.)
+                        sr_getconnection():exec("DELETE FROM r6",,.f.)
+                        sr_getconnection():exec("DELETE FROM r7",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACASS           ')
+                        sr_getconnection():exec("DELETE FROM sacass",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACBAL           ')
+                        sr_getconnection():exec("DELETE FROM sacbal",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACBANCO         ')
+                        sr_getconnection():exec("DELETE FROM sacbanco",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban1",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban2",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban3",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban4",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban5",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban6",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban7",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban8",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban9",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban10",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban11",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban12",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban13",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban14",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacban15",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: CAIXA            ')
+                        sr_getconnection():exec("DELETE FROM saccaixa",,.f.)
+                        sr_getconnection():exec("DELETE FROM saccheq",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacclidepe",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACCLI           ')
+                        sr_getconnection():exec("DELETE FROM saccli",,.f.)
+                        sr_getconnection():exec("DELETE FROM saccliproce",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACCRED          ')
+                        sr_getconnection():exec("DELETE FROM saccred",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacctvis",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACFORN          ')
+                        sr_getconnection():exec("DELETE FROM sacforn",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacgrupo",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACDUPR          ')
+                        sr_getconnection():exec("DELETE FROM sacdupr",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACDUPP          ')
+                        sr_getconnection():exec("DELETE FROM sacdupp",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACINVE          ')
+                        sr_getconnection():exec("DELETE FROM sacinve",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACLOG           ')
+                        sr_getconnection():exec("DELETE FROM saclog",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacmensa",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACMERC          ')
+                        sr_getconnection():exec("DELETE FROM sacmerc",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACMOV           ')
+                        sr_getconnection():exec("DELETE FROM sacmov",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacmovb",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacmovcn",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacmovnt",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacmovsc",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacmovtra",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACNO            ')
+                        sr_getconnection():exec("UPDATE sacnoorc SET numero = '000000'",,.f.)
+                        sr_getconnection():exec("UPDATE sacnoped SET numero = '000000'",,.f.)
+                        sr_getconnection():exec("UPDATE sacnorom SET numero = '000000'",,.f.)
+                        sr_getconnection():exec("UPDATE sacnota SET numero = '000000'",,.f.)
+                        sr_getconnection():exec("UPDATE sacnotae SET numeroe = '000000'",,.f.)
+                        sr_getconnection():exec("UPDATE sacnotp SET numero = '000000'",,.f.)
+                        sr_getconnection():exec("UPDATE sacnonfc SET numero = '000000'",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacobs",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACOCORR         ')
+                        sr_getconnection():exec("DELETE FROM sacocorr",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACORCAM         ')
+                        sr_getconnection():exec("DELETE FROM sacorcam",,.f.)
+                        //DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACPDV           ')
+                        //sr_getconnection():exec("DELETE FROM sacpdvpd",,.f.)
+                        //sr_getconnection():exec("DELETE FROM sacpdvpr",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACPED           ')
+                        sr_getconnection():exec("DELETE FROM sacped_c",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacped_e",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacped_s",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacpresen",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacprodu",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacprofi",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacproto",,.f.)
+                        //sr_getconnection():exec("DELETE FROM sacpv",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacrec_nf",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacreme",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacrepro",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacrl",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACROMA          ')
+                        sr_getconnection():exec("DELETE FROM sacroma",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacsef",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacselnf",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACSERIAL        ')
+                        sr_getconnection():exec("DELETE FROM sacserial",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacserie",,.f.)
+                        //sr_getconnection():exec("DELETE FROM sacincl",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacsoli",,.f.)
+                        sr_getconnection():exec("DELETE FROM sacsolpr",,.f.)
+                        sr_getconnection():exec("DELETE FROM sactabme",,.f.)
+                        sr_getconnection():exec("DELETE FROM sactabpg",,.f.)
+                        sr_getconnection():exec("DELETE FROM sactbmer",,.f.)
+                        //sr_getconnection():exec("DELETE FROM sactemp",,.f.)
+                        DEVPOS(1,1);DEVOUT('Aguarde apagando a tabela: SACTOT           ')
+                        sr_getconnection():exec("DELETE FROM sactped",,.f.)
+                        sr_getconnection():exec("DELETE FROM sactran",,.f.)
+                        sr_getconnection():exec("DELETE FROM sactrm",,.f.)
+                        sr_getconnection():exec("DELETE FROM tabloide",,.f.)
+                        sr_getconnection():exec("DELETE FROM texto",,.f.)
+                        CLOSE ALL
+                        MYRUN('DEL *.DBF')
+                        MYRUN('DEL *.CDX')
+                        DEVPOS(1,1);DEVOUT('Aguarde Atualizando todas as TABELAS......  ')
+                        sr_getconnection():exec("COMMIT",,.f.)
+                        sacsql()
+                        saccdx('*')
+                        sr_getconnection():exec("INSERT INTO sacnoorc (numero,SR_DELETED ) VALUES ('000000',' ')",,.f.)
+                        sr_getconnection():exec("INSERT INTO sacnoped (numero,SR_DELETED ) VALUES ('000000',' ')",,.f.)
+                        sr_getconnection():exec("INSERT INTO sacnopro (numero,SR_DELETED ) VALUES ('000000',' ')",,.f.)
+                        sr_getconnection():exec("INSERT INTO sacnopv  (numero,SR_DELETED ) VALUES ('000000',' ')",,.f.)
+                        sr_getconnection():exec("INSERT INTO sacnorom (numero,SR_DELETED ) VALUES ('000000',' ')",,.f.)
+                        sr_getconnection():exec("INSERT INTO sacnota  (numero,SR_DELETED ) VALUES ('000000',' ')",,.f.)
+                        sr_getconnection():exec("INSERT INTO sacnotae (numero,SR_DELETED ) VALUES ('000000',' ')",,.f.)
+                        sr_getconnection():exec("INSERT INTO sacnotp  (numero,SR_DELETED ) VALUES ('000000',' ')",,.f.)
+                        sr_getconnection():exec("COMMIT",,.f.)
+                        //ATENCAO('OK')
+                        /*
+                        DEVPOS(1,1);DEVOUT('Fechando a acesso ao BD......               ')
+                        fecha_conexaoDB()
+                        DEVPOS(1,1);DEVOUT('Fazendo CORRECAO DO BD......                ')
+                        MYRUN('gfix -mend -full -ignore -user SYSDBA -password masterkey siscom.gdb')
+                        MYRUN('DEL siscom.bkp')
+                        DEVPOS(1,1);DEVOUT('Fazendo BACKUP DO BD......                  ')
+                        MYRUN('gbak -B -user SYSDBA -password masterkey siscom.gdb siscom.bkp')
+                        DEVPOS(1,1);DEVOUT('Renomeando o BD......                       ')
+                        FRENAME('SISCOM.GDB','SISCOM'+STRTRAN(DTOC(mdata_sis),'/','')+'.GDB')
+                        DEVPOS(1,1);DEVOUT('Restaurando o BD......                      ')
+                        MYRUN('gbak -R -user SYSDBA -password masterkey siscom.bkp siscom.gdb')
+                        */
+                        fecha_tela()
+                        atencao('O processo foi concluido com sucesso...'+m_qp+m_qp+'Favor rodar o COREGDB.BAT para correcao do BD'+m_qp+'Favor rodar o BKPGDB.BAT para otimizar o BD'+m_qp+'Favor rodar o RESTGBD.BAT para restaurar o BD')
+                        QUIT
+                ENDIF
+        ELSEIF MenuId=MENUUTIL_76
+                IF ! ver_nivel('SAC00','ABERTURA DA GAVETA DO CAIXA','1',nivel_acess,,'AMBIE')
+                        RETURN NIL
+                ENDIF
+                ***INICIA O ACBRMONITOR***
+
+                IF ! inicia_acbr()
+                        RETURN NIL
+                ENDIF
+                IBR_comando('GAV.AbreGaveta',,,3)
+        ELSEIF MenuId=MENUUTIL_77
+                cod_acess()
+        ELSEIF MenuId=MENUMEN_1
+                sacemail2()
+        ELSEIF MenuId=MENUMEN_2
+                sacemail1()
+        //ELSEIF MenuId = NBotao10
+        //        sacrl0()
+        ELSEIF MenuId=MENUSAI_1 .OR. MenuId = NBotao9 .OR. MenuId = 27
+                 wvw_lclosewindow()
+                 sr_getconnection():exec("UPDATE insopera SET terminal = '',data_acess = NULL,hora_acess = '',sult_fim  = "+sr_cdbvalue(DATE())+",shora_fim = "+sr_cdbvalue(SUBSTR(TIME(),1,5))+",sh_i_c  = '' WHERE scod_op = "+sr_cdbvalue(cod_operado),,.f.)
+                 sr_getconnection():exec('COMMIT',,.f.)
+                 fecha_conexaoDB()
+                 CLEAR MEMORY
+                 QUIT
+        ELSEIF MenuId=MENUSAI_3 .OR. MenuId=NBotao7
+                alt_senha()
+        ELSEIF MenuId=MENUEMP_1
+                alt_emp()
+                WVW_SetTitle(mnum_principal,memp_resa)
+                WVW_SBSetText(mnum_principal,1,'Empresa: '+ALLTRIM(mcodempresa)+'-'+memp_resa)
+
+        ENDIF
+        IF m_set[1,169] = 1
+                alt_senha()
+        ENDIF
+ENDIF
+RETURN nkey
+
+//Function Ctrl_c
+   //Return WVW_SetClipboard( Alltrim(READVAR():buffer) )
+Function Ctrl_v
+   Keyboard WVW_GetClipboard()
+   Return
+*/

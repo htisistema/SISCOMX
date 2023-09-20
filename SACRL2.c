@@ -1,0 +1,1469 @@
+/*
+ * xHarbour build 0.99.70 Intl. (SimpLex)
+ * Generated C source code from <SACRL2.PRG>
+ * Command: C:\xharbour997\bin\harbour.exe C:\helio\siachb\SACRL2.PRG /q /oC:\helio\siachb\SACRL2.c /M /N /B 
+ * Created: 2018.04.09 19:31:07 (Borland C++ 5.5.1)
+ */
+
+#include "hbvmpub.h"
+#include "hbpcode.h"
+#include "hbinit.h"
+
+#define __PRG_SOURCE__ "SACRL2.PRG"
+
+HB_FUNC( SACRL2 );
+HB_FUNC_INITLINES();
+HB_FUNC_EXTERN( SPACE );
+HB_FUNC_EXTERN( __MVPRIVATE );
+HB_FUNC_EXTERN( __MVPUBLIC );
+HB_FUNC_EXTERN( VER_NIVEL );
+HB_FUNC_EXTERN( DBCLOSEALL );
+HB_FUNC_EXTERN( DBSELECTAREA );
+HB_FUNC_EXTERN( __SETFORMAT );
+HB_FUNC_EXTERN( ABRIARQ );
+HB_FUNC_EXTERN( OP_TELA );
+HB_FUNC_EXTERN( EXIBI_PRG );
+HB_FUNC_EXTERN( LIMPA );
+HB_FUNC_EXTERN( ASIZE );
+HB_FUNC_EXTERN( CTOD );
+HB_FUNC_EXTERN( MENSAGEM );
+HB_FUNC_EXTERN( SETCOR );
+HB_FUNC_EXTERN( DEVPOS );
+HB_FUNC_EXTERN( DEVOUT );
+HB_FUNC_EXTERN( SETPOS );
+HB_FUNC_EXTERN( AADD );
+HB_FUNC_EXTERN( __GET );
+HB_FUNC_EXTERN( EMPTY );
+HB_FUNC_EXTERN( VEN );
+HB_FUNC_EXTERN( READMODAL );
+HB_FUNC_EXTERN( LASTKEY );
+HB_FUNC_EXTERN( SR_GETCONNECTION );
+HB_FUNC_EXTERN( SR_CDBVALUE );
+HB_FUNC_EXTERN( STRZERO );
+HB_FUNC_EXTERN( LEN );
+HB_FUNC_EXTERN( ATENCAO );
+HB_FUNC_EXTERN( IMP_ARQ );
+HB_FUNC_EXTERN( PROW );
+HB_FUNC_EXTERN( __EJECT );
+HB_FUNC_EXTERN( CABECALHO );
+HB_FUNC_EXTERN( IMPRT );
+HB_FUNC_EXTERN( REPLICATE );
+HB_FUNC_EXTERN( PCOL );
+HB_FUNC_EXTERN( HR_SEG );
+HB_FUNC_EXTERN( ELAPTIME );
+HB_FUNC_EXTERN( TSTRING );
+HB_FUNC_EXTERN( TRANSFORM );
+HB_FUNC_EXTERN( SET );
+HB_FUNC_EXTERN( CONF_IMPRESSAO );
+HB_FUNC_EXTERN( DBCLOSEAREA );
+HB_FUNC_EXTERN( WVW_LCLOSEWINDOW );
+HB_FUNC_EXTERN( __DBGENTRY );
+
+#undef HB_PRG_PCODE_VER
+#define HB_PRG_PCODE_VER 7
+
+HB_INIT_SYMBOLS_BEGIN( hb_vm_SymbolInit_SACRL2 )
+{ "SACRL2", {HB_FS_PUBLIC | HB_FS_LOCAL | HB_FS_FIRST}, {HB_FUNCNAME( SACRL2 )}, NULL },
+{ "MTIPO_IMP", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "MIMP_TIPO", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "MARQ", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "SPACE", {HB_FS_PUBLIC}, {HB_FUNCNAME( SPACE )}, NULL },
+{ "MTIPO", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "MCOD_OPER", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "__MVPRIVATE", {HB_FS_PUBLIC}, {HB_FUNCNAME( __MVPRIVATE )}, NULL },
+{ "SENHA_ACESS", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "NIVEL_ACESS", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "COD_OPERADO", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "__MVPUBLIC", {HB_FS_PUBLIC}, {HB_FUNCNAME( __MVPUBLIC )}, NULL },
+{ "VER_NIVEL", {HB_FS_PUBLIC}, {HB_FUNCNAME( VER_NIVEL )}, NULL },
+{ "DBCLOSEALL", {HB_FS_PUBLIC}, {HB_FUNCNAME( DBCLOSEALL )}, NULL },
+{ "DBSELECTAREA", {HB_FS_PUBLIC}, {HB_FUNCNAME( DBSELECTAREA )}, NULL },
+{ "__SETFORMAT", {HB_FS_PUBLIC}, {HB_FUNCNAME( __SETFORMAT )}, NULL },
+{ "ABRIARQ", {HB_FS_PUBLIC}, {HB_FUNCNAME( ABRIARQ )}, NULL },
+{ "OP_TELA", {HB_FS_PUBLIC}, {HB_FUNCNAME( OP_TELA )}, NULL },
+{ "EXIBI_PRG", {HB_FS_PUBLIC}, {HB_FUNCNAME( EXIBI_PRG )}, NULL },
+{ "LIMPA", {HB_FS_PUBLIC}, {HB_FUNCNAME( LIMPA )}, NULL },
+{ "ASIZE", {HB_FS_PUBLIC}, {HB_FUNCNAME( ASIZE )}, NULL },
+{ "MDATA_SIS", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "CTOD", {HB_FS_PUBLIC}, {HB_FUNCNAME( CTOD )}, NULL },
+{ "MENSAGEM", {HB_FS_PUBLIC}, {HB_FUNCNAME( MENSAGEM )}, NULL },
+{ "SETCOR", {HB_FS_PUBLIC}, {HB_FUNCNAME( SETCOR )}, NULL },
+{ "DEVPOS", {HB_FS_PUBLIC}, {HB_FUNCNAME( DEVPOS )}, NULL },
+{ "DEVOUT", {HB_FS_PUBLIC}, {HB_FUNCNAME( DEVOUT )}, NULL },
+{ "SETPOS", {HB_FS_PUBLIC}, {HB_FUNCNAME( SETPOS )}, NULL },
+{ "AADD", {HB_FS_PUBLIC}, {HB_FUNCNAME( AADD )}, NULL },
+{ "GETLIST", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "__GET", {HB_FS_PUBLIC}, {HB_FUNCNAME( __GET )}, NULL },
+{ "EMPTY", {HB_FS_PUBLIC}, {HB_FUNCNAME( EMPTY )}, NULL },
+{ "VEN", {HB_FS_PUBLIC}, {HB_FUNCNAME( VEN )}, NULL },
+{ "DISPLAY", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "READMODAL", {HB_FS_PUBLIC}, {HB_FUNCNAME( READMODAL )}, NULL },
+{ "LASTKEY", {HB_FS_PUBLIC}, {HB_FUNCNAME( LASTKEY )}, NULL },
+{ "Q_CONS", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "EXEC", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "SR_GETCONNECTION", {HB_FS_PUBLIC}, {HB_FUNCNAME( SR_GETCONNECTION )}, NULL },
+{ "SR_CDBVALUE", {HB_FS_PUBLIC}, {HB_FUNCNAME( SR_CDBVALUE )}, NULL },
+{ "STRZERO", {HB_FS_PUBLIC}, {HB_FUNCNAME( STRZERO )}, NULL },
+{ "LEN", {HB_FS_PUBLIC}, {HB_FUNCNAME( LEN )}, NULL },
+{ "ATENCAO", {HB_FS_PUBLIC}, {HB_FUNCNAME( ATENCAO )}, NULL },
+{ "IMP_ARQ", {HB_FS_PUBLIC}, {HB_FUNCNAME( IMP_ARQ )}, NULL },
+{ "MDIA_HORAS", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "SEN", {HB_FS_PUBLIC | HB_FS_MEMVAR}, {NULL}, NULL },
+{ "SNOME", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "PROW", {HB_FS_PUBLIC}, {HB_FUNCNAME( PROW )}, NULL },
+{ "__EJECT", {HB_FS_PUBLIC}, {HB_FUNCNAME( __EJECT )}, NULL },
+{ "CABECALHO", {HB_FS_PUBLIC}, {HB_FUNCNAME( CABECALHO )}, NULL },
+{ "IMPRT", {HB_FS_PUBLIC}, {HB_FUNCNAME( IMPRT )}, NULL },
+{ "REPLICATE", {HB_FS_PUBLIC}, {HB_FUNCNAME( REPLICATE )}, NULL },
+{ "PCOL", {HB_FS_PUBLIC}, {HB_FUNCNAME( PCOL )}, NULL },
+{ "HR_SEG", {HB_FS_PUBLIC}, {HB_FUNCNAME( HR_SEG )}, NULL },
+{ "ELAPTIME", {HB_FS_PUBLIC}, {HB_FUNCNAME( ELAPTIME )}, NULL },
+{ "TSTRING", {HB_FS_PUBLIC}, {HB_FUNCNAME( TSTRING )}, NULL },
+{ "MHORAS_DIA", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "TRANSFORM", {HB_FS_PUBLIC}, {HB_FUNCNAME( TRANSFORM )}, NULL },
+{ "SET", {HB_FS_PUBLIC}, {HB_FUNCNAME( SET )}, NULL },
+{ "CONF_IMPRESSAO", {HB_FS_PUBLIC}, {HB_FUNCNAME( CONF_IMPRESSAO )}, NULL },
+{ "DBCLOSEAREA", {HB_FS_PUBLIC}, {HB_FUNCNAME( DBCLOSEAREA )}, NULL },
+{ "WVW_LCLOSEWINDOW", {HB_FS_PUBLIC}, {HB_FUNCNAME( WVW_LCLOSEWINDOW )}, NULL },
+{ "__DBGENTRY", {HB_FS_PUBLIC}, {HB_FUNCNAME( __DBGENTRY )}, NULL },
+{ "(_INITLINES)", {HB_FS_INITEXIT}, {hb_INITLINES}, NULL }
+HB_INIT_SYMBOLS_END( hb_vm_SymbolInit_SACRL2 )
+
+#if defined(HB_PRAGMA_STARTUP)
+   #pragma startup hb_vm_SymbolInit_SACRL2
+#elif defined(HB_MSC_STARTUP)
+   #if _MSC_VER >= 1010
+      #pragma data_seg( ".CRT$XIY" )
+      #pragma comment( linker, "/Merge:.CRT=.data" )
+   #else
+      #pragma data_seg( "XIY" )
+   #endif
+   static HB_$INITSYM hb_vm_auto_SymbolInit_SACRL2 = hb_vm_SymbolInit_SACRL2;
+   #pragma data_seg()
+#endif
+
+HB_FUNC( SACRL2 )
+{
+   static const BYTE pcode[] =
+   {
+	HB_P_FRAME, 26, 0,	/* locals, params */
+	HB_P_MODULENAME,	/* SACRL2.PRG:SACRL2 */
+ 'S', 'A', 'C', 'R', 'L', '2', '.', 'P', 'R', 'G', ':', 'S', 'A', 'C', 'R', 'L', '2', 0,
+	HB_P_MODULENAME,	/* C:\helio\siachb\SACRL2.PRG: */
+ 'C', ':', '\\', 'h', 'e', 'l', 'i', 'o', '\\', 's', 'i', 'a', 'c', 'h', 'b', '\\', 'S', 'A', 'C', 'R', 'L', '2', '.', 'P', 'R', 'G', ':', 0,
+/* 00051 */ HB_P_BASELINE, 8, 0,	/* 8 */
+	HB_P_LOCALNAME, 1, 0,	/* MPRG */
+ 'M', 'P', 'R', 'G', 0,
+	HB_P_LOCALNEARSETSTR, 1, 7, 0,	/* MPRG 7*/
+	'S', 'A', 'C', 'R', 'L', '2', 0, 
+	HB_P_LOCALNAME, 2, 0,	/* LI */
+ 'L', 'I', 0,
+	HB_P_LOCALNEARSETINT, 2, 18, 0,	/* LI 18*/
+	HB_P_LOCALNAME, 3, 0,	/* CI */
+ 'C', 'I', 0,
+	HB_P_LOCALNEARSETINT, 3, 5, 0,	/* CI 5*/
+	HB_P_LOCALNAME, 4, 0,	/* LB */
+ 'L', 'B', 0,
+	HB_P_LOCALNEARSETINT, 4, 21, 0,	/* LB 21*/
+	HB_P_LOCALNAME, 5, 0,	/* CB */
+ 'C', 'B', 0,
+	HB_P_LOCALNEARSETINT, 5, 58, 0,	/* CB 58*/
+	HB_P_LOCALNAME, 6, 0,	/* OPCAO */
+ 'O', 'P', 'C', 'A', 'O', 0,
+	HB_P_LOCALNAME, 7, 0,	/* I */
+ 'I', 0,
+	HB_P_LOCALNEARSETINT, 7, 0, 0,	/* I 0*/
+	HB_P_LOCALNAME, 8, 0,	/* LBA */
+ 'L', 'B', 'A', 0,
+	HB_P_LOCALNEARSETINT, 8, 16, 0,	/* LBA 16*/
+	HB_P_LOCALNAME, 9, 0,	/* CBA */
+ 'C', 'B', 'A', 0,
+	HB_P_LOCALNEARSETINT, 9, 58, 0,	/* CBA 58*/
+	HB_P_LOCALNAME, 10, 0,	/* M_DADOS */
+ 'M', '_', 'D', 'A', 'D', 'O', 'S', 0,
+	HB_P_ARRAYGEN, 0, 0,	/* 0 */
+	HB_P_POPLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_LOCALNAME, 11, 0,	/* M_PONTO */
+ 'M', '_', 'P', 'O', 'N', 'T', 'O', 0,
+	HB_P_ARRAYGEN, 0, 0,	/* 0 */
+	HB_P_POPLOCALNEAR, 11,	/* M_PONTO */
+	HB_P_LOCALNAME, 12, 0,	/* MTOT_HORAS */
+ 'M', 'T', 'O', 'T', '_', 'H', 'O', 'R', 'A', 'S', 0,
+	HB_P_LOCALNEARSETINT, 12, 0, 0,	/* MTOT_HORAS 0*/
+	HB_P_LOCALNAME, 13, 0,	/* MHORAS */
+ 'M', 'H', 'O', 'R', 'A', 'S', 0,
+	HB_P_LOCALNAME, 14, 0,	/* MHORA_ANT */
+ 'M', 'H', 'O', 'R', 'A', '_', 'A', 'N', 'T', 0,
+	HB_P_LOCALNEARSETSTR, 14, 1, 0,	/* MHORA_ANT 1*/
+	0, 
+	HB_P_LOCALNAME, 15, 0,	/* MDATA_ANT */
+ 'M', 'D', 'A', 'T', 'A', '_', 'A', 'N', 'T', 0,
+	HB_P_LOCALNAME, 16, 0,	/* POINT */
+ 'P', 'O', 'I', 'N', 'T', 0,
+	HB_P_LOCALNEARSETINT, 16, 0, 0,	/* POINT 0*/
+	HB_P_LOCALNAME, 17, 0,	/* MHORA */
+ 'M', 'H', 'O', 'R', 'A', 0,
+	HB_P_LOCALNAME, 18, 0,	/* MDATA1 */
+ 'M', 'D', 'A', 'T', 'A', '1', 0,
+	HB_P_LOCALNAME, 19, 0,	/* MDATA2 */
+ 'M', 'D', 'A', 'T', 'A', '2', 0,
+	HB_P_LOCALNAME, 20, 0,	/* PAG */
+ 'P', 'A', 'G', 0,
+	HB_P_LOCALNEARSETINT, 20, 0, 0,	/* PAG 0*/
+	HB_P_LOCALNAME, 21, 0,	/* MTIT */
+ 'M', 'T', 'I', 'T', 0,
+	HB_P_LOCALNEARSETSTR, 21, 17, 0,	/* MTIT 17*/
+	'R', 'E', 'L', 'O', 'G', 'I', 'O', ' ', 'D', 'E', ' ', 'P', 'O', 'N', 'T', 'O', 0, 
+	HB_P_LOCALNAME, 22, 0,	/* MPRIMEIRO */
+ 'M', 'P', 'R', 'I', 'M', 'E', 'I', 'R', 'O', 0,
+	HB_P_LOCALNEARSETINT, 22, 0, 0,	/* MPRIMEIRO 0*/
+	HB_P_LOCALNAME, 23, 0,	/* MSEGUNDO */
+ 'M', 'S', 'E', 'G', 'U', 'N', 'D', 'O', 0,
+	HB_P_LOCALNEARSETINT, 23, 0, 0,	/* MSEGUNDO 0*/
+	HB_P_LOCALNAME, 24, 0,	/* MHORA_ALMOCO */
+ 'M', 'H', 'O', 'R', 'A', '_', 'A', 'L', 'M', 'O', 'C', 'O', 0,
+	HB_P_LOCALNEARSETINT, 24, 0, 0,	/* MHORA_ALMOCO 0*/
+	HB_P_LOCALNAME, 25, 0,	/* Y */
+ 'Y', 0,
+	HB_P_LOCALNEARSETINT, 25, 0, 0,	/* Y 0*/
+	HB_P_LOCALNAME, 26, 0,	/* X */
+ 'X', 0,
+	HB_P_LOCALNEARSETINT, 26, 0, 0,	/* X 0*/
+/* 00397 */ HB_P_LINEOFFSET, 2,	/* 10 */
+	HB_P_ZERO,
+	HB_P_PUSHSYMNEAR, 4,	/* SPACE */
+	HB_P_PUSHNIL,
+	HB_P_PUSHBYTE, 35,	/* 35 */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_ZERO,
+	HB_P_PUSHSYMNEAR, 7,	/* __MVPRIVATE */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 1,	/* MTIPO_IMP */
+	HB_P_PUSHSYMNEAR, 2,	/* MIMP_TIPO */
+	HB_P_PUSHSYMNEAR, 3,	/* MARQ */
+	HB_P_PUSHSYMNEAR, 5,	/* MTIPO */
+	HB_P_PUSHSYMNEAR, 6,	/* MCOD_OPER */
+	HB_P_DOSHORT, 5,
+	HB_P_POPVARIABLE, 6, 0,	/* MCOD_OPER */
+	HB_P_POPVARIABLE, 3, 0,	/* MARQ */
+	HB_P_POPVARIABLE, 2, 0,	/* MIMP_TIPO */
+/* 00432 */ HB_P_LINEOFFSET, 4,	/* 12 */
+	HB_P_PUSHSYMNEAR, 11,	/* __MVPUBLIC */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 8,	/* SENHA_ACESS */
+	HB_P_PUSHSYMNEAR, 9,	/* NIVEL_ACESS */
+	HB_P_PUSHSYMNEAR, 10,	/* COD_OPERADO */
+	HB_P_DOSHORT, 3,
+/* 00445 */ HB_P_LINEOFFSET, 6,	/* 14 */
+	HB_P_PUSHSYMNEAR, 12,	/* VER_NIVEL */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 1,	/* MPRG */
+	HB_P_PUSHSTRSHORT, 30,	/* 30 */
+	'R', 'E', 'L', 'A', 'T', 'O', 'R', 'I', 'O', ' ', 'D', 'O', ' ', 'R', 'E', 'L', 'O', 'G', 'I', 'O', ' ', 'D', 'E', ' ', 'P', 'O', 'N', 'T', 'O', 0, 
+	HB_P_PUSHSTRSHORT, 3,	/* 3 */
+	'1', '5', 0, 
+	HB_P_PUSHVARIABLE, 9, 0,	/* NIVEL_ACESS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 6,	/* 6 */
+	'A', 'M', 'B', 'I', 'E', 0, 
+	HB_P_FUNCTIONSHORT, 6,
+	HB_P_JUMPTRUENEAR, 7,	/* 7 (abs: 00510) */
+/* 00505 */ HB_P_LINEOFFSET, 7,	/* 15 */
+	HB_P_PUSHNIL,
+	HB_P_RETVALUE,
+	HB_P_ENDPROC,
+/* 00510 */ HB_P_LINEOFFSET, 10,	/* 18 */
+	HB_P_PUSHSYMNEAR, 13,	/* DBCLOSEALL */
+	HB_P_PUSHNIL,
+	HB_P_DOSHORT, 0,
+	HB_P_PUSHSYMNEAR, 14,	/* DBSELECTAREA */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 2,	/* 2 */
+	'1', 0, 
+	HB_P_DOSHORT, 1,
+	HB_P_PUSHSYMNEAR, 15,	/* __SETFORMAT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHNIL,
+	HB_P_DOSHORT, 1,
+/* 00532 */ HB_P_LINEOFFSET, 11,	/* 19 */
+	HB_P_PUSHSYMNEAR, 16,	/* ABRIARQ */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 9,	/* 9 */
+	'i', 'n', 's', 'o', 'p', 'e', 'r', 'a', 0, 
+	HB_P_PUSHSTRSHORT, 4,	/* 4 */
+	's', 'e', 'n', 0, 
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_JUMPTRUENEAR, 5,	/* 5 (abs: 00561) */
+	HB_P_PUSHNIL,
+	HB_P_RETVALUE,
+	HB_P_ENDPROC,
+/* 00561 */ HB_P_LINEOFFSET, 13,	/* 21 */
+	HB_P_PUSHSYMNEAR, 17,	/* OP_TELA */
+	HB_P_PUSHNIL,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_PUSHBYTE, 5,	/* 5 */
+	HB_P_PUSHBYTE, 8,	/* 8 */
+	HB_P_PUSHBYTE, 58,	/* 58 */
+	HB_P_PUSHSTRSHORT, 41,	/* 41 */
+	' ', 'R', 'E', 'L', 'A', 'T', 'O', 'R', 'I', 'O', '/', 'C', 'O', 'N', 'S', 'U', 'L', 'T', 'A', ' ', 'D', 'O', ' ', 'R', 'E', 'L', 'O', 'G', 'I', 'O', ' ', 'D', 'E', ' ', 'P', 'O', 'N', 'T', 'O', ' ', 0, 
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 2,	/* 2 */
+	'*', 0, 
+	HB_P_DOSHORT, 7,
+/* 00624 */ HB_P_LINEOFFSET, 14,	/* 22 */
+/* 00626 */ HB_P_LINEOFFSET, 15,	/* 23 */
+	HB_P_PUSHSYMNEAR, 18,	/* EXIBI_PRG */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 1,	/* MPRG */
+	HB_P_DOSHORT, 1,
+/* 00635 */ HB_P_LINEOFFSET, 16,	/* 24 */
+	HB_P_PUSHSYMNEAR, 19,	/* LIMPA */
+	HB_P_PUSHNIL,
+	HB_P_ZERO,
+	HB_P_ZERO,
+	HB_P_PUSHBYTE, 30,	/* 30 */
+	HB_P_PUSHBYTE, 120,	/* 120 */
+	HB_P_DOSHORT, 4,
+/* 00648 */ HB_P_LINEOFFSET, 17,	/* 25 */
+	HB_P_PUSHSYMNEAR, 20,	/* ASIZE */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+/* 00658 */ HB_P_LINEOFFSET, 18,	/* 26 */
+	HB_P_PUSHSYMNEAR, 20,	/* ASIZE */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 11,	/* M_PONTO */
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+/* 00668 */ HB_P_LINEOFFSET, 19,	/* 27 */
+	HB_P_PUSHVARIABLE, 21, 0,	/* MDATA_SIS */
+	HB_P_POPLOCALNEAR, 18,	/* MDATA1 */
+/* 00675 */ HB_P_LINEOFFSET, 20,	/* 28 */
+	HB_P_PUSHSYMNEAR, 22,	/* CTOD */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 9,	/* 9 */
+	' ', ' ', '/', ' ', ' ', '/', ' ', ' ', 0, 
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_POPLOCALNEAR, 19,	/* MDATA2 */
+/* 00695 */ HB_P_LINEOFFSET, 21,	/* 29 */
+	HB_P_PUSHSYMNEAR, 23,	/* MENSAGEM */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 36,	/* 36 */
+	'D', 'i', 'g', 'i', 't', 'e', ' ', 'o', ' ', 'C', 'o', 'd', 'i', 'g', 'o', ' ', 'd', 'o', ' ', 'O', 'p', 'e', 'r', 'a', 'd', 'o', 'r', ' ', 'e', ' ', 'S', 'e', 'n', 'h', 'a', 0, 
+	HB_P_DOSHORT, 1,
+/* 00740 */ HB_P_LINEOFFSET, 22,	/* 30 */
+	HB_P_PUSHSYMNEAR, 24,	/* SETCOR */
+	HB_P_PUSHNIL,
+	HB_P_ONE,
+	HB_P_DOSHORT, 1,
+/* 00748 */ HB_P_LINEOFFSET, 23,	/* 31 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_ZERO,
+	HB_P_ONE,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 17,	/* 17 */
+	'C', 'o', 'd', 'i', 'g', 'o', ' ', 'O', 'p', 'e', 'r', 'a', 'd', 'o', 'r', ':', 0, 
+	HB_P_DOSHORT, 1,
+/* 00781 */ HB_P_LINEOFFSET, 24,	/* 32 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_ONE,
+	HB_P_ONE,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 17,	/* 17 */
+	'D', 'a', 't', 'a', ' ', 'I', 'n', 'i', 'c', 'i', 'a', 'l', '.', '.', '.', ':', 0, 
+	HB_P_DOSHORT, 1,
+/* 00814 */ HB_P_LINEOFFSET, 25,	/* 33 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_ONE,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 17,	/* 17 */
+	'D', 'a', 't', 'a', ' ', 'F', 'i', 'n', 'a', 'l', '.', '.', '.', '.', '.', ':', 0, 
+	HB_P_DOSHORT, 1,
+/* 00848 */ HB_P_LINEOFFSET, 28,	/* 36 */
+	HB_P_PUSHSYMNEAR, 27,	/* SETPOS */
+	HB_P_PUSHNIL,
+	HB_P_ZERO,
+	HB_P_PUSHBYTE, 18,	/* 18 */
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 28,	/* AADD */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 29, 0,	/* GETLIST */
+	HB_P_PUSHSYMNEAR, 30,	/* __GET */
+	HB_P_PUSHNIL,
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 10,	/* 10 */
+	'm', 'c', 'o', 'd', '_', 'o', 'p', 'e', 'r', 0, 
+	HB_P_PUSHSTRSHORT, 4,	/* 4 */
+	'9', '9', '9', 0, 
+	HB_P_PUSHBLOCKSHORT, 62,	/* 62 */
+	HB_P_MODULENAME,	/* C:\helio\siachb\SACRL2.PRG:SACRL2 */
+ 'C', ':', '\\', 'h', 'e', 'l', 'i', 'o', '\\', 's', 'i', 'a', 'c', 'h', 'b', '\\', 'S', 'A', 'C', 'R', 'L', '2', '.', 'P', 'R', 'G', ':', 'S', 'A', 'C', 'R', 'L', '2', 0,
+	HB_P_PUSHSYMNEAR, 31,	/* EMPTY */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 6, 0,	/* MCOD_OPER */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_JUMPFALSENEAR, 5,	/* 5 (abs: 00936) */
+	HB_P_FALSE,
+	HB_P_JUMPNEAR, 13,	/* 13 (abs: 00947) */
+	HB_P_PUSHSYMNEAR, 32,	/* VEN */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 6, 0,	/* MCOD_OPER */
+	HB_P_ZERO,
+	HB_P_PUSHBYTE, 22,	/* 22 */
+	HB_P_FUNCTIONSHORT, 3,
+	HB_P_ENDBLOCK,
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 5,
+	HB_P_DOSHORT, 2,
+/* 00953 */ HB_P_LINEOFFSET, 28,	/* 36 */
+	HB_P_MESSAGE, 33, 0,	/* DISPLAY */
+	HB_P_PUSHMEMVAR, 29, 0,	/* GETLIST */
+	HB_P_PUSHBYTE, 255,	/* -1 */
+	HB_P_ARRAYPUSH,
+	HB_P_SENDSHORT, 0,
+	HB_P_POP,
+/* 00967 */ HB_P_LINEOFFSET, 29,	/* 37 */
+	HB_P_PUSHSYMNEAR, 27,	/* SETPOS */
+	HB_P_PUSHNIL,
+	HB_P_ONE,
+	HB_P_PUSHBYTE, 18,	/* 18 */
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 28,	/* AADD */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 29, 0,	/* GETLIST */
+	HB_P_PUSHSYMNEAR, 30,	/* __GET */
+	HB_P_PUSHNIL,
+	HB_P_PUSHBLOCK, 76, 0,	/* 76 */
+	1, 0,	/* number of local parameters (1) */
+	1, 0,	/* number of local variables (1) */
+	18, 0,	/* MDATA1 */
+	HB_P_MODULENAME,	/* C:\helio\siachb\SACRL2.PRG:SACRL2 */
+ 'C', ':', '\\', 'h', 'e', 'l', 'i', 'o', '\\', 's', 'i', 'a', 'c', 'h', 'b', '\\', 'S', 'A', 'C', 'R', 'L', '2', '.', 'P', 'R', 'G', ':', 'S', 'A', 'C', 'R', 'L', '2', 0,
+	HB_P_LOCALNAME, 255, 255,	/* MDATA1 */
+ 'M', 'D', 'A', 'T', 'A', '1', 0,
+	HB_P_LOCALNAME, 1, 0,	/* _1 */
+ '_', '1', 0,
+	HB_P_PUSHLOCALNEAR, 1,	/* codeblockvar1 */
+	HB_P_PUSHNIL,
+	HB_P_EXACTLYEQUAL,
+	HB_P_JUMPFALSENEAR, 6,	/* 6 (abs: 01056) */
+	HB_P_PUSHLOCALNEAR, 255,	/* localvar1 */
+	HB_P_JUMPNEAR, 7,	/* 7 (abs: 01061) */
+	HB_P_PUSHLOCALNEAR, 1,	/* codeblockvar1 */
+	HB_P_DUPLICATE,
+	HB_P_POPLOCALNEAR, 255,	/* localvar1 */
+	HB_P_ENDBLOCK,
+	HB_P_PUSHSTRSHORT, 7,	/* 7 */
+	'm', 'd', 'a', 't', 'a', '1', 0, 
+	HB_P_PUSHNIL,
+	HB_P_PUSHBLOCK, 71, 0,	/* 71 */
+	0, 0,	/* number of local parameters (0) */
+	1, 0,	/* number of local variables (1) */
+	18, 0,	/* MDATA1 */
+	HB_P_MODULENAME,	/* C:\helio\siachb\SACRL2.PRG:SACRL2 */
+ 'C', ':', '\\', 'h', 'e', 'l', 'i', 'o', '\\', 's', 'i', 'a', 'c', 'h', 'b', '\\', 'S', 'A', 'C', 'R', 'L', '2', '.', 'P', 'R', 'G', ':', 'S', 'A', 'C', 'R', 'L', '2', 0,
+	HB_P_LOCALNAME, 255, 255,	/* MDATA1 */
+ 'M', 'D', 'A', 'T', 'A', '1', 0,
+/* 01126 */ HB_P_LINE, 37, 0,	/* 37 */
+	HB_P_PUSHSYMNEAR, 31,	/* EMPTY */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 255,	/* localvar1 */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_JUMPFALSENEAR, 5,	/* 5 (abs: 01141) */
+	HB_P_FALSE,
+	HB_P_JUMPNEAR, 3,	/* 3 (abs: 01142) */
+	HB_P_TRUE,
+	HB_P_ENDBLOCK,
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 5,
+	HB_P_DOSHORT, 2,
+/* 01148 */ HB_P_LINEOFFSET, 29,	/* 37 */
+	HB_P_MESSAGE, 33, 0,	/* DISPLAY */
+	HB_P_PUSHMEMVAR, 29, 0,	/* GETLIST */
+	HB_P_PUSHBYTE, 255,	/* -1 */
+	HB_P_ARRAYPUSH,
+	HB_P_SENDSHORT, 0,
+	HB_P_POP,
+/* 01162 */ HB_P_LINEOFFSET, 30,	/* 38 */
+	HB_P_PUSHSYMNEAR, 27,	/* SETPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_PUSHBYTE, 18,	/* 18 */
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 28,	/* AADD */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 29, 0,	/* GETLIST */
+	HB_P_PUSHSYMNEAR, 30,	/* __GET */
+	HB_P_PUSHNIL,
+	HB_P_PUSHBLOCK, 76, 0,	/* 76 */
+	1, 0,	/* number of local parameters (1) */
+	1, 0,	/* number of local variables (1) */
+	19, 0,	/* MDATA2 */
+	HB_P_MODULENAME,	/* C:\helio\siachb\SACRL2.PRG:SACRL2 */
+ 'C', ':', '\\', 'h', 'e', 'l', 'i', 'o', '\\', 's', 'i', 'a', 'c', 'h', 'b', '\\', 'S', 'A', 'C', 'R', 'L', '2', '.', 'P', 'R', 'G', ':', 'S', 'A', 'C', 'R', 'L', '2', 0,
+	HB_P_LOCALNAME, 255, 255,	/* MDATA2 */
+ 'M', 'D', 'A', 'T', 'A', '2', 0,
+	HB_P_LOCALNAME, 1, 0,	/* _1 */
+ '_', '1', 0,
+	HB_P_PUSHLOCALNEAR, 1,	/* codeblockvar1 */
+	HB_P_PUSHNIL,
+	HB_P_EXACTLYEQUAL,
+	HB_P_JUMPFALSENEAR, 6,	/* 6 (abs: 01252) */
+	HB_P_PUSHLOCALNEAR, 255,	/* localvar1 */
+	HB_P_JUMPNEAR, 7,	/* 7 (abs: 01257) */
+	HB_P_PUSHLOCALNEAR, 1,	/* codeblockvar1 */
+	HB_P_DUPLICATE,
+	HB_P_POPLOCALNEAR, 255,	/* localvar1 */
+	HB_P_ENDBLOCK,
+	HB_P_PUSHSTRSHORT, 7,	/* 7 */
+	'm', 'd', 'a', 't', 'a', '2', 0, 
+	HB_P_PUSHNIL,
+	HB_P_PUSHBLOCK, 92, 0,	/* 92 */
+	0, 0,	/* number of local parameters (0) */
+	2, 0,	/* number of local variables (2) */
+	19, 0,	/* MDATA2 */
+	18, 0,	/* MDATA1 */
+	HB_P_MODULENAME,	/* C:\helio\siachb\SACRL2.PRG:SACRL2 */
+ 'C', ':', '\\', 'h', 'e', 'l', 'i', 'o', '\\', 's', 'i', 'a', 'c', 'h', 'b', '\\', 'S', 'A', 'C', 'R', 'L', '2', '.', 'P', 'R', 'G', ':', 'S', 'A', 'C', 'R', 'L', '2', 0,
+	HB_P_LOCALNAME, 255, 255,	/* MDATA2 */
+ 'M', 'D', 'A', 'T', 'A', '2', 0,
+	HB_P_LOCALNAME, 254, 255,	/* MDATA1 */
+ 'M', 'D', 'A', 'T', 'A', '1', 0,
+/* 01334 */ HB_P_LINE, 38, 0,	/* 38 */
+	HB_P_PUSHSYMNEAR, 31,	/* EMPTY */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 255,	/* localvar1 */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_DUPLICATE,
+	HB_P_JUMPTRUENEAR, 8,	/* 8 (abs: 01353) */
+	HB_P_PUSHLOCALNEAR, 255,	/* localvar1 */
+	HB_P_PUSHLOCALNEAR, 254,	/* localvar2 */
+	HB_P_LESS,
+	HB_P_OR,
+	HB_P_JUMPFALSENEAR, 5,	/* 5 (abs: 01358) */
+	HB_P_FALSE,
+	HB_P_JUMPNEAR, 3,	/* 3 (abs: 01359) */
+	HB_P_TRUE,
+	HB_P_ENDBLOCK,
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 5,
+	HB_P_DOSHORT, 2,
+/* 01365 */ HB_P_LINEOFFSET, 30,	/* 38 */
+	HB_P_MESSAGE, 33, 0,	/* DISPLAY */
+	HB_P_PUSHMEMVAR, 29, 0,	/* GETLIST */
+	HB_P_PUSHBYTE, 255,	/* -1 */
+	HB_P_ARRAYPUSH,
+	HB_P_SENDSHORT, 0,
+	HB_P_POP,
+/* 01379 */ HB_P_LINEOFFSET, 32,	/* 40 */
+	HB_P_PUSHSYMNEAR, 34,	/* READMODAL */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 29, 0,	/* GETLIST */
+	HB_P_PUSHNIL,
+	HB_P_PUSHNIL,
+	HB_P_PUSHNIL,
+	HB_P_PUSHNIL,
+	HB_P_PUSHNIL,
+	HB_P_PUSHNIL,
+	HB_P_DOSHORT, 7,
+	HB_P_ARRAYGEN, 0, 0,	/* 0 */
+	HB_P_POPVARIABLE, 29, 0,	/* GETLIST */
+/* 01401 */ HB_P_LINEOFFSET, 33,	/* 41 */
+	HB_P_PUSHSYMNEAR, 35,	/* LASTKEY */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_PUSHBYTE, 27,	/* 27 */
+	HB_P_EQUAL,
+	HB_P_JUMPFALSENEAR, 7,	/* 7 (abs: 01418) */
+/* 01413 */ HB_P_LINEOFFSET, 34,	/* 42 */
+	HB_P_JUMP, 155, 7,	/* 1947 (abs: 03362) */
+/* 01418 */ HB_P_LINEOFFSET, 36,	/* 44 */
+	HB_P_ARRAYGEN, 0, 0,	/* 0 */
+	HB_P_POPVARIABLE, 36, 0,	/* Q_CONS */
+/* 01426 */ HB_P_LINEOFFSET, 38,	/* 46 */
+	HB_P_MESSAGE, 37, 0,	/* EXEC */
+	HB_P_PUSHSYMNEAR, 38,	/* SR_GETCONNECTION */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_PUSHSTRSHORT, 41,	/* 41 */
+	'S', 'E', 'L', 'E', 'C', 'T', ' ', 'd', 'a', 't', 'a', ' ', 'F', 'R', 'O', 'M', ' ', 's', 'a', 'c', 'r', 'l', ' ', 'W', 'H', 'E', 'R', 'E', ' ', 'c', 'o', 'd', '_', 'o', 'p', 'e', 'r', ' ', '=', ' ', 0, 
+	HB_P_PUSHSYMNEAR, 39,	/* SR_CDBVALUE */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 40,	/* STRZERO */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 6, 0,	/* MCOD_OPER */
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_PLUS,
+	HB_P_PUSHSTRSHORT, 14,	/* 14 */
+	' ', 'A', 'N', 'D', ' ', 'd', 'a', 't', 'a', ' ', '>', '=', ' ', 0, 
+	HB_P_PLUS,
+	HB_P_PUSHSYMNEAR, 39,	/* SR_CDBVALUE */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 18,	/* MDATA1 */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_PLUS,
+	HB_P_PUSHSTRSHORT, 14,	/* 14 */
+	' ', 'A', 'N', 'D', ' ', 'd', 'a', 't', 'a', ' ', '<', '=', ' ', 0, 
+	HB_P_PLUS,
+	HB_P_PUSHSYMNEAR, 39,	/* SR_CDBVALUE */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 19,	/* MDATA2 */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_PLUS,
+	HB_P_PUSHSTRSHORT, 34,	/* 34 */
+	' ', 'G', 'R', 'O', 'U', 'P', ' ', 'B', 'Y', ' ', 'd', 'a', 't', 'a', ',', 'd', 'a', 't', 'a', ' ', 'O', 'R', 'D', 'E', 'R', ' ', 'B', 'Y', ' ', 'd', 'a', 't', 'a', 0, 
+	HB_P_PLUS,
+	HB_P_PUSHNIL,
+	HB_P_TRUE,
+	HB_P_PUSHMEMVARREF, 36, 0,	/* Q_CONS */
+	HB_P_SENDSHORT, 4,
+	HB_P_POP,
+/* 01590 */ HB_P_LINEOFFSET, 39,	/* 47 */
+	HB_P_PUSHSYMNEAR, 41,	/* LEN */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 36, 0,	/* Q_CONS */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_ZERO,
+	HB_P_EQUAL,
+	HB_P_JUMPFALSENEAR, 70,	/* 70 (abs: 01672) */
+/* 01604 */ HB_P_LINEOFFSET, 40,	/* 48 */
+	HB_P_PUSHSYMNEAR, 42,	/* ATENCAO */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 54,	/* 54 */
+	'N', 'a', 'o', ' ', 'e', 'x', 'i', 's', 't', 'e', ' ', 'l', 'a', 'n', 'c', 'a', 'm', 'e', 'n', 't', 'o', ' ', 'n', 'e', 's', 't', 'e', ' ', 'p', 'e', 'r', 'i', 'o', 'd', 'o', ' ', 'd', 'e', 's', 't', 'e', ' ', 'o', 'p', 'e', 'r', 'a', 'd', 'o', 'r', '.', '.', '.', 0, 
+	HB_P_DOSHORT, 1,
+/* 01667 */ HB_P_LINEOFFSET, 41,	/* 49 */
+	HB_P_JUMP, 235, 251,	/* -1045 (abs: 00624) */
+/* 01672 */ HB_P_LINEOFFSET, 43,	/* 51 */
+	HB_P_LOCALNEARSETINT, 7, 0, 0,	/* I 0*/
+/* 01678 */ HB_P_LINEOFFSET, 44,	/* 52 */
+	HB_P_PUSHSYMNEAR, 43,	/* IMP_ARQ */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 3, 0,	/* MARQ */
+	HB_P_PUSHSTRSHORT, 2,	/* 2 */
+	'R', 0, 
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_JUMPTRUENEAR, 7,	/* 7 (abs: 01699) */
+/* 01694 */ HB_P_LINEOFFSET, 45,	/* 53 */
+	HB_P_JUMP, 208, 251,	/* -1072 (abs: 00624) */
+/* 01699 */ HB_P_LINEOFFSET, 47,	/* 55 */
+	HB_P_LOCALNEARSETINT, 12, 0, 0,	/* MTOT_HORAS 0*/
+	HB_P_PUSHLOCALNEAR, 12,	/* MTOT_HORAS */
+	HB_P_DUPLICATE,
+	HB_P_POPVARIABLE, 44, 0,	/* MDIA_HORAS */
+	HB_P_DUPLICATE,
+	HB_P_POPLOCALNEAR, 20,	/* PAG */
+	HB_P_POPLOCALNEAR, 7,	/* I */
+/* 01716 */ HB_P_LINEOFFSET, 48,	/* 56 */
+	HB_P_PUSHSTRSHORT, 11,	/* 11 */
+	'O', 'P', 'E', 'R', 'A', 'D', 'O', 'R', ':', ' ', 0, 
+	HB_P_PUSHSYMNEAR, 40,	/* STRZERO */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 6, 0,	/* MCOD_OPER */
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_PLUS,
+	HB_P_PUSHSTRSHORT, 4,	/* 4 */
+	' ', '-', ' ', 0, 
+	HB_P_PLUS,
+	HB_P_PUSHSYMNEAR, 45,	/* SEN */
+	HB_P_PUSHALIASEDFIELDNEAR, 46,	/* SNOME */
+	HB_P_PLUS,
+	HB_P_POPVARIABLE, 5, 0,	/* MTIPO */
+/* 01757 */ HB_P_LINEOFFSET, 49,	/* 57 */
+	HB_P_LOCALNEARSETINT, 7, 1, 0,	/* I 1*/
+	HB_P_PUSHLOCALNEAR, 7,	/* I */
+	HB_P_PUSHSYMNEAR, 41,	/* LEN */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 36, 0,	/* Q_CONS */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_LESSEQUAL,
+	HB_P_JUMPFALSE, 254, 5,	/* 1534 (abs: 03308) */
+/* 01777 */ HB_P_LINEOFFSET, 50,	/* 58 */
+	HB_P_PUSHLOCALNEAR, 20,	/* PAG */
+	HB_P_ZERO,
+	HB_P_EQUAL,
+	HB_P_DUPLICATE,
+	HB_P_JUMPTRUENEAR, 11,	/* 11 (abs: 01795) */
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_PUSHBYTE, 59,	/* 59 */
+	HB_P_GREATEREQUAL,
+	HB_P_OR,
+	HB_P_JUMPFALSE, 132, 0,	/* 132 (abs: 01927) */
+/* 01798 */ HB_P_LINEOFFSET, 51,	/* 59 */
+	HB_P_LOCALNEARADDINT, 20, 1, 0,	/* PAG 1*/
+/* 01804 */ HB_P_LINEOFFSET, 52,	/* 60 */
+	HB_P_PUSHLOCALNEAR, 20,	/* PAG */
+	HB_P_ONE,
+	HB_P_GREATER,
+	HB_P_JUMPFALSENEAR, 9,	/* 9 (abs: 01819) */
+/* 01812 */ HB_P_LINEOFFSET, 53,	/* 61 */
+	HB_P_PUSHSYMNEAR, 48,	/* __EJECT */
+	HB_P_PUSHNIL,
+	HB_P_DOSHORT, 0,
+/* 01819 */ HB_P_LINEOFFSET, 55,	/* 63 */
+	HB_P_PUSHSYMNEAR, 49,	/* CABECALHO */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 20,	/* PAG */
+	HB_P_PUSHLOCALNEAR, 21,	/* MTIT */
+	HB_P_PUSHVARIABLE, 5, 0,	/* MTIPO */
+	HB_P_PUSHLOCALNEAR, 1,	/* MPRG */
+	HB_P_DOSHORT, 4,
+/* 01835 */ HB_P_LINEOFFSET, 56,	/* 64 */
+	HB_P_PUSHSYMNEAR, 50,	/* IMPRT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 1, 0,	/* MTIPO_IMP */
+	HB_P_PUSHSTRSHORT, 2,	/* 2 */
+	'N', 0, 
+	HB_P_DOSHORT, 2,
+/* 01849 */ HB_P_LINEOFFSET, 57,	/* 65 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 23,	/* 23 */
+	'C', 'o', 'd', '.', 'O', 'p', 'e', 'r', ' ', ' ', ' ', 'D', 'a', 't', 'a', ' ', ' ', ' ', 'H', 'o', 'r', 'a', 0, 
+	HB_P_DOSHORT, 1,
+/* 01895 */ HB_P_LINEOFFSET, 58,	/* 66 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 51,	/* REPLICATE */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 2,	/* 2 */
+	'=', 0, 
+	HB_P_PUSHBYTE, 80,	/* 80 */
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_DOSHORT, 1,
+/* 01927 */ HB_P_LINEOFFSET, 60,	/* 68 */
+	HB_P_ARRAYGEN, 0, 0,	/* 0 */
+	HB_P_POPLOCALNEAR, 10,	/* M_DADOS */
+/* 01934 */ HB_P_LINEOFFSET, 61,	/* 69 */
+	HB_P_MESSAGE, 37, 0,	/* EXEC */
+	HB_P_PUSHSYMNEAR, 38,	/* SR_GETCONNECTION */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_PUSHSTRSHORT, 38,	/* 38 */
+	'S', 'E', 'L', 'E', 'C', 'T', ' ', '*', ' ', 'F', 'R', 'O', 'M', ' ', 's', 'a', 'c', 'r', 'l', ' ', 'W', 'H', 'E', 'R', 'E', ' ', 'c', 'o', 'd', '_', 'o', 'p', 'e', 'r', ' ', '=', ' ', 0, 
+	HB_P_PUSHSYMNEAR, 39,	/* SR_CDBVALUE */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 40,	/* STRZERO */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 6, 0,	/* MCOD_OPER */
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_PLUS,
+	HB_P_PUSHSTRSHORT, 13,	/* 13 */
+	' ', 'A', 'N', 'D', ' ', 'd', 'a', 't', 'a', ' ', '=', ' ', 0, 
+	HB_P_PLUS,
+	HB_P_PUSHSYMNEAR, 39,	/* SR_CDBVALUE */
+	HB_P_PUSHNIL,
+	HB_P_PUSHMEMVAR, 36, 0,	/* Q_CONS */
+	HB_P_PUSHLOCALNEAR, 7,	/* I */
+	HB_P_ARRAYPUSH,
+	HB_P_ONE,
+	HB_P_ARRAYPUSH,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_PLUS,
+	HB_P_PUSHSTRSHORT, 15,	/* 15 */
+	' ', 'O', 'R', 'D', 'E', 'R', ' ', 'B', 'Y', ' ', 'h', 'o', 'r', 'a', 0, 
+	HB_P_PLUS,
+	HB_P_PUSHNIL,
+	HB_P_TRUE,
+	HB_P_PUSHLOCALREF, 10, 0,	/* M_DADOS */
+	HB_P_SENDSHORT, 4,
+	HB_P_POP,
+/* 02056 */ HB_P_LINEOFFSET, 62,	/* 70 */
+	HB_P_PUSHSYMNEAR, 41,	/* LEN */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_ZERO,
+	HB_P_EQUAL,
+	HB_P_JUMPFALSENEAR, 7,	/* 7 (abs: 02074) */
+/* 02069 */ HB_P_LINEOFFSET, 63,	/* 71 */
+	HB_P_JUMP, 206, 4,	/* 1230 (abs: 03301) */
+/* 02074 */ HB_P_LINEOFFSET, 65,	/* 73 */
+	HB_P_LOCALNEARSETINT, 24, 0, 0,	/* MHORA_ALMOCO 0*/
+	HB_P_PUSHLOCALNEAR, 24,	/* MHORA_ALMOCO */
+	HB_P_DUPLICATE,
+	HB_P_POPLOCALNEAR, 26,	/* X */
+	HB_P_POPLOCALNEAR, 25,	/* Y */
+/* 02087 */ HB_P_LINEOFFSET, 66,	/* 74 */
+	HB_P_PUSHSYMNEAR, 41,	/* LEN */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_LESSEQUAL,
+	HB_P_JUMPFALSE, 164, 1,	/* 420 (abs: 02519) */
+/* 02102 */ HB_P_LINEOFFSET, 67,	/* 75 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 40,	/* STRZERO */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 6, 0,	/* MCOD_OPER */
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_DOSHORT, 1,
+/* 02133 */ HB_P_LINEOFFSET, 68,	/* 76 */
+	HB_P_LOCALNEARSETINT, 25, 1, 0,	/* Y 1*/
+	HB_P_PUSHLOCALNEAR, 25,	/* Y */
+	HB_P_PUSHSYMNEAR, 41,	/* LEN */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_LESSEQUAL,
+	HB_P_JUMPFALSE, 101, 1,	/* 357 (abs: 02506) */
+/* 02152 */ HB_P_LINEOFFSET, 69,	/* 77 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_PUSHLOCALNEAR, 26,	/* X */
+	HB_P_PLUS,
+	HB_P_PUSHBYTE, 10,	/* 10 */
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHLOCALNEAR, 25,	/* Y */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_ARRAYPUSH,
+	HB_P_DOSHORT, 1,
+/* 02182 */ HB_P_LINEOFFSET, 70,	/* 78 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_PUSHSYMNEAR, 52,	/* PCOL */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 3, 0,	/* 3*/
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHLOCALNEAR, 25,	/* Y */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_DOSHORT, 1,
+/* 02215 */ HB_P_LINEOFFSET, 71,	/* 79 */
+	HB_P_LOCALNEARADDINT, 26, 1, 0,	/* X 1*/
+/* 02221 */ HB_P_LINEOFFSET, 72,	/* 80 */
+	HB_P_FALSE,
+	HB_P_PUSHSYMNEAR, 41,	/* LEN */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_GREATEREQUAL,
+	HB_P_JUMPFALSENEAR, 8,	/* 8 (abs: 02242) */
+	HB_P_POP,
+	HB_P_PUSHLOCALNEAR, 25,	/* Y */
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_EQUAL,
+	HB_P_JUMPFALSE, 255, 0,	/* 255 (abs: 02497) */
+/* 02245 */ HB_P_LINEOFFSET, 73,	/* 81 */
+	HB_P_PUSHSYMNEAR, 53,	/* HR_SEG */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 54,	/* ELAPTIME */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_ONE,
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_ONE,
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_POPLOCALNEAR, 24,	/* MHORA_ALMOCO */
+/* 02273 */ HB_P_LINEOFFSET, 74,	/* 82 */
+	HB_P_PUSHSYMNEAR, 53,	/* HR_SEG */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 54,	/* ELAPTIME */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_ONE,
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_POPLOCALNEAR, 22,	/* MPRIMEIRO */
+/* 02302 */ HB_P_LINEOFFSET, 75,	/* 83 */
+	HB_P_PUSHSYMNEAR, 55,	/* TSTRING */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 53,	/* HR_SEG */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 54,	/* ELAPTIME */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_ONE,
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_POPVARIABLE, 56, 0,	/* MHORAS_DIA */
+/* 02337 */ HB_P_LINEOFFSET, 76,	/* 84 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 30,	/* 30 */
+	' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '-', '-', '-', '-', '-', '-', '-', '-', 0, 
+	HB_P_DOSHORT, 1,
+/* 02390 */ HB_P_LINEOFFSET, 77,	/* 85 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 22,	/* 22 */
+	'T', 'o', 't', 'a', 'l', ' ', 'P', 'R', 'I', 'M', 'E', 'I', 'R', 'O', ' ', 'T', 'u', 'r', 'n', 'o', ':', 0, 
+	HB_P_PUSHSYMNEAR, 55,	/* TSTRING */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 22,	/* MPRIMEIRO */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_PLUS,
+	HB_P_DOSHORT, 1,
+/* 02443 */ HB_P_LINEOFFSET, 78,	/* 86 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+/* 02459 */ HB_P_LINEOFFSET, 79,	/* 87 */
+	HB_P_PUSHLOCALNEAR, 12,	/* MTOT_HORAS */
+	HB_P_PUSHSYMNEAR, 53,	/* HR_SEG */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 54,	/* ELAPTIME */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 57,	/* TRANSFORM */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 24,	/* MHORA_ALMOCO */
+	HB_P_PUSHSTRSHORT, 9,	/* 9 */
+	'9', '9', ':', '9', '9', ':', '9', '9', 0, 
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_PUSHVARIABLE, 56, 0,	/* MHORAS_DIA */
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_PLUS,
+	HB_P_POPLOCALNEAR, 12,	/* MTOT_HORAS */
+/* 02497 */ HB_P_LINEOFFSET, 84,	/* 92 */
+	HB_P_LOCALNEARADDINT, 25, 1, 0,	/* Y 1*/
+	HB_P_JUMP, 148, 254,	/* -364 (abs: 02139) */
+/* 02506 */ HB_P_LINEOFFSET, 85,	/* 93 */
+	HB_P_LOCALNEARSETINT, 23, 0, 0,	/* MSEGUNDO 0*/
+	HB_P_PUSHLOCALNEAR, 23,	/* MSEGUNDO */
+	HB_P_POPLOCALNEAR, 22,	/* MPRIMEIRO */
+	HB_P_JUMP, 15, 3,	/* 783 (abs: 03299) */
+/* 02519 */ HB_P_LINEOFFSET, 87,	/* 95 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 40,	/* STRZERO */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 6, 0,	/* MCOD_OPER */
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_DOSHORT, 1,
+/* 02550 */ HB_P_LINEOFFSET, 88,	/* 96 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_PUSHBYTE, 10,	/* 10 */
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_ONE,
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_ARRAYPUSH,
+	HB_P_DOSHORT, 1,
+/* 02576 */ HB_P_LINEOFFSET, 89,	/* 97 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_PUSHSYMNEAR, 52,	/* PCOL */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 3, 0,	/* 3*/
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_ONE,
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_DOSHORT, 1,
+/* 02608 */ HB_P_LINEOFFSET, 90,	/* 98 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_PUSHBYTE, 10,	/* 10 */
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_ARRAYPUSH,
+	HB_P_DOSHORT, 1,
+/* 02638 */ HB_P_LINEOFFSET, 91,	/* 99 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_PUSHSYMNEAR, 52,	/* PCOL */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 3, 0,	/* 3*/
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_DOSHORT, 1,
+/* 02671 */ HB_P_LINEOFFSET, 92,	/* 100 */
+	HB_P_PUSHSYMNEAR, 53,	/* HR_SEG */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 54,	/* ELAPTIME */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_ONE,
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_POPLOCALNEAR, 22,	/* MPRIMEIRO */
+/* 02700 */ HB_P_LINEOFFSET, 93,	/* 101 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 30,	/* 30 */
+	' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '-', '-', '-', '-', '-', '-', '-', '-', 0, 
+	HB_P_DOSHORT, 1,
+/* 02753 */ HB_P_LINEOFFSET, 94,	/* 102 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 22,	/* 22 */
+	'T', 'o', 't', 'a', 'l', ' ', 'P', 'R', 'I', 'M', 'E', 'I', 'R', 'O', ' ', 'T', 'u', 'r', 'n', 'o', ':', 0, 
+	HB_P_PUSHSYMNEAR, 55,	/* TSTRING */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 22,	/* MPRIMEIRO */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_PLUS,
+	HB_P_DOSHORT, 1,
+/* 02806 */ HB_P_LINEOFFSET, 95,	/* 103 */
+	HB_P_PUSHSYMNEAR, 53,	/* HR_SEG */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 54,	/* ELAPTIME */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_POPLOCALNEAR, 24,	/* MHORA_ALMOCO */
+/* 02836 */ HB_P_LINEOFFSET, 97,	/* 105 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_PUSHBYTE, 10,	/* 10 */
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_ARRAYPUSH,
+	HB_P_DOSHORT, 1,
+/* 02866 */ HB_P_LINEOFFSET, 98,	/* 106 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_PUSHSYMNEAR, 52,	/* PCOL */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 3, 0,	/* 3*/
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_DOSHORT, 1,
+/* 02899 */ HB_P_LINEOFFSET, 99,	/* 107 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_PUSHBYTE, 10,	/* 10 */
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHBYTE, 4,	/* 4 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 2,	/* 2 */
+	HB_P_ARRAYPUSH,
+	HB_P_DOSHORT, 1,
+/* 02929 */ HB_P_LINEOFFSET, 100,	/* 108 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_PUSHSYMNEAR, 52,	/* PCOL */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 3, 0,	/* 3*/
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHBYTE, 4,	/* 4 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_DOSHORT, 1,
+/* 02962 */ HB_P_LINEOFFSET, 101,	/* 109 */
+	HB_P_PUSHSYMNEAR, 53,	/* HR_SEG */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 54,	/* ELAPTIME */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHBYTE, 4,	/* 4 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_POPLOCALNEAR, 23,	/* MSEGUNDO */
+/* 02992 */ HB_P_LINEOFFSET, 102,	/* 110 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 30,	/* 30 */
+	' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '-', '-', '-', '-', '-', '-', '-', '-', 0, 
+	HB_P_DOSHORT, 1,
+/* 03045 */ HB_P_LINEOFFSET, 103,	/* 111 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 22,	/* 22 */
+	'T', 'o', 't', 'a', 'l', ' ', 'S', 'E', 'G', 'U', 'N', 'D', 'O', ' ', 'T', 'u', 'r', 'n', 'o', '.', ':', 0, 
+	HB_P_PUSHSYMNEAR, 55,	/* TSTRING */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 23,	/* MSEGUNDO */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_PLUS,
+	HB_P_DOSHORT, 1,
+/* 03098 */ HB_P_LINEOFFSET, 104,	/* 112 */
+	HB_P_PUSHSYMNEAR, 55,	/* TSTRING */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 53,	/* HR_SEG */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 54,	/* ELAPTIME */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_ONE,
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHLOCALNEAR, 10,	/* M_DADOS */
+	HB_P_PUSHBYTE, 255,	/* -1 */
+	HB_P_ARRAYPUSH,
+	HB_P_PUSHBYTE, 3,	/* 3 */
+	HB_P_ARRAYPUSH,
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_POPVARIABLE, 56, 0,	/* MHORAS_DIA */
+/* 03133 */ HB_P_LINEOFFSET, 107,	/* 115 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 25,	/* 25 */
+	'H', 'o', 'r', 'a', ' ', 'd', 'o', ' ', 'A', 'l', 'm', 'o', 'c', 'o', ' ', 'n', 'o', ' ', 'D', 'i', 'a', ':', ' ', ' ', 0, 
+	HB_P_PUSHSYMNEAR, 55,	/* TSTRING */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 24,	/* MHORA_ALMOCO */
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_PLUS,
+	HB_P_DOSHORT, 1,
+/* 03189 */ HB_P_LINEOFFSET, 109,	/* 117 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 26,	/* DEVOUT */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSTRSHORT, 22,	/* 22 */
+	'T', 'o', 't', 'a', 'l', ' ', 'd', 'e', ' ', 'H', 'o', 'r', 'a', 's', ' ', 'n', 'o', ' ', 'D', 'i', 'a', 0, 
+	HB_P_PUSHSYMNEAR, 55,	/* TSTRING */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 22,	/* MPRIMEIRO */
+	HB_P_PUSHLOCALNEAR, 23,	/* MSEGUNDO */
+	HB_P_PLUS,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_PLUS,
+	HB_P_DOSHORT, 1,
+/* 03245 */ HB_P_LINEOFFSET, 110,	/* 118 */
+	HB_P_PUSHSYMNEAR, 25,	/* DEVPOS */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 47,	/* PROW */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_ADDINT, 1, 0,	/* 1*/
+	HB_P_ZERO,
+	HB_P_DOSHORT, 2,
+/* 03261 */ HB_P_LINEOFFSET, 111,	/* 119 */
+	HB_P_PUSHLOCALNEAR, 12,	/* MTOT_HORAS */
+	HB_P_PUSHSYMNEAR, 53,	/* HR_SEG */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 54,	/* ELAPTIME */
+	HB_P_PUSHNIL,
+	HB_P_PUSHSYMNEAR, 57,	/* TRANSFORM */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 24,	/* MHORA_ALMOCO */
+	HB_P_PUSHSTRSHORT, 9,	/* 9 */
+	'9', '9', ':', '9', '9', ':', '9', '9', 0, 
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_PUSHVARIABLE, 56, 0,	/* MHORAS_DIA */
+	HB_P_FUNCTIONSHORT, 2,
+	HB_P_FUNCTIONSHORT, 1,
+	HB_P_PLUS,
+	HB_P_POPLOCALNEAR, 12,	/* MTOT_HORAS */
+/* 03299 */ HB_P_LINEOFFSET, 114,	/* 122 */
+	HB_P_LOCALNEARADDINT, 7, 1, 0,	/* I 1*/
+	HB_P_JUMP, 250, 249,	/* -1542 (abs: 01763) */
+/* 03308 */ HB_P_LINEOFFSET, 118,	/* 126 */
+	HB_P_PUSHSYMNEAR, 58,	/* SET */
+	HB_P_PUSHNIL,
+	HB_P_PUSHBYTE, 20,	/* 20 */
+	HB_P_PUSHSTRSHORT, 7,	/* 7 */
+	'S', 'C', 'R', 'E', 'E', 'N', 0, 
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 58,	/* SET */
+	HB_P_PUSHNIL,
+	HB_P_PUSHBYTE, 24,	/* 24 */
+	HB_P_PUSHSTRSHORT, 1,	/* 1 */
+	0, 
+	HB_P_DOSHORT, 2,
+	HB_P_PUSHSYMNEAR, 58,	/* SET */
+	HB_P_PUSHNIL,
+	HB_P_PUSHBYTE, 23,	/* 23 */
+	HB_P_PUSHSTRSHORT, 4,	/* 4 */
+	'O', 'F', 'F', 0, 
+	HB_P_DOSHORT, 2,
+/* 03349 */ HB_P_LINEOFFSET, 119,	/* 127 */
+	HB_P_PUSHSYMNEAR, 59,	/* CONF_IMPRESSAO */
+	HB_P_PUSHNIL,
+	HB_P_PUSHVARIABLE, 3, 0,	/* MARQ */
+	HB_P_DOSHORT, 1,
+	HB_P_JUMP, 81, 245,	/* -2735 (abs: 00624) */
+/* 03362 */ HB_P_LINEOFFSET, 121,	/* 129 */
+	HB_P_PUSHALIAS,
+	HB_P_PUSHSYMNEAR, 45,	/* SEN */
+	HB_P_POPALIAS,
+	HB_P_PUSHSYMNEAR, 60,	/* DBCLOSEAREA */
+	HB_P_PUSHNIL,
+	HB_P_DOSHORT, 0,
+	HB_P_POPALIAS,
+/* 03374 */ HB_P_LINEOFFSET, 122,	/* 130 */
+	HB_P_PUSHSYMNEAR, 61,	/* WVW_LCLOSEWINDOW */
+	HB_P_PUSHNIL,
+	HB_P_DOSHORT, 0,
+/* 03381 */ HB_P_LINEOFFSET, 123,	/* 131 */
+	HB_P_PUSHNIL,
+	HB_P_RETVALUE,
+	HB_P_ENDPROC
+/* 03386 */
+   };
+
+   hb_vmExecute( pcode, symbols, NULL );
+}
+
+HB_FUNC_INITLINES()
+{
+   static const BYTE pcode[] =
+   {
+	HB_P_MODULENAME,	/* SACRL2 */
+ 'S', 'A', 'C', 'R', 'L', '2', 0,
+	HB_P_PUSHSTRSHORT, 27,	/* 27 */
+	'C', ':', 92, 'h', 'e', 'l', 'i', 'o', 92, 's', 'i', 'a', 'c', 'h', 'b', 92, 'S', 'A', 'C', 'R', 'L', '2', '.', 'P', 'R', 'G', 0, 
+	HB_P_ZERO,
+	HB_P_PUSHSTRSHORT, 18,	/* 18 */
+	8, 213, 236, 255, 's', 215, 187, 191, 247, 254, 255, 176, 255, 254, 233, 196, 14, 0, 
+	HB_P_ARRAYGEN, 3, 0,	/* 3 */
+	HB_P_ARRAYGEN, 1, 0,	/* 1 */
+	HB_P_RETVALUE,
+	HB_P_ENDPROC
+/* 00066 */
+   };
+
+   hb_vmExecute( pcode, symbols, NULL );
+}
+

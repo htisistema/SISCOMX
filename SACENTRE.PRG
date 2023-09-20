@@ -1,0 +1,401 @@
+******************************
+* ENTREGA DE PEDIDO's
+*******************************
+MEMVAR getlist,nivel_acess,mdata_sis,cod_operado,memp_resa,mend_firm,mcid_firm,;
+       mfone_firm
+
+FUNCTION sacentre
+***************
+LOCAL mprg:='SACENTRE',mtitulo:='ENTREGA DE PEDIDOS'
+LOCAL opcao,tela,tela1,tela2,lci,cci,lba,cba,pode,matriz:={},mpos:={},;
+      point,mserie,li,ci,lb,cb,f:=0,m:=0,mtot_ped:=0
+
+PRIVATE mcliente,mponto,mnum_ped,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),cons_pedido:={},ali:='ped_s',cons_cli := {}
+
+IF ! ver_nivel(mprg,mtitulo,'123456',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+CLEAR GETS
+
+lci := cci := 0
+lba = 23
+cba = 79
+
+li = 04
+ci = 00
+lb = 23
+cb = 79
+tela = SAVESCREEN(01,00,30,79)
+*----------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('sacserie','serie');RETURN NIL;ENDIF
+//
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacmov','mov');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('sacav','av');RETURN NIL;ENDIF
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+*---------------------------------------------
+alt_senha('1')
+ver_ven(cod_operado)
+op_tela(00,10,30,90,mtitulo)
+
+WHILE .T.
+        mtipo_imp := m_indiv[1,18]
+        mensagem('Preencha os Campos - <ESC> p/Retornar ')
+        mnum_ped := 0
+        mcliente = SPACE(40)
+        setcor(1)
+        DEVPOS(00,02);DEVOUT('No.Pedido:')
+        DEVPOS(00,21);DEVOUT('Data:')
+        DEVPOS(00,37);DEVOUT('Vend:')
+        DEVPOS(01,02);DEVOUT('Codigo....:')
+        DEVPOS(02,02);DEVOUT('C.P.F.....:')
+        DEVPOS(02,30);DEVOUT('C.G.C.:')
+        DEVPOS(03,02);DEVOUT('Cond.Pagamento:')
+        setcor(3)
+        @ 04,0 TO 04,90
+        @ 06,0 TO 06,90
+        @ 28,0 TO 28,90
+        setcor(1)
+        janela(04,79,' Resumo do Pedido ','*')
+
+        DEVPOS(05,01);DEVOUT('Cod.')
+        DEVPOS(05,08);DEVOUT('Descricao')
+        DEVPOS(05,44);DEVOUT('Quantd.')
+        DEVPOS(05,55);DEVOUT('Pr.Unit.')
+        DEVPOS(05,67);DEVOUT('Valor Total')
+
+        DEVPOS(29,02);DEVOUT('Total do Pedido:')
+
+        @ 00,14 GET mnum_ped PICT '999999' VALID IF(EMPTY(mnum_ped),.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        cons_pedido := {}
+        cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+        sr_getconnection():exec(ccomm,,.t.,@cons_pedido)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(cons_pedido) = 0
+                atencao('Pedido nao Cadastrado !!!')
+                LOOP
+        ENDIF
+        IF cons_pedido[1,49] = 'C'
+                atencao('Este pedido foi CANCELADO !!!, nao pode entregar')
+                LOOP
+        ENDIF        
+        IF cons_pedido[1,49] = 'N'
+                atencao('Este pedido e NAO PRODUCAO !!!, nao pode entregar - <ESC>Sair')
+                LOOP
+        ENDIF        
+/*
+        ********************
+        SELE('ped_s');ORDSETFOCUS(1)
+        GO TOP
+        ********************
+
+        IF ! ped_s->(DBSEEK(STRZERO(mnum_ped,6)))
+                atencao('Pedido nao Cadastrado !!!')
+                LOOP
+        ENDIF
+        mponto := RECNO()
+*/
+        setcor(3)
+        DEVPOS(00,42);DEVOUT(cons_pedido[1,32])
+        DEVPOS(03,18);DEVOUT(cons_pedido[1,45])
+        setcor(1)
+        ven(VAL(cons_pedido[1,32]),0,46)
+        IF cons_pedido[1,45] = 'AP'
+                DEVPOS(03,21);DEVOUT('Qt.Vezes:')
+                DEVPOS(03,36);DEVOUT('Intervalo:')
+                setcor(3)
+                DEVPOS(03,31);DEVOUTPICT(cons_pedido[1,43],'@@R 9-9')
+                DEVPOS(03,47);DEVOUTPICT(cons_pedido[1,44],'99')
+                setcor(1)
+        ELSE
+                setcor(3)
+                DEVPOS(03,21);DEVOUT('A VISTA')
+                setcor(1)
+        ENDIF
+        setcor(3)
+        DEVPOS(00,27);DEVOUT(mdata_sis)
+        ver_cli(VAL(cons_pedido[1,23]),01,21)
+        DEVPOS(01,14);DEVOUT(cons_pedido[1,23]+' - ')
+        DEVPOS(01,21);DEVOUT(mcliente)
+        DEVPOS(02,14);DEVOUTPICT(cons_pedido[1,25],'@@R 999.999.999-99')
+        DEVPOS(02,38);DEVOUTPICT(cons_pedido[1,24],'@@R 99.999.999/9999-99')
+        setcor(1)
+        pode := .T.
+        f:=xlin:=0
+        mtot_ped:=0
+        FOR f=1 TO LEN(cons_pedido)
+                IF xlin>=20
+                        scroll(09,00,29,79,1)
+                else
+                        xlin++
+                ENDIF
+                setcor(3)
+                DEVPOS(6+xlin,01);DEVOUT(cons_pedido[f,6])
+                DEVPOS(6+xlin,07);DEVOUT(LEFT(cons_pedido[f,7],35))
+                DEVPOS(6+xlin,43);DEVOUTPICT(cons_pedido[f,14],'99999.99')
+                DEVPOS(6+xlin,52);DEVOUTPICT(cons_pedido[f,18],'9999999.99')
+                DEVPOS(6+xlin,66);DEVOUTPICT(cons_pedido[f,14] * cons_pedido[f,18],'9999999.99')
+                mtot_ped := mtot_ped + (cons_pedido[f,14] * cons_pedido[f,18])
+                DEVPOS(29,19);DEVOUT(TRANSFORM(mtot_ped,'999,999,999.99'))
+        NEXT
+        setcor(1)
+        IF cons_pedido[1,49] = ' '
+                IF ver_serie() = '141287' .OR. ver_serie() = '14128D' .OR.;
+                   ver_serie() = '141220' .OR. ver_serie() = '141265'
+                        IF cons_pedido[1,62] = '*'
+                                opcao := op_simnao('N','Este pedido nao esta PAGO !!!, e foi ENTREGUE no dia: '+DTOC(cons_pedido[1,64])+' Pelo operador: '+cons_pedido[1,63]+' Deseja Estornar este Pedido entregue:')
+                                IF opcao = 'S'
+                                        cComm  := "UPDATE sacped_s SET pentreg = NULL,pent_por = "+sr_cdbvalue(cod_operado)+",pent_dat = NULL WHERE pnum_ped = "+sr_cdbvalue(cons_pedido[1,2])
+                                        sr_getconnection():exec(ccomm,,.f.)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+                                ENDIF
+                                EXIT
+                        ELSE
+                                mensagem('Este pedido nao esta PAGO !!!, <ENTER>p/entregar - <ESC>Sair')
+                        ENDIF
+                ELSE
+                        atencao('Este pedido nao esta PAGO !!!, nao pode entregar')
+                        EXIT
+                ENDIF
+        ELSEIF cons_pedido[1,49] = '*' .AND. cons_pedido[1,62] = '*'
+                IF ver_serie() = '141287' .OR. ver_serie() = '14128D' .OR. ver_serie() = '141265'
+                        opcao := op_simnao('N','Este pedido ja foi PAGO !!!, e foi ENTREGUE no dia: '+DTOC(cons_pedido[1,64])+' Pelo operador: '+cons_pedido[1,63]+' Deseja Estornar este Pedido entregue:')
+                        IF opcao = 'S'
+                                cComm  := "UPDATE sacped_s SET pentreg = NULL,pent_por = "+sr_cdbvalue(cod_operado)+",pent_dat = NULL WHERE pnum_ped = "+sr_cdbvalue(cons_pedido[1,2])
+                                sr_getconnection():exec(ccomm,,.f.)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                        ENDIF
+                        EXIT
+                ELSE
+                        atencao('Este pedido ja foi PAGO e entregue, no dia: '+DTOC(cons_pedido[1,64])+' Pelo operador: '+cons_pedido[1,63])
+                        EXIT
+                ENDIF
+        ELSEIF cons_pedido[1,49] = '*'
+                mensagem('Este pedido ja foi PAGO !!! - <ENTER>p/entregar - <ESC>nao entregar')
+        ENDIF
+        INKEY(0)
+        DO CASE
+                CASE LASTKEY()=13
+                        IF cons_pedido[1,49] = '*' .AND. cons_pedido[1,62] = '*'
+                                IF ver_serie() = '141235'
+                                        opcao := mensagem1('Deseja Imprimir o bilhete da entrega do pedido','S','S,N')
+                                        IF opcao = 'N' .OR. LASTKEY() = 27
+                                                CLEAR GETS
+                                                EXIT
+                                        ENDIF
+                                        imp_entre()
+                                ENDIF
+                                LOOP
+                        ELSE    //IF ppag = '*'
+                                opcao := op_simnao('N','Deseja da como entrege este pedido:')
+                                IF LASTKEY() = 27
+                                        LOOP
+                                ENDIF
+                                IF opcao = 'S'
+                                        cComm  := "UPDATE sacped_s SET pentreg = '*',pent_por = "+sr_cdbvalue(cod_operado)+",pent_dat = "+sr_cdbvalue(mdata_sis)+" WHERE pnum_ped = "+sr_cdbvalue(cons_pedido[1,2])
+                                        sr_getconnection():exec(ccomm,,.f.)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+                                        m:=0
+                                        FOR m = 1 TO LEN(cons_pedido)
+                                                AADD(matriz,'Produto: '+cons_pedido[m,6]+'-'+cons_pedido[m,7]+' Serie: '+SPACE(15))
+                                                AADD(mpos,{cons_pedido[m,6],cons_pedido[m,7],SPACE(15)})
+                                        NEXT
+                                        IF ver_serie() = '141235'
+                                                opcao := op_simnao('S','Deseja Imprimir o bilhete da entrega do pedido:')
+                                                IF opcao = 'N'
+                                                        CLEAR GETS
+                                                        EXIT
+                                                ENDIF
+                                                imp_entre()
+                                        ENDIF
+                                ELSE
+                                        LOOP
+                                ENDIF
+                                CLEAR GETS
+                                EXIT
+                        ENDIF
+                CASE LASTKEY()=27
+                        EXIT
+        ENDCASE
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************** FIM ***************************
+**************************************
+* IMPRIMI O PEDIDO ENTREGUE
+**************************************
+
+FUNCTION imp_entre()
+********************
+LOCAL i := 0,mpagina,mtraco,mt_pedido,mtot_desc,mtot_quant,mperc,mdesconto,mtot_ipi,m:=0
+MEMVAR mponto,mtipo_imp,mcliente,mnum_ped,mimp_tipo
+mpagina := 0
+IF ! imp_arq('PED_ENTRE.REL','T')
+        RETURN NIL
+ENDIF
+FOR i = 1 TO m_indiv[1,11]
+        IF m_indiv[1,9] = 'F'
+                mtraco := REPLI('=',80)
+                IF m_set[1,11] = 'I'
+                        mpagina := 88
+                ELSE
+                        mpagina := 28
+                ENDIF
+                GO mponto
+                mt_pedido := mtot_desc := mtot_quant := mperc := mdesconto := mtot_ipi := 0
+                IF mtipo_imp = 'M'
+                        imprt(mtipo_imp,'P8')
+                ENDIF
+                imprt(mtipo_imp,'N')
+                IF m_set[1,22] = 'S'
+                        imprt(mtipo_imp,'E')
+                        DEVPOS(PROW(),00);DEVOUT(memp_resa)
+                        imprt(mtipo_imp,'C',1)
+                        DEVPOS(PROW(),00);DEVOUT(mend_firm+'-'+mcid_firm+  +'Fone: '+mfone_firm)
+                        imprt(mtipo_imp,'N',1)
+                        @ PROW(),00 SAY mtraco
+                ENDIF
+                imprt(mtipo_imp,'E',1)
+                @ PROW(),00 SAY 'ENTREGA DE PEDIDO No.: '+cons_pedido[1,2]
+                imprt(mtipo_imp,'N',1)
+                @ PROW(),00 SAY 'Emissao:'
+                @ PROW(),10 SAY cons_pedido[1,4]
+                @ PROW(),20 SAY 'Hora:'
+                @ PROW(),26 SAY cons_pedido[1,47]
+                @ PROW(),37 SAY 'Cod.:'
+                @ PROW(),43 SAY cons_pedido[1,32]
+                IF ! EMPTY(cons_pedido[1,23])
+                        imprt(mtipo_imp,'C',1)
+                        @ PROW(),00 SAY 'Cliente:'
+                        @ PROW(),PCOL()+1 SAY cons_pedido[1,23]
+                        ver_cli(VAL(cons_pedido[1,23]),,,'*')
+                        @ PROW(),PCOL()+1 SAY mcliente
+                        imprt(mtipo_imp,'N')
+                ENDIF
+                imprt(mtipo_imp,'N',1)
+                @ PROW(),00 SAY mtraco
+                imprt(mtipo_imp,'C',1)
+                @ PROW(),00 SAY 'Cod.'
+                @ PROW(),06 SAY 'Descricao'
+                @ PROW(),48 SAY ' Loc'
+                @ PROW(),PCOL()+2 SAY 'UN'
+                @ PROW(),PCOL()+2 SAY '  Quantd.'
+                imprt(mtipo_imp,'N',1)
+                @ PROW(),00 SAY mtraco
+                m:=0
+                FOR m = 1 TO LEN(cons_pedido)
+                //WHILE STRZERO(mnum_ped,6) = ped_s->pnum_ped .AND. ! EOF()
+                        imprt(mtipo_imp,'C',1)
+                        @ PROW(),00 SAY cons_pedido[m,6]
+                        @ PROW(),06 SAY cons_pedido[m,7]
+                        @ PROW(),PCOL()+2 SAY cons_pedido[m,92]
+                        @ PROW(),PCOL()+2 SAY cons_pedido[m,8]
+                        @ PROW(),PCOL()+2 SAY cons_pedido[m,14] PICT '99,999.99'
+                        //SKIP
+                        IF PROW() >= mpagina    //.AND. STRZERO(mnum_ped,6) == ped_s->pnum_ped .AND. ! EOF()
+                                imprt(mtipo_imp,'N',1)
+                                @ PROW(),00 SAY mtraco
+                                EJECT
+                                IF m_set[1,22] = 'S'
+                                        imprt(mtipo_imp,'E')
+                                        DEVPOS(PROW(),00);DEVOUT(memp_resa)
+                                        imprt(mtipo_imp,'C',1)
+                                        DEVPOS(PROW(),00);DEVOUT(mend_firm+' - '+mcid_firm+  +'Fone: '+mfone_firm)
+                                        imprt(mtipo_imp,'N',1)
+                                        @ PROW(),00 SAY mtraco
+                                ENDIF
+                                imprt(mtipo_imp,'E',1)
+                                @ PROW(),00 SAY 'ENTREGA DE PEDIDO No.: '+cons_pedido[1,2]
+                                imprt(mtipo_imp,'N',1)
+                                IF ! EMPTY(cons_pedido[1,23])
+                                        @ PROW(),00 SAY 'Cliente:'
+                                        @ PROW(),PCOL()+1 SAY cons_pedido[1,23]
+                                        @ PROW(),PCOL()+1 SAY mcliente
+                                        @ PROW()+1,00 SAY 'Emissao:'
+                                ELSE
+                                        @ PROW(),00 SAY 'Emissao:'
+                                ENDIF
+                                @ PROW(),10 SAY cons_pedido[1,4]
+                                @ PROW(),20 SAY 'Hora:'
+                                @ PROW(),26 SAY cons_pedido[1,47]
+                                @ PROW(),37 SAY 'Cod.:'
+                                @ PROW(),43 SAY cons_pedido[1,32]
+                                @ PROW(),00 SAY PADL('continuacao',80)
+                                imprt(mtipo_imp,'N',1)
+                                @ PROW(),00 SAY mtraco
+                                imprt(mtipo_imp,'C',1)
+                               @ PROW(),00 SAY 'Cod.'
+                               @ PROW(),06 SAY 'Descricao'
+                               @ PROW(),48 SAY ' Loc'
+                               @ PROW(),PCOL()+2 SAY 'UN'
+                               @ PROW(),PCOL()+2 SAY '  Quantd.'
+                               imprt(mtipo_imp,'N',1)
+                               @ PROW(),00 SAY mtraco
+                        ENDIF
+                NEXT
+                //ENDDO
+                @ PROW()+1,00 SAY mtraco
+                //IF set->copia > 1
+                //       imprt(mtipo_imp,'N',1)
+                //ENDIF
+                EJECT
+                imprt(mtipo_imp,'P6')
+        ELSE
+                mtraco := REPLI('=',60)
+                mt_pedido := mtot_desc := mtot_quant := mperc := mdesconto := mtot_ipi := 0
+                imprt(mtipo_imp,'N')
+                IF m_set[1,22] = 'S'
+                        imprt(mtipo_imp,'N',1)
+                       DEVPOS(PROW(),00);DEVOUT(PADC(RTRIM(memp_resa),40))
+                       imprt(mtipo_imp,'C',1)
+                       DEVPOS(PROW(),00);DEVOUT(PADC(RTRIM(mend_firm),58))
+                       DEVPOS(PROW()+1,00);DEVOUT(PADC(RTRIM(mcid_firm),58))
+                       DEVPOS(PROW()+1,00);DEVOUT(PADC(RTRIM('Fone: '+mfone_firm),58))
+                       @ PROW()+1,00 SAY mtraco
+                ENDIF
+                imprt(mtipo_imp,'N')
+                @ PROW()+1,00 SAY 'ENTREGA DE PEDIDO No.: '+cons_pedido[1,2]
+                imprt(mtipo_imp,'C')
+                @ PROW()+1,00 SAY 'Emissao:'
+                @ PROW(),10 SAY cons_pedido[1,4]
+                @ PROW(),20 SAY 'Hora:'
+                @ PROW(),26 SAY cons_pedido[1,47]
+                @ PROW(),37 SAY 'Cod.:'
+                @ PROW(),43 SAY cons_pedido[1,32]
+                IF ! EMPTY(cons_pedido[1,23])
+                        @ PROW()+1,00 SAY 'Cliente:'
+                        @ PROW(),PCOL()+1 SAY cons_pedido[1,23]
+                        ver_cli(VAL(cons_pedido[1,23]),,,'*')
+                        @ PROW(),PCOL()+1 SAY mcliente
+                ENDIF
+                @ PROW()+1,00 SAY mtraco
+                @ PROW()+1,00 SAY 'Cod.'
+                @ PROW(),06 SAY 'Descricao'
+                @ PROW(),48 SAY '  Quantd.'
+                @ PROW()+1,00 SAY mtraco
+                //WHILE STRZERO(mnum_ped,6) = ped_s->pnum_ped .AND. ! EOF()
+                m:=0
+                FOR m = 1 TO LEN(cons_pedido)
+                        @ PROW()+1,00 SAY cons_pedido[m,6]
+                        @ PROW(),06 SAY cons_pedido[m,7]
+                        @ PROW(),PCOL()+2 SAY cons_pedido[m,14] PICT '99,999.99'
+                NEXT
+                //ENDDO
+                @ PROW()+1,00 SAY mtraco
+                imprt(mtipo_imp,'N',m_indiv[1,16])
+        ENDIF
+NEXT
+SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+conf_impressao('PED_ENTRE.REL')
+RETURN NIL
+

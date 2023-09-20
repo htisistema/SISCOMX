@@ -1,0 +1,58 @@
+P10 CPI:
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+
+M12 CPI:
+123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456
+
+P17 CPI:
+12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567
+
+M20 CPI:
+1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+P
+Double width:
+1234567890123456789012345678901234567890
+
+w1Double height
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+w0
+PAscii graphics:ÚÄÂÄÄ¿ ÉÍÍËÍ»
+               ³ ³  ³ ÌÍÍÎÍ¹
+               ÃÄÅÄÄ´ º  º º
+               ÀÄÁÄÄÙ ÈÍÍÊÍ¼
+
+Backspace sample: O+X=OX
+
+Bit-image mode (ESC* command): *'‹         ÿ ç ‡   008888888888889÷89÷89÷89÷88888888<8<8<8>8øø  Ç ÷  ÿ         '  / { ãƒ2Ä„ˆ`PÀ À`pPˆÄò:ƒ Ã s  _  '   @  |  € ø ?ş 3ÿÀ?üş ~       aÀ^€^Ì^Üw  Á€^€^ÀŞ?        şş?üÿàÿ ğ € |  @   ÿ ÿ à ğ:8qaÀ‚ÀDÀHÀ0ÀÀÀ(ÀDÀDà‚aq: ø ğƒàÿ ş 
+
+Bar code (ESC ( B command):  (B ş„ 201234567890
+
+
+
+
+EBoldF 4TESTE5 -1Underline-0 r1Blue r2Cyan r3Magenta r4Yellow r5Red r6Green r0Black
+Select typeface (ESC k):k Lucida Console, kMonotype Corsiva, kArial, kImpactk ...
+
+
+Select font size by pitch and point (ESC X command): X! SMALL XIu bigX!  SMALLP
+
+Current character set:
+ASCII 32-79  :  !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNO
+ASCII 80-127 : PQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+ASCII 128-175: €‚ƒ„…†‡ˆ‰Š‹Œ‘’“”•–—˜™š›œŸ ¡¢£¤¥¦§¨©ª«¬­®¯
+ASCII 176-223: °±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞß
+ASCII 224-255: àáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ
+
+Embedded graphics:"Sample.bmp"
+                    Text
+                    over
+                    image
+
+
+
+
+
+
+
+
+MESample printout for demonstration of DOSPrinter, CopyrightR@{RA2005 Alternet software. See details at www.geocities.com/dosprint. Read license.txt for Terms of Use.F

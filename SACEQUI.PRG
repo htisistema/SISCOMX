@@ -1,0 +1,170 @@
+********************
+* Relatorio do EQUIFAX
+********************
+
+FUNCTION sacequi
+**************
+LOCAL MPRG:='SACEQUI',mtitulo:='EMISSAO DO ARQUIVO EQUIFAX',;
+      opcao,mponto,morde,mdata1,mdata2
+local nErr, nPos,;
+        vEmp := {},aret:={},;
+        nCnn,oSql,;
+        cComm, apCode,m_param:={}
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),cons_cli := {}
+
+IF ! ver_nivel(mprg,mtitulo,'15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+mtraco := REPLI('=',132)
+
+*----------------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+*----------------------------------------------------------------------------
+SET CENTURY ON
+op_tela(10,10,12,60,mtitulo)
+WHILE .T.
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        mdata1 := mdata2 := CTOD('  /  /  ')
+        setcor(1)
+        DEVPOS(00,00);DEVOUT('Data Inicial:')
+        DEVPOS(01,00);DEVOUT('Data Final..:')
+        mensagem('Digite as Datas que deseja - <ESC> Sair')
+        @ 00,14 GET mdata1
+        @ 01,14 GET mdata2 VALID IF(mdata2 < mdata1,.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                SET CENTURY OFF
+                RETURN NIL
+        ENDIF
+
+
+        mensagem('Aguarde o Coletando dados p/ impressao...')
+        ************************************************************
+        cComm  := "SELECT * FROM sacdupr WHERE emissao  BETWEEN "+sr_cdbvalue(mdata1)+" AND "+sr_cdbvalue(mdata2)
+        ccomm := ccomm + " ORDER BY emissao,fornec,banco,duplicata"
+        apCode := SR_SQLParse( cComm, @nErr, @nPos )
+        cComm  := SR_SQLCodeGen(apCode,{mdata1,mdata2},sr_getconnection():nsystemid)
+        //atencao(ccomm)
+        dbUseArea( .F.,"SQLRDD",cComm,"q_dupr")
+        malias := 'q_dupr'
+        SELE('q_dupr')
+        //atencao(STRZERO(LASTREC(),8))
+        DBGOTOP()
+        IF EOF()
+                atencao('Nao existe documento neste Periodo...')
+                (malias)->(DBCLOSEAREA())
+                LOOP
+        ENDIF
+
+
+
+        IF ! imp_arq('EQUIFAX.TXT','R')
+                (malias)->(DBCLOSEAREA())
+                LOOP
+        ENDIF
+/*
+        ****************
+        SELE('dupr');ORDSETFOCUS(5)
+        GO TOP
+        ****************
+        dupr->(DBSEEK(DTOS(mdata1),.T.))
+        IF EOF()
+                atencao('Nao existe movimento neste periodo !!!')
+                LOOP
+        ENDIF
+*/
+        WHILE ! EOF()   //.AND. q_dupr->emissao<=mdata2
+                prog_imp(RECNO(),DTOC(q_dupr->emissao))
+                ver_cli(VAL(q_dupr->fornec),,,'*')
+                //IF EMPTY(cli->cgc)
+                //        SKIP
+                //        LOOP
+                //ENDIF
+                IF EMPTY(cli->cgc) .AND. EMPTY(cli->cpf) .AND. EMPTY(cli->cep)
+                        SKIP
+                        LOOP
+                ENDIF
+                IF ! EMPTY(cli->cgc)
+                        //IF ! EMPTY(q_dupr->datpag)
+                                DEVPOS(PROW(),00);DEVOUT('J')
+                        //ELSE
+                        //        DEVPOS(PROW(),00);DEVOUT('U')
+                        //ENDIF
+                        DEVPOS(PROW(),01);DEVOUT(cli->cgc)
+                        DEVPOS(PROW(),15);DEVOUT(cli->razao)
+                        //DEVPOS(PROW(),70);DEVOUT(cli->nome)
+                        DEVPOS(PROW(),70);DEVOUT(SPACE(55))
+                        //DEVPOS(PROW(),125);DEVOUT('M')
+                        DEVPOS(PROW(),125);DEVOUT(' ')
+                        DEVPOS(PROW(),126);DEVOUT(cli->endereco+', '+RTRIM(cli->numero)+IF(! EMPTY(RTRIM(cli->complemento)),' - Compl.:'+RTRIM(cli->complemento),''))
+                        DEVPOS(PROW(),196);DEVOUT(cli->cidade)
+                        DEVPOS(PROW(),226);DEVOUT(cli->uf)
+                        DEVPOS(PROW(),228);DEVOUT(LEFT(STRTRAN(cli->cep,'-',''),8))
+                        DEVPOS(PROW(),PCOL());DEVOUT(SPACE(78))
+*                       DEVPOS(PROW(),240);DEVOUT(SUBSTR(cli->tel1,1,10))
+*                       DEVPOS(PROW(),254);DEVOUT(SUBSTR(cli->fax,1,10))
+*                       DEVPOS(PROW(),264);DEVOUT(cli->email)
+                        //DEVPOS(PROW(),240);DEVOUT(SPACE(10))
+                        //DEVPOS(PROW(),250);DEVOUT(SPACE(4))
+                        //DEVPOS(PROW(),254);DEVOUT(SPACE(10))
+                        //DEVPOS(PROW(),264);DEVOUT(cli->email)
+                        DEVPOS(PROW(),314);DEVOUT(SUBSTR(DTOC(cli->data_cad),4,2)+SUBSTR(DTOC(cli->data_cad),7))
+                        DEVPOS(PROW(),320);DEVOUT(q_dupr->duplicata)
+                        DEVPOS(PROW(),332);DEVOUT(SUBSTR(q_dupr->tipo,1,1))
+                        DEVPOS(PROW(),333);DEVOUT('R$  ')
+                        DEVPOS(PROW(),337);DEVOUT(SUBSTR(STRZERO(q_dupr->valor,14,2),1,11))
+                        DEVPOS(PROW(),348);DEVOUT(SUBSTR(STRZERO(q_dupr->valor,14,2),13,2))
+                        DEVPOS(PROW(),350);DEVOUT(SUBSTR(STRZERO(q_dupr->vlpago,14,2),1,11))
+                        DEVPOS(PROW(),361);DEVOUT(SUBSTR(STRZERO(q_dupr->vlpago,14,2),13,2))
+                        DEVPOS(PROW(),363);DEVOUT(SUBSTR(DTOC(q_dupr->emissao),1,2)+SUBSTR(DTOC(q_dupr->emissao),4,2)+SUBSTR(DTOC(q_dupr->emissao),7))
+                        DEVPOS(PROW(),371);DEVOUT(SUBSTR(DTOC(q_dupr->venc),1,2)+SUBSTR(DTOC(q_dupr->venc),4,2)+SUBSTR(DTOC(q_dupr->venc),7))
+                        DEVPOS(PROW(),379);DEVOUT(SUBSTR(DTOC(q_dupr->datpag),1,2)+SUBSTR(DTOC(q_dupr->datpag),4,2)+SUBSTR(DTOC(q_dupr->datpag),7))
+                ELSE
+                        //IF ! EMPTY(q_dupr->datpag)
+                                DEVPOS(PROW(),00);DEVOUT('F')
+                        //ELSE
+                        //        DEVPOS(PROW(),00);DEVOUT('I')
+                        //ENDIF
+                        DEVPOS(PROW(),01);DEVOUT(cli->cpf)
+                        //DEVPOS(PROW(),12);DEVOUT(cli->rg)
+                        //DEVPOS(PROW(),32);DEVOUT(SUBSTR(cli->orgao,4))
+                        DEVPOS(PROW(),12);DEVOUT(SPACE(20))
+                        DEVPOS(PROW(),32);DEVOUT(SPACE(4))
+                        DEVPOS(PROW(),36);DEVOUT(cli->razao)
+                        DEVPOS(PROW(),91);DEVOUT(' ')
+                        DEVPOS(PROW(),92);DEVOUT(cli->endereco)
+                        DEVPOS(PROW(),162);DEVOUT(cli->cidade)
+                        DEVPOS(PROW(),192);DEVOUT(cli->uf)
+                        DEVPOS(PROW(),194);DEVOUT(LEFT(STRTRAN(cli->cep,'-',''),8))
+                        DEVPOS(PROW(),PCOL());DEVOUT(SPACE(78))
+*                       DEVPOS(PROW(),206);DEVOUT(SUBSTR(cli->tel1,1,10))
+*                       DEVPOS(PROW(),220);DEVOUT(SUBSTR(cli->fax,1,10))
+*                       DEVPOS(PROW(),230);DEVOUT(cli->email)
+                        DEVPOS(PROW(),280);DEVOUT(SUBSTR(DTOC(cli->data_cad),4,2)+SUBSTR(DTOC(cli->data_cad),7))
+                        DEVPOS(PROW(),286);DEVOUT(q_dupr->duplicata)
+                        DEVPOS(PROW(),298);DEVOUT(SUBSTR(q_dupr->tipo,1,1))
+                        DEVPOS(PROW(),299);DEVOUT('R$  ')
+                        DEVPOS(PROW(),303);DEVOUT(SUBSTR(STRZERO(q_dupr->valor,14,2),1,11))
+                        DEVPOS(PROW(),314);DEVOUT(SUBSTR(STRZERO(q_dupr->valor,14,2),13,2))
+                        DEVPOS(PROW(),316);DEVOUT(SUBSTR(STRZERO(q_dupr->vlpago,14,2),1,11))
+                        DEVPOS(PROW(),327);DEVOUT(SUBSTR(STRZERO(q_dupr->vlpago,14,2),13,2))
+                        DEVPOS(PROW(),329);DEVOUT(SUBSTR(DTOC(q_dupr->emissao),1,2)+SUBSTR(DTOC(q_dupr->emissao),4,2)+SUBSTR(DTOC(q_dupr->emissao),7))
+                        DEVPOS(PROW(),337);DEVOUT(SUBSTR(DTOC(q_dupr->venc),1,2)+SUBSTR(DTOC(q_dupr->venc),4,2)+SUBSTR(DTOC(q_dupr->venc),7))
+                        DEVPOS(PROW(),345);DEVOUT(SUBSTR(DTOC(q_dupr->datpag),1,2)+SUBSTR(DTOC(q_dupr->datpag),4,2)+SUBSTR(DTOC(q_dupr->datpag),7))
+                        DEVPOS(PROW(),PCOL());DEVOUT(SPACE(34))
+                ENDIF
+                DEVPOS(PROW()+1,00);DEVOUT('')
+                SKIP
+        ENDDO
+        SET DEVI TO SCREEN;SET PRINT OFF;SET PRINT TO
+        (malias)->(DBCLOSEAREA())
+        conf_impressao('EQUIFAX.TXT')
+ENDDO
+RETURN NIL

@@ -1,0 +1,28 @@
+#define IDR_MANIFEST  1
+#define RT_MANIFEST  24
+
+IDR_MANIFEST  RT_MANIFEST "wvwtest.xml"
+
+1 VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEOS 0x4
+FILETYPE 0x1
+{
+BLOCK "StringFileInfo"
+{
+   BLOCK "0C0904E4"
+   {
+      VALUE "CompanyName", "SOLUCIONES PERCEPTIVAS"
+      VALUE "FileDescription", ""
+      VALUE "FileVersion", "1.0.0.0"
+      VALUE "InternalName", "WvWTools"
+      VALUE "LegalCopyright", "Copyright © Julio Cesar Cantillo Molina 2006"
+      VALUE "LegalTrademarks", "Todos los derechos reservados por el autor."
+      VALUE "OriginalFilename", "WvWTools.exe"
+      VALUE "ProductName", "Getsys, TBrowse, Window Classes for GtWvW"
+      VALUE "ProductVersion", "1.0.0.0"
+   }
+}
+}
+//084 C Caminho Banco Dados   =10.0.0.150:C:\SIAC\SISCOM.GDB

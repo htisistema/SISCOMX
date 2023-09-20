@@ -1,0 +1,474 @@
+********************
+* LISTAGEM MOVIMENTO GERAL
+********************
+MEMVAR getlist,nivel_acess,mdata_sis
+FUNCTION sac521
+**************
+LOCAL MPRG:='SAC521',mtitulo:='RELATORIO DE MOVIMENTO PRODUTOS GERAL',;
+      tela,lci,cci,lba,cba,opcao,i,mtecla,mdata1,mdata2,mcod_op,;
+      mtot_ent,mtot_sai,mtot_dif,mvlr_ent,mvlr_sai,mtot_cust,mop,mtot_aux,;
+      mtot_prven,mdesc,mdata_dia,mtot_dia,mvlr_dia,mvlr_luc,msai_bal,ment_bal,;
+      mtot_balsai,mtot_balent,ment_tdia,ment_vdia,mcod_aux,m_pedido:={},mpoint,;
+      msototal,muf,mcod_mont,mtip_cod,mdevolucao,cons_mov:={},mtipo_vlr:='',mtipo_doc:='  '
+
+PRIVATE mtraco,telaprint,mtit,mtipo,mpag,mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),cons_cli:={}
+
+IF ! ver_nivel(mprg,mtitulo,'15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+mtraco := REPLI('=',132)
+lci := cci := 0
+lba := 11
+cba := 65
+*----------------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+*----------------------------------------------------------------------------
+op_tela(10,10,26,75,mtitulo,,,1)
+WHILE .T.
+        limpa(00,00,30,80)
+        mtipo_imp := m_indiv[1,18]
+        msototal := SPACE(1)
+        mcod_aux := '4'
+        mdata1 := mdata_sis - 30
+        mdata2 := mdata_sis
+        mcod_op := muf := mtipo_doc := mtipo_doc:=SPACE(2)
+        mdevolucao := 'N'
+        mtipo_vlr:='C'
+        ASIZE(m_pedido,0)
+        mop := mpoint := mcod_mont := mgrupo := msub_grupo := 0
+        mtip_cod := 'C'
+        mensagem('Preencha os Campos - <ESC>p/Abandonar')
+        DEVPOS(lci+1,cci+2);DEVOUT('Data Inicial...:')
+        DEVPOS(lci+2,cci+2);DEVOUT('Data Final.....:')
+        DEVPOS(lci+3,cci+2);DEVOUT('Codigo Montador:')
+        DEVPOS(lci+4,cci+2);DEVOUT('Sigla do Estado:')
+        DEVPOS(lci+5,cci+2);DEVOUT('So Total Geral.:')
+        DEVPOS(lci+6,cci+2);DEVOUT('Grupo..........:')
+        DEVPOS(lci+7,cci+2);DEVOUT('Sub-Grupo......:')
+        DEVPOS(lci+8,cci+2);DEVOUT('Tipo Cod.[C]odigo ou [B] Cod.Barra:')
+        DEVPOS(lci+9,cci+2);DEVOUT('Imprimir so DEVOLUCOES [S/N]......:')
+        DEVPOS(lci+10,cci+2);DEVOUT('Tipo de Operacao..................:')
+        DEVPOS(lci+11,cci+2);DEVOUT('Valor [C]usto [V]enda [N]enhum....:')
+        DEVPOS(lci+12,cci+2);DEVOUT('Tipo de Documento.................:')
+        botao1(lci+13,cci+1, lci+15,cci+10)
+        botao1(lci+13,cci+12,lci+15,cci+24)
+        botao1(lci+13,cci+26,lci+15,cci+36)
+        @ lci+14,cci+2 SAY '  Geral '
+        @ lci+14,cci+13 SAY '  Entradas '
+        @ lci+14,cci+27 SAY '  Saidas '
+
+        @ lci+1,cci+19 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ lci+2,cci+19 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+        @ lci+3,cci+19 GET mcod_mont PICT '999' VALID IF(EMPTY(mcod_mont),.T.,ven(mcod_mont,lci+3,cci+24))
+        @ lci+4,cci+19 GET muf PICT '@!' VALID  v_uf(muf)
+        @ lci+5,cci+19 GET msototal PICT '@!' VALID msototal $ 'X, '
+        @ lci+6,cci+19 GET mgrupo PICT '999' VALID IF(EMPTY(mgrupo),.T.,ver_gru(@mgrupo,lci+6,cci+26,.F.))
+        @ lci+7,cci+19 GET msub_grupo PICT '99' WHEN ! EMPTY(mgrupo) VALID ver_sgru(mgrupo,msub_grupo,lci+7,cci+26)
+        @ lci+8,cci+38 GET mtip_cod PICT '@!' VALID mtip_cod $ 'C,B'
+        @ lci+9,cci+38 GET mdevolucao PICT '@!' VALID mdevolucao $ 'S,N'
+        @ lci+10,cci+38 GET mcod_aux PICT '9' VALID mcod_aux $ '1,2,3,4'
+        @ lci+11,cci+38 GET mtipo_vlr PICT '@!' VALID mtipo_vlr $ 'C,V,N'
+        @ lci+12,cci+38 GET mtipo_doc PICT '@!'
+        READ
+        IF LASTKEY() = 27
+                RELEASE ALL
+                EXIT
+        ENDIF
+        mcod_op = STRZERO(VAL(mcod_aux),2)
+        botao1(lci+13,cci+1, lci+15,cci+10)
+        botao1(lci+13,cci+12,lci+15,cci+24)
+        botao1(lci+13,cci+26,lci+15,cci+36)
+        @ lci+14,cci+2 PROMPT '  Geral '
+        @ lci+14,cci+13 PROMPT '  Entradas '
+        @ lci+14,cci+27 PROMPT '  Saidas '
+        SET INTEN ON
+        MENU TO mop
+        setcor(1)
+
+        IF LASTKEY() = 27;LOOP;ENDIF
+
+        mensagem('Coletando dados para o Relatorio')
+        cons_mov := {}
+        cComm  := "SELECT * FROM sacmov WHERE data_s_e >= "+sr_cdbvalue(mdata1)+" AND data_s_e <= "+sr_cdbvalue(mdata2)
+        cComm  := ccomm + " AND cancel IS NULL"
+        cComm  := ccomm + " AND documento NOT LIKE 'TR%'"
+        IF mop = 2
+                cComm  := ccomm + " AND ent_sai = 'E'"
+        ENDIF
+        IF mop = 3
+                cComm  := ccomm + " AND ent_sai = 'S'"
+        ENDIF
+        IF mcod_op = '01'
+                cComm  := ccomm + " AND (NOT tipo = '02' OR NOT documento = 'BL')"
+        ENDIF
+        IF mcod_op = '03'
+                cComm  := ccomm + " AND (NOT tipo = '01' OR NOT tipo = '02')"
+        ENDIF
+        IF mcod_op = '04'
+                cComm  := ccomm + " AND (NOT tipo = '03' OR tipo IS NULL)"
+        ENDIF
+        IF mdevolucao = 'S'
+                cComm  := ccomm + " AND documento LIKE 'DV%'"
+        ENDIF
+        IF ! EMPTY(mcod_mont)
+                cComm  := ccomm + " AND (montador = "+sr_cdbvalue(STRZERO(mcod_mont,3))+" OR montador1 = "+sr_cdbvalue(STRZERO(mcod_mont,3))+")"
+        ENDIF
+        IF ! EMPTY(mgrupo)              //.AND. STRZERO(mgrupo,3) <> SUBSTR(mov->gru_sub,1,3));
+                cComm  := ccomm + " AND gru_sub LIKE "+sr_cdbvalue(STRZERO(mgrupo,3)+'%')
+        ENDIF
+        IF ! EMPTY(msub_grupo)          //.AND. STRZERO(mgrupo,3)+STRZERO(msub_grupo,2) <> mov->gru_sub);
+                cComm  := ccomm + " AND gru_sub = "+sr_cdbvalue(STRZERO(mgrupo,3)+STRZERO(msub_grupo,2))
+        ENDIF
+        IF ! EMPTY(mtipo_doc)          //.AND. STRZERO(mgrupo,3)+STRZERO(msub_grupo,2) <> mov->gru_sub);
+                cComm  := ccomm + " AND documento LIKE "+sr_cdbvalue(mtipo_doc+'%')
+        ENDIF
+        cComm  := ccomm + " ORDER BY data_s_e"
+        sr_getconnection():exec(ccomm,,.t.,@cons_mov)
+        IF LEN(cons_mov) = 0
+                atencao('Nao existe movimento neste periodo !!!')
+                LOOP
+        ENDIF
+        i:=0
+        FOR i = 1 TO LEN(cons_mov)
+                prog_imp(i,DTOC(cons_mov[i,16]))
+                IF (! EMPTY(muf) .AND. (! ver_cli(VAL(cons_mov[i,36]),,,1) .OR. (muf <> cons_cli[1,25])));
+                   .OR. cons_mov[i,67] <> '03'
+                        LOOP
+                ENDIF
+                AADD(m_pedido,cons_mov[i,6]+cons_mov[i,10])
+        NEXT
+        marq := 'MOVIMENTO.REL'
+        IF ! imp_arq('MOVIMENTO.REL','R')
+                LOOP
+        ELSE
+                mdata_dia := cons_mov[1,16]
+                mtot_dia := mvlr_dia := mvlr_luc := mtot_prven := mtot_cust := ;
+                mtot_aux := mtot_ent := mtot_sai := mtot_dif := mvlr_ent :=;
+                mvlr_sai := ment_bal := msai_bal := mtot_balent := mtot_balsai := ;
+                ment_tdia := ment_vdia := 0
+                mpag = 1
+                mtit = 'Listagem de Movimento'
+                IF ! EMPTY(muf)
+                        mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)+' do Estado: '+muf
+                ELSE
+                        mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)
+                ENDIF
+                IF mtipo_vlr = 'C'
+                        mtit := mtit + ' Preco de CUSTO'
+                ELSEIF mtipo_vlr = 'V'
+                        mtit := mtit + ' Preco de VENDA'
+                ENDIF
+                cabecalho(mpag,mtit,mtipo)
+                imprt(mtipo_imp,'C')
+                DEVPOS(PROW()+1,00);DEVOUT('Codigo')
+                DEVPOS(PROW(),47);DEVOUT('Doc.(NF)')
+                DEVPOS(PROW(),57);DEVOUT('Entrada')
+                DEVPOS(PROW(),68);DEVOUT('Saida')
+                DEVPOS(PROW(),78);DEVOUT('Valor')
+                DEVPOS(PROW(),86);DEVOUT('Tot/Ent.')
+                DEVPOS(PROW(),95);DEVOUT('Tot/Saida')
+                DEVPOS(PROW(),106);DEVOUT('Vlr. Menor')
+                DEVPOS(PROW(),118);DEVOUT('Dif(%)')
+                DEVPOS(PROW(),125);DEVOUT('Cli./Forn.')
+                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                imprt(mtipo_imp,'C')
+                IF EMPTY(msototal)
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+1,00);DEVOUT(cons_mov[1,16])
+                        imprt(mtipo_imp,'C')
+                        i:=0
+                        FOR i = 1 TO LEN(cons_mov)
+                                prog_imp(i,DTOC(cons_mov[i,16]))
+                                IF ! EMPTY(muf)
+                                        IF (! ver_cli(VAL(cons_mov[i,36]),,,1));
+                                           .OR. (muf <> cons_cli[1,25])
+                                                LOOP
+                                        ENDIF
+                                ENDIF
+                                IF mcod_op = '02'
+                                        IF (ASCAN(m_pedido,cons_mov[i,6]+cons_mov[i,10]) > 0);
+                                           .OR. (cons_mov[i,67] = '01' .OR. cons_mov[i,67] = '03')
+                                                LOOP
+                                        ENDIF
+                                ENDIF
+                                IF mdata_dia <> cons_mov[i,16] .AND. (mtot_dia > 0 .OR. ment_tdia > 0)
+                                        DEVPOS(PROW()+2,00);DEVOUT('Total do SAIDAS do dia....:')
+                                        DEVPOS(PROW(),27);DEVOUT('('+LTRIM(TRANSFORM(mtot_dia,'999999.99'))+')')
+                                        DEVPOS(PROW(),PCOL());DEVOUT(' -  R$:')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvlr_dia,'999,999,999.99')
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUT('Lucro do dia....:')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('('+LTRIM(TRANSFORM(mvlr_luc,'999,999,999.99'))+')')
+                                        DEVPOS(PROW()+1,00);DEVOUT('Total do ENTRADA do dia...:')
+                                        DEVPOS(PROW(),27);DEVOUT('('+LTRIM(TRANSFORM(ment_tdia,'999999.99'))+')')
+                                        DEVPOS(PROW(),PCOL());DEVOUT(' -  R$:')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(ment_vdia,'999,999,999.99')
+                                        DEVPOS(PROW()+1,00);DEVOUT('Total do SAIDAS balanco...:')
+                                        DEVPOS(PROW(),27);DEVOUT('('+LTRIM(TRANSFORM(msai_bal,'999999.99'))+')')
+                                        DEVPOS(PROW()+1,00);DEVOUT('Total do ENTRADA balanco..:')
+                                        DEVPOS(PROW(),27);DEVOUT('('+LTRIM(TRANSFORM(ment_bal,'999999.99'))+')')
+                                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',132))
+                                        mdata_dia := cons_mov[i,16]
+                                        mvlr_dia := mtot_dia := mvlr_luc := msai_bal := ;
+                                        ment_bal := ment_tdia := ment_vdia := 0
+                                        imprt(mtipo_imp,'N')
+                                        DEVPOS(PROW()+1,00);DEVOUT(cons_mov[i,16])
+                                        imprt(mtipo_imp,'C')
+                                ENDIF
+                                ver_cod(VAL(cons_mov[i,10]),,,,0,'*')
+                                IF mtip_cod = 'C'
+                                        DEVPOS(PROW()+1,00);DEVOUT(cons_mov[i,10])
+                                        DEVPOS(PROW(),06);DEVOUT(cons_mov[i,11])
+                                ELSE
+                                        DEVPOS(PROW()+1,00);DEVOUT(IF(EMPTY(merc->cod_barr),cons_mov[i,10],merc->cod_barr))
+                                        DEVPOS(PROW(),15);DEVOUT(LEFT(cons_mov[i,11],31))
+                                ENDIF
+                                DEVPOS(PROW(),47);DEVOUT(cons_mov[i,2])
+                                IF cons_mov[i,17] = 'E'
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_mov[i,19],'99999.99')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('--------')
+                                        IF mtipo_vlr = 'C'
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_mov[i,25],'99,999.99')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_mov[i,19] * cons_mov[i,25],'999,999.99')
+                                        ELSEIF mtipo_vlr = 'V'
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_mov[i,23],'99,999.99')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_mov[i,19] * cons_mov[i,23],'999,999.99')
+                                        ELSE
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(0,'99,999.99')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(0,'999,999.99')
+                                        ENDIF
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('---------')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_mov[i,40])
+                                        IF SUBSTR(cons_mov[i,2],1,2) = 'BL'
+                                                ment_bal := ment_bal + cons_mov[i,19]
+                                                mtot_balent := mtot_balent + cons_mov[i,19]
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Oper:'+cons_mov[i,28])
+                                        ELSE
+                                                ment_tdia := ment_tdia + cons_mov[i,19]
+                                                ment_vdia= ment_vdia + cons_mov[i,25] * cons_mov[i,19]
+                                                mtot_ent = mtot_ent + cons_mov[i,19]
+                                                mvlr_ent = mvlr_ent + cons_mov[i,25] * cons_mov[i,19]
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Oper:'+cons_mov[i,30])
+                                        ENDIF
+                                ELSE
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('--------')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_mov[i,19],'99999.99')
+                                        IF mcod_op = '04' .OR. mcod_op = '02'
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_mov[i,23],'99,999.99')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('---------')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_mov[i,19] * cons_mov[i,23],'999,999.99')
+                                                IF SUBSTR(cons_mov[i,2],1,2) = 'BL'
+                                                        msai_bal := msai_bal + cons_mov[i,19]
+                                                        mtot_balsai := mtot_balsai + cons_mov[i,19]
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Oper:'+cons_mov[i,28])
+                                                ELSE
+                                                        mtot_aux := cons_mov[i,19] * cons_mov[i,22] - cons_mov[i,19] * cons_mov[i,23]
+                                                        mvlr_dia := mvlr_dia + (cons_mov[i,19] * cons_mov[i,23])
+                                                        mvlr_luc := mvlr_luc + (cons_mov[i,19] * cons_mov[i,23] - cons_mov[i,19] * cons_mov[i,25])
+                                                        mvlr_sai = mvlr_sai + (cons_mov[i,23] * cons_mov[i,19])
+                                                        mtot_cust := mtot_cust + (cons_mov[i,25] * cons_mov[i,19])
+                                                        mtot_dia := mtot_dia + cons_mov[i,19]
+                                                        mtot_prven := mtot_prven + (cons_mov[i,22] * cons_mov[i,19])
+                                                        mtot_sai = mtot_sai + cons_mov[i,19]
+                                                        IF mtot_aux > 0
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtot_aux * -1,'99,999.99')
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT((mtot_aux * 100 / (cons_mov[i,19] * cons_mov[i,22])) * -1,'9999.99')
+                                                                mtot_dif = mtot_dif + mtot_aux
+                                                        ENDIF
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Oper:'+cons_mov[i,30])
+                                                ENDIF
+                                        ELSE
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_mov[i,24],'99,999.99')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('---------')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_mov[i,19] * cons_mov[i,24],'999,999.99')
+                                                IF SUBSTR(cons_mov[i,2],1,2) = 'BL'
+                                                        msai_bal := msai_bal + cons_mov[i,19]
+                                                        mtot_balsai := mtot_balsai + cons_mov[i,19]
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Oper:'+cons_mov[i,28])
+                                                ELSE
+                                                        mtot_aux := cons_mov[i,19] * cons_mov[i,22] - cons_mov[i,19] * cons_mov[i,24]
+                                                        mvlr_dia := mvlr_dia + (cons_mov[i,19] * cons_mov[i,24])
+                                                        mvlr_luc := mvlr_luc + (cons_mov[i,19] * cons_mov[i,24] - cons_mov[i,19] * cons_mov[i,25])
+                                                        mvlr_sai = mvlr_sai + (cons_mov[i,24] * cons_mov[i,19])
+                                                        mtot_cust := mtot_cust + (cons_mov[i,25] * cons_mov[i,19])
+                                                        mtot_dia := mtot_dia + cons_mov[i,19]
+                                                        mtot_prven := mtot_prven + (cons_mov[i,22] * cons_mov[i,19])
+                                                        mtot_sai = mtot_sai + cons_mov[i,19]
+                                                        IF mtot_aux > 0
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtot_aux * -1,'99,999.99')
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT((mtot_aux * 100 / (cons_mov[i,19] * cons_mov[i,22])) * -1,'9999.99')
+                                                                mtot_dif = mtot_dif + mtot_aux
+                                                        ENDIF
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Oper:'+cons_mov[i,30])
+                                                ENDIF
+                                        ENDIF
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_mov[i,36])
+                                ENDIF
+                                //DEVPOS(PROW(),PCOL()+1);DEVOUT(dtoc(cons_mov[i,16]))
+                                IF PROW() >= 59
+                                        mpag ++
+                                        EJECT
+                                        cabecalho(mpag,mtit,mtipo)
+                                        imprt(mtipo_imp,'C')
+                                        DEVPOS(PROW()+1,00);DEVOUT('Codigo')
+                                        DEVPOS(PROW(),47);DEVOUT('Doc.(NF)')
+                                        DEVPOS(PROW(),57);DEVOUT('Entrada')
+                                        DEVPOS(PROW(),68);DEVOUT('Saida')
+                                        DEVPOS(PROW(),78);DEVOUT('Valor')
+                                        DEVPOS(PROW(),86);DEVOUT('Tot/Ent.')
+                                        DEVPOS(PROW(),95);DEVOUT('Tot/Saida')
+                                        DEVPOS(PROW(),106);DEVOUT('Vlr. Menor')
+                                        DEVPOS(PROW(),118);DEVOUT('Dif(%)')
+                                        DEVPOS(PROW(),125);DEVOUT('Cli./Forn.')
+                                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                                        LOOP
+                                ENDIF
+                        NEXT
+                        DEVPOS(PROW()+2,00);DEVOUT('Total do SAIDAS do dia....:')
+                        DEVPOS(PROW(),27);DEVOUT('('+LTRIM(TRANSFORM(mtot_dia,'999999.99'))+')')
+                        DEVPOS(PROW(),PCOL());DEVOUT(' -  R$:')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvlr_dia,'999,999,999.99')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('Lucro do dia....:')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('('+LTRIM(TRANSFORM(mvlr_luc,'999,999,999.99'))+')')
+                        DEVPOS(PROW()+1,00);DEVOUT('Total do ENTRADA do dia...:')
+                        DEVPOS(PROW(),27);DEVOUT('('+LTRIM(TRANSFORM(ment_tdia,'999999.99'))+')')
+                        DEVPOS(PROW(),PCOL());DEVOUT(' -  R$:')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(ment_vdia,'999,999,999.99')
+                        DEVPOS(PROW()+1,00);DEVOUT('Total do SAIDAS balanco...:')
+                        DEVPOS(PROW(),27);DEVOUT('('+LTRIM(TRANSFORM(msai_bal,'999999.99'))+')')
+                        DEVPOS(PROW()+1,00);DEVOUT('Total do ENTRADA balanco..:')
+                        DEVPOS(PROW(),27);DEVOUT('('+LTRIM(TRANSFORM(ment_bal,'999999.99'))+')')
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',132))
+                        mvlr_dia := mtot_dia := mvlr_luc := 0
+                        IF PROW() >= 55
+                                mpag ++
+                                EJECT
+                                cabecalho(mpag,mtit,mtipo)
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,00);DEVOUT('Codigo')
+                                DEVPOS(PROW(),47);DEVOUT('Doc.(NF)')
+                                DEVPOS(PROW(),57);DEVOUT('Entrada')
+                                DEVPOS(PROW(),68);DEVOUT('Saida')
+                                DEVPOS(PROW(),78);DEVOUT('Valor')
+                                DEVPOS(PROW(),86);DEVOUT('Tot/Ent.')
+                                DEVPOS(PROW(),95);DEVOUT('Tot/Saida')
+                                DEVPOS(PROW(),106);DEVOUT('Vlr. Menor')
+                                DEVPOS(PROW(),118);DEVOUT('Dif(%)')
+                                DEVPOS(PROW(),125);DEVOUT('Cli./Forn.')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        ENDIF
+                ELSE
+                        i:=0
+                        FOR i = 1 TO LEN(cons_mov)
+                                prog_imp(i,DTOC(cons_mov[i,16]))
+                                IF ! EMPTY(muf)
+                                        IF (! ver_cli(VAL(cons_mov[i,36]),,,1));
+                                           .OR. (muf <> cons_cli[1,25])
+                                                LOOP
+                                        ENDIF
+                                ENDIF
+                                IF mcod_op = '02'
+                                        IF (ASCAN(m_pedido,cons_mov[i,6]+cons_mov[i,10]) > 0);
+                                           .OR. (cons_mov[i,67] = '01' .OR. cons_mov[i,67] = '03')
+                                                LOOP
+                                        ENDIF
+                                ENDIF
+                                IF cons_mov[i,17] = 'E'
+                                        IF SUBSTR(cons_mov[i,2],1,2) = 'BL'
+                                                ment_bal := ment_bal + cons_mov[i,19]
+                                                mtot_balent := mtot_balent + cons_mov[i,19]
+                                        ELSE
+                                                ment_tdia := ment_tdia + cons_mov[i,19]
+                                                ment_vdia= ment_vdia + cons_mov[i,25] * cons_mov[i,19]
+                                                mtot_ent = mtot_ent + cons_mov[i,19]
+                                                mvlr_ent = mvlr_ent + cons_mov[i,25] * cons_mov[i,19]
+                                        ENDIF
+
+                                ELSE
+                                        IF mcod_op = '04' .OR. mcod_op = '02'
+                                                IF SUBSTR(cons_mov[i,2],1,2) = 'BL'
+                                                        msai_bal := msai_bal + cons_mov[i,19]
+                                                        mtot_balsai := mtot_balsai + cons_mov[i,19]
+                                                ELSE
+                                                        mtot_aux := cons_mov[i,19] * cons_mov[i,22] - cons_mov[i,19] * cons_mov[i,23]
+                                                        mvlr_dia := mvlr_dia + (cons_mov[i,19] * cons_mov[i,23])
+                                                        mvlr_luc := mvlr_luc + (cons_mov[i,19] * cons_mov[i,23] - cons_mov[i,19] * cons_mov[i,25])
+                                                        mvlr_sai = mvlr_sai + (cons_mov[i,23] * cons_mov[i,19])
+                                                        mtot_cust := mtot_cust + (cons_mov[i,25] * cons_mov[i,19])
+                                                        mtot_dia := mtot_dia + cons_mov[i,19]
+                                                        mtot_prven := mtot_prven + (cons_mov[i,22] * cons_mov[i,19])
+                                                        mtot_sai = mtot_sai + cons_mov[i,19]
+                                                        IF mtot_aux > 0
+                                                                mtot_dif = mtot_dif + mtot_aux
+                                                        ENDIF
+                                                ENDIF
+                                        ELSE
+                                                IF SUBSTR(cons_mov[i,2],1,2) = 'BL'
+                                                        msai_bal := msai_bal + cons_mov[i,19]
+                                                        mtot_balsai := mtot_balsai + cons_mov[i,19]
+                                                ELSE
+                                                        mtot_aux := cons_mov[i,19] * cons_mov[i,22] - cons_mov[i,19] * cons_mov[i,24]
+                                                        mvlr_dia := mvlr_dia + (cons_mov[i,19] * cons_mov[i,24])
+                                                        mvlr_luc := mvlr_luc + (cons_mov[i,19] * cons_mov[i,24] - cons_mov[i,19] * cons_mov[i,25])
+                                                        mvlr_sai = mvlr_sai + (cons_mov[i,24] * cons_mov[i,19])
+                                                        mtot_cust := mtot_cust + (cons_mov[i,25] * cons_mov[i,19])
+                                                        mtot_dia := mtot_dia + cons_mov[i,19]
+                                                        mtot_prven := mtot_prven + (cons_mov[i,22] * cons_mov[i,19])
+                                                        mtot_sai = mtot_sai + cons_mov[i,19]
+                                                        IF mtot_aux > 0
+                                                                mtot_dif = mtot_dif + mtot_aux
+                                                        ENDIF
+                                                ENDIF
+                                        ENDIF
+                                ENDIF
+                        NEXT
+                ENDIF
+                DEVPOS(PROW()+2,00);DEVOUT('**************************** TOTAL GERAL *******************************')
+                DEVPOS(PROW()+1,00);DEVOUT('Total de ENTRADAS..:')
+                DEVPOS(PROW(),21);DEVOUT('('+LTRIM(TRANSFORM(mtot_ent,'999999.99'))+')')
+                DEVPOS(PROW(),PCOL());DEVOUT(' -  R$:')
+                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvlr_ent,'999,999,999.99')
+                DEVPOS(PROW()+1,00);DEVOUT('Total de SAIDAS....:')
+                DEVPOS(PROW(),21);DEVOUT('('+LTRIM(TRANSFORM(mtot_sai,'999999.99'))+')')
+                DEVPOS(PROW(),PCOL());DEVOUT(' -  R$:')
+                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvlr_sai,'999,999,999.99')
+                DEVPOS(PROW()+1,00);DEVOUT('Desconto Medio R$...:')
+                IF mtot_dif < 0
+                        mtot_dif := 0
+                ENDIF
+                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtot_dif,'999,999,999.99')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('em (%):')
+*                mdesc := (mtot_prven - mvlr_sai) * 100 / mvlr_sai
+                mdesc := (mtot_dif / mvlr_sai)*100
+                IF mdesc < 0
+                        mdesc := 0
+                ENDIF
+                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mdesc,'999.99')
+
+                DEVPOS(PROW()+1,00);DEVOUT('Lucro Medio  R$.....:')
+                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvlr_sai - mtot_cust,'999,999,999.99')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('em (%):')
+                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT((mvlr_sai - mtot_cust) * 100 / mtot_cust,'999.99')
+                DEVPOS(PROW()+1,00);DEVOUT('Total do SAIDAS balanco...:')
+                DEVPOS(PROW(),27);DEVOUT('('+LTRIM(TRANSFORM(mtot_balsai,'999999.99'))+')')
+                DEVPOS(PROW()+1,00);DEVOUT('Total do ENTRADA balanco..:')
+                DEVPOS(PROW(),27);DEVOUT('('+LTRIM(TRANSFORM(mtot_balent,'999999.99'))+')')
+                DEVPOS(PROW()+2,00);DEVOUT(TIME())
+                imprt(mtipo_imp,'N')
+                EJECT
+                SETPRC(00,00)
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                conf_impressao(marq)
+                /*
+                IF mimp_tipo = 2
+                        lertexto(marq)
+                ELSEIF mtipo_imp = 'D'
+                        
+                ELSE
+                        MYRUN('DOSPRINTER /RAW /DEL '+ALLTRIM(m_indiv[1,5])+'HTI.REL')
+                ENDIF
+                */
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL

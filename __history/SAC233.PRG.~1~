@@ -1,0 +1,159 @@
+*****************************
+* COPIA DE PEDIDO ENTRADA
+* SAC233.PRG
+*****************************
+MEMVAR nivel_acess,mdata_sis,getlist
+FUNCTION sac233
+**************
+LOCAL MPRG:='SAC233'
+
+PRIVATE tela,telaprin,lci,cci,lba,cba,mnum_ped,mcomprado,mquantd,;
+        mpr_fat,mdesc1,mdesc2,mdesc3,opcao,mfrete,mencargo,mdespesa,mipi,;
+        muf,mperc,mdia1,mdia2,mdia3,mdia4,mdia5,mtransp,mfabrica,mcod_op,;
+        point,m_codigo:={},m_contem:={},mfornece,f,mtraco,micm,mfob,mcif,cons_pede:={}
+
+IF ! ver_nivel(mprg,'COPIA DO PEDIDO DE COMPRA','1',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+mtraco := REPLI('=',80)
+
+lci := cci := 0
+lba := 22
+cba := 79
+
+op_tela(01,05,32,95,'2a.Via de Pedido de Compra')
+IF ! AbriArq('sacdolar','dolar');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupp','dupp');RETURN NIL;ENDIF
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('SACPED_E','PED_E');RETURN NIL;ENDIF
+IF ! AbriArq('SACUF','TABUF');RETURN NIL;ENDIF
+*------------------------------------------------------------------
+set_key('forn','merc')
+
+WHILE .T.
+        limpa(00,00,33,100)
+        mcod_op := '01'
+        mfob := mcif := SPACE(1)
+        mdia1 := mdia2 := mdia3 := mdia4 := mdia5 := SPACE(3)
+        mtransp := mcomprado := SPACE(15)
+        mfrete := mencargo := mdespesa := mperc := mnum_ped := micm := 0
+        muf := '  '
+        mensagem('Digite o No.do Pedido p/Copia - <ESC> Retornar')
+
+        setcor(1)
+        DEVPOS(01,01);DEVOUT('No. PEDIDO..:')
+
+        DEVPOS(02,01);DEVOUT('Cod.Fornece.:')
+        DEVPOS(03,01);DEVOUT('No.Pedido...:')
+        DEVPOS(04,01);DEVOUT('Data........:')
+
+        DEVPOS(05,01);DEVOUT('Fob.......:')
+        DEVPOS(05,17);DEVOUT('Cif.:')
+        DEVPOS(06,01);DEVOUT('Cond.Pag..:   dd    dd    dd    dd    dd')
+        DEVPOS(07,01);DEVOUT('Transp....:')
+        DEVPOS(08,01);DEVOUT('Comprador.:')
+        DEVPOS(08,35);DEVOUT('Previsao Chegada:')
+        @ 09,00 TO 09,100
+        DEVPOS(10,01);DEVOUT('Cod.')
+        DEVPOS(10,08);DEVOUT('Produto')
+        DEVPOS(10,36);DEVOUT('Quantd.')
+
+        DEVPOS(10,46);DEVOUT('Cod.')
+        DEVPOS(10,53);DEVOUT('Produto')
+        DEVPOS(10,81);DEVOUT('Quantd.')
+        @ 11,00 TO 11,100
+
+        @ 01,15 GET mnum_ped PICT '999999' VALID IF(mnum_ped = 0,.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                SET KEY -9 TO
+                RELEASE tela,telaprin,lci,cci,lba,cba,mnum_ped,mcomprado,mquantd,;
+                        mpr_fat,mdesc1,mdesc2,mdesc3,opcao,mfrete,mencargo,mdespesa,mipi,;
+                        muf,mperc,mdia1,mdia2,mdia3,mdia4,mdia5,mtransp,mfabrica,mcod_op,;
+                        point,m_codigo:={},m_contem:={},mfornece
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        cons_pede := {}
+        sr_getconnection():exec("SELECT * FROM sacped_e WHERE num_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6)),,.t.,@cons_pede)
+        IF LEN(cons_pede) = 0
+                atencao('No.do Pedido ainda nao foi Solicitado !!!')
+                LOOP
+        ENDIF
+        point := RECNO()
+
+        setcor(3)
+        DEVPOS(01,15);DEVOUT(STRZERO(mnum_ped,6))
+        DEVPOS(02,15);DEVOUT(cons_pede[1,15])
+        DEVPOS(03,15);DEVOUT(cons_pede[1,2])
+        DEVPOS(04,15);DEVOUT(cons_pede[1,4])
+        setcor(1)
+
+        ent_forn(VAL(cons_pede[1,15]),02,20)
+        //ver_uf(muf)
+
+
+        mfob := cons_pede[1,20]
+        mcif := cons_pede[1,21]
+        mdia1 := cons_pede[1,26]
+        mdia2 := cons_pede[1,27]
+        mdia3 := cons_pede[1,28]
+        mdia4 := cons_pede[1,29]
+        mdia5 := cons_pede[1,30]
+        mtransp := cons_pede[1,32]
+        mcomprado := cons_pede[1,19]
+        mfrete := cons_pede[1,31]
+        mencargo := cons_pede[1,33]
+        mdespesa := cons_pede[1,34]
+        setcor(3)
+        DEVPOS(05,14);DEVOUT(cons_pede[1,20])
+        DEVPOS(05,23);DEVOUT(cons_pede[1,21])
+        DEVPOS(06,13);DEVOUT(cons_pede[1,26])
+        DEVPOS(06,19);DEVOUT(cons_pede[1,27])
+        DEVPOS(06,25);DEVOUT(cons_pede[1,28])
+        DEVPOS(06,31);DEVOUT(cons_pede[1,29])
+        DEVPOS(06,37);DEVOUT(cons_pede[1,30])
+        DEVPOS(07,14);DEVOUT(cons_pede[1,32])
+        DEVPOS(08,14);DEVOUT(cons_pede[1,19])
+        DEVPOS(08,53);DEVOUT(cons_pede[1,41])
+        setcor(1)
+        mensagem('<ENTER>Impressao  -  <ESC> Retorna')
+        f := 0
+        m_contem := {}
+        m_codigo := {}
+        FOR f=1 TO LEN(cons_pede)
+                setcor(3)
+                IF f < 21
+                        DEVPOS(11+f,01);DEVOUT(cons_pede[f,6])
+                        DEVPOS(11+f,08);DEVOUT(LEFT(cons_pede[f,7],24))
+                        DEVPOS(11+f,35);DEVOUTPICT(cons_pede[f,10],'99999.99')
+                ELSEIF f > 21
+                        DEVPOS(11+f-21,46);DEVOUT(cons_pede[f,6])
+                        DEVPOS(11+f-21,53);DEVOUT(LEFT(cons_pede[f,7],24))
+                        DEVPOS(11+f-21,80);DEVOUTPICT(cons_pede[f,10],'99999.99')
+                ENDIF
+                setcor(1)
+                AADD(m_codigo,cons_pede[f,6])
+        *                             1               2           3             4                    5              6               7               8               9              10              11              12            13            14
+                AADD(m_contem,{cons_pede[f,5],cons_pede[f,7],cons_pede[f,8],cons_pede[f,10],cons_pede[f,14],cons_pede[f,23],cons_pede[f,24],cons_pede[f,24],cons_pede[f,15],cons_pede[f,18],cons_pede[f,9],cons_pede[f,36],cons_pede[f,35],cons_pede[f,40]})
+        NEXT F
+        opcao := op_simnao('S','Deseja Imprimir o Pedido:')
+        IF opcao = 'S'
+                imp_ped2()
+                LOOP
+        ENDIF
+        IF LASTKEY() = 27 .OR. opcao = 'N'
+                RELEASE tela,telaprin,lci,cci,lba,cba,mnum_ped,mcomprado,mquantd,;
+                        mpr_fat,mdesc1,mdesc2,mdesc3,opcao,mfrete,mencargo,mdespesa,mipi,;
+                        muf,mperc,mdia1,mdia2,mdia3,mdia4,mdia5,mtransp,mfabrica,mcod_op,;
+                        point,m_codigo:={},m_contem:={},mfornece
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+******************************* f i m *********************************************
+

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><retEnvEvento versao="1.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<idLote>3</idLote>
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_18.02.08.145</verAplic>
+<cOrgao>26</cOrgao>
+<cStat>128</cStat>
+<xMotivo>Lote de Evento Processado</xMotivo><retEvento versao="1.00">
+<infEvento>
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_18.02.08.145</verAplic>
+<cOrgao>26</cOrgao>
+<cStat>236</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: Chave de Acesso - D&#xED;gito Verificador inv&#xE1;lido</xMotivo>
+<chNFe>26180324494100000106550010000002091000002096</chNFe>
+<tpEvento>110110</tpEvento>
+<dhRegEvento>2018-03-19T17:45:31-03:00</dhRegEvento>
+</infEvento>
+</retEvento></retEnvEvento>

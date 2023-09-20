@@ -1,0 +1,775 @@
+****************************************
+* MENU DE RELATORIOS DE CLIENTES ATIVO
+****************************************
+FUNCTION sac5cli1
+******************
+LOCAL mprg:= 'SAC5CLI1',;
+      opcao,mdata1,mdata2,mpag,mtit,mtipo,;
+      mtraco,mtot_cli,mcod_ven,mtipo_cli,mclass,marea,mtipo_cons,cons_mov:={},marquivo:=''
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mtot_compra,mult_compra,mvlr_ped,;
+        mnome_ven,mnum_ped,mcidade,lba,cba,mcep:=SPACE(8),mcod_ope:=0,mende:='N',cons_cli:={}
+lba = 14
+cba = 75
+opcao = 0
+mtraco := REPLI('-',132)
+*---------------------------------------------------------------------
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacorcam','orcam');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+*---------------------------------------------------------------------
+op_tela(0,0,lba+2,cba,' Clientes ATIVOS ')
+WHILE .T.
+        exibi_prg(mprg)
+        mtipo_imp := m_indiv[1,18]
+        mdata1 := mdata2 := mult_compra := CTOD('  /  /  ')
+        mtot_cli := mcod_ven := mcod_ope := mtot_compra := mvlr_ped:=0
+        mnome_ven := SPACE(30)
+        mtipo_cli := SPACE(1)
+        mclass := '2'
+        marea := SPACE(15)
+        mtipo_cons := 'P'
+        mcidade := SPACE(20)
+        DEVPOS(1,2);DEVOUT('Data Inicial.................................:')
+        DEVPOS(2,2);DEVOUT('Data Final...................................:')
+        DEVPOS(3,2);DEVOUT('Codigo Vendedor..............................:')
+        DEVPOS(4,2);DEVOUT('Codigo Operador..............................:')
+        DEVPOS(5,2);DEVOUT('Tipo Cliente.................................:')
+        DEVPOS(6,2);DEVOUT('Area.........................................:')
+        DEVPOS(7,2);DEVOUT('Cidade.......................................:')
+        DEVPOS(8,2);DEVOUT('Classificacao p/[1]Codigo [2]Nome [3]Fantasia:')
+        DEVPOS(9,2);DEVOUT('Tipo Consulta [P]edido [O]rcamento...........:')
+        DEVPOS(10,2);DEVOUT('Imprimir Endereco [S/N]......................:')
+        @ 11,1 TO 11,cba-1
+        setcor(3)
+        DEVPOS(12,2);DEVOUT('Cliente Consultado:')
+        DEVPOS(13,2);DEVOUT('Valor total compra:')
+        setcor(1)
+        @ 1,49 GET mdata1
+        @ 2,49 GET mdata2 VALID IF(mdata2 < mdata1,.F.,.T.)
+        @ 3,49 GET mcod_ven PICT '999' VALID ven(mcod_ven,3,54)
+        @ 4,49 GET mcod_ope PICT '999' VALID ven(mcod_ope,4,54)
+        @ 5,49 GET mtipo_cli PICT '@!' WHEN men_get(5,16,'[F]isica [J]uridica ou em BRANCO p/todos - <ESC>p/Sair') VALID lim_get() .AND. mtipo_cli $ ' ,F,J'
+        @ 6,49 GET marea PICT '@!'
+        READ
+        IF LASTKEY() = 27
+                RELEASE mnome_ven
+                EXIT
+        ENDIF
+        mcidade := UPPER(m_set[1,134])
+        mcidade := saccid(,mcidade,'*')
+        setcor(3)
+        @ 7,16 SAY mcidade PICT '@!'
+        setcor(1)
+        @ 8,49 GET mclass PICT '9' VALID mclass $ '1,2,9'
+        @ 9,49 GET mtipo_cons PICT '@!' VALID mtipo_cons $ 'P,O'
+        @ 10,49 GET mende PICT '@!' VALID mende $ 'S,N'
+        READ
+        IF LASTKEY() = 27
+                RELEASE mnome_ven
+                EXIT
+        ENDIF
+        mnome_ven := sen->snome
+        mpag := 0
+        cons_cli := {}
+        ccomm := "SELECT * FROM saccli WHERE NOT tipo = 'E'"
+        IF ! EMPTY(mcod_ven)
+                ccomm := ccomm + " AND codvend = "+sr_cdbvalue(STRZERO(mcod_ven,3))
+        ENDIF
+        IF ! EMPTY(marea)
+                ccomm := ccomm + " AND area = "+sr_cdbvalue(marea)
+        ENDIF
+        IF mtipo_cli = 'J'
+                ccomm := ccomm + " AND cgc IS NOT NULL"
+        ENDIF
+        IF mtipo_cli = 'F'
+                ccomm := ccomm + " AND (cgc IS NULL OR cgc = ' ')"
+        ENDIF
+        IF ! EMPTY(mcidade)
+                ccomm := ccomm + " AND cidade = "+sr_cdbvalue(mcidade)
+        ENDIF
+        IF mclass = '1'
+                ccomm := ccomm + " ORDER BY cod_cli"
+        ELSEIF mclass = '2'
+                ccomm := ccomm + " ORDER BY razao"
+        ELSE
+                ccomm := ccomm + " ORDER BY nome"
+        ENDIF
+        sr_getconnection():exec(ccomm,,.t.,@cons_cli)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(cons_cli) = 0
+                atencao('Nao existe nenhum Cliente com essas caracteristica')
+                LOOP
+        ENDIF
+        mtit := 'Relacao de Clientes ATIVOS'
+        IF ! EMPTY(mcod_ven)
+                mtit := mtit+' do Vendedor: '+STRZERO(mcod_ven,3)
+        ENDIF
+        mtipo := 'No periodo de '+DTOC(mdata1)+' a '+DTOC(mdata2)
+        IF ! imp_arq('CLI_ATIVO.REL','R')
+                LOOP
+        ENDIF
+        IF mtipo_cons = 'O'
+                marquivo := 'sacorcam'
+        ELSE
+                marquivo := 'sacped_s'
+        ENDIF
+        i:=0
+        FOR i = 1 TO LEN(cons_cli)
+                SETPOS(12,22);DISPOUT(cons_cli[i,2]+'-'+cons_cli[i,3])
+                cons_mov := {}
+                ccomm := "SELECT * FROM "+marquivo+" WHERE pdat_ped  BETWEEN "+sr_cdbvalue(mdata1)+" AND "+sr_cdbvalue(mdata2)
+                ccomm := ccomm + " AND ppag = '*' AND pcod_cli = "+sr_cdbvalue(cons_cli[i,2])+" ORDER BY pdat_ped"
+                sr_getconnection():exec(ccomm,,.t.,@cons_mov)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(cons_mov) = 0
+                        LOOP
+                ENDIF
+                mult_compra := cons_mov[LEN(cons_mov),4]
+                mnum_ped := cons_mov[LEN(cons_mov),2]
+                mtot_compra := 0
+                FOR m = 1 TO LEN(cons_mov)
+                        mtot_compra := mtot_compra + cons_mov[m,14] * cons_mov[m,18]
+                NEXT
+                cons_mov := {}
+                ccomm := "SELECT SUM(pquantd * pvlr_fat) FROM "+marquivo+" WHERE pnum_ped = "+sr_cdbvalue(mnum_ped)
+                ccomm := ccomm + " AND ppag = '*'"
+                sr_getconnection():exec(ccomm,,.t.,@cons_mov)
+                sr_getconnection():exec('COMMIT',,.f.)
+                mvlr_ped := 0
+                IF LEN(cons_mov) > 0
+                        mvlr_ped := cons_mov[1,1]
+                ENDIF
+                IF mpag = 0 .OR. PROW() >= 59
+                        mpag ++
+                        IF mpag > 1
+                                EJECT
+                        ENDIF
+                        cabecalho(mpag,mtit,mtipo,mprg)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,01);DEVOUT('       ')
+                        DEVPOS(PROW(),47);DEVOUT('              ')
+*                       DEVPOS(PROW(),68);DEVOUT('         ')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('        ')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('        ')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('          ')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('      ')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(' Acumulado')
+*                       DEVPOS(PROW(),PCOL()+1);DEVOUT(' Acumulado')
+                        DEVPOS(PROW()+1,01);DEVOUT('Cliente')
+                        DEVPOS(PROW(),47);DEVOUT('     Fone     ')
+*                       DEVPOS(PROW(),68);DEVOUT('Dta.Nasc.')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('Dat.Cad.')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Ult.Comp')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Vlr.Compra')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('No.Ped')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('No Periodo')
+*                       DEVPOS(PROW(),PCOL()+1);DEVOUT('     GERAL')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('CGC/CPF')
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                ENDIF
+                imprt(mtipo_imp,'C')
+                IF mclass = '3'
+                        DEVPOS(PROW()+1,00);DEVOUT(STR(cons_cli[i,2],5)+'-'+cons_cli[i,4])
+                ELSE
+                        DEVPOS(PROW()+1,00);DEVOUT(STR(cons_cli[i,2],5)+'-'+cons_cli[i,3])
+                ENDIF
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_cli[i,29])
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(cons_cli[i,5])
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(mult_compra)
+                DEVPOS(PROW(),PCOl()+1);DEVOUT(TRANSFORM(mvlr_ped,'999,999.99'))
+                DEVPOS(PROW(),PCOl()+1);DEVOUT(mnum_ped)
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(mtot_compra,'999,999.99'))
+*               DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(cli->tot_comp,'999,999.99'))
+                IF ! EMPTY(cli->cgc)
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(cons_cli[i,32],'@@R 99.999.999/9999-99'))
+                ELSE
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(cons_cli[i,34],'@@R 999.999.999-99'))
+                ENDIF
+                IF mende ='S'
+                        DEVPOS(PROW()+1,0);DEVOUT('Endereco: '+ALLTRIM(cons_cli[i,21])+', '+ALLTRIM(cons_cli[i,136])+' '+cons_cli[i,136])
+                        DEVPOS(PROW()+1,0);DEVOUT('Bairro..: '+ALLTRIM(cons_cli[i,22])+' - Cidade: '+ALLTRIM(cons_cli[i,24])+' - UF: '+cons_cli[i,25]+' - CEP: '+cons_cli[i,26])
+                        DEVPOS(PROW()+1,0);DEVOUT('Telefone: '+ALLTRIM(cons_cli[i,29])+' - '+ALLTRIM(cons_cli[i,30])+' - '+ALLTRIM(cons_cli[i,31]))
+                        DEVPOS(PROW()+1,0);DEVOUT(mtraco)
+                ENDIF
+                mtot_cli ++
+        NEXT
+        DEVPOS(PROW()+2,00);DEVOUT('Quantidade de Clientes Ativos: ')
+        DEVPOS(PROW(),33);DEVOUT(TRANSFORM(mtot_cli,'999,999'))
+        EJECT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('CLI_ATIVO.REL')
+        /*
+        IF mimp_tipo = 2
+                lertexto('CLI_ATIVO.REL')
+        ELSEIF mtipo_imp = 'D'
+                
+        ELSE
+                MYRUN('DOSPRINTER /RAW /DEL '+ALLTRIM(m_indiv[1,5])+'HTI.REL')
+        ENDIF
+        */
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************************  F I M ***********************************
+* MENU DE RELATORIOS DE CLIENTES INATIVO
+****************************************
+FUNCTION sac5cli2
+******************
+LOCAL opcao,mdata1,mdata2,mpag,mtit,mtipo,mprg:= 'SAC5CLI2',;
+      mtraco,mtot_cli,mcod_ven,mtipo_cli,mclass,marea,mtipo_cons,marquivo:=''
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),lba,cba,;
+        mnome_ven,mcidade,mcep:=SPACE(8),mcod_ope:=0,mult_compra:=0,mvlr_ped:=0,;
+        mnum_ped,mende:='N'
+lba = 13
+cba = 75
+opcao = 0
+mtraco := REPLI('-',80)
+*---------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('sacorcam','orcam');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+*---------------------------------------------------------------------
+op_tela(0,0,lba+2,cba,' Clientes INATIVOS ')
+WHILE .T.
+        exibi_prg(mprg)
+        mtipo_imp := m_indiv[1,18]
+        mtipo_cli := SPACE(1)
+        mtot_cli := mcod_ven := mcod_ope := 0
+        mdata1 := mdata2 := CTOD('  /  /  ')
+        mnome_ven := SPACE(30)
+        mclass := '2'
+        marea := SPACE(15)
+        mtipo_cons := 'P'
+        mcidade := SPACE(20)
+        DEVPOS(1,2);DEVOUT('Data Inicial:')
+        DEVPOS(2,2);DEVOUT('Data Final..:')
+        DEVPOS(3,2);DEVOUT('Cod.Vendedor:')
+        DEVPOS(4,2);DEVOUT('Cod.Operador:')
+        DEVPOS(5,2);DEVOUT('Tipo Cliente:')
+        DEVPOS(6,2);DEVOUT('Area........:')
+        DEVPOS(7,2);DEVOUT('Cidade......:')
+        DEVPOS(8,2);DEVOUT('Classificacao [1]Codigo [2]Nome [3]Fantasia..:')
+        DEVPOS(9,2);DEVOUT('Tipo Consulta [P]edido [O]rcamento:')
+        DEVPOS(10,2);DEVOUT('Imprimir Endereco [S/N]......................:')
+        @ 11,1 TO 11,cba-1
+        setcor(3)
+        DEVPOS(12,2);DEVOUT('Cliente Consultado:')
+        setcor(1)
+        @ 1,16 GET mdata1
+        @ 2,16 GET mdata2 VALID IF(mdata2 < mdata1,.F.,.T.)
+        @ 3,16 GET mcod_ven PICT '999' VALID ver_ven(STRZERO(mcod_ven,3),,'*')
+        @ 4,16 GET mcod_ope PICT '999' VALID ver_ven(STRZERO(mcod_ope,3),,'*')
+        @ 5,16 GET mtipo_cli PICT '@!'          //WHEN men_get(5,16,'[F]isica [J]uridica ou em BRANCO p/todos - <ESC>p/Sair') VALID lim_get() .AND. mtipo_cli $ ' ,F,J'
+        @ 6,16 GET marea PICT '@!'
+        READ
+        mcidade := UPPER(m_set[1,134])
+        mcidade := saccid(,mcidade,'*')
+        setcor(3)
+        @ 7,16 SAY mcidade PICT '@!'
+        setcor(1)
+        @ 8,49 GET mclass PICT '9' VALID mclass $ '1,2,9'
+        @ 9,38 GET mtipo_cons PICT '@!' VALID mtipo_cons $ 'P,O'
+        @ 10,49 GET mende PICT '@!' VALID mende $ 'S,N'
+        READ
+        IF LASTKEY() = 27
+                RELEASE mnome_ven
+                EXIT
+        ENDIF
+        mpag := 0
+        cons_cli := {}
+        ccomm := "SELECT * FROM saccli WHERE NOT tipo = 'E'"
+        IF ! EMPTY(mcod_ven)
+                ccomm := ccomm + " AND codvend = "+sr_cdbvalue(STRZERO(mcod_ven,3))
+        ENDIF
+        IF ! EMPTY(marea)
+                ccomm := ccomm + " AND area = "+sr_cdbvalue(marea)
+        ENDIF
+        IF mtipo_cli = 'J'
+                ccomm := ccomm + " AND cgc IS NOT NULL"
+        ENDIF
+        IF mtipo_cli = 'F'
+                ccomm := ccomm + " AND (cgc IS NULL OR cgc = ' ')"
+        ENDIF
+        IF ! EMPTY(mcidade)
+                ccomm := ccomm + " AND cidade = "+sr_cdbvalue(mcidade)
+        ENDIF
+        IF mclass = '1'
+                ccomm := ccomm + " ORDER BY cod_cli"
+        ELSEIF mclass = '2'
+                ccomm := ccomm + " ORDER BY razao"
+        ELSE
+                ccomm := ccomm + " ORDER BY nome"
+        ENDIF
+        sr_getconnection():exec(ccomm,,.t.,@cons_cli)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(cons_cli) = 0
+                atencao('Nao existe nenhum Cliente com essas caracteristica')
+                LOOP
+        ENDIF
+        mtit := 'Relacao de Clientes Inativos'
+        IF ! EMPTY(mcod_ven)
+                mtit := mtit+' do Vendedor: '+STRZERO(mcod_ven,3)
+        ENDIF
+        mtipo := 'No periodo de '+DTOC(mdata1)+' a '+DTOC(mdata2)
+        IF ! imp_arq('CLI_INATI.REL','R')
+                LOOP
+        ENDIF
+        IF mtipo_cons = 'O'
+                marquivo := 'sacorcam'
+        ELSE
+                marquivo := 'sacped_s'
+        ENDIF
+        i:=0
+        FOR i = 1 TO LEN(cons_cli)
+                SETPOS(12,22);DISPOUT(cons_cli[i,2]+'-'+cons_cli[i,3])
+                cons_mov := {}
+                ccomm := "SELECT * FROM "+marquivo+" WHERE pdat_ped  BETWEEN "+sr_cdbvalue(mdata1)+" AND "+sr_cdbvalue(mdata2)
+                ccomm := ccomm + " AND ppag = '*' AND pcod_cli = "+sr_cdbvalue(cons_cli[i,2])+" ORDER BY pdat_ped"
+                sr_getconnection():exec(ccomm,,.t.,@cons_mov)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(cons_mov) > 0
+                        LOOP
+                ENDIF
+                cons_mov := {}
+                ccomm := "SELECT * FROM "+marquivo+" WHERE ppag = '*' AND pcod_cli = "+sr_cdbvalue(cons_cli[i,2])+" ORDER BY pdat_ped"
+                sr_getconnection():exec(ccomm,,.t.,@cons_mov)
+                sr_getconnection():exec('COMMIT',,.f.)
+                mult_compra := ('  /  /  ')
+                mnum_ped    := SPACE(6)
+                mvlr_ped := 0
+                IF LEN(cons_mov) > 0
+                        mult_compra := cons_mov[LEN(cons_mov),4]
+                        mnum_ped := cons_mov[LEN(cons_mov),2]
+                        cons_mov := {}
+                        ccomm := "SELECT SUM(pquantd * pvlr_fat) FROM "+marquivo+" WHERE pnum_ped = "+sr_cdbvalue(mnum_ped)
+                        ccomm := ccomm + " AND ppag = '*'"
+                        sr_getconnection():exec(ccomm,,.t.,@cons_mov)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(cons_mov) > 0
+                                mvlr_ped := cons_mov[1,1]
+                        ENDIF
+                ENDIF
+                IF mpag = 0 .OR. PROW() >= 59
+                        mpag ++
+                        IF mpag > 1
+                                EJECT
+                        ENDIF
+                        cabecalho(mpag,mtit,mtipo,mprg)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,01);DEVOUT('Cliente')
+                        DEVPOS(PROW(),52);DEVOUT('Fone')
+                        DEVPOS(PROW(),68);DEVOUT('Dta.Nasc.')
+                        DEVPOS(PROW(),80);DEVOUT('Ult.Comp.')
+                        DEVPOS(PROW(),92);DEVOUT('Vlr.Compra')
+                        DEVPOS(PROW(),104);DEVOUT('No.Ped.')
+                        DEVPOS(PROW(),112);DEVOUT('Acumulado')
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                ENDIF
+                imprt(mtipo_imp,'C')
+                IF mclass = '3'
+                        DEVPOS(PROW()+1,00);DEVOUT(STR(cons_cli[i,2],5)+'-'+cons_cli[i,4])
+                ELSE
+                        DEVPOS(PROW()+1,00);DEVOUT(STR(cons_cli[i,2],5)+'-'+cons_cli[i,3])
+                ENDIF
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_cli[i,29])
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(cons_cli[i,9])
+                IF ver_serie() = '141287' .OR. ver_serie() = '14128D'
+                        DEVPOS(PROW(),80);DEVOUT(cons_cli[i,20])
+                ELSE
+                        DEVPOS(PROW(),80);DEVOUT(mult_compra)
+                        DEVPOS(PROW(),92);DEVOUT(TRANSFORM(mvlr_ped,'999,999.99'))
+                        DEVPOS(PROW(),104);DEVOUT(mnum_ped)
+                ENDIF
+
+                DEVPOS(PROW(),112);DEVOUT(TRANSFORM(cons_cli[i,19],'9,999,999.99'))
+                IF mende ='S'
+                        DEVPOS(PROW()+1,0);DEVOUT('Endereco: '+ALLTRIM(cons_cli[i,21])+', '+ALLTRIM(cons_cli[i,136])+' '+cons_cli[i,136])
+                        DEVPOS(PROW()+1,0);DEVOUT('Bairro..: '+ALLTRIM(cons_cli[i,22])+' - Cidade: '+ALLTRIM(cons_cli[i,24])+' - UF: '+cons_cli[i,25]+' - CEP: '+cons_cli[i,26])
+                        DEVPOS(PROW()+1,0);DEVOUT('Telefone: '+ALLTRIM(cons_cli[i,29])+' - '+ALLTRIM(cons_cli[i,30])+' - '+ALLTRIM(cons_cli[i,31]))
+                        DEVPOS(PROW()+1,0);DEVOUT(mtraco)
+                ENDIF
+                mtot_cli ++
+        NEXT
+        DEVPOS(PROW()+2,00);DEVOUT('Quantidade de Clientes Inativos: ')
+        DEVPOS(PROW(),33);DEVOUT(TRANSFORM(mtot_cli,'999,999'))
+        EJECT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('CLI_INATI.REL')
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************************  F I M ***********************************
+* ESTATISTICA DE COMPRAS CLIENTES
+****************************************
+FUNCTION sac5cli3
+******************
+LOCAL opcao,lba,cba,mpag,mtit,mtipo,mprg:= 'SAC5CLI3',;
+      mtraco,mtot_cli,mcod_ven,mqtd,mdata_comp,mtipo_cli,mcidade
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),;
+        mnome_ven,mcep:=SPACE(8)
+
+lba = 06
+cba = 65
+opcao = 0
+mtraco := REPLI('-',80)
+*---------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('sacorcam','orcam');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+*---------------------------------------------------------------------
+op_tela(0,0,lba+2,cba,' Estatistica de Clientes ')
+WHILE .T.
+        exibi_prg(mprg)
+        mtipo_imp := m_indiv[1,18]
+        mtipo_cli := SPACE(1)
+        mtot_cli := mcod_ven := mqtd := 0
+        mdata_comp := CTOD('  /  /  ')
+        mnome_ven := SPACE(30)
+        mcidade := SPACE(20)
+        DEVPOS(1,1);DEVOUT('Quantd. de Clientes........:')
+        DEVPOS(2,1);DEVOUT('Data Ult.Compra............:')
+        DEVPOS(3,1);DEVOUT('Codigo do Vendedor.........:')
+        DEVPOS(4,1);DEVOUT('Cliente [F]isico [J]uridica:')
+        DEVPOS(5,1);DEVOUT('Cidade.....................:')
+        @ 1,30 GET mqtd PICT '99999'
+        @ 2,30 GET mdata_comp
+        @ 3,30 GET mcod_ven PICT '999' VALID ver_ven(STRZERO(mcod_ven,3),,'*')
+        @ 4,30 GET mtipo_cli PICT '@!'          //VALID mtipo_cli $ ' ,F,J'
+        READ
+        IF LASTKEY() = 27
+                RELEASE mnome_ven
+                EXIT
+        ENDIF
+        mcidade := UPPER(m_set[1,134])
+        mcidade := saccid(,mcidade,'*')
+        setcor(3)
+        @ 5,30 SAY mcidade
+        mnome_ven := sen->snome
+        DEVPOS(3,25);DEVOUT(mnome_ven)
+        setcor(1)
+        mpag := 0
+        *******************
+        SELE('cli');ORDSETFOCUS(7)
+        GO TOP
+        *******************
+        mtit := 'Estatistica de Compras de Cliente'
+        IF ! EMPTY(mcod_ven)
+                mtit := mtit+' do Vendedor: '+STRZERO(mcod_ven,3)
+        ENDIF
+*        mtipo := 'No periodo de '+DTOC(mdata1)+' a '+DTOC(mdata2)
+        IF ! imp_arq('CLI_ESTAT.REL','R')
+                LOOP
+        ENDIF
+        WHILE ! EOF()
+                IF (cli->tipo = 'E');
+                   .OR. (! EMPTY(mcod_ven) .AND. STRZERO(mcod_ven,3) <> cli->codvend);
+                   .OR. (mtipo_cli = 'J' .AND. ! EMPTY(cli->cpf));
+                   .OR. (mtipo_cli = 'F' .AND. ! EMPTY(cli->cgc));
+                   .OR. (! EMPTY(mcidade) .AND. cli->cidade <> mcidade)
+                        SKIP
+                        LOOP
+                ENDIF
+                IF (! EMPTY(mqtd) .AND. mqtd = mtot_cli)
+                        EXIT
+                ENDIF
+                IF ver_serie() = '141287' .OR. ver_serie() = '14128D'
+                        IF ! EMPTY(mdata_comp) .AND. mdata_comp > cli->ult_orc
+                                SKIP
+                                LOOP
+                        ENDIF
+                ELSE
+                        IF ! EMPTY(mdata_comp) .AND. mdata_comp > cli->ult_comp
+                                SKIP
+                                LOOP
+                        ENDIF
+                ENDIF
+                IF mpag = 0 .OR. PROW() >= 59
+                        mpag ++
+                        IF mpag > 1
+                                EJECT
+                        ENDIF
+                        cabecalho(mpag,mtit,mtipo,mprg)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,01);DEVOUT('Cliente')
+                        DEVPOS(PROW(),52);DEVOUT('Fone')
+                        DEVPOS(PROW(),68);DEVOUT('Dta.Nasc.')
+                        DEVPOS(PROW(),80);DEVOUT('Ult.Comp.')
+                        DEVPOS(PROW(),92);DEVOUT('Vlr.Compra')
+                        DEVPOS(PROW(),104);DEVOUT('No.Ped.')
+                        DEVPOS(PROW(),112);DEVOUT('Acumulado')
+                        DEVPOS(PROW(),126);DEVOUT('Vend.')
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                ENDIF
+                imprt(mtipo_imp,'C')
+                DEVPOS(PROW()+1,00);DEVOUT(STR(cli->cod_cli,5)+'-'+cli->razao)
+                DEVPOS(PROW(),52);DEVOUT(cli->tel1)
+                DEVPOS(PROW(),68);DEVOUT(cli->nascimento)
+                IF ver_serie() = '141287' .OR. ver_serie() = '14128D'
+                        DEVPOS(PROW(),80);DEVOUT(cli->ult_orc)
+                ELSE
+                        DEVPOS(PROW(),80);DEVOUT(cli->ult_comp)
+                        DEVPOS(PROW(),92);DEVOUT(TRANSFORM(cli->vlr_comp,'999,999.99'))
+                        DEVPOS(PROW(),104);DEVOUT(cli->num_ped)
+                ENDIF
+                DEVPOS(PROW(),112);DEVOUT(TRANSFORM(cli->tot_comp,'9,999,999.99'))
+                DEVPOS(PROW(),126);DEVOUT(cli->codvend)
+
+                mtot_cli ++
+                SKIP
+        ENDDO
+        DEVPOS(PROW()+2,00);DEVOUT('Quantidade de Clientes: ')
+        DEVPOS(PROW(),25);DEVOUT(TRANSFORM(mtot_cli,'9,999'))
+        EJECT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('CLI_ESTAT.REL')
+        /*
+        IF mimp_tipo = 2
+                lertexto('CLI_ESTAT.REL')
+        ELSEIF mtipo_imp = 'D'
+                
+        ELSE
+                MYRUN('DOSPRINTER /RAW /DEL '+ALLTRIM(m_indiv[1,5])+'HTI.REL')
+        ENDIF
+        */
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+****************************  F  I  M  ************************************
+/*
+****************************************
+* Verificar se o clientes estar ativo
+****************************************
+FUNCTION ver_ativo(vcod,vd1,vd2,ati_ali)
+*********************************
+
+LOCAL ver_sele,ver_orde,mreg,mmen
+
+MEMVAR mtot_compra,mult_compra,mvlr_ped,lci,cci,lba,cba,mnum_ped
+
+ver_sele := SELE()
+ver_orde := INDEXORD()
+mreg := RECNO()
+SETPOS(23,00);DISPOUT('MENSAGEM: Verificando o Arquivo: '+ati_ali)
+************************
+SELE(ati_ali);ORDSETFOCUS(8)
+GO TOP
+************************
+mtot_compra := mvlr_ped := 0
+mult_compra := CTOD('  /  /  ')
+mnum_ped := SPACE(6)
+SETPOS(12,22);DISPOUT(TRANSFORM(mtot_compra,'99,999,999.99'))
+IF ! (ati_ali)->(DBSEEK(vcod+'*'))
+        SELE(ver_sele);ORDSETFOCUS(ver_orde)
+        GO mreg
+        RETURN .F.
+ELSE
+        WHILE (ati_ali)->pcod_cli = vcod .AND. ! EOF()
+                IF ((ati_ali)->pdat_ped < vd1 .OR. (ati_ali)->pdat_ped > vd2);
+                   .OR. (! EMPTY(mcod_ope) .AND. STRZERO(mcod_ope,3) <> (ati_ali)->pcod_oper)
+                        SKIP
+                        LOOP
+                ENDIF
+                mnum_ped := (ati_ali)->pnum_ped
+                mvlr_ped := 0
+                mult_compra := (ati_ali)->pdat_ped
+                WHILE (ati_ali)->pnum_ped = mnum_ped .AND. ! EOF()
+                        mtot_compra := mtot_compra + ((ati_ali)->pquantd * (ati_ali)->pvlr_fat)
+                        SETPOS(12,22);DISPOUT(TRANSFORM(mtot_compra,'99,999,999.99'))
+                        mvlr_ped := mvlr_ped + ((ati_ali)->pquantd * (ati_ali)->pvlr_fat)
+                        SKIP
+                ENDDO
+        ENDDO
+        IF EMPTY(mtot_compra)
+                SELE(ver_sele);ORDSETFOCUS(ver_orde)
+                GO mreg
+                RETURN .F.
+        ELSE
+                SELE(ver_sele);ORDSETFOCUS(ver_orde)
+                GO mreg
+                RETURN .T.
+        ENDIF
+ENDIF
+SELE(ver_sele);ORDSETFOCUS(ver_orde)
+GO mreg
+RETURN NIL
+/*
+************************
+SELE(ati_ali);ORDSETFOCUS(2)
+GO TOP
+************************
+(ati_ali)->(DBSEEK(DTOS(vd1),.T.))
+IF EOF()
+        SELE(ver_sele);ORDSETFOCUS(ver_orde)
+        GO mreg
+        RESTSCREEN(23,00,23,79,mmen)
+        RETURN .F.
+ELSE
+        mtot_compra := 0
+        mult_compra := CTOD('  /  /  ')
+        mvlr_ped := 0
+        WHILE (ati_ali)->pdat_ped <= vd2 .AND. ! EOF()
+                IF vcod <> (ati_ali)->pcod_cli
+                        SKIP
+                        LOOP
+                ENDIF
+                mnum_ped := (ati_ali)->pnum_ped
+                mvlr_ped := 0
+                mult_compra := (ati_ali)->pdat_ped
+                WHILE (ati_ali)->pnum_ped = mnum_ped .AND. ! EOF()
+                        mtot_compra := mtot_compra + ((ati_ali)->pquantd * (ati_ali)->pvlr_fat)
+                        mvlr_ped := mvlr_ped + ((ati_ali)->pquantd * (ati_ali)->pvlr_fat)
+                        SKIP
+                ENDDO
+        ENDDO
+        IF EMPTY(mtot_compra)
+                SELE(ver_sele);ORDSETFOCUS(ver_orde)
+                GO mreg
+                RESTSCREEN(23,00,23,79,mmen)
+                RETURN .F.
+        ELSE
+                SELE(ver_sele);ORDSETFOCUS(ver_orde)
+                GO mreg
+                RESTSCREEN(23,00,23,79,mmen)
+                RETURN .T.
+        ENDIF
+ENDIF
+SELE(ver_sele);ORDSETFOCUS(ver_orde)
+GO mreg
+RESTSCREEN(23,00,23,79,mmen)
+RETURN NIL
+*/
+****************************  F  I  M  ************************************
+* CLIENTES COM LIMITE ESTOURADO
+****************************************
+FUNCTION sac5cli4
+******************
+LOCAL mprg:='SAC5CLI',opcao,lba,cba,mpag,mtit,mtipo,;
+      mtraco,mtot_cli,mcod_ven,mqtd,mdata_comp,mtipo_cli,mcidade,mcomando :='',mcons_dupr:={}
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),;
+        mnome_ven,mcep:=SPACE(8)
+
+lba = 04
+cba = 65
+opcao = 0
+mtraco := REPLI('-',80)
+*---------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+*---------------------------------------------------------------------
+op_tela(0,0,lba+2,cba,' Clientes com LIMITE ESTOURADO ')
+WHILE .T.
+        exibi_prg(mprg)
+        mtipo_imp := m_indiv[1,18]
+        mtipo_cli := SPACE(1)
+        mtot_cli := mcod_ven := mqtd := 0
+        mdata_comp := CTOD('  /  /  ')
+        mnome_ven := SPACE(30)
+        mcidade := SPACE(20)
+        DEVPOS(1,1);DEVOUT('Quantd. de Clientes........:')
+        DEVPOS(2,1);DEVOUT('Codigo do Vendedor.........:')
+        DEVPOS(3,1);DEVOUT('Cliente [F]isico [J]uridica:')
+        DEVPOS(4,1);DEVOUT('Cidade.....................:')
+        @ 1,30 GET mqtd PICT '99999'
+        @ 2,30 GET mcod_ven PICT '999' VALID ver_ven(STRZERO(mcod_ven,3),,'*')
+        @ 3,30 GET mtipo_cli PICT '@!'          //VALID mtipo_cli $ ' ,F,J'
+        READ
+        IF LASTKEY() = 27
+                RELEASE mnome_ven
+                EXIT
+        ENDIF
+        mcidade := UPPER(m_set[1,134])
+        mcidade := saccid(,mcidade,'*')
+        setcor(3)
+        @ 4,30 SAY mcidade
+        setcor(1)
+        mpag := 0
+        cons_cli:={}
+        mcomando := "SELECT * FROM saccli WHERE cod_cli IS NOT NULL"
+        IF ! EMPTY(mcod_ven)
+                mcomando := mcomando + ' AND codvend = '+sr_cdbvalue(STRZERO(mcod_ven,3))
+        ENDIF
+        IF mtipo_cli = 'J' .AND. ! EMPTY(cli->cpf)
+                mcomando := mcomando + ' AND cpf NOT IS NULL'
+        ELSEIF mtipo_cli = 'F'
+                mcomando := mcomando + ' AND cgc NOT IS NULL'
+        ENDIF
+        IF ! EMPTY(mcidade) .AND. cli->cidade <> mcidade
+                mcomando := mcomando + ' AND cidade = '+sr_cdbvalue(mcidade)
+        ENDIF
+        mcomando := mcomando + ' ORDER BY razao'
+        sr_getconnection():exec(mcomando,,.t.,@cons_cli)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(cons_cli) = 0
+                atencao('Nao foi encontrado nenhum registro desta pesquisa...')
+                LOOP
+        ENDIF
+        mtit := 'Cliente com LIMITE ESTOURADO'
+        IF ! EMPTY(mcod_ven)
+                mtit := mtit+' do Vendedor: '+STRZERO(mcod_ven,3)
+        ENDIF
+*        mtipo := 'No periodo de '+DTOC(mdata1)+' a '+DTOC(mdata2)
+        IF ! imp_arq('CLI_LIM.REL','R')
+                LOOP
+        ENDIF
+        i := 0
+        FOR i = 1 TO LEN(cons_cli)
+                mensagem(cons_cli[i,2]+'-'+cons_cli[i,3])
+                IF (! EMPTY(mqtd) .AND. mqtd = mtot_cli)
+                        EXIT
+                ENDIF
+                IF mpag = 0 .OR. PROW() >= 59
+                        mpag ++
+                        IF mpag > 1
+                                EJECT
+                        ENDIF
+                        cabecalho(mpag,mtit,mtipo,mprg)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,01);DEVOUT('Cliente')
+                        DEVPOS(PROW(),57);DEVOUT('Fone')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('      Limite')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('     Compras')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('       Saldo')
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                ENDIF
+                IF EMPTY(cons_cli[i,44])
+                        LOOP
+                ENDIF
+                mcons_dupr:={}
+                sr_getconnection():exec("SELECT SUM(valor) FROM sacdupr WHERE datpag IS NULL AND fornec = "+sr_cdbvalue(cons_cli[i,2]),,.t.,@mcons_dupr)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(mcons_dupr) = 0
+                        LOOP
+                ENDIF
+                IF mcons_dupr[1,1] <= cons_cli[i,44]
+                        LOOP
+                ENDIF
+                imprt(mtipo_imp,'C')
+                DEVPOS(PROW()+1,00);DEVOUT(STR(cons_cli[i,2],5)+'-'+cons_cli[i,3])
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(cons_cli[i,29])
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(cons_cli[i,44],'9,999,999.99'))
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(mcons_dupr[1,1],'9,999,999.99'))
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(cons_cli[i,44] - mcons_dupr[1,1],'9,999,999.99'))
+                mtot_cli ++
+        NEXT
+        DEVPOS(PROW()+2,00);DEVOUT('Quantidade de Clientes: ')
+        DEVPOS(PROW(),25);DEVOUT(TRANSFORM(mtot_cli,'9,999'))
+        EJECT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('CLI_LIM.REL')
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+****************************  F  I  M  ************************************
+

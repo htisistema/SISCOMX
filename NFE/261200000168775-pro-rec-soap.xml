@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NFeRetAutorizacao4"><retConsReciNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_26.00.01.216</verAplic>
+<nRec>261200000168775</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF><dhRecbto>2020-05-21T09:18:04-03:00</dhRecbto>
+ <protNFe versao="4.00"><infProt Id="NFe1"><tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_26.00.01.216</verAplic>
+<chNFe>26200524494200000106550010000010271698668288</chNFe>
+<dhRecbto>2020-05-21T09:18:04-03:00</dhRecbto><cStat>852</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: N&#xFA;mero da parcela inv&#xE1;lido ou n&#xE3;o informado [nOcor: 001027-1/3]</xMotivo>
+</infProt></protNFe></retConsReciNFe></nfeResultMsg></soapenv:Body></soapenv:Envelope>

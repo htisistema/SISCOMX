@@ -1,0 +1,293 @@
+MEMVAR getlist,nivel_acess,cod_operado
+
+********************************************************
+* ALTERACAO DE PEDIDO NO ROMANEIO DE CARGA
+*******************************************************
+
+FUNCTION sac5rom1(ml,mn)
+******************
+LOCAL MPRG:='SAC5ROM1',;
+      lci,cci,lba,cba,li,ci,lb,cb,mnum_ped,point:=0,mdat_roma,mcod_mot,;
+      mplaca_mot,i:=0,mcodemp,cons_ped:={},cons_:={},cons_roma:={},n:=0
+
+PRIVATE m_pedido:={},m_roma:={},m_pos:={},m_num:={},opcao,mnum_roma:=0,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),marq_ali,mtip_cons,mal,mno,ali,;
+        mc_cli:={},mc_cid:={}
+
+IF ! ver_nivel(mprg,'ALTERACAO DE PEDIDO NO ROMANEIO DE CARGA','123456',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+ali := mal := ml
+mno := mn
+
+lci := cci := 10
+lba := 12
+cba := 42
+
+li := 01
+ci := 45
+lb := 28
+cb := 65
+
+*****************************************************
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+//
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('sactran','tran');RETURN NIL;ENDIF
+IF ! AbriArq('sacroma','roma');RETURN NIL;ENDIF
+*****************************************************
+mtipo_imp := m_indiv[1,18]
+op_tela(00,00,29,79,' ALTERACAO DE ROMANEIOS ')
+WHILE .T.
+        m_roma := {}
+        m_pedido := {}
+        m_num := {}
+        m_pos := {}
+        i := 2
+        botao(07,07,09,30,,' No.do Romaneio ')
+        DEVPOS(08,08);DEVOUT('No.Romaneio:')
+        botao(li,ci,lb,cb,,' No. Pedidos ')
+        DEVPOS(li+1,ci+1);DEVOUT(' No.Ped  Vend. Sit.')
+        @ li+2,ci+1 TO li+2,cb-1
+        mensagem('Digite do No.Romaneio desejado - <ESC>abandonar')
+        @ 08,21 GET mnum_roma PICT '999999'
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        IF ml = 'roma'
+                cComm  := "SELECT * FROM sacroma WHERE num_roma = "+sr_cdbvalue(STRZERO(mnum_roma,6))
+        ELSE
+                cComm  := "SELECT * FROM sacprodu WHERE num_roma = "+sr_cdbvalue(STRZERO(mnum_roma,6))
+        ENDIF
+        cComm  := ccomm + " AND (cancel IS NULL OR cancel = ' ') ORDER BY num_ped"
+        sr_getconnection():exec(ccomm,,.t.,@cons_roma)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(cons_roma) = 0
+                atencao('Nao existe este ROMANEIO em nossos arquivos')
+                LOOP
+        ENDIF
+/*
+        SELE(mal)
+        DBGOTOP()
+        IF EOF()
+                atencao('Nao existe este ROMANEIO em nossos arquivos')
+                LOOP
+        ENDIF
+        //IF (mal)->cancel = 'C'
+        //        atencao('Este ROMANEIO foi Cancelado...')
+        //        LOOP
+        //ENDIF
+
+        IF (mal)->ped_orc = 'O'
+                marq_ali := 'orcam'
+                mtip_cons := 'O'
+        ELSE
+                marq_ali := 'ped_s'
+                mtip_cons := 'P'
+        ENDIF
+*/
+        IF cons_roma[1,10] = 'O'
+                marq_ali := 'orcam'
+                mtip_cons := 'O'
+        ELSE
+                marq_ali := 'ped_s'
+                mtip_cons := 'P'
+        ENDIF
+        mcodemp   := cons_roma[1,1]
+        mdat_roma := cons_roma[1,3]
+        mcod_mot  := cons_roma[1,5]
+        mplaca_mot:= cons_roma[1,6]
+        WHILE .T.
+                m_pedido:={}
+                m_roma:={}
+                m_num:={}
+                m_pos:={}
+                mc_cli := {}
+                mc_cid := {}
+                n := 0
+                FOR n = 1 TO LEN(cons_roma)
+                        AADD(m_pos,RECNO())
+                        AADD(m_roma,' '+cons_roma[n,4]+'   '+cons_roma[n,7]+'   '+cons_roma[n,9])
+                        cons_ped:={}
+                        IF mtip_cons = 'O'
+                                cComm  := "SELECT * FROM sacorcam WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(cons_roma[n,4])
+                        ELSE
+                                cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(cons_roma[n,4])
+                        ENDIF
+                        ccomm  := ccomm + " ORDER BY pnum_ped,pcod_merc"
+                        sr_getconnection():exec(ccomm,,.t.,@cons_ped)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(cons_ped) = 0
+                                atencao('Nao foi encontrado esse Pedido No.: '+cons_roma[n,4])
+                                SKIP
+                                LOOP
+                        ENDIF
+                        IF ASCAN(mc_cli,cons_ped[1,23]) = 0
+                                AADD(mc_cli,cons_ped[1,23])
+                        ENDIF
+                        cons_cli := {}
+                        sr_getconnection():exec("SELECT razao,cidade FROM saccli WHERE cod_cli = "+sr_cdbvalue(cons_ped[1,23]),,.t.,@cons_cli)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(cons_cli) = 0
+                                atencao('Nao foi encontrado este Codigo de Cliente: '+cons_ped[1,23]+' Verifique se nao foi Excluido...')
+                                LOOP
+                        ENDIF
+                        IF ASCAN(mc_cid,cons_cli[1,2]) = 0
+                                AADD(mc_cid,cons_cli[1,2])
+                        ENDIF
+                        AADD(m_num,cons_ped[1,2])
+                        i:=0
+                        FOR i = 1 TO LEN(cons_ped)
+                                AADD(m_pedido,{cons_ped[i,2],cons_ped[i,6],cons_ped[i,7],cons_ped[i,8],cons_ped[i,11],;
+                                    cons_ped[i,14],cons_ped[i,18],cons_ped[i,23],cons_ped[i,32],cons_ped[i,33]})
+                                IF ASCAN(mc_cli,cons_ped[i,23]) = 0
+                                        AADD(mc_cli,cons_ped[i,23])
+                                ENDIF
+                        NEXT
+                NEXT
+                IF LEN(m_roma) = 0 .OR. LEN(m_pedido) = 0
+                        EXIT
+                ENDIF
+                opcao := ' '
+                opcao := mensagem1('Digite: [I]ncluir ou [E]xcluir pedidos do ROMANEIO:',' ','I,E',18)
+                IF LASTKEY() = 27
+                        EXIT
+                ENDIF
+                IF opcao = 'E'
+                        mensagem('<ESC> Retorna  -  <ENTER> p/Confirmar')
+                        setcor(10);point := ACHOICE(li+3,ci+1,lb,cb-1,m_roma,,,point);setcor(1)
+
+                        DO CASE
+                                CASE LASTKEY()=27
+                                        EXIT
+                                CASE LASTKEY() = 13
+                                        //GO m_pos[point]
+                                        opcao := mensagem1('Confirma a EXCLUSAO do Pedido no Romaneio','N','S,N',18)
+                                        IF opcao = 'N' .OR. LASTKEY() = 27
+                                                LOOP
+                                        ENDIF
+                                        IF ml = 'roma'
+                                                sr_getconnection():exec("UPDATE sacroma SET cancel = 'E' WHERE num_ped = "+sr_cdbvalue(SUBSTR(m_roma[point],2,6)),,.f.)
+                                        ELSE
+                                                sr_getconnection():exec("UPDATE sacprodu SET cancel = 'E'WHERE num_ped = "+sr_cdbvalue(SUBSTR(m_roma[point],2,6)),,.f.)
+                                        ENDIF
+                                        sr_getconnection():exec("COMMIT",,.f.)
+                        ENDCASE
+                ELSE
+                        WHILE .T.
+                                setcor(10);ACHOICE(li+3,ci+1,lb,cb-1,m_roma,,,point);setcor(1)
+                                mnum_ped := 0
+                                botao(11,07,13,30,,' No. do Pedido ')
+                                DEVPOS(12,08);DEVOUT('No.Pedido:')
+                                @ 12,19 GET mnum_ped PICT '999999'
+                                READ
+                                IF LASTKEY() = 27
+                                        EXIT
+                                ENDIF
+                                IF ASCAN(m_num,STRZERO(mnum_ped,6)) > 0
+                                        atencao('Este pedido ja foi solicitado OK !!!')
+                                        LOOP
+                                ENDIF
+                                cons_:={}
+                                IF ml = 'roma'
+                                        cComm  := "SELECT * FROM sacroma WHERE num_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))+" AND (cancel IS NULL OR cancel = ' ')"
+                                ELSE
+                                        cComm  := "SELECT * FROM sacprodu WHERE num_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))+" AND (cancel IS NULL OR cancel = ' ')"
+                                ENDIF
+                                cComm  := ccomm + " AND (cancel IS NULL OR cancel = ' ')"
+                                sr_getconnection():exec(ccomm,,.t.,@cons_)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                                IF LEN(cons_) > 0
+                                        atencao('Pedido ja se encontrado em Outros ROMANEIO')
+                                        LOOP
+                                ENDIF
+                                cons_ped:={}
+                                IF mtip_cons = 'O'
+                                        cComm  := "SELECT * FROM sacorcam WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                                ELSE
+                                        cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                                ENDIF
+                                ccomm  := ccomm + " ORDER BY pnum_ped,pcod_merc"
+                                sr_getconnection():exec(ccomm,,.t.,@cons_ped)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                                IF LEN(cons_ped) = 0
+                                        atencao('Nao foi encontrado esse Pedido No.: '+STRZERO(mnum_ped,6))
+                                        LOOP
+                                ENDIF
+
+                                IF cons_ped[1,93] = 'N';atencao('Este pedido nao e para PRODUCAO');LOOP;ENDIF
+                                IF cons_ped[1,49] = 'C'
+                                        atencao('Este Pedido foi CANCELADO !!!')
+                                        opcao := 'N'
+                                        IF mensagem1('Deseja incluir mesmo assim','N','S,N') = 'N'
+                                                LOOP
+                                        ENDIF
+                                ENDIF
+                                opcao := op_simnao('S','Deseja incluir o Pedido:')
+                                IF opcao = 'S'
+                                        IF ASCAN(mc_cli,cons_ped[1,23]) = 0
+                                                AADD(mc_cli,cons_ped[1,23])
+                                        ENDIF
+                                        cons_cli := {}
+                                        sr_getconnection():exec("SELECT razao,cidade FROM saccli WHERE cod_cli = "+sr_cdbvalue(cons_ped[1,23]),,.t.,@cons_cli)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+                                        IF LEN(cons_cli) > 0
+                                                IF ASCAN(mc_cid,cons_cli[1,2]) = 0
+                                                        AADD(mc_cid,cons_cli[1,2])
+                                                ENDIF
+                                        ENDIF
+                                        AADD(m_num,cons_ped[1,2])
+                                        AADD(m_roma,' '+cons_ped[1,2]+'   '+cod_operado+'   ')
+                                        i:=0
+                                        FOR i = 1 TO LEN(cons_ped)
+                                                AADD(m_pedido,{cons_ped[i,2],cons_ped[i,6],cons_ped[i,7],cons_ped[i,8],cons_ped[i,11],;
+                                                cons_ped[i,14],cons_ped[i,18],cons_ped[i,23],cons_ped[i,32],cons_ped[i,33]})
+                                        NEXT
+                                        IF ml = 'roma'
+                                                sr_getconnection():exec('INSERT INTO sacroma (empresa,num_roma,'+;
+                                                'dat_roma,num_ped,cod_mot,placa_mot,cod_ope,ped_orc,'+;
+                                                'SR_DELETED )'+;
+                                                ' VALUES ('+;
+                                                sr_cdbvalue(mcodemp)+','+; //1
+                                                sr_cdbvalue(STRZERO(mnum_roma,6))+','+; //2
+                                                sr_cdbvalue(mdat_roma)+','+; //3
+                                                sr_cdbvalue(STRZERO(mnum_ped,6))+','+; //4
+                                                sr_cdbvalue(mcod_mot)+','+; //5
+                                                sr_cdbvalue(mplaca_mot)+','+; //6
+                                                sr_cdbvalue(cod_operado)+','+; //7
+                                                sr_cdbvalue(mtip_cons)+','+; //8
+                                                sr_cdbvalue(' ')+')',,.f.)
+                                        ELSE
+                                                sr_getconnection():exec('INSERT INTO sacprodu (empresa,num_roma,'+;
+                                                'dat_roma,num_ped,cod_mot,placa_mot,cod_ope,ped_orc,'+;
+                                                'SR_DELETED )'+;
+                                                ' VALUES ('+;
+                                                sr_cdbvalue(mcodemp)+','+; //1
+                                                sr_cdbvalue(STRZERO(mnum_roma,6))+','+; //2
+                                                sr_cdbvalue(mdat_roma)+','+; //3
+                                                sr_cdbvalue(STRZERO(mnum_ped,6))+','+; //4
+                                                sr_cdbvalue(mcod_mot)+','+; //5
+                                                sr_cdbvalue(mplaca_mot)+','+; //6
+                                                sr_cdbvalue(cod_operado)+','+; //7
+                                                sr_cdbvalue(mtip_cons)+','+; //8
+                                                sr_cdbvalue(' ')+')',,.f.)
+                                        ENDIF
+                                        sr_getconnection():exec("COMMIT",,.f.)
+                                ENDIF
+
+                        ENDDO
+                ENDIF
+        ENDDO
+        IF LEN(m_roma) = 0 .OR. LEN(m_pedido) = 0
+                atencao('Nao existe nenhum pedido neste Romaneio...')
+                LOOP
+        ENDIF
+        opcao := op_simnao('S','Deseja Impressao/Consulta:')
+        IF opcao = 'S'
+                imp_rel('2','PEDIDOS')
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+********************************** F I M ******************************************

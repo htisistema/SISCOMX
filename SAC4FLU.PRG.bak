@@ -1,0 +1,1010 @@
+*** sac4flu.PRG: Consulta do Fluxo de Caixa
+**************************************************
+MEMVAR nivel_acess,mdata_sis,getlist
+
+FUNCTION sac4flu
+***************
+LOCAL MPRG:='SAC4FLU',;
+      aret:={},cons_caixa:={},cons_dupr:={},;
+      lba,cba,li,ci,lb,cb,opcao,mop,opcao_res:=0,tela_res,i,mtp:=0,y := 0
+
+PRIVATE tot_dn:=0,tot_ch:=0,;
+        tot_chp:=0,tot_cart:=0,tot_dupl:=0,tot_fin:=0,;
+        mdata1,mdata2,tot_receber,tot_recvenc,;
+        doc_recebido:={},tot_recebido,tot_gerrec:=0,;
+        tot_avista,tot_apagar,tot_apavenc,;
+        tot_pago,tot_desp,tot_adm,point,;
+        mest_custo,mest_venda,;
+        mjuro_rec:=0,mjuro_pg:=0,;
+        doc_pago:={},doc_desp:={},doc_adm:={},;
+        doc_avista:={},doc_apagar:={},doc_apavenc:={},;
+        doc_receber:={},doc_recvenc:={},;
+        tot_contaa:={},tot_contap:={},conta_apg:={},conta_pg:={},;
+        ch_receber:={},ch_recvenc:={},ch_recebido:={},ct_receber:={},ct_recvenc:={},;
+        ct_recebido:={},du_receber:={},du_recvenc:={},du_recebido:={},fi_receber:={},;
+        fi_recvenc:={},fi_recebido:={},re_receber:={},re_recvenc:={},re_recebido:={},;
+        chreceber:=0,chrecvenc:=0,chrecebido:=0,ctreceber:=0,ctrecvenc:=0,;
+        ctrecebido:=0,dureceber:=0,durecvenc:=0,durecebido:=0,fireceber:=0,;
+        firecvenc:=0,firecebido:=0,rereceber:=0,rerecvenc:=0,rerecebido:=0,;
+        c_receber:=0,c_recvenc:=0,c_recebido:=0,b_receber:=0,b_recvenc:=0,;
+        b_recebido:=0,;
+        mtot_forn:=0,mtot_fv := 0,mtot_vv := 0,mtot_adm := 0,mtot_trib := 0,;
+        mtot_fin := 0,mtot_dv := 0,mpg_forn := 0,mpg_fv := 0,mpg_vv := 0,;
+        mpg_adm := 0,mpg_trib := 0,mpg_fin := 0,mpg_dv := 0,;
+        mtot_cli:=0,t_cli:={},mpt,mtot:=0,mcodemp:=SPACE(3)
+
+IF ! ver_nivel(mprg,'CONSULTA DO FLUXO DE CAIXA','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+
+lba := 22
+cba := 79
+
+li := 06
+ci := 00
+lb := 19
+cb := 79
+
+//IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+*IF ! AbriArq('sacdesp','cdesp');RETURN NIL;ENDIF
+*IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*IF ! AbriArq('sacdupp','dupp');RETURN NIL;ENDIF
+*IF ! AbriArq('sacdesp','desp');RETURN NIL;ENDIF
+*---------------------------------------------
+op_tela(00,00,50,79,' CONSULTA "Fluxo de Caixa" ',,1)
+WHILE .T.
+        mtot_forn :=mtot_fv:=mtot_vv:=mtot_adm:=mtot_trib:=mtot_fin:=mtot_dv:=;
+        mpg_forn:=mpg_fv:=mpg_vv:=mpg_adm:=mpg_trib:=mpg_fin:=mpg_dv:=tot_apagar:=;
+        tot_pago:=mest_custo:=mest_venda:=tot_dn:=tot_ch:=tot_chp:=tot_cart:=;
+        tot_dupl:=tot_fin:=tot_receber:=tot_recvenc:=tot_recebido:=tot_gerrec:=;
+        tot_avista:=tot_desp:=tot_adm:=point:= 0
+        tot_contaa := {}
+        tot_contap := {}
+        tot_contaa := {}
+        conta_apg := {}
+        conta_pg := {}
+        doc_receber := {}
+        doc_recvenc := {}
+        doc_recebido := {}
+        ch_receber := {}
+        ch_recvenc := {}
+        ch_recebido := {}
+        ct_receber := {}
+        ct_recvenc := {}
+        ct_recebido := {}
+        du_receber := {}
+        du_recvenc := {}
+        du_recebido := {}
+        fi_receber := {}
+        fi_recvenc := {}
+        fi_recebido := {}
+        re_receber := {}
+        re_recvenc := {}
+        re_recebido := {}
+        doc_avista := {}
+        doc_desp := {}
+        doc_adm := {}
+        doc_pago := {}
+        doc_apagar := {}
+        doc_apavenc := {}
+        t_cli := {}
+*       mdata1        := CTOD('01/'+SUBSTR(DTOC(mdata_sis),4,5))
+*       mdata2        := CTOD('30/'+SUBSTR(DTOC(mdata_sis),4,5))
+        mdata1        := CTOD('01/'+SUBSTR(DTOC(mdata_sis),4))
+        mdata2        := CTOD('30/'+SUBSTR(DTOC(mdata_sis),4))
+        mop := 0
+        chreceber:=chrecvenc:=chrecebido:=ctreceber:=ctrecvenc:=;
+        ctrecebido:=dureceber:=durecvenc:=durecebido:=fireceber:=;
+        firecvenc:=firecebido:=rereceber:=rerecvenc:=rerecebido:=;
+        c_receber:=c_recvenc:=c_recebido:=b_receber:=b_recvenc:=;
+        b_recebido:=mjuro_rec:=mjuro_pg:=mtot_cli := 0
+        mcodemp:=SPACE(3)
+        DEVPOS(0,1);DEVOUT('Data Inicial........:')
+        DEVPOS(1,1);DEVOUT('Data Final..........:')
+        @ 2,0 TO 2,cba
+        janela(2,1,' *** ESTOQUE *** ','*',1)
+        DEVPOS(3,1);DEVOUT('Preco de Custo R$...:')
+        DEVPOS(4,1);DEVOUT('Preco de Venda R$...:')
+        DEVPOS(5,1);DEVOUT('Lucro R$............:')
+        @ 6,0 TO 6,cba
+        janela(6,1,' *** FATURAMENTO NO PERIODO << Detalhe CTRL+F >> *** ','*',1)
+        DEVPOS( 7,1);DEVOUT('Dinheiro...........:')
+        DEVPOS( 8,1);DEVOUT('Chq Avista.........:')
+        DEVPOS( 9,1);DEVOUT('Chq.Aprazo.........:')
+        DEVPOS(10,1);DEVOUT('Cartao.............:')
+        DEVPOS(11,1);DEVOUT('Duplicata..........:')
+        DEVPOS(12,1);DEVOUT('Financeira.........:')
+        DEVPOS(13,1);DEVOUT('T O T A L..........:')
+
+        @ 14,0 TO 14,cba
+        janela(14,1,' *** CREDITOS (R$) *** ','*',1)
+        DEVPOS(15,1);DEVOUT('Vendas Avista .....:')
+        DEVPOS(16,1);DEVOUT('Documento Recebidos:')
+        DEVPOS(17,1);DEVOUT('Juros..............:')
+        DEVPOS(18,1);DEVOUT('Total..............:')
+
+        DEVPOS(20,1);DEVOUT('*** Documento a Receber **')
+        DEVPOS(21,1);DEVOUT('Vencida............:')
+        DEVPOS(22,1);DEVOUT('A Vencer...........:')
+        DEVPOS(23,1);DEVOUT('T O T A L..........:')
+        setcor(1)
+        @ 24,0 TO 24,cba
+        janela(24,1,' *** DEBITOS (R$) *** ','*',1)
+        DEVPOS(25,1);DEVOUT('Despesas...........:                (%) sobre o faturamento:')
+        DEVPOS(26,1);DEVOUT('Documentos Pagos...:')
+        DEVPOS(27,1);DEVOUT('Juros..............:')
+        DEVPOS(28,1);DEVOUT('Total..............:')
+
+        DEVPOS(30,1);DEVOUT('Documentos a Pagar.:                (%) sobre o faturamento:')
+        setcor(3)
+        DEVPOS(31,1);DEVOUT('T O T A L .........:                (%) sobre o faturamento:')
+        setcor(1)
+        @ 33,0 TO 33,cba
+        janela(33,1,' *** RECEBIDOS - (PAGOS + DESPESAS) *** ','*',1)
+        DEVPOS(34,1);DEVOUT('T O T A L .......R$:')
+        @ 36,0 TO 36,cba
+        janela(36,1,' *** CREDITO - DEBITOS *** ','*',1)
+        DEVPOS(37,1);DEVOUT('T O T A L .......R$:                (%) sobre o faturamento:')
+        @ 39,0 TO 39,cba
+        janela(39,1,' *** PONTO DE EQUILIBRIO *** ','*',1)
+        DEVPOS(40,1);DEVOUT('ATIVO..............:')
+        DEVPOS(41,1);DEVOUT('PASSIVO............:')
+        DEVPOS(42,1);DEVOUT('Ponto de Equilibrio:')
+        @ 0,23 GET mdata1
+        @ 1,23 GET mdata2 VALID IF(mdata2 < mdata1,.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                SET KEY 16 TO
+                SET KEY 6 TO
+                RELEASE ALL
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        IF EMPTY(mdata1)
+                LOOP
+        ENDIF
+        mensagem('Aguarde o final da Consulta')
+        aret:={}
+        sr_getconnection():exec("SELECT * FROM saccli WHERE NOT tipo = 'E' AND NOT tipo = 'U'",,.t.,@aret)
+        sr_getconnection():exec('COMMIT',,.f.)
+        mtot_cli := LEN(aret)
+
+        tot_contap:={}
+        sr_getconnection():exec("SELECT codigo,desc1,0 FROM sacdesp",,.t.,@tot_contap)
+        sr_getconnection():exec('COMMIT',,.f.)
+        tot_contaa:={}
+        sr_getconnection():exec("SELECT codigo,desc1,0 FROM sacdesp",,.t.,@tot_contaa)
+        sr_getconnection():exec('COMMIT',,.f.)
+        mensagem('Aguarde um momento coletando...')
+        aret:={}
+        IF ver_serie() = '141607' .OR. ver_serie() = '141302' .OR. ver_serie() = '141614'
+                sr_getconnection():exec("SELECT SUM(saldo_mer*cust_merc) FROM sacmerc WHERE cod_merc IS NOT NULL",,.t.,@aret)
+        ELSE
+                sr_getconnection():exec("SELECT SUM(saldo_mer*cust_real) FROM sacmerc WHERE cod_merc IS NOT NULL",,.t.,@aret)
+        ENDIF
+        sr_getconnection():exec('COMMIT',,.f.)
+        mest_custo := aret[1,1]
+
+        aret:={}
+        sr_getconnection():exec("SELECT SUM(saldo_mer*pr_venda) FROM sacmerc WHERE cod_merc IS NOT NULL",,.t.,@aret)
+        sr_getconnection():exec('COMMIT',,.f.)
+        mest_venda := aret[1,1]
+        setcor(3)
+        DEVPOS(3,23);DEVOUT(TRANSFORM(mest_custo,'999,999,999.99'))
+        DEVPOS(4,23);DEVOUT(TRANSFORM(mest_venda,'999,999,999.99'))
+        DEVPOS(5,23);DEVOUT(TRANSFORM(mest_venda-mest_custo,'999,999,999.99'))
+        cons_caixa:={}
+        ccomm := "SELECT * FROM saccaixa WHERE data  BETWEEN "+sr_cdbvalue(mdata1)+" AND "+sr_cdbvalue(mdata2)
+        ccomm := ccomm + " AND NOT tipo = 'IN' AND NOT tipo = 'VL' AND NOT tipo = 'DP' AND NOT tipo = 'RE' AND (tp_mov IS NULL or NOT tp_mov = 'B')"
+        IF ! EMPTY(mcodemp)
+                ccomm := ccomm + " AND empresa = "+ sr_cdbvalue(mcodemp)
+        ENDIF
+        sr_getconnection():exec(ccomm,,.t.,@cons_caixa)
+        sr_getconnection():exec('COMMIT',,.f.)
+        i := 0
+        FOR i = 1 TO LEN(cons_caixa)
+/*
+                IF caix->tipo = 'IN' .OR. caix->tipo = 'VL' .OR. caix->tipo = 'DP' .OR. caix->tipo = 'RE';
+                   .OR. caix->tp_mov = 'B';
+                   .OR. (! EMPTY(mcodemp) .AND. mcodemp <> caix->empresa)
+                        SKIP
+                        LOOP
+                ENDIF
+*/
+                IF cons_caixa[i,2] = 'DE' .AND. cons_caixa[i,8] = '9999999999'
+                        tot_desp := tot_desp + (cons_caixa[i,10]*-1)
+                        DEVPOS(25,23);DEVOUT(TRANSFORM(tot_desp,'999,999,999.99'))
+                        AADD(doc_desp,DTOC(cons_caixa[i,3])+'   '+cons_caixa[i,2]+' '+cons_caixa[i,12]+' '+cons_caixa[i,13]+'  '+TRANSFORM(cons_caixa[i,10],'999,999,999.99'))
+                ELSEIF cons_caixa[i,2] = 'DN'
+                        tot_dn := tot_dn + cons_caixa[i,10]
+                        DEVPOS(7,23);DEVOUT(TRANSFORM(tot_dn,'999,999,999.99'))
+                ELSEIF cons_caixa[i,2] = 'CH' .AND. cons_caixa[i,9] = cons_caixa[i,3]
+                        tot_ch := tot_ch + cons_caixa[i,10]
+                        DEVPOS(8,23);DEVOUT(TRANSFORM(tot_ch,'999,999,999.99'))
+                ELSEIF cons_caixa[i,2] = 'CH' .AND. cons_caixa[i,9] > cons_caixa[i,3]
+                        tot_chp := tot_chp + cons_caixa[i,10]
+                        DEVPOS(9,23);DEVOUT(TRANSFORM(tot_chp,'999,999,999.99'))
+                ELSEIF cons_caixa[i,2] = 'CT'
+                        tot_cart := tot_cart + cons_caixa[i,10]
+                        DEVPOS(10,23);DEVOUT(TRANSFORM(tot_cart,'999,999,999.99'))
+                ELSEIF cons_caixa[i,2] = 'DU' .AND. cons_caixa[i,20] = ' '
+                        tot_dupl := tot_dupl + cons_caixa[i,10]
+                        DEVPOS(11,23);DEVOUT(TRANSFORM(tot_dupl,'999,999,999.99'))
+                ELSEIF cons_caixa[i,2] = 'FI'
+                        tot_fin := tot_fin + cons_caixa[i,10]
+                        DEVPOS(12,23);DEVOUT(TRANSFORM(tot_fin,'999,999,999.99'))
+                ENDIF
+        NEXT
+***
+* DESPESA
+
+***
+        setcor(3,'*')
+        DEVPOS(13,23);DEVOUT(TRANSFORM(tot_dn+tot_ch+tot_chp+tot_cart+tot_dupl+tot_fin,'999,999,999.99'))
+        setcor(3)
+        cons_dupr:={}
+        ccomm := "SELECT * FROM sacdupr WHERE datpag BETWEEN "+sr_cdbvalue(mdata1)+" AND "+sr_cdbvalue(mdata2)
+        ccomm := ccomm + " AND NOT tipo = 'TR' AND baix_parc IS NULL AND NOT pago = 'T'"
+        IF ! EMPTY(mcodemp)
+                ccomm := ccomm + " AND empresa = "+ sr_cdbvalue(mcodemp)
+        ENDIF
+        sr_getconnection():exec(ccomm,,.t.,@cons_dupr)
+        sr_getconnection():exec('COMMIT',,.f.)
+        i := 0
+        FOR i = 1 TO LEN(cons_dupr)
+                IF cons_dupr[i,13] = cons_dupr[i,10]
+                        tot_avista := tot_avista + cons_dupr[i,20]
+                        AADD(doc_avista,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                        +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,13])+' '+TRANSFORM(cons_dupr[i,20],'999,999,999.99');
+                        +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                ELSE
+                        tot_recebido := tot_recebido + cons_dupr[i,20]
+                        mjuro_rec := mjuro_rec + IF(cons_dupr[i,20] > cons_dupr[i,19],(cons_dupr[i,20] - cons_dupr[i,19]),0)
+                        AADD(doc_recebido,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                        +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,13])+' '+TRANSFORM(cons_dupr[i,20],'999,999,999.99');
+                        +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                        IF cons_dupr[i,2] = 'CH'
+                                AADD(ch_recebido,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,13])+' '+TRANSFORM(cons_dupr[i,20],'999,999,999.99');
+                                +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                chrecebido:= chrecebido + cons_dupr[i,20]
+                        ELSEIF cons_dupr[i,2] = 'CT'
+                                AADD(ct_recebido,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,13])+' '+TRANSFORM(cons_dupr[i,20],'999,999,999.99');
+                                +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                ctrecebido:= ctrecebido + cons_dupr[i,20]
+                        ELSEIF cons_dupr[i,2] = 'DU'
+                                AADD(du_recebido,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,13])+' '+TRANSFORM(cons_dupr[i,20],'999,999,999.99');
+                                +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                durecebido:= durecebido + cons_dupr[i,20]
+                                IF cons_dupr[i,16] = 'C'
+                                        c_recebido := c_recebido + cons_dupr[i,20]
+                                ELSE
+                                        b_recebido := b_recebido + cons_dupr[i,20]
+                                ENDIF
+                        ELSEIF cons_dupr[i,2] = 'FI'
+                                AADD(fi_recebido,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,13])+' '+TRANSFORM(cons_dupr[i,20],'999,999,999.99');
+                                +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                firecebido:= firecebido + cons_dupr[i,20]
+                        ELSEIF cons_dupr[i,2] = 'RE'
+                                AADD(re_recebido,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,13])+' '+TRANSFORM(cons_dupr[i,20],'999,999,999.99');
+                                +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                rerecebido:= rerecebido + cons_dupr[i,20]
+                        ENDIF
+                ENDIF
+***
+                setcor(1)
+                DEVPOS(15,23);DEVOUT(TRANSFORM(tot_avista,'999,999,999.99'))
+                DEVPOS(16,23);DEVOUT(TRANSFORM(tot_recebido - mjuro_rec,'999,999,999.99'))
+                DEVPOS(17,23);DEVOUT(TRANSFORM(mjuro_rec,'999,999,999.99'))
+                DEVPOS(18,23);DEVOUT(TRANSFORM(tot_recebido,'999,999,999.99'))
+***
+        NEXT
+****** DOCUMENTOS BAIXADO PARCIAL *******
+        cons_dupr:={}
+        ccomm := "SELECT * FROM sacdupr WHERE baix_parc  BETWEEN "+sr_cdbvalue(mdata1)+" AND "+sr_cdbvalue(mdata2)
+        ccomm := ccomm + " AND NOT tipo = 'TR' AND NOT pago = 'T'"
+        IF ! EMPTY(mcodemp)
+                ccomm := ccomm + " AND empresa = "+ sr_cdbvalue(mcodemp)
+        ENDIF
+        sr_getconnection():exec(ccomm,,.t.,@cons_dupr)
+        sr_getconnection():exec('COMMIT',,.f.)
+        i := 0
+        FOR i = 1 TO LEN(cons_dupr)
+                tot_recebido := tot_recebido + cons_dupr[i,19]
+                AADD(doc_recebido,cons_dupr[i,2]+cons_dupr[i,4]+'P '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,41])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                IF cons_dupr[i,2] = 'CH'
+                        AADD(ch_recebido,cons_dupr[i,2]+cons_dupr[i,4]+'P '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                        +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,41])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                        +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                        chrecebido:= chrecebido + cons_dupr[i,19]
+                ELSEIF cons_dupr[i,2] = 'CT'
+                        AADD(ct_recebido,cons_dupr[i,2]+cons_dupr[i,4]+'P '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                        +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,41])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                        +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                        ctrecebido:= ctrecebido + cons_dupr[i,19]
+                ELSEIF cons_dupr[i,2] = 'DU'
+                        AADD(du_recebido,cons_dupr[i,2]+cons_dupr[i,4]+'P '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                        +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,41])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                        +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                        durecebido:= durecebido + cons_dupr[i,19]
+                        IF cons_dupr[i,16] = 'C'
+                                c_recebido := c_recebido + cons_dupr[i,19]
+                        ELSE
+                                b_recebido := b_recebido + cons_dupr[i,19]
+                        ENDIF
+                ELSEIF cons_dupr[i,2] = 'FI'
+                        AADD(fi_recebido,cons_dupr[i,2]+cons_dupr[i,4]+'P '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                        +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,41])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                        +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                        firecebido:= firecebido + cons_dupr[i,19]
+                ELSEIF cons_dupr[i,2] = 'RE'
+                        AADD(re_recebido,cons_dupr[i,2]+cons_dupr[i,4]+'P '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                        +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,41])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                        +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                        rerecebido:= rerecebido + cons_dupr[i,19]
+                ENDIF
+***
+                setcor(1)
+                DEVPOS(15,23);DEVOUT(TRANSFORM(tot_avista,'999,999,999.99'))
+                DEVPOS(16,23);DEVOUT(TRANSFORM(tot_recebido - mjuro_rec,'999,999,999.99'))
+                DEVPOS(17,23);DEVOUT(TRANSFORM(mjuro_rec,'999,999,999.99'))
+                DEVPOS(18,23);DEVOUT(TRANSFORM(tot_recebido,'999,999,999.99'))
+***
+        NEXT
+        cons_dupr:={}
+        ccomm := "SELECT * FROM sacdupr WHERE venc <= "+sr_cdbvalue(mdata2)
+        ccomm := ccomm + " AND NOT tipo = 'TR' AND NOT tipo = 'DN' AND NOT pago = 'T' AND datpag IS NULL"
+        IF ! EMPTY(mcodemp)
+                ccomm := ccomm + " AND empresa = "+ sr_cdbvalue(mcodemp)
+        ENDIF
+        sr_getconnection():exec(ccomm,,.t.,@cons_dupr)
+        sr_getconnection():exec('COMMIT',,.f.)
+        i := 0
+        FOR i = 1 TO LEN(cons_dupr)
+                IF ! EMPTY(cons_dupr[i,41])
+                        LOOP
+                ENDIF
+                IF cons_dupr[i,11] < mdata1
+                         mpt := 0
+                         mpt := ASCAN(t_cli,STRZERO(cons_dupr[i,7],5))
+                         IF mpt = 0
+                                AADD(t_cli,STRZERO(cons_dupr[i,7],5))
+                         ENDIF
+                         tot_recvenc := tot_recvenc + cons_dupr[i,19]
+                         AADD(doc_recvenc,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                         +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,11])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                         +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                        IF cons_dupr[i,2] = 'CH'
+                                AADD(ch_recvenc,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,11])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                                +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                chrecvenc:= chrecvenc + cons_dupr[i,19]
+                        ELSEIF cons_dupr[i,2] = 'CT'
+                                 AADD(ct_recvenc,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                 +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,11])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                                 +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                ctrecvenc:= ctrecvenc + cons_dupr[i,19]
+                        ELSEIF cons_dupr[i,2] = 'DU'
+                                AADD(du_recvenc,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,11])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                                +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                durecvenc:= durecvenc + cons_dupr[i,19]
+                                IF cons_dupr[i,16] = 'C'
+                                        c_recvenc := c_recvenc + cons_dupr[i,19]
+                                ELSE
+                                        b_recvenc := b_recvenc + cons_dupr[i,19]
+                                ENDIF
+                        ELSEIF cons_dupr[i,2] = 'FI'
+                                 AADD(fi_recvenc,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,11])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                                 +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                firecvenc:= firecvenc + cons_dupr[i,19]
+                        ELSEIF cons_dupr[i,2] = 'RE'
+                                 AADD(re_recvenc,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,11])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                                 +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                rerecvenc:= rerecvenc + cons_dupr[i,19]
+                        ENDIF
+                ELSE
+                        tot_receber := tot_receber + cons_dupr[i,19]
+                        AADD(doc_receber,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                        +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,11])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                        +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                        IF cons_dupr[i,2] = 'CH'
+                                AADD(ch_receber,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,11])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                                +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                chreceber:= chreceber + cons_dupr[i,19]
+                        ELSEIF cons_dupr[i,2] = 'CT'
+                                AADD(ct_receber,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,11])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                                +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                ctreceber:= ctreceber + cons_dupr[i,19]
+                        ELSEIF cons_dupr[i,2] = 'DU'
+                                AADD(du_receber,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,11])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                                +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                dureceber:= dureceber + cons_dupr[i,19]
+                                IF cons_dupr[i,16] = 'C'
+                                        c_receber := c_receber + cons_dupr[i,19]
+                                ELSE
+                                        b_receber := b_receber + cons_dupr[i,19]
+                                ENDIF
+                        ELSEIF cons_dupr[i,2] = 'FI'
+                                AADD(fi_receber,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,11])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                                +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                fireceber:= fireceber + cons_dupr[i,19]
+                        ELSEIF cons_dupr[i,2] = 'RE'
+                                AADD(re_receber,cons_dupr[i,2]+cons_dupr[i,4]+cons_dupr[i,28]+' '+STRZERO(cons_dupr[i,7],5)+'-'+LEFT(cons_dupr[i,8],20);
+                                +' '+DTOC(cons_dupr[i,10])+' '+DTOC(cons_dupr[i,11])+' '+TRANSFORM(cons_dupr[i,19],'999,999,999.99');
+                                +' '+cons_dupr[i,30]+' '+SUBSTR(cons_dupr[i,16],1,1))
+                                rereceber:= rereceber + cons_dupr[i,19]
+                        ENDIF
+                ENDIF
+                tot_gerrec := tot_gerrec + cons_dupr[i,19]
+***
+                setcor(1)
+                DEVPOS(21,23);DEVOUT(TRANSFORM(tot_recvenc,'999,999,999.99'))
+                DEVPOS(22,23);DEVOUT(TRANSFORM(tot_receber,'999,999,999.99'))
+                DEVPOS(22,23);DEVOUT(TRANSFORM(tot_gerrec,'999,999,999.99'))
+***
+        NEXT
+        setcor(3)
+        DEVPOS(23,23);DEVOUT(TRANSFORM(tot_avista+tot_recebido+tot_gerrec,'999,999,999.99'))
+
+**************************  APAGAR *************************************
+        cons_dupp:={}
+        ccomm := "SELECT * FROM sacdupp WHERE datpag BETWEEN "+sr_cdbvalue(mdata1)+" AND "+sr_cdbvalue(mdata2)
+        ccomm := ccomm + " AND NOT pago = ' ' OR pago IS NOT NULL"
+        IF ! EMPTY(mcodemp)
+                ccomm := ccomm + " AND empresa = "+ sr_cdbvalue(mcodemp)
+        ENDIF
+        sr_getconnection():exec(ccomm,,.t.,@cons_dupp)
+        sr_getconnection():exec('COMMIT',,.f.)
+        i := 0
+        FOR i = 1 TO LEN(cons_dupp)
+                tot_pago := tot_pago + cons_dupp[i,17]
+                mjuro_pg := mjuro_pg + IF(cons_dupp[i,17] > cons_dupp[i,16],(cons_dupp[i,17] - cons_dupp[i,16]),0)
+***
+                setcor(1)
+                DEVPOS(26,23);DEVOUT(TRANSFORM(tot_pago - mjuro_pg,'999,999,999.99'))
+                DEVPOS(27,23);DEVOUT(TRANSFORM(mjuro_pg,'999,999,999.99'))
+                DEVPOS(28,23);DEVOUT(TRANSFORM(tot_pago,'999,9,999,999.99'))
+***
+                y := 0
+                FOR y=1 TO LEN(tot_contap)
+                        IF SUBSTR(cons_dupp[i,6],1,2) = RTRIM(tot_contap[y,1])
+                                tot_contap[y,3]:= tot_contap[y,3] + cons_dupp[i,17]
+                                i++
+                        ENDIF
+                        IF cons_dupp[i,6] = RTRIM(tot_contap[y,1])
+                                tot_contap[y,3] := tot_contap[y,3] + cons_dupp[i,17]
+                        ENDIF
+                NEXT
+        NEXT
+
+        cons_dupp:={}
+        ccomm := "SELECT * FROM sacdupp WHERE venc <= "+sr_cdbvalue(mdata2)
+        ccomm := ccomm + " AND pago = ' ' OR pago IS NULL"
+        IF ! EMPTY(mcodemp)
+                ccomm := ccomm + " AND empresa = "+ sr_cdbvalue(mcodemp)
+        ENDIF
+        sr_getconnection():exec(ccomm,,.t.,@cons_dupp)
+        sr_getconnection():exec('COMMIT',,.f.)
+        i := 0
+        FOR i = 1 TO LEN(cons_dupp)
+                tot_apagar := tot_apagar + cons_dupp[i,16]
+***
+                setcor(1)
+                DEVPOS(30,23);DEVOUT(TRANSFORM(tot_apagar,'999,999,999.99'))
+                DEVPOS(30,65);DEVOUT(TRANSFORM((tot_apagar/(tot_avista+tot_recebido+tot_gerrec))*100,'9,999.99'))
+***
+                y := 0
+                FOR y=1 TO LEN(tot_contaa)
+                        IF SUBSTR(cons_dupp[i,6],1,2) = RTRIM(tot_contaa[y,1])
+                                tot_contaa[y,3]:= tot_contaa[y,3] + cons_dupp[i,16]
+                                i++
+                        ENDIF
+                        IF cons_dupp[i,6] = RTRIM(tot_contaa[y,1])
+                                tot_contaa[y,3] := tot_contaa[y,3] + cons_dupp[i,16]
+                        ENDIF
+                NEXT
+        NEXT
+        i := mtot:=0
+        FOR i=1 TO LEN(tot_contaa)
+                IF LEN(RTRIM(tot_contaa[i,1])) = 2
+                        AADD(conta_apg,tot_contaa[i,1]+' - '+tot_contaa[i,2]+' Total do Grupo: '+TRANSFORM(tot_contaa[i,3],'999,999,999.99')+'  Geral:'+TRANSFORM((tot_contaa[i,3]/tot_apagar)*100,'999.99')+' %')
+                        mtot := tot_contaa[i,3]
+                ELSE
+                        AADD(conta_apg,tot_contaa[i,1]+' - '+tot_contaa[i,2]+' Total.........: '+TRANSFORM(tot_contaa[i,3],'999,999,999.99')+' - '+TRANSFORM((tot_contaa[i,3]/mtot)*100,'999.99')+' %')
+                ENDIF
+                SKIP
+        NEXT
+        i := mtot:=0
+        FOR i=1 TO LEN(tot_contap)
+                IF LEN(RTRIM(tot_contap[i,1])) = 2
+                        AADD(conta_pg,tot_contap[i,1]+' - '+tot_contap[i,2]+' Total do Grupo: '+TRANSFORM(tot_contap[i,3],'999,999,999.99')+'  Geral:'+TRANSFORM((tot_contap[i,3]/tot_pago)*100,'999.99')+' %')
+                        mtot := tot_contap[i,3]
+                ELSE
+*                       AADD(conta_pg,tot_contap[i,1]+' - '+tot_contap[i,2]+' Total.........: '+TRANSFORM(tot_contap[i,3],'99,999,999.99')+' - '+TRANSFORM((tot_contap[i,3]/mtot)*100,'999.99')+' % '+IF(tot_contap[i,1]='1.01' .OR. tot_contap[i,1]='2.01',TRANSFORM((tot_contap[i,3]/mhel_tarc)*100,'999.99'),''))
+                        AADD(conta_pg,tot_contap[i,1]+' - '+tot_contap[i,2]+' Total.........: '+TRANSFORM(tot_contap[i,3],'999,999,999.99')+' - '+TRANSFORM((tot_contap[i,3]/mtot)*100,'999.99')+' % ')
+                ENDIF
+        NEXT
+        setcor(3)
+        DEVPOS(25,60);DEVOUT(TRANSFORM((tot_desp/(tot_avista+tot_recebido+tot_gerrec))*100,'9,999.99'))
+        DEVPOS(31,23);DEVOUT(TRANSFORM(tot_adm+tot_desp+tot_pago+tot_apagar,'999,999,999.99'))
+        DEVPOS(31,60);DEVOUT(TRANSFORM(((tot_adm+tot_desp+tot_pago+tot_apagar)/(tot_avista+tot_recebido+tot_gerrec))*100,'9,999.99'))
+        DEVPOS(34,23);DEVOUT(TRANSFORM(tot_recebido+tot_avista,'999,999,999.99'))
+        DEVPOS(34,COL()+1);DEVOUT('-')
+        DEVPOS(34,COL()+1);DEVOUT(ALLTRIM(TRANSFORM(tot_adm+tot_desp+tot_pago,'999,999,999.99')))
+        DEVPOS(34,COL()+1);DEVOUT('=')
+        DEVPOS(34,COL()+1);DEVOUT(TRANSFORM(tot_recebido+tot_avista - (tot_adm+tot_desp+tot_pago),'999,999,999.99'))
+        DEVPOS(37,23);DEVOUT(TRANSFORM((tot_avista+tot_recebido+tot_gerrec)-(tot_adm+tot_desp+tot_pago+tot_apagar),'999,999,999.99'))
+        DEVPOS(37,60);DEVOUT(TRANSFORM((((tot_avista+tot_recebido+tot_gerrec)-(tot_adm+tot_desp+tot_pago+tot_apagar))/(tot_avista+tot_recebido+tot_gerrec))*100,'9,999.99'))
+
+        DEVPOS(40,23);DEVOUT(TRANSFORM(mest_custo+tot_gerrec,'999,999,999.99'))  // ATIVO
+        DEVPOS(41,23);DEVOUT(TRANSFORM(tot_apagar,'999,999,999.99'))  // PASSIVO
+        DEVPOS(42,23);DEVOUT(TRANSFORM(((mest_custo+tot_gerrec)/tot_apagar),'9,999.99')) // PONTO DE EQUILIBRIO
+        setcor(1)
+        mensagem("tecle <ENTER> p/consultar ou <CTRL+P>p/Imprimir - <ESC>Retorna")
+        tela1 := SAVESCREEN(01,00,24,79)
+        SET KEY 16 TO print_flux()
+        WHILE .T.
+                @ 15,23 PROMPT TRANSFORM(tot_avista,'999,999,999.99')
+                @ 16,23 PROMPT TRANSFORM(tot_recebido,'999,999,999.99')
+                @ 21,23 PROMPT TRANSFORM(tot_recvenc,'999,999,999.99')
+                @ 22,23 PROMPT TRANSFORM(tot_receber,'999,999,999.99')
+                @ 25,23 PROMPT TRANSFORM(tot_desp,'999,999,999.99')
+                @ 26,23 PROMPT TRANSFORM(tot_pago,'999,999,999.99')
+                @ 30,23 PROMPT TRANSFORM(tot_apagar,'999,999,999.99')
+                SET INTEN ON
+                MENU TO opcao
+                DO CASE
+                        CASE LASTKEY() = 27
+                                RESTSCREEN(01,00,24,79,tela1)
+                                SET KEY 16 TO
+                                EXIT
+                        CASE opcao = 2 .OR. opcao = 1
+                                botao(li,ci,lb,cb,,' DOCUMENTOS RECEBIDOS ')
+                                @ li+2,ci+1 TO li+2,cb-1
+                                DEVPOS(li+1,ci+1);DEVOUT('Documento')
+                                DEVPOS(li+1,ci+15);DEVOUT('Cliente')
+                                DEVPOS(li+1,ci+42);DEVOUT('Emissao')
+                                DEVPOS(li+1,ci+51);DEVOUT('Dta.Pag')
+                                DEVPOS(li+1,ci+67);DEVOUT('Valor')
+                                DEVPOS(li+1,ci+73);DEVOUT('Ven')
+                                mensagem("< ou > Consulta  -  <ESC> Retorna  -  <ENTER> p/Resumo" )
+                                IF opcao = 1
+                                        point := 0
+                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,doc_avista,,,point)
+                                        IF LEN(doc_avista) = 0
+                                                RESTSCREEN(01,00,24,79,tela1)
+                                                LOOP
+                                        ENDIF
+                                ELSE
+                                        tela_res := SAVESCREEN(00,00,24,79)
+                                        botao(10,00,18,79,,' RESUMO DOC.RECEBIDOS ')
+                                        setcor(3)
+                                        DEVPOS(11,01);DEVOUT('Total Cheques R$.......:')
+                                        DEVPOS(12,01);DEVOUT('Total Duplicatas R$....:')
+                                        DEVPOS(12,40);DEVOUT('Cart.:')
+                                        DEVPOS(12,60);DEVOUT('Bco:')
+                                        DEVPOS(13,01);DEVOUT('Total Cartoes R$.......:')
+                                        DEVPOS(14,01);DEVOUT('Total Financiamentos R$:')
+                                        DEVPOS(15,01);DEVOUT('Total Recebimentos R$..:')
+                                        DEVPOS(16,01);DEVOUT('                         ------------')
+                                        DEVPOS(17,01);DEVOUT('Total RECEBIDOS R$.....:')
+                                        setcor(1)
+                                        DEVPOS(12,46);DEVOUT(TRANSFORM(c_recebido,'999,999,999.99'))
+                                        DEVPOS(12,64);DEVOUT(TRANSFORM(b_recebido,'999,999,999.99'))
+                                        @ 11,26 PROMPT TRANSFORM(chrecebido,'999,999,999.99')
+                                        @ 12,26 PROMPT TRANSFORM(durecebido,'999,999,999.99')
+                                        @ 13,26 PROMPT TRANSFORM(ctrecebido,'999,999,999.99')
+                                        @ 14,26 PROMPT TRANSFORM(firecebido,'999,999,999.99')
+                                        @ 15,26 PROMPT TRANSFORM(rerecebido,'999,999,999.99')
+                                        @ 17,26 PROMPT TRANSFORM(tot_recebido,'999,999,999.99')
+                                        SET INTEN ON
+                                        MENU TO opcao_res
+                                        DO CASE
+                                                CASE LASTKEY() = 27
+                                                        RESTSCREEN(01,00,24,79,tela1)
+                                                        LOOP
+                                                CASE opcao_res = 1
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,ch_recebido,,,point)
+                                                CASE opcao_res = 2
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,du_recebido,,,point)
+                                                CASE opcao_res = 3
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,ct_recebido,,,point)
+                                                CASE opcao_res = 4
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,fi_recebido,,,point)
+                                                CASE opcao_res = 5
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,re_recebido,,,point)
+                                                CASE opcao_res = 6
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,doc_recebido,,,point)
+                                        ENDCASE
+                                ENDIF
+                                RESTSCREEN(01,00,24,79,tela1)
+                                LOOP
+                        CASE opcao = 3 .OR. opcao = 4
+                                botao(li,ci,lb,cb,,' DOCUMENTOS A RECEBER ')
+                                @ li+2,ci+1 TO li+2,cb-1
+                                DEVPOS(li+1,ci+1);DEVOUT('Documento')
+                                DEVPOS(li+1,ci+15);DEVOUT('Cliente')
+                                DEVPOS(li+1,ci+42);DEVOUT('Emissao')
+                                DEVPOS(li+1,ci+51);DEVOUT('Venc.')
+                                DEVPOS(li+1,ci+67);DEVOUT('Valor')
+                                DEVPOS(li+1,ci+73);DEVOUT('Ven')
+                                mensagem("< ou > Consulta  -  <ESC> Retorna  -  <ENTER> p/Resumo" )
+                                IF opcao = 3
+                                        tela_res := SAVESCREEN(00,00,24,79)
+                                        botao(10,00,18,79,,' RESUMO DOC.VENCIDOS ')
+                                        setcor(3)
+                                        DEVPOS(11,01);DEVOUT('Total Cheques R$.......:')
+                                        DEVPOS(12,01);DEVOUT('Total Duplicatas R$....:')
+                                        DEVPOS(12,40);DEVOUT('Cart.:')
+                                        DEVPOS(12,60);DEVOUT('Bco:')
+                                        DEVPOS(13,01);DEVOUT('Total Cartoes R$.......:')
+                                        DEVPOS(14,01);DEVOUT('Total Financiamentos R$:')
+                                        DEVPOS(15,01);DEVOUT('Total Recebimentos R$..:')
+                                        DEVPOS(16,01);DEVOUT('                         ------------')
+                                        DEVPOS(17,01);DEVOUT('Total RECEBIDOS R$.....:')
+                                        setcor(1)
+                                        DEVPOS(12,46);DEVOUT(TRANSFORM(c_recvenc,'999,999,999.99'))
+                                        DEVPOS(12,64);DEVOUT(TRANSFORM(b_recvenc,'999,999,999.99'))
+                                        @ 11,26 PROMPT TRANSFORM(chrecvenc,'999,999,999.99')
+                                        @ 12,26 PROMPT TRANSFORM(durecvenc,'999,999,999.99')
+                                        @ 13,26 PROMPT TRANSFORM(ctrecvenc,'999,999,999.99')
+                                        @ 14,26 PROMPT TRANSFORM(firecvenc,'999,999,999.99')
+                                        @ 15,26 PROMPT TRANSFORM(rerecvenc,'999,999,999.99')
+                                        @ 17,26 PROMPT TRANSFORM(tot_recvenc,'999,999,999.99')
+                                        SET INTEN ON
+                                        MENU TO opcao_res
+                                        DO CASE
+                                                CASE LASTKEY() = 27
+                                                        RESTSCREEN(01,00,24,79,tela1)
+                                                        LOOP
+                                                CASE opcao_res = 1
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,ch_recvenc,,,point)
+                                                CASE opcao_res = 2
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,du_recvenc,,,point)
+                                                CASE opcao_res = 3
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,ct_recvenc,,,point)
+                                                CASE opcao_res = 4
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,fi_recvenc,,,point)
+                                                CASE opcao_res = 5
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,re_recvenc,,,point)
+                                                CASE opcao_res = 6
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,doc_recvenc,,,point)
+                                        ENDCASE
+*                                       setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,doc_recvenc,,,point)
+                                ELSE
+                                        tela_res := SAVESCREEN(00,00,24,79)
+                                        botao(10,00,18,79,,' RESUMO DOC.A RECEBER ')
+                                        setcor(3)
+                                        DEVPOS(11,01);DEVOUT('Total Cheques R$.......:')
+                                        DEVPOS(12,01);DEVOUT('Total Duplicatas R$....:')
+                                        DEVPOS(12,40);DEVOUT('Cart.:')
+                                        DEVPOS(12,60);DEVOUT('Bco:')
+                                        DEVPOS(13,01);DEVOUT('Total Cartoes R$.......:')
+                                        DEVPOS(14,01);DEVOUT('Total Financiamentos R$:')
+                                        DEVPOS(15,01);DEVOUT('Total Recebimentos R$..:')
+                                        DEVPOS(16,01);DEVOUT('                         ------------')
+                                        DEVPOS(17,01);DEVOUT('Total RECEBIDOS R$.....:')
+                                        setcor(1)
+                                        DEVPOS(12,46);DEVOUT(TRANSFORM(c_receber,'999,999,999.99'))
+                                        DEVPOS(12,64);DEVOUT(TRANSFORM(b_receber,'999,999,999.99'))
+                                        @ 11,26 PROMPT TRANSFORM(chreceber,'999,999,999.99')
+                                        @ 12,26 PROMPT TRANSFORM(dureceber,'999,999,999.99')
+                                        @ 13,26 PROMPT TRANSFORM(ctreceber,'999,999,999.99')
+                                        @ 14,26 PROMPT TRANSFORM(fireceber,'999,999,999.99')
+                                        @ 15,26 PROMPT TRANSFORM(rereceber,'999,999,999.99')
+                                        @ 17,26 PROMPT TRANSFORM(tot_receber,'999,999,999.99')
+                                        SET INTEN ON
+                                        MENU TO opcao_res
+                                        DO CASE
+                                                CASE LASTKEY() = 27
+                                                        RESTSCREEN(01,00,24,79,tela1)
+                                                        LOOP
+                                                CASE opcao_res = 1
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,ch_receber,,,point)
+                                                CASE opcao_res = 2
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,du_receber,,,point)
+                                                CASE opcao_res = 3
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,ct_receber,,,point)
+                                                CASE opcao_res = 4
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,fi_receber,,,point)
+                                                CASE opcao_res = 5
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,re_receber,,,point)
+                                                CASE opcao_res = 6
+                                                        RESTSCREEN(00,00,24,79,tela_res)
+                                                        setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,doc_receber,,,point)
+                                        ENDCASE
+*                                       setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,doc_receber,,,point)
+                                ENDIF
+                                RESTSCREEN(01,00,24,79,tela1)
+                                LOOP
+                        CASE opcao = 5
+                                botao(10,10,16,70,,' ESTATISTICA DOC.RECEBER ')
+                                @ 13,11 TO 13,69
+                                DEVPOS(11,11);DEVOUT('Doc.a Receber R$.........:')
+                                DEVPOS(12,11);DEVOUT('Doc.Vencidos R$..........:')
+                                DEVPOS(12,52);DEVOUT('(%):')
+                                DEVPOS(14,11);DEVOUT('Total de Clientes Geral..:')
+                                DEVPOS(15,11);DEVOUT('Total de Clientes Devedor:')
+                                DEVPOS(15,52);DEVOUT('(%):')
+                                setcor(3)
+                                DEVPOS(11,38);DEVOUT(TRANSFORM(tot_receber+tot_recvenc,'999,999,999.99'))
+                                DEVPOS(12,38);DEVOUT(TRANSFORM(tot_recvenc,'999,999,999.99'))
+                                DEVPOS(12,57);DEVOUT(TRANSFORM((tot_recvenc / (tot_receber+tot_recvenc))*100,'9,999.99'))
+                                DEVPOS(14,38);DEVOUT(TRANSFORM(mtot_cli,'99,999.99'))
+                                DEVPOS(15,38);DEVOUT(TRANSFORM(LEN(t_cli),'99,999.99'))
+                                DEVPOS(15,57);DEVOUT(TRANSFORM((LEN(t_cli)/mtot_cli)*100,'9,999.99'))
+                                setcor(1)
+                                INKEY(0)
+                                RESTSCREEN(01,00,24,79,tela1)
+                                LOOP
+                        CASE opcao = 6
+                                botao(li,ci,lb,cb,,' DESPESAS DIARIAS ')
+                                @ li+2,ci+1 TO li+2,cb-1
+                                DEVPOS(li+1,ci+1);DEVOUT(' Data')
+                                DEVPOS(li+1,ci+12);DEVOUT('Tipo/Codigo/Descricao')
+                                DEVPOS(li+1,ci+67);DEVOUT('Valor')
+                                mensagem("< ou > Consulta  -  <ESC> Retorna  -  <ENTER> p/Resumo" )
+                                setcor(10);point := ACHOICE(li+3,ci+1,lb-1,cb-1,doc_desp,,,point)
+
+                                DO CASE
+                                        CASE LASTKEY()=27 .OR. LEN(doc_desp) = 0
+                                                RESTSCREEN(01,00,24,79,tela1)
+                                                LOOP
+                                ENDCASE
+                        CASE opcao = 8
+                                WHILE .T.
+                                        botao(li,ci,lb,cb,,' DOCUMENTOS A PAGAR - Total Geral: '+TRANSFORM(tot_apagar,'999,999,999.99'))
+                                        setcor(10);point := ACHOICE(li+1,ci+1,lb-1,cb-1,conta_apg,,,point)
+                                        DO CASE
+                                                CASE LASTKEY()=27
+                                                        RESTSCREEN(01,00,24,79,tela1)
+                                                        EXIT
+                                                CASE LASTKEY() = 13
+                                                        con214(,mdata1,mdata2,SUBSTR(conta_apg[point],1,4),'A')
+                                                        RESTSCREEN(01,00,24,79,tela1)
+                                                        LOOP
+                                        ENDCASE
+                                ENDDO
+                ENDCASE
+        ENDDO
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+******************************** F I M ******************************
+*************************
+* IMPRIMIR FLUXO DE CAIXA
+*************************
+FUNCTION print_flux
+********************
+LOCAL MPRG:='SAC4FLU'
+LOCAL mtit,mtipo,mpag:=0,k:=0,mdet_apaga:= ' ',mdet_rec:=' '
+MEMVAR tot_dn,tot_ch,tot_chp,tot_cart,tot_dupl,tot_fin,mdata1,mdata2,tot_receber,;
+       tot_recvenc,tot_recebido,tot_gerrec,tot_avista,tot_apagar,tot_apavenc,;
+       tot_pago,tot_desp,tot_adm,mest_custo,mest_venda,mjuro_rec,mjuro_pg,;
+       conta_pg,conta_apg
+
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+********* VARIAVEIS DE IMPRESSAO *******************
+mtipo_imp := m_indiv[1,18]
+****************************************************
+CLEAR GETS
+mdet_apaga := mensagem1('Deseja imprimir detalhe do Contas Apagar:','S','S,N')
+*mdet_rec := mensagem1('Deseja imprimir detalhe do Contas A RECEBER:','S','S,N')
+IF ! imp_arq('FLUXO.REL','R')
+        RETURN NIL
+ENDIF
+mtit := 'FLUXO DE CAIXA '
+mpag := 1
+cabecalho(mpag,mtit,,mprg,1)
+DEVPOS(PROW()+1,00);DEVOUT(PADC(' CONSULTA "Fluxo de Caixa" ',80))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT('Data Inicial..........: '+DTOC(mdata1))
+DEVPOS(PROW()+1,00);DEVOUT('Data Final............: '+DTOC(mdata2))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT(PADC('ESTOQUE (R$)',80))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT('Preco de Custo......: '+TRANSFORM(mest_custo,'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT('Preco de Venda......: '+TRANSFORM(mest_venda,'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT('Lucro.............. : '+TRANSFORM(mest_venda-mest_custo,'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT(PADC('FATURAMENTO NO PERIODO (R$)',80))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT('Dinheiro............: '+TRANSFORM(tot_dn,'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT('Chq Avista..........: '+TRANSFORM(tot_ch,'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT('Chq.Aprazo..........: '+TRANSFORM(tot_chp,'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT('Cartao..............: '+TRANSFORM(tot_cart,'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT('Duplicata...........: '+TRANSFORM(tot_dupl,'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT('Financeira..........: '+TRANSFORM(tot_fin,'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT('                      -------------')
+DEVPOS(PROW()+1,00);DEVOUT('T O T A L...........: '+TRANSFORM(tot_dn+tot_ch+tot_chp+tot_cart+tot_dupl+tot_fin,'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT(PADC('CREDITOS (R$)',80))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT('Vendas Avista ......: '+TRANSFORM(tot_avista,'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT('Documento Recebidos.: '+TRANSFORM(tot_recebido-mjuro_rec,'999,999,999.99')+' Juros...:'+TRANSFORM(mjuro_rec  ,'999,999,999.99')+' Total...:'+TRANSFORM(tot_recebido,'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT('Documento a Receber.: '+TRANSFORM(tot_gerrec  ,'999,999,999.99')+' Vencidas:'+TRANSFORM(tot_recvenc,'999,999,999.99')+' A vencer:'+TRANSFORM(tot_receber ,'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT('                      -------------')
+DEVPOS(PROW()+1,00);DEVOUT('T O T A L...........: '+TRANSFORM(tot_avista+tot_recebido+tot_gerrec,'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT(PADC('DEBITOS (R$)',80))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT('Despesas............: '+TRANSFORM(tot_desp,'999,999,999.99'))
+DEVPOS(PROW(),PCOL()+2);DEVOUT('(%) sobre o faturamento: '+TRANSFORM((tot_desp/(tot_avista+tot_recebido+tot_gerrec))*100,'9,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT('Documentos Pagos....: '+TRANSFORM(tot_pago-mjuro_pg,'999,999,999.99')+' Juros...:'+TRANSFORM(mjuro_pg,'999,999,999.99')+' Total...:'+TRANSFORM(tot_pago,'999,999,999.99'))
+*DEVPOS(PROW(),PCOL()+2);DEVOUT('(%) sobre o faturamento: '+TRANSFORM((tot_pago/(tot_avista+tot_recebido+tot_gerrec))*100,'9,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT('Documentos a Pagar..: '+TRANSFORM(tot_apagar,'999,999,999.99'))
+DEVPOS(PROW(),PCOL()+2);DEVOUT('(%) sobre o faturamento: '+TRANSFORM((tot_apagar/(tot_avista+tot_recebido+tot_gerrec))*100,'9,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT('                      -------------')
+DEVPOS(PROW()+1,00);DEVOUT('T O T A L ..........: '+TRANSFORM(tot_adm+tot_desp+tot_pago+tot_apagar,'999,999,999.99'))
+DEVPOS(PROW(),PCOL()+2);DEVOUT('(%) sobre o faturamento: '+TRANSFORM(((tot_adm+tot_desp+tot_pago+tot_apagar)/(tot_avista+tot_recebido+tot_gerrec))*100,'9,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT(PADC('RECEBIDOS - (PAGOS + DESPESAS) (R$)',80))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT('T O T A L ..........: '+TRANSFORM(tot_recebido+tot_avista,'999,999,999.99')+' - '+ALLTRIM(TRANSFORM(tot_adm+tot_desp+tot_pago,'999,999,999.99')))
+DEVPOS(PROW(),PCOL()+1);DEVOUT(' = '+TRANSFORM(tot_recebido+tot_avista - (tot_adm+tot_desp+tot_pago),'999,999,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT(PADC('CREDITOS - DEBITOS (R$)',80))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT('T O T A L ..........: '+TRANSFORM((tot_avista+tot_recebido+tot_gerrec)-(tot_adm+tot_desp+tot_pago+tot_apagar),'999,999,999.99'))
+DEVPOS(PROW(),PCOL()+2);DEVOUT('(%) sobre o faturamento: '+TRANSFORM((((tot_avista+tot_recebido+tot_gerrec)-(tot_adm+tot_desp+tot_pago+tot_apagar))/(tot_avista+tot_recebido+tot_gerrec))*100,'9,999.99'))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT(PADC('PONTO DE EQUILIBRIO ',80))
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT('ATIVO...............R$: '+TRANSFORM(mest_custo+tot_gerrec,'999,999,999.99')+'  *** Estoque Prc.Custo + Tot.a Receber ***')  // ATIVO
+DEVPOS(PROW()+1,00);DEVOUT('PASSIVO.............R$: '+TRANSFORM(tot_apagar,'999,999,999.99')+'  *** Total a Pagar ***')  // PASSIVO
+DEVPOS(PROW()+1,00);DEVOUT('Ponto de Equilibrio...: '+TRANSFORM(((mest_custo+tot_gerrec)/tot_apagar),'999.99')+'         *** Formula: ATIVO / PASSIVO ***') // PONTO DE EQUILIBRIO
+DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+DEVPOS(PROW()+1,00);DEVOUT(TIME())
+IF mdet_apaga = 'S'
+        mpag := 2
+        EJECT
+        cabecalho(mpag,mtit,,mprg,1)
+        DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+        DEVPOS(PROW()+1,00);DEVOUT(PADC(' DETALHE DO CONTAS APAGAR ',80))
+        DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+        DEVPOS(PROW()+1,00);DEVOUT(PADC(' Documentos " PAGOS " (Total Geral: '+TRANSFORM(tot_pago,'999,999,999.99')+')',80))
+        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+        k := 0
+        FOR k = 1 TO LEN(conta_pg)
+                DEVPOS(PROW()+1,00);DEVOUT(conta_pg[k])
+                IF PROW() >= 58
+                        mpag ++
+                        EJECT
+                        cabecalho(mpag,mtit,,mprg,1)
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+                        DEVPOS(PROW()+1,00);DEVOUT(PADC(' DETALHE DO CONTAS APAGAR ',80))
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+                ENDIF
+        NEXT
+        IF PROW() >= 58
+                mpag ++
+                EJECT
+                cabecalho(mpag,mtit,,mprg,1)
+                DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+                DEVPOS(PROW()+1,00);DEVOUT(PADC(' DETALHE DO CONTAS APAGAR ',80))
+                DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+        ENDIF
+        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+        DEVPOS(PROW()+1,00);DEVOUT(PADC(' Documentos " APAGAR " (Total Geral: '+TRANSFORM(tot_apagar,'999,999,999.99')+')',80))
+        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+        k := 0
+        FOR k = 1 TO LEN(conta_apg)
+                DEVPOS(PROW()+1,00);DEVOUT(conta_apg[k])
+                IF PROW() >= 58
+                        mpag ++
+                        EJECT
+                        cabecalho(mpag,mtit,,mprg,1)
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+                        DEVPOS(PROW()+1,00);DEVOUT(PADC(' DETALHE DO CONTAS APAGAR" ',80))
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+                ENDIF
+        NEXT
+ENDIF
+/*
+IF mdet_rec = 'S'
+        mpag := mpag + 1
+        EJECT
+        cabecalho(mpag,mtit,,mprg,1)
+        DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+        DEVPOS(PROW()+1,00);DEVOUT(PADC(' DETALHE DO CONTAS ARECEBER ',80))
+        DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+        DEVPOS(PROW()+1,00);DEVOUT(PADC(' Documentos " CHEQUES RECEBIDOS "',80))
+        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+        DEVPOS(PROW()+1,00);DEVOUT('Documento')
+        DEVPOS(PROW(),13);DEVOUT('Cliente')
+        DEVPOS(PROW(),39);DEVOUT('Emissao')
+        DEVPOS(PROW(),51);DEVOUT('Dta.Pag')
+        DEVPOS(PROW(),67);DEVOUT('Valor')
+        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+
+        k := 0
+        FOR k = 1 TO LEN(ch_recebido)
+                DEVPOS(PROW()+1,00);DEVOUT(ch_recebido[k])
+                IF PROW() >= 58
+                        mpag ++
+                        EJECT
+                        cabecalho(mpag,mtit,,mprg,1)
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+                        DEVPOS(PROW()+1,00);DEVOUT(PADC(' DETALHE DO CONTAS APAGAR" ',80))
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+                        DEVPOS(PROW()+1,00);DEVOUT(PADC(' Documentos " CHEQUES RECEBIDOS "',80))
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                        DEVPOS(PROW()+1,00);DEVOUT('Documento')
+                        DEVPOS(PROW(),13);DEVOUT('Cliente')
+                        DEVPOS(PROW(),39);DEVOUT('Emissao')
+                        DEVPOS(PROW(),51);DEVOUT('Dta.Pag')
+                        DEVPOS(PROW(),67);DEVOUT('Valor')
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                ENDIF
+        NEXT
+        IF PROW() >= 58
+                mpag ++
+                EJECT
+                cabecalho(mpag,mtit,,mprg,1)
+                DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+                DEVPOS(PROW()+1,00);DEVOUT(PADC(' DETALHE DO CONTAS APAGAR" ',80))
+                DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+        ENDIF
+        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+        DEVPOS(PROW()+1,00);DEVOUT(PADC(' Documentos " APAGAR "',80))
+        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+        k := 0
+        FOR k = 1 TO LEN(conta_apg)
+                DEVPOS(PROW()+1,00);DEVOUT(conta_apg[k])
+                IF PROW() >= 58
+                        mpag ++
+                        EJECT
+                        cabecalho(mpag,mtit,,mprg,1)
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+                        DEVPOS(PROW()+1,00);DEVOUT(PADC(' DETALHE DO CONTAS APAGAR" ',80))
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('*',80))
+                ENDIF
+        NEXT
+ENDIF
+*/
+SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+conf_impressao('FLUXO.REL')
+/*
+IF mimp_tipo = 2
+        lertexto('FLUXO.REL')
+ELSEIF mtipo_imp = 'D'
+        
+ELSE
+        MYRUN('DOSPRINTER /RAW /DEL '+ALLTRIM(m_indiv[1,5])+'HTI.REL')
+ENDIF
+*/
+RETURN NIL
+******************** F I M **************************************

@@ -1,0 +1,567 @@
+********************
+* LISTAGEM MOVIMENTO DE PRODUTOS
+********************
+MEMVAR getlist,nivel_acess,mdata_sis
+
+FUNCTION sac520(mcod)
+**************
+LOCAL MPRG:='SAC520',mtitulo:='RELATORIO MOVIMENTO P/PRODUTO',;
+      tela,lba,cba,opcao,mquantd,i,mtecla,mdata1,mdata2,mcod_op,;
+      mtot_ent,mtot_sai,mtot_dif,mvlr_ent,mvlr_sai,mtot_cust,mop,mtot_aux,;
+      mtot_prven,mdesc,msai_bal,ment_bal,muf,mtip_cod,;
+      nErr, nPos,;
+        vEmp := {},;
+        nCnn,oSql,;
+        cComm, apCode,;
+        m_codigo:={},mbalanco:='N'
+
+PRIVATE mtraco,telaprint,mtit,mtipo,mpag,mcod_merc,malias,m_mov:={},;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),cons_cli:={}
+
+IF ! ver_nivel(mprg,mtitulo,'156',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+mtraco := REPLI('=',132)
+
+lba := 10
+cba := 70
+*----------------------------------------------------------------------------
+//
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*----------------------------------------------------------------------------
+set_key('merc')
+op_tela(0,0,lba+2,cba,mtitulo)
+WHILE .T.
+        exibi_prg(mprg)
+        IF mcod <> NIL
+                mcod_merc := mcod
+        ELSE
+                mcod_merc := 0
+        ENDIF
+        mtipo_imp := m_indiv[1,18]
+        mop := mquantd := 0
+        mdata1 := CTOD('  /  /  ')
+        mdata2 := mdata_sis
+        mcod_op := '04'
+        muf := SPACE(2)
+        mtip_cod := 'C'
+        mbalanco := 'N'
+        ASIZE(m_mov,0)
+        mensagem('Preencha os Campos - <ESC>p/Abandonar')
+        DEVPOS(1,2);DEVOUT('Codigo Merc....:')
+        DEVPOS(2,2);DEVOUT('Cod.Operacao...:')
+        DEVPOS(3,2);DEVOUT('Sigla Estado...:')
+        DEVPOS(4,2);DEVOUT('Data Inicial...:')
+        DEVPOS(5,2);DEVOUT('Data Final.....:')
+        DEVPOS(6,2);DEVOUT('Tipo Cod.[C]odigo ou [B] Cod.Barra:')
+        DEVPOS(7,2);DEVOUT('Incluir Movimento p/ BALANCO [S/N]:')
+        setcor(3)
+        @ 9,1 TO 9,cba-1
+        DEVPOS(10,2);DEVOUT('Processamento..:')
+        DEVPOS(10,40);DEVOUT('OK:')
+        setcor(1)
+        mensagem('Digite o codigo do Produto ou Deixe em BRANCO p/TODOS os produtos - <ESC>p/Abandonar')
+        @ 1,19 GET mcod_merc PICT '99999' VALID ver_cod(mcod_merc,1,25,,0) WHEN mcod = NIL
+        READ
+        IF LASTKEY() = 27
+                fimset()
+                //movcn->(DBCLOSEAREA())
+                EXIT
+        ENDIF
+        mensagem('Preencha os Campos - <ESC>p/Abandonar')
+        @ 2,19 GET mcod_op PICT '99' VALID mcod_op $ '01,02,03,04'
+        @ 3,19 GET muf PICT '@!' VALID v_uf(muf)
+        @ 4,19 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ 5,19 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+        @ 6,38 GET mtip_cod PICT '@!' VALID mtip_cod $ 'C,B'
+        @ 7,38 GET mbalanco PICT '@!' VALID mbalanco $ 'S,N'
+        READ
+        IF LASTKEY() = 27
+                fimset()
+                //movcn->(DBCLOSEAREA())
+                EXIT
+        ENDIF
+        @ 8,8 PROMPT '  Geral '
+        @ 8,25 PROMPT '  Entradas '
+        @ 8,47 PROMPT '  Saidas '
+        MENU TO mop
+
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        mensagem('Aguarde um momento coletando dados p/o relatorio')
+        m_codigo:={}
+        IF ! EMPTY(mcod_merc)
+                cComm  := "SELECT cod_merc FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(mcod_merc)
+        ELSE
+                cComm  := "SELECT cod_merc FROM sacmerc "
+        ENDIF
+        cComm  := ccomm + " ORDER BY merc"
+        sr_getconnection():exec(ccomm,,.t.,@m_codigo)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(m_codigo) = 0
+                atencao('Nao existe produto !!!')
+                LOOP
+        ENDIF
+        i := 0
+        FOR i = 1 TO LEN(m_codigo)
+
+        IF mcod_op = '01'
+                cComm := "SELECT * FROM sacmov WHERE data_s_e >= "+sr_cdbvalue(mdata1)
+                ccomm := ccomm + " AND data_s_e <= "+sr_cdbvalue(mdata2)
+                ccomm := ccomm + " AND codigo = "+sr_cdbvalue(m_codigo[i,1])
+                ccomm := ccomm + " AND (cancel is NULL OR cancel = '') AND NOT tipo = '02'"   // AND (documento NOT LIKE 'TR%' .OR. documento NOT LIKE 'BL%')"
+                ccomm := ccomm + " AND documento NOT LIKE 'TR%'"
+                IF mop = 2
+                        cComm := ccomm + "  AND ent_sai = 'E'"        // AND (documento NOT LIKE 'TR%' .OR. documento NOT LIKE 'BL%')"
+                ELSEIF mop = 3
+                        cComm := ccomm + "  AND ent_sai = 'S'"        // AND (documento NOT LIKE 'TR%' .OR. documento NOT LIKE 'BL%')"
+                ENDIF
+                IF mbalanco = 'S'
+                        cComm := ccomm + "  AND documento LIKE 'BL%'"        // AND (documento NOT LIKE 'TR%' .OR. documento NOT LIKE 'BL%')"
+                ELSE
+                        cComm := ccomm + "  AND documento NOT LIKE 'BL%'"
+                ENDIF
+                ccomm := ccomm + " ORDER BY data_s_e"
+                dbUseArea( .F.,"SQLRDD",cComm,"q_mov")
+                SELE('q_mov')
+                DBGOTOP()
+                IF ! EOF()      //.AND. (mop = 1 .OR. mop = 2)
+                        WHILE ! EOF()
+                                DEVPOS(9,30);DEVOUT(STRZERO(RECNO(),8))
+                                IF ! EMPTY(muf)
+                                        m_cli := {}
+                                        sr_getconnection():exec("SELECT uf FROM saccli WHERE cod_cli = "+sr_cdbvalue(q_mov->cod_cli),,.t.,@m_cli)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+                                        IF LEN(m_cli) = 0
+                                                SKIP;LOOP
+                                        ENDIF
+                                ENDIF
+                                           //    1            2             3              4             5
+                                           //    6            7             8              9            10
+                                           //   11            12            13             14            15
+                                           //   16            17            18             19            20
+                                AADD(m_mov,{mcodempresa  ,q_mov->data_s_e,q_mov->codigo  ,q_mov->produto  ,q_mov->documento,;
+                                            q_mov->cod_cli ,q_mov->cliente ,q_mov->cod_forn,q_mov->fornece  ,q_mov->quantd   ,;
+                                            q_mov->cust_mer,q_mov->pr_unit ,q_mov->vl_vend ,q_mov->vl_fatura,q_mov->cod_vend ,;
+                                            q_mov->cod_oper,q_mov->ent_sai ,q_mov->tipo    ,q_mov->obs1     ,q_mov->pr_venda })
+                                DEVPOS(9,43);DEVOUT(STRZERO(RECNO(),8))
+                                SKIP
+                        ENDDO
+                ENDIF
+                q_mov->(DBCLOSEAREA())
+                cComm  := "SELECT * FROM sacmovnt WHERE data_s_e >= "+sr_cdbvalue(mdata1)
+                ccomm := ccomm + " AND data_s_e <= "+sr_cdbvalue(mdata2)
+                ccomm := ccomm + " AND codigo = "+sr_cdbvalue(m_codigo[i,1])
+                ccomm := ccomm + " AND (cancel is NULL OR cancel = '')"
+                IF mop = 2
+                        cComm := ccomm + " AND ent_sai = 'E'"
+                ELSEIF mop = 3
+                        cComm := ccomm + " AND ent_sai = 'S'"
+                ENDIF
+                ccomm := ccomm + " ORDER BY data_s_e"
+                dbUseArea( .F.,"SQLRDD",cComm,"q_movnt")
+                SELE('q_movnt')
+                DBGOTOP()
+                IF ! EOF()      //.AND. (mop = 1 .OR. mop = 3)
+                        //WHILE q_movnt->data_s_e <= mdata2 .AND. mcod_merc = q_movnt->codigo .AND. ! EOF()
+                        WHILE  ! EOF()
+                                DEVPOS(9,30);DEVOUT(STRZERO(RECNO(),8))
+                                IF ! EMPTY(muf)
+                                        m_cli := {}
+                                        sr_getconnection():exec("SELECT uf FROM saccli WHERE cod_cli = "+sr_cdbvalue(q_movnt->cod_cli),,.t.,@m_cli)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+                                        IF LEN(m_cli) = 0
+                                                SKIP;LOOP
+                                        ENDIF
+                                ENDIF
+                                           //    1            2             3              4             5
+                                           //    6            7             8              9            10
+                                           //   11            12            13             14            15
+                                           //   16            17            18             19            20
+                                AADD(m_mov,{mcodempresa  ,q_movnt->data_s_e,q_movnt->codigo  ,q_movnt->produto  ,q_movnt->documento,;
+                                            q_movnt->cod_cli ,q_movnt->cliente ,q_movnt->cod_fab,q_movnt->fabrica  ,q_movnt->quantd   ,;
+                                            q_movnt->cust_mer,q_movnt->pr_unit ,q_movnt->vl_vend ,q_movnt->vl_fatura,q_movnt->cod_vend ,;
+                                            q_movnt->cod_oper,q_movnt->ent_sai ,q_movnt->tipo    ,q_movnt->obs1     ,q_movnt->pr_venda })
+                                DEVPOS(9,43);DEVOUT(STRZERO(RECNO(),8))
+                                SKIP
+                        ENDDO
+                ENDIF
+                q_movnt->(DBCLOSEAREA())
+
+        ELSE
+                cComm := "SELECT * FROM sacmov WHERE data_s_e >= "+sr_cdbvalue(mdata1)
+                ccomm := ccomm + " AND data_s_e <= "+sr_cdbvalue(mdata2)
+                ccomm := ccomm + " AND codigo = "+sr_cdbvalue(m_codigo[i,1])+" AND (cancel is NULL OR cancel = '')"
+                IF mop = 2
+                        cComm := ccomm + " AND ent_sai = 'E'"
+                ELSEIF mop = 3
+                        cComm := ccomm + " AND ent_sai = 'S'"
+                ENDIF
+                IF mbalanco = 'S'
+                        cComm := ccomm + "  AND documento LIKE 'BL%'"
+                ELSE
+                        cComm := ccomm + "  AND documento NOT LIKE 'BL%' AND (NOT tipo = '03' OR tipo IS NULL)"
+                ENDIF
+                ccomm := ccomm + " ORDER BY data_s_e"
+                //atencao(ccomm)
+                dbUseArea( .F.,"SQLRDD",cComm,"q_mov")
+                SELE('q_mov')
+                DBGOTOP()
+                WHILE ! EOF()
+                        prog_imp(RECNO(),DTOC(q_mov->data_s_e))
+                        DEVPOS(9,30);DEVOUT(STRZERO(RECNO(),8))
+                        IF ! EMPTY(muf)
+                                IF ! ver_cli(VAL(q_mov->cod_cli),,,1);
+                                   .OR. muf <> cons_cli[1,25]
+                                        SKIP;LOOP
+                                ENDIF
+                        ENDIF
+                                   //    1            2             3              4             5
+                                   //    6            7             8              9            10
+                                   //   11            12            13             14            15
+                                   //   16            17            18             19            20
+                                   //   21
+                        AADD(m_mov,{mcodempresa  ,q_mov->data_s_e,q_mov->codigo  ,q_mov->produto  ,q_mov->documento,;
+                                    q_mov->cod_cli ,q_mov->cliente ,q_mov->cod_forn,q_mov->fornece  ,q_mov->quantd   ,;
+                                    q_mov->cust_mer,q_mov->pr_unit ,q_mov->vl_vend ,q_mov->vl_fatura,q_mov->cod_vend ,;
+                                    q_mov->cod_oper,q_mov->ent_sai ,q_mov->tipo    ,q_mov->obs1     ,q_mov->pr_venda})
+                        DEVPOS(9,43);DEVOUT(STRZERO(RECNO(),8))
+                        SKIP
+                ENDDO
+                q_mov->(DBCLOSEAREA())
+        ENDIF
+        NEXT
+        IF LEN(m_mov) = 0
+                atencao('Nao existe movimento neste Periodo')
+                LOOP
+        ENDIF
+        ASORT(m_mov,,, {|x,y| x[2] < y[2]})
+        IF ! imp_arq('MOV_PROD.REL','R',,,,,,'E')
+                LOOP
+        ENDIF
+        mtot_prven := mtot_cust := mtot_aux := mtot_ent := mtot_sai :=;
+        mtot_dif := mvlr_ent := mvlr_sai := msai_bal := ment_bal := 0
+        mpag = 1
+        IF ! EMPTY(mcod_merc)
+                mtit = 'Movimento Produto:'+STRZERO(mcod_merc,5)+'-'+m_mov[1,4]
+        ELSE
+                mtit = 'Movimento Geral dos Produtos'
+        ENDIF
+        IF ! EMPTY(muf)
+                mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)+' do Estado: '+muf
+        ELSE
+                mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)
+        ENDIF
+        IF mimp_tipo = 4
+                nxls := {}
+                f:=1
+                MYRUN('DEL '+marq)
+                nXls := xlsOpen(marq)
+                xlsWrite( nXls, f, 1,mtit)
+                f++
+                xlsWrite( nXls, f, 1,mtipo)
+                f++
+                xlsWrite( nXls, f, 1,'DATA')
+                xlsWrite( nXls, f, 2, 'CODIGO')
+                xlsWrite( nXls, f, 3, 'PRODUTO')
+                xlsWrite( nXls, f, 4, 'DOC.(NF)')
+                xlsWrite( nXls, f, 5, 'CLI/FORN')
+                xlsWrite( nXls, f, 6, 'ENTRADA')
+                xlsWrite( nXls, f, 7, 'SAIDA')
+                xlsWrite( nXls, f, 8, 'VALOR UNIT')
+                xlsWrite( nXls, f, 9, 'TOT/ENTRADA')
+                xlsWrite( nXls, f, 10, 'TOT/SAIDA')
+                xlsWrite( nXls, f, 11, 'VLR.MENOR')
+                xlsWrite( nXls, f, 12, 'DIF.(%)')
+                xlsWrite( nXls, f, 13, 'OPE')
+                xlsWrite( nXls, f, 14, 'VENDEDOR')
+                xlsWrite( nXls, f, 15, 'OBSERVACAO')
+                f++
+                i:=0
+                FOR i = 1 TO LEN(m_mov)
+                        xlsWrite( nXls, f, 1,DTOC(m_mov[i,2]))
+                        IF mtip_cod = 'C' .OR. EMPTY(m_mov[i,21])
+                                xlsWrite( nXls, f, 2,m_mov[i,3])
+                        ELSE
+                                xlsWrite( nXls, f, 2,m_mov[i,21])
+                        ENDIF
+                        xlsWrite( nXls, f, 3,m_mov[i,4])
+                        xlsWrite( nXls, f, 4,m_mov[i,5])
+
+                        IF m_mov[i,17] = 'E'
+                                xlsWrite( nXls, f, 5, m_mov[i,8])
+                                xlsWrite( nXls, f, 6, ALLTRIM(TRANSFORM(m_mov[i,10],'@E 999999.99')))
+                                xlsWrite( nXls, f, 7, '')
+                                xlsWrite( nXls, f, 8, ALLTRIM(TRANSFORM(m_mov[i,12],'@E 999999.99')))
+                                xlsWrite( nXls, f, 9, ALLTRIM(TRANSFORM(m_mov[i,10] * m_mov[i,12],'@E 999999.99')))
+                                xlsWrite( nXls, f, 10, '')
+                                xlsWrite( nXls, f, 11, '')
+                                IF SUBSTR(m_mov[i,5],1,2) = 'BL'
+                                        ment_bal := ment_bal + m_mov[i,10]
+                                ELSE
+                                        mtot_ent = mtot_ent + m_mov[i,10]
+                                        mvlr_ent = mvlr_ent + m_mov[i,12] * m_mov[i,10]
+                                ENDIF
+                                xlsWrite( nXls, f, 12, ALLTRIM(TRANSFORM(0,'@E 999999.99')))
+                                xlsWrite( nXls, f, 13, m_mov[i,16])
+                                xlsWrite( nXls, f, 14, m_mov[i,15])
+                        ELSE
+                                xlsWrite( nXls, f, 5, STR(m_mov[i,6],5))
+                                xlsWrite( nXls, f, 6, '')
+                                xlsWrite( nXls, f, 7, ALLTRIM(TRANSFORM(m_mov[i,10],'@E 999999.99')))
+                                IF mcod_op = '04' .OR. mcod_op = '02'
+                                        xlsWrite( nXls, f, 8, ALLTRIM(TRANSFORM(m_mov[i,13],'@E 999999.99')))
+                                        xlsWrite( nXls, f, 9, '')
+                                        xlsWrite( nXls, f, 10, ALLTRIM(TRANSFORM(m_mov[i,10] * m_mov[i,13],'@E 999999.99')))
+                                        IF SUBSTR(m_mov[i,5],1,2) = 'BL'
+                                                msai_bal := msai_bal + m_mov[i,10]
+                                                xlsWrite( nXls, f, 11, ALLTRIM(TRANSFORM(0,'@E 999999.99')))
+                                                xlsWrite( nXls, f, 12, ALLTRIM(TRANSFORM(0,'@E 999999.99')))
+                                        ELSE
+                                                mtot_aux := m_mov[i,10] * m_mov[i,20] - m_mov[i,10] * m_mov[i,13]
+                                                mtot_prven := mtot_prven + (m_mov[i,20] * m_mov[i,10])
+                                                mtot_sai = mtot_sai + m_mov[i,10]
+                                                mtot_cust := mtot_cust + (m_mov[i,12] * m_mov[i,10])
+                                                mvlr_sai = mvlr_sai + m_mov[i,13] * m_mov[i,10]
+                                                IF mtot_aux > 0
+                                                        xlsWrite( nXls, f, 11, ALLTRIM(TRANSFORM(mtot_aux * -1,'@E 999999.99')))
+                                                        xlsWrite( nXls, f, 12, ALLTRIM(TRANSFORM((mtot_aux * 100 / (m_mov[i,10] * m_mov[i,20])) * -1,'@E 999999.99')))
+                                                        mtot_dif = mtot_dif + mtot_aux
+                                                ELSE
+                                                        xlsWrite( nXls, f, 11, ALLTRIM(TRANSFORM(0,'@E 999999.99')))
+                                                        xlsWrite( nXls, f, 12, ALLTRIM(TRANSFORM(0,'@E 999999.99')))
+                                                ENDIF
+                                        ENDIF
+                                        xlsWrite( nXls, f, 13,m_mov[i,16])
+                                        xlsWrite( nXls, f, 14,m_mov[i,15])
+                                ELSE
+                                        xlsWrite( nXls, f, 8, ALLTRIM(TRANSFORM(m_mov[i,14],'@E 999999.99')))
+                                        xlsWrite( nXls, f, 9, '')
+                                        xlsWrite( nXls, f, 10, ALLTRIM(TRANSFORM(m_mov[i,10] * m_mov[i,14],'@E 999999.99')))
+                                        IF SUBSTR(m_mov[i,5],1,2) = 'BL'
+                                                xlsWrite( nXls, f, 11, ALLTRIM(TRANSFORM(0,'@E 999999.99')))
+                                                xlsWrite( nXls, f, 12, ALLTRIM(TRANSFORM(0,'@E 999999.99')))
+                                                msai_bal := msai_bal + m_mov[i,10]
+                                        ELSE
+                                                mtot_aux := m_mov[i,10] * m_mov[i,20] - m_mov[i,10] * m_mov[i,14]
+                                                mtot_prven := mtot_prven + (m_mov[i,20] * m_mov[i,10])
+                                                mtot_sai = mtot_sai + m_mov[i,10]
+                                                mtot_cust := mtot_cust + (m_mov[i,12] * m_mov[i,10])
+                                                mvlr_sai = mvlr_sai + m_mov[i,14] * m_mov[i,10]
+                                                IF mtot_aux > 0
+                                                        xlsWrite( nXls, f, 11, ALLTRIM(TRANSFORM(mtot_aux * -1,'@E 999999.99')))
+                                                        xlsWrite( nXls, f, 12, ALLTRIM(TRANSFORM((mtot_aux * 100 / (m_mov[i,10] * m_mov[i,20])) * -1,'@E 999999.99')))
+                                                        mtot_dif = mtot_dif + mtot_aux
+                                                ELSE
+                                                        xlsWrite( nXls, f, 11, ALLTRIM(TRANSFORM(0,'@E 999999.99')))
+                                                        xlsWrite( nXls, f, 12, ALLTRIM(TRANSFORM(0,'@E 999999.99')))
+                                                ENDIF
+                                        ENDIF
+                                        xlsWrite( nXls, f, 13,m_mov[i,16])
+                                        xlsWrite( nXls, f, 14,m_mov[i,15])
+                                ENDIF
+                        ENDIF
+                        xlsWrite( nXls, f, 15,m_mov[i,19])
+                        f++
+                NEXT
+                xlsWrite( nXls, f, 1,'Total de ENTRADAS:')
+                xlsWrite( nXls, f, 2, ALLTRIM(TRANSFORM(mtot_ent,'@E 999999.99')))
+                xlsWrite( nXls, f, 3,'Valor de ENTRADAS R$:')
+                xlsWrite( nXls, f, 4, ALLTRIM(TRANSFORM(mvlr_ent,'@E 9999999.99')))
+                f++
+                xlsWrite( nXls, f, 1,'Total de SAIDAS:')
+                xlsWrite( nXls, f, 2, ALLTRIM(TRANSFORM(mtot_sai,'@E 999999.99')))
+                xlsWrite( nXls, f, 3,'Valor de SAIDAS R$:')
+                xlsWrite( nXls, f, 4, ALLTRIM(TRANSFORM(mvlr_sai,'@E 9999999.99')))
+                /*
+                f++
+                xlsWrite( nXls, f, 1,'Total Geral Entrada:')
+                xlsWrite( nXls, f, 2, ALLTRIM(TRANSFORM(ment_bal+mtot_ent,'@E 999999.99')))
+                f++
+                xlsWrite( nXls, f, 1,'Total Geral Saidas:')
+                xlsWrite( nXls, f, 2, ALLTRIM(TRANSFORM(msai_bal+mtot_sai,'@E 999999.99')))
+                */
+                f++
+                xlsWrite( nXls, f, 1,TIME())
+        	xlsClose( nXls )
+
+        ELSE
+        cabecalho(mpag,mtit,mtipo,mprg)
+        imprt(mtipo_imp,'C')
+        DEVPOS(PROW()+1,02);DEVOUT('Data')
+        DEVPOS(PROW(),11);DEVOUT('Codigo')
+        DEVPOS(PROW(),29);DEVOUT('Doc.(NF)')
+        DEVPOS(PROW(),39);DEVOUT('Cli./Forn.')
+        DEVPOS(PROW(),51);DEVOUT(' Entrada')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT('   Saida')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT(' V a l o r')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT(' Tot/Entr.')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT(' Tot/Saida')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT(' Vlr Menor')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT('Dif.(%)')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT('Ope')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT('Vnd')
+        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        i:=0
+        FOR i = 1 TO LEN(m_mov)
+                DEVPOS(PROW()+1,00);DEVOUT(m_mov[i,2])
+                IF mtip_cod = 'C' .OR. EMPTY(m_mov[i,21])
+                        DEVPOS(PROW(),11);DEVOUT(m_mov[i,3])
+                ELSE
+                        DEVPOS(PROW(),11);DEVOUT(m_mov[i,21])
+                ENDIF
+                DEVPOS(PROW(),29);DEVOUT(m_mov[i,5])
+                IF m_mov[i,17] = 'E'
+                        DEVPOS(PROW(),39);DEVOUT(m_mov[i,8])
+                        DEVPOS(PROW(),51);DEVOUTPICT(m_mov[i,10],'99999.99')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('--------')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_mov[i,12],'999,999.99')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_mov[i,10] * m_mov[i,12],'999,999.99')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('----------')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('----------')
+                        IF SUBSTR(m_mov[i,5],1,2) = 'BL'
+                                ment_bal := ment_bal + m_mov[i,10]
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(0,'9999.99')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(m_mov[i,16])
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(m_mov[i,15])
+                        ELSE
+                                mtot_ent = mtot_ent + m_mov[i,10]
+                                mvlr_ent = mvlr_ent + m_mov[i,12] * m_mov[i,10]
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(0,'9999.99')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(m_mov[i,16])
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(m_mov[i,15])
+                        ENDIF
+                ELSE
+                        DEVPOS(PROW(),39);DEVOUT(STR(m_mov[i,6],5))
+                        DEVPOS(PROW(),51);DEVOUT('--------')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_mov[i,10],'99999.99')
+                        IF mcod_op = '04' .OR. mcod_op = '02'
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_mov[i,13],'999,999.99')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('----------')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_mov[i,10] * m_mov[i,13],'999,999.99')
+                                IF SUBSTR(m_mov[i,5],1,2) = 'BL'
+                                        msai_bal := msai_bal + m_mov[i,10]
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(0,'999,999.99')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(0,'9999.99')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(m_mov[i,16])
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(m_mov[i,15])
+                                ELSE
+                                        mtot_aux := m_mov[i,10] * m_mov[i,20] - m_mov[i,10] * m_mov[i,13]
+                                        mtot_prven := mtot_prven + (m_mov[i,20] * m_mov[i,10])
+                                        mtot_sai = mtot_sai + m_mov[i,10]
+                                        mtot_cust := mtot_cust + (m_mov[i,12] * m_mov[i,10])
+                                        mvlr_sai = mvlr_sai + m_mov[i,13] * m_mov[i,10]
+                                        IF mtot_aux > 0
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtot_aux * -1,'999,999.99')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT((mtot_aux * 100 / (m_mov[i,10] * m_mov[i,20])) * -1,'9999.99')
+                                                mtot_dif = mtot_dif + mtot_aux
+                                        ELSE
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(0,'999,999.99')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(0,'9999.99')
+                                        ENDIF
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(m_mov[i,16])
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(m_mov[i,15])
+                                ENDIF
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_mov[i,14],'999,999.99')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('----------')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_mov[i,10] * m_mov[i,14],'999,999.99')
+                                IF SUBSTR(m_mov[i,5],1,2) = 'BL'
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(0,'999,999.99')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(0,'9999.99')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(m_mov[i,16])
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(m_mov[i,15])
+                                        msai_bal := msai_bal + m_mov[i,10]
+                                ELSE
+                                        mtot_aux := m_mov[i,10] * m_mov[i,20] - m_mov[i,10] * m_mov[i,14]
+                                        mtot_prven := mtot_prven + (m_mov[i,20] * m_mov[i,10])
+                                        mtot_sai = mtot_sai + m_mov[i,10]
+                                        mtot_cust := mtot_cust + (m_mov[i,12] * m_mov[i,10])
+                                        mvlr_sai = mvlr_sai + m_mov[i,14] * m_mov[i,10]
+                                        IF mtot_aux > 0
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtot_aux * -1,'999,999.99')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT((mtot_aux * 100 / (m_mov[i,10] * m_mov[i,20])) * -1,'9999.99')
+                                                mtot_dif = mtot_dif + mtot_aux
+                                        ELSE
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(0,'999,999.99')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(0,'9999.99')
+                                        ENDIF
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(m_mov[i,16])
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(m_mov[i,15])
+                                ENDIF
+                        ENDIF
+                ENDIF
+                IF ! EMPTY(m_mov[i,19])
+                        DEVPOS(PROW()+1,11);DEVOUT('Obs.: '+m_mov[i,19])
+                ENDIF
+                IF PROW() >= 59
+                        mpag ++
+                        EJECT
+                        cabecalho(mpag,mtit,mtipo,mprg)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,02);DEVOUT('Data')
+                        DEVPOS(PROW(),11);DEVOUT('Codigo')
+                        DEVPOS(PROW(),29);DEVOUT('Doc.(NF)')
+                        DEVPOS(PROW(),39);DEVOUT('Cli./Forn.')
+                        DEVPOS(PROW(),51);DEVOUT(' Entrada')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('   Saida')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(' V a l o r')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(' Tot/Entr.')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(' Tot/Saida')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(' Vlr Menor')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Dif.(%)')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Ope')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Vnd')
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        LOOP
+                ENDIF
+        NEXT
+        IF PROW() >= 43
+                mpag ++
+                EJECT
+                cabecalho(mpag,mtit,mtipo,mprg)
+        ENDIF
+        DEVPOS(PROW()+2,00);DEVOUT('Total de ENTRADAS..:')
+        DEVPOS(PROW(),21);DEVOUT('('+LTRIM(TRANSFORM(mtot_ent,'999999.99'))+')')
+        DEVPOS(PROW(),PCOL());DEVOUT(' -  R$:')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvlr_ent,'999,999,999.99')
+        DEVPOS(PROW()+1,00);DEVOUT('Total de SAIDAS....:')
+        DEVPOS(PROW(),21);DEVOUT('('+LTRIM(TRANSFORM(mtot_sai,'999999.99'))+')')
+        DEVPOS(PROW(),PCOL());DEVOUT(' -  R$:')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvlr_sai,'999,999,999.99')
+        DEVPOS(PROW()+1,00);DEVOUT('Desconto Medio R$...:')
+        IF mtot_dif < 0
+                mtot_dif := 0
+                mdesc := 0
+        ELSE
+                mdesc := (mtot_prven - mvlr_sai) / mtot_prven * 100
+        ENDIF
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtot_dif,'999,999,999.99')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT('em (%):')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mdesc,'9999.99')
+
+        DEVPOS(PROW()+1,00);DEVOUT('Lucro Medio  R$.....:')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvlr_sai - mtot_cust,'999,999,999.99')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT('em (%):')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT((mvlr_sai - mtot_cust) / mtot_cust * 100,'9999.99')
+        DEVPOS(PROW()+1,00);DEVOUT('Entradas BALANCO...:')
+        DEVPOS(PROW(),21);DEVOUT('('+LTRIM(TRANSFORM(ment_bal,'999999.99'))+')')
+        DEVPOS(PROW()+1,00);DEVOUT('Saidas BALANCO.....:')
+        DEVPOS(PROW(),21);DEVOUT('('+LTRIM(TRANSFORM(msai_bal,'999999.99'))+')')
+        DEVPOS(PROW()+1,00);DEVOUT('Total Geral Entrada:')
+        DEVPOS(PROW(),21);DEVOUT('('+LTRIM(TRANSFORM(ment_bal+mtot_ent,'999999.99'))+')')
+        DEVPOS(PROW()+1,00);DEVOUT('Total Geral Saidas.:')
+        DEVPOS(PROW(),21);DEVOUT('('+LTRIM(TRANSFORM(msai_bal+mtot_sai,'999999.99'))+')')
+        DEVPOS(PROW()+2,00);DEVOUT(TIME())
+        imprt(mtipo_imp,'N',1)
+        EJECT
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        SETPRC(00,00)
+        conf_impressao('MOV_PROD.REL')
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><retConsReciNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>1</tpAmb>
+<verAplic>NFEPE_P_1.9.0</verAplic>
+<nRec>261210025469289</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF><dhRecbto>2021-04-26T19:32:33-03:00</dhRecbto>
+ <protNFe versao="4.00"><infProt Id="NFe1"><tpAmb>1</tpAmb>
+<verAplic>NFEPE_P_1.9.0</verAplic>
+<chNFe>26210424494200000106550010000010821429221896</chNFe>
+<dhRecbto>2021-04-26T19:32:33-03:00</dhRecbto><nProt>126210030480645</nProt>
+<digVal>EZO56iqi2WWD86WQq6hNBEPEGfA=</digVal><cStat>100</cStat>
+<xMotivo>Autorizado o uso da NF-e</xMotivo>
+</infProt></protNFe></retConsReciNFe>

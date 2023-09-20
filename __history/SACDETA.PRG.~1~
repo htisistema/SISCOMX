@@ -1,0 +1,361 @@
+MEMVAR getlist,nivel_acess,mdata_sis,cod_operado
+***********************
+* CORRECAO DE SALDO MERCADORIA DETALHE
+***********************
+FUNCTION sacdeta
+***************
+LOCAL mprg:='SACDETA',mtitulo:='DETALHE DE MERCADORIAS',;
+      msele,morde,opcao,tela,lba,cba,mmerc,mdata,mfisico,mfiscal,mpr_venda,mpr_custo,;
+      mgrupo,mpr_cust_a,mcust_merc,mquantd_av,mcod_bc,mestoque,achou:=0,mobs,;
+      mexc_alt,mvlr_medio:= 0,mqtd_medio := 0,mvlr_prmed:=0,;
+      mchassis:=SPACE(20),mdescri1:=SPACE(60),mdescri2:=SPACE(60),mdescri3:=SPACE(60),mdescri4:=SPACE(60),mdescri5:=SPACE(60)
+
+PRIVATE mcod_merc,mnome_ven,mcod_op,mfabrica:=SPACE(40),mcod_forn
+
+IF ! ver_nivel(mprg,mtitulo,'15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+lba = 14
+cba = 79
+op_tela(0,0,lba+2,cba,mtitulo)
+*----------------------------------------------
+DBCLOSEALL()
+IF ! AbriArq('sacdolar','dolar');RETURN NIL;ENDIF
+IF ! AbriArq('merc_det','deta');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+IF ! AbriArq('sacmov','mov');RETURN NIL;ENDIF
+*------------------------------------------------------------------
+set_key('merc',,,,'*')
+
+WHILE .T.
+	limpa(00,00,33,100)
+        mchassis:=SPACE(20)
+        mdescri1:=mdescri2:=mdescri3:=mdescri4:=mdescri5:=mobs    := SPACE(60)
+        mpr_venda := mpr_custo := mcod_forn := 0
+        mdata := mdata_sis
+        mfabrica := SPACE(40)
+        **************
+        SELE('merc')
+        ORDSETFOCUS(1)
+        GO TOP
+        **************
+        SET INTEN ON
+        mensagem('Preencha os Campos - <ESC> p/Retornar ')
+        mcod_op := SPACE(2)
+        opcao = 'S'
+        setcor(1)
+        DEVPOS(0,2);DEVOUT('Codigo.........:')
+*       DEVPOS(2,2);DEVOUT('Descricao......:')
+        DEVPOS(1,2);DEVOUT('Data...........:')
+        DEVPOS(2,2);DEVOUT('Detalhe Prod...:')
+        DEVPOS(3,2);DEVOUT('Descr.1:')
+        DEVPOS(4,2);DEVOUT('Descr.2:')
+        DEVPOS(5,2);DEVOUT('Descr.3:')
+        DEVPOS(6,2);DEVOUT('Descr.4:')
+        DEVPOS(7,2);DEVOUT('Descr.5:')
+        DEVPOS(8,2);DEVOUT('Preco Custo...:')
+        DEVPOS(9,2);DEVOUT('Preco Venda...:')
+        DEVPOS(10,2);DEVOUT('Cod.Fornecedor:')
+        DEVPOS(11,2);DEVOUT('Obs....:')
+
+        mensagem('Digite o codigo da mercadoria - <ESC> Abandona ')
+        mcod_bc := SPACE(13)
+        mmerc := SPACE(40)
+        mgrupo := SPACE(5)
+        mquantd_av := mcod_merc := mfiscal := mfisico := mestoque :=;
+        mpr_venda := mpr_custo := mcust_merc := achou := 0
+        setcor(1)
+        @ 0,19 GET mcod_bc PICT '@!'
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        IF EMPTY(mcod_bc)
+                mensagem('<Digite descricao mercadoria>  <ENTER>p/retornar  <F4>p/pesquisar')
+                @ 0,25 GET mmerc PICT '@!'
+                READ
+                IF LASTKEY() = 27;LOOP;ENDIF
+        ENDIF
+        IF EMPTY(mcod_bc) .AND. EMPTY(mmerc)
+                LOOP
+        ENDIF
+        IF ! EMPTY(mcod_bc)
+                IF LEN(RTRIM(mcod_bc)) > 5
+                        *************
+                        SELE('merc');ORDSETFOCUS(6)
+                        *************
+
+                        IF ! merc->(DBSEEK(mcod_bc))
+                                atencao('Codigo de BARRA nao cadastrado')
+                                LOOP
+                        ENDIF
+                        mcod_merc := VAL(mcod_bc)
+                ELSE
+                        mcod_merc := VAL(mcod_bc)
+                        *************
+                        SELE('merc');ORDSETFOCUS(1)
+                        *************
+
+                        IF ! merc->(DBSEEK(mcod_merc))
+                                atencao('Codigo da mercadoria nao cadastrado')
+                                LOOP
+                        ENDIF
+                ENDIF
+        ELSEIF ! EMPTY(mmerc)
+                *************
+                SELE('merc');ORDSETFOCUS(3)
+                *************
+
+                IF ! merc->(DBSEEK(RTRIM(mmerc)))
+                        atencao('Esta mercadoria nao cadastrada')
+                        LOOP
+                ENDIF
+                IF merc->cod_merc = SPACE(5)
+                        WHILE ! EOF() .AND. merc->cod_merc = SPACE(5)
+                                SKIP
+                        ENDDO
+                ENDIF
+                IF EOF() .OR. merc->cod_merc = SPACE(5)
+                        atencao('Mercadoria nao cadastrada')
+                        LOOP
+                ENDIF
+                IF(m_set[1,93] <> 'A',f4_merc(),f4_merc1())
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+        ENDIF
+        mmerc := merc->merc
+        mgrupo := merc->gru_sub
+        mpr_cust_a := merc->a_cust_rea
+        setcor(3)
+        DEVPOS(0,19);DEVOUT(mcod_merc)
+        DEVPOS(0,25);DEVOUT(mmerc)
+        setcor(1)
+        opcao := 'S'
+        @ 1,19 GET mdata
+        @ 2,19 GET mchassis PICT '@!'
+        READ
+        IF LASTKEY() = 27
+                DBUNLOCK()
+                LOOP
+        ENDIF
+        msele:=SELE();morde:=INDEXORD()
+        *************
+        SELE('deta');ORDSETFOCUS(1)
+        *************
+        IF deta->(DBSEEK(STRZERO(mcod_merc,5)+mchassis+' '))
+                mdescri1 := deta->descri1
+                mdescri2 := deta->descri2
+                mdescri3 := deta->descri3
+                mdescri4 := deta->descri4
+                mdescri5 := deta->descri5
+                mobs     := deta->obs
+                achou := RECNO()
+                mpr_custo := deta->vlr_custo
+                mpr_venda := deta->vlr_venda
+                mcod_forn := VAL(deta->cod_forn)
+                mfabrica  := deta->fornece
+                mexc_alt := mensagem1('Deseja [A]lterar ou [E]xcluir:','A','A,E')
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+                IF mexc_alt = 'E'
+                        IF BLOQREG()
+                                DELE
+                                sr_getconnection():exec("DELETE FROM sacdeta WHERE SR_DELETED = 'T'",,.f.)
+                                SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+                                IF ! BLOQREG()
+                                        atencao('Nao foi possivel atualizar a mercadoria')
+                                        LOOP
+                                ENDIF
+                                sr_getconnection():exec('INSERT INTO logproduto (data_sis,data,'+;
+                                                'hora,cod_prod,quantd,saldo_ant,saldo_pos,cod_oper,prog,terminal,'+;
+                                                'processo,ent_sai,SR_DELETED )'+;
+                                                ' VALUES ('+;
+                                                sr_cdbvalue(DATE())+','+; //1
+                                                sr_cdbvalue(mdata_sis)+','+; //2
+                                                sr_cdbvalue(TIME())+','+; //3
+                                                sr_cdbvalue(mcod_merc)+','+; //4
+                                                sr_cdbvalue(-1)+','+; //5
+                                                sr_cdbvalue(merc->saldo_mer)+','+; //6
+                                                sr_cdbvalue(merc->saldo_mer - 1)+','+; //7
+                                                sr_cdbvalue(cod_operado)+','+; //8
+                                                sr_cdbvalue('SACDETA')+','+; //9
+                                                sr_cdbvalue(LEFT(NETNAME(),15))+','+; //12
+                                                sr_cdbvalue('DETALHE DA MERCADORIA')+','+; //11
+                                                sr_cdbvalue('S')+','+; //11
+                                                sr_cdbvalue(' ')+')',,.f.)
+                                merc-> saldo_mer := merc->saldo_mer - 1
+                                DBUNLOCK()
+                                DBCOMMIT()
+                                sr_getconnection():exec("COMMIT",,.f.)
+                                ***************
+                                SELE('mov')
+                                ***************
+                                IF ADIREG()
+                                        mov->empresa := mcodempresa
+                                        mov-> ent_sai := 'S'
+                                        mov-> quantd := 1
+                                        mov-> cod_forn := merc->cod_fab
+                                        mov-> fornece := merc->fabrica
+                                        mov-> data_s_e := mdata
+                                        mov-> gru_sub := mgrupo
+                                        mov-> codigo := mcod_merc
+                                        mov-> produto := mmerc
+                                        mov-> data_s_e := mdata_sis
+                                        mov-> documento := 'DT'+mcod_merc
+                                        mov-> cod_vend := cod_operado
+                                        DBCOMMIT()
+                                        DBUNLOCK()
+                                ELSE
+                                        atencao('Nao foi possivel acessar o Arquivo !!!')
+                                ENDIF
+                        ENDIF
+                        LOOP
+                ENDIF
+        ENDIF
+        SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+        @ 3,11 GET mdescri1
+        @ 4,11 GET mdescri2
+        @ 5,11 GET mdescri3
+        @ 6,11 GET mdescri4
+        @ 7,11 GET mdescri5
+        @ 8,19 GET mpr_custo PICT '999,999.99'
+        @ 9,19 GET mpr_venda PICT '999,999.99'
+        @ 10,19 GET mcod_forn PICT '9999' VALID ver_fab(@mcod_forn,10,24)
+        @ 11,11 GET mobs
+        READ
+        IF LASTKEY() = 27
+                DBUNLOCK()
+                LOOP
+        ENDIF
+        opcao := op_simnao('S','Confirma os Dados:')
+        DBUNLOCK()
+        IF opcao = 'N'
+                LOOP
+        ENDIF
+        IF ! EMPTY(mchassis)
+                ***************
+                SELE('deta');ORDSETFOCUS(1)
+                ***************
+                IF achou > 0
+                        GO achou
+                        IF BLOQREG()
+                                deta->descri1   := mdescri1
+                                deta->descri2   := mdescri2
+                                deta->descri3   := mdescri3
+                                deta->descri4   := mdescri4
+                                deta->descri5   := mdescri5
+                                deta->vlr_custo := mpr_custo
+                                deta->vlr_venda := mpr_venda
+                                deta->obs       := mobs
+                                deta->cod_forn  := STRZERO(mcod_forn,4)
+                                deta->fornece   := mfabrica
+                        ENDIF
+                ELSE
+                        IF ADIREG()
+                                deta->data      := mdata
+                                deta->codigo    := mcod_merc
+                                deta->chassis   := mchassis
+                                deta->descri1   := mdescri1
+                                deta->descri2   := mdescri2
+                                deta->descri3   := mdescri3
+                                deta->descri4   := mdescri4
+                                deta->descri5   := mdescri5
+                                deta->vlr_custo := mpr_custo
+                                deta->vlr_venda := mpr_venda
+                                deta->obs       := mobs
+                                deta->cod_forn  := STRZERO(mcod_forn,4)
+                                deta->fornece   := mfabrica
+                        ENDIF
+
+                        opcao := op_simnao('S','Confirma Atualizar Saldos:')
+                        IF opcao = 'N'
+                                DBUNLOCK()
+                                LOOP
+                        ENDIF
+                        IF opcao = 'S'
+                                *************
+                                SELE('deta');ORDSETFOCUS(1)
+                                GO TOP
+                                *************
+                                mvlr_medio := mqtd_medio := 0
+                                IF deta->(DBSEEK(mcod_merc))
+                                        WHILE ! EOF() .AND. mcod_merc = deta->codigo
+                                                IF ! EMPTY(deta->dat_venda)
+                                                        SKIP
+                                                        LOOP
+                                                ENDIF
+                                                mvlr_prmed := mvlr_prmed + deta->vlr_venda
+                                                mvlr_medio := mvlr_medio + deta->vlr_custo
+                                                mqtd_medio := mqtd_medio + 1
+                                                SKIP
+                                        ENDDO
+                                        mvlr_prmed := mvlr_prmed / mqtd_medio
+                                        mvlr_medio := mvlr_medio / mqtd_medio
+                                ENDIF
+                                SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+                                IF ! BLOQREG()
+                                        atencao('Nao foi possivel atualizar a mercadoria')
+                                        LOOP
+                                ENDIF
+                                sr_getconnection():exec('INSERT INTO logproduto (data_sis,data,'+;
+                                                'hora,cod_prod,quantd,saldo_ant,saldo_pos,cod_oper,prog,terminal,'+;
+                                                'processo,ent_sai,SR_DELETED )'+;
+                                                ' VALUES ('+;
+                                                sr_cdbvalue(DATE())+','+; //1
+                                                sr_cdbvalue(mdata_sis)+','+; //2
+                                                sr_cdbvalue(TIME())+','+; //3
+                                                sr_cdbvalue(mcod_merc)+','+; //4
+                                                sr_cdbvalue(1)+','+; //5
+                                                sr_cdbvalue(merc->saldo_mer)+','+; //6
+                                                sr_cdbvalue(merc->saldo_mer + 1)+','+; //7
+                                                sr_cdbvalue(cod_operado)+','+; //8
+                                                sr_cdbvalue('SACDETA')+','+; //9
+                                                sr_cdbvalue(LEFT(NETNAME(),15))+','+; //12
+                                                sr_cdbvalue('DETALHE DA MERCADORIA')+','+; //11
+                                                sr_cdbvalue('E')+','+; //11
+                                                sr_cdbvalue(' ')+')',,.f.)
+                                merc-> saldo_mer := merc->saldo_mer + 1
+                                IF ! EMPTY(mvlr_medio)
+                                        merc->a_pr_venda  := merc->pr_venda
+                                        merc->a_cust_rea := merc->cust_real
+                                        merc->pr_venda  := mvlr_prmed
+                                        merc->cust_real := mvlr_medio
+                                ENDIF
+                                DBUNLOCK()
+                                DBCOMMIT()
+                                sr_getconnection():exec("COMMIT",,.f.)
+                                ***************
+                                SELE('mov')
+                                ***************
+                                IF ADIREG()
+                                        mov->empresa := mcodempresa
+                                        mov-> ent_sai := 'E'
+                                        mov-> quantd := 1
+                                        mov-> cod_forn := merc->cod_fab
+                                        mov-> fornece := merc->fabrica
+                                        mov-> data_s_e := mdata
+                                        mov-> gru_sub := mgrupo
+                                        mov-> codigo := mcod_merc
+                                        mov-> produto := mmerc
+                                        mov-> data_s_e := mdata_sis
+                                        mov-> documento := 'DT'+mcod_merc
+                                        mov-> cod_vend := cod_operado
+                                        DBCOMMIT()
+                                        DBUNLOCK()
+                                ELSE
+                                        atencao('Nao foi possivel acessar o Arquivo !!!')
+                                ENDIF
+                        ENDIF
+                ENDIF
+                DBCOMMITALL()
+                DBUNLOCKALL()
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************** FIM ***************************
+

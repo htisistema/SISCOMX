@@ -1,0 +1,1066 @@
+MEMVAR getlist
+*************************
+* ALTERACAO DE CLIENTE
+*************************
+FUNCTION sac131(mcd_cl)
+***************
+LOCAL MPRG:='SAC131',opcao,;
+      minsc_aux,;
+      mvendedor,;
+      mcodoper,mop_hist:='N',mhistorico:='N',li,ci,lb,cb,tela1,mtipo,;
+      mop_tab:='N',maniver:='N',nPBid,nPBid1
+
+MEMVAR nivel_acess
+
+PRIVATE mnome_vend,mcom_ven,mcep,mcidade,mcod_vend,cons_cli := {},;
+        maltera:=' ',mcod_c,moutros:='N',;
+        m_cliaux:={},mdepen:=' ',mcons_cam:={},mboleto:=' ',lba,cba,mcod_profi:=0
+
+
+IF ! ver_nivel(mprg,'ALTERACAO DE CLIENTE *** CADASTRO ***','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+lba := 35
+cba := 100
+
+li := 01
+ci := 00
+lb := 22
+cb := 79
+SET KEY 281 TO cliprod()
+SET KEY -9 TO ctrl_w()
+CLEAR GETS
+op_tela(00,00,40,120,' Alteracao de CLIENTES ',,'*')
+WHILE .T.
+        opcao := 'S'
+        mtipo_cli := maltera := SPACE(1)
+        minsc_aux := SPACE(14)
+        mcod_vend := mcodoper := ;
+        mop_tab := moutros := mdepen := mboleto := 'N'
+        mensagem('Alterar campos - <ALT+P>Cons.Produtos - <ESC>p/Abandonar')
+        DEVPOS(0,01);DEVOUT('Codigo....:')
+        DEVPOS(0,21);DEVOUT('Data Cadastro:')
+        DEVPOS(1,01);DEVOUT('R.Social..:')
+        DEVPOS(1,55);DEVOUT('Data Nasc.:')
+        DEVPOS(2,01);DEVOUT('Fantasia..:')
+        DEVPOS(2,55);DEVOUT('Tipo Cliente.:')
+
+        DEVPOS(3,01);DEVOUT('Endereco..:')
+        DEVPOS(3,50);DEVOUT('Numero:')
+        DEVPOS(3,66);DEVOUT('Compl.:')
+        DEVPOS(4,01);DEVOUT('Bairro....:')
+        DEVPOS(4,35);DEVOUT('Cidade:')
+        DEVPOS(4,70);DEVOUT('UF:')
+        DEVPOS(4,78);DEVOUT('CEP:')
+        DEVPOS(5,01);DEVOUT('Naturalidade:')
+        DEVPOS(5,42);DEVOUT('Email:')
+        DEVPOS(5,91);DEVOUT('->')
+        DEVPOS(6,01);DEVOUT('Rota......:')
+
+        DEVPOS(8,01);DEVOUT('CNPJ......:')
+        DEVPOS(8,32);DEVOUT('Insc.:')
+        DEVPOS(8,60);DEVOUT('Profissao:')
+        DEVPOS(9,01);DEVOUT('CPF.......:')
+        DEVPOS(9,30);DEVOUT('RG:')
+        DEVPOS(9,50);DEVOUT('Orgao:')
+        DEVPOS(9,70);DEVOUT('Emissao:')
+
+        DEVPOS(10,01);DEVOUT('Fone......:')
+        DEVPOS(10,29);DEVOUT('Fone:')
+        DEVPOS(10,51);DEVOUT('Fax:')
+
+        DEVPOS(11,01);DEVOUT('Filiacao....:')
+        DEVPOS(11,56);DEVOUT('e')
+
+        //DEVPOS(10,1);DEVOUT('FATURAMENTOS: Dia Inic.:   final:   Venc.1:   - Dia Inic.:   final:   Venc.2:')
+        DEVPOS(12,01);DEVOUT('Comprador.:')
+        DEVPOS(12,29);DEVOUT('Prazo Pag.:')
+        DEVPOS(12,50);DEVOUT('Emissao Boleto [S/N]:')
+        DEVPOS(12,75);DEVOUT('Contato:')
+        DEVPOS(13,01);DEVOUT('Area......:')
+        DEVPOS(13,28);DEVOUT('Limite:')
+        DEVPOS(13,47);DEVOUT('Desc.Especial:      %')
+        DEVPOS(13,70);DEVOUT('Cons.SPC:')
+        DEVPOS(14,01);DEVOUT('[V]arejista - [A]tacadista:')
+        DEVPOS(14,32);DEVOUT('Cond.Pagamento:')
+        DEVPOS(15,01);DEVOUT('Bloq.Credito:')
+        DEVPOS(15,16);DEVOUT('Data:')
+        DEVPOS(15,30);DEVOUT('Motivo:')
+        DEVPOS(16,01);DEVOUT('Observacao..:')
+
+        DEVPOS(19,01);DEVOUT('Vend.Respon.:')
+        DEVPOS(19,51);DEVOUT('Operador Resp.:')
+        DEVPOS(19,72);DEVOUT('Promotor:')
+        DEVPOS(19,87);DEVOUT('Regiao/Vend.:')
+
+        DEVPOS(20,01);DEVOUT('End.Cobranca:')
+        DEVPOS(20,55);DEVOUT('Bairro:')
+        DEVPOS(21,01);DEVOUT('Cidade......:')
+        DEVPOS(21,37);DEVOUT('UF:')
+        DEVPOS(21,44);DEVOUT('CEP:')
+        DEVPOS(21,59);DEVOUT('Fone:')
+
+        DEVPOS(22,01);DEVOUT('Empresa.....:')
+        DEVPOS(22,41);DEVOUT('Cargo:')
+        DEVPOS(22,64);DEVOUT('Salario:')
+        DEVPOS(23,01);DEVOUT('Endereco....:')
+        DEVPOS(23,51);DEVOUT('Bairro:')
+        DEVPOS(24,01);DEVOUT('Cidade......:')
+        DEVPOS(24,37);DEVOUT('UF:')
+        DEVPOS(24,44);DEVOUT('CEP:')
+        DEVPOS(24,59);DEVOUT('Fone:')
+        DEVPOS(24,80);DEVOUT('Fax:')
+
+
+        DEVPOS(25,01);DEVOUT('Ref.Pessoal.:')
+        DEVPOS(25,44);DEVOUT('Fone:')
+        DEVPOS(26,01);DEVOUT('Ref.Pessoal.:')
+        DEVPOS(26,44);DEVOUT('Fone:')
+        DEVPOS(27,01);DEVOUT('Loja........:')
+        DEVPOS(27,44);DEVOUT('Desde:')
+        DEVPOS(28,01);DEVOUT('Loja........:')
+        DEVPOS(28,44);DEVOUT('Desde:')
+        DEVPOS(29,01);DEVOUT('Banco.......:')
+        DEVPOS(29,28);DEVOUT('Agencia:')
+        DEVPOS(29,49);DEVOUT('C/C:')
+        DEVPOS(30,01);DEVOUT('Banco.......:')
+        DEVPOS(30,28);DEVOUT('Agencia:')
+        DEVPOS(30,49);DEVOUT('C/C:')
+        DEVPOS(31,01);DEVOUT('Cartao......:')
+        DEVPOS(31,33);DEVOUT('No.:')
+        DEVPOS(31,58);DEVOUT('Venc.:')
+        DEVPOS(32,01);DEVOUT('Cartao......:')
+        DEVPOS(32,33);DEVOUT('No.:')
+        DEVPOS(32,58);DEVOUT('Venc.:')
+
+        DEVPOS(33,1);DEVOUT('Envia p/APP... [s/N]:')
+        DEVPOS(33,24);DEVOUT('Historico[s/N]:')
+        DEVPOS(33,41);DEVOUT('Tab.Prod.[s/N]:')
+        DEVPOS(33,59);DEVOUT('Data Anivers.[s/N]:')
+        DEVPOS(34,1);DEVOUT('Conjuge/Avalista:')
+        DEVPOS(34,21);DEVOUT('Dependentes [s/N]:')
+        SET INTEN ON
+        cons_cli := {}
+        sr_getconnection():exec("SELECT * FROM saccli WHERE cod_cli = "+sr_cdbvalue(mcd_cl),,.t.,@cons_cli)
+        WvW_PBSetFont( NIL, "Courier New", 15, 0,)
+        nPBid := wvw_pbCreate(NIL,37,01,38,10, 'CONTRATOS',NIL,{||contratos(cons_cli[1,2])})
+        nPBid1 := wvw_pbCreate(NIL,37,12,38,21, 'HISTORICO',NIL,{||historico(cons_cli[1,2],cons_cli[1,3])})
+        WVW_PBEnable( NIL, nPBId, .T. )
+        WVW_PBEnable( NIL, nPBId1, .T. )
+        mcod_profi := VAL(cons_cli[1,135])
+        mtipo_cli := cons_cli[1,8]
+        minsc_aux := SUBSTR(cons_cli[1,33],1,14)
+        cons_cli[1,108]   := VAL(cons_cli[1,108])
+        mboleto := IF(AT('S',cons_cli[1,40]) > 0,'S','N')
+        mcod_vend := VAL(cons_cli[1,106])
+        mcodoper := VAL(cons_cli[1,107])
+        cons_cli[1,133] := VAL(cons_cli[1,133])
+        cons_cli[1,135] :=  VAL(cons_cli[1,135])
+        cons_cli[1,33] := SUBSTR(cons_cli[1,33],1,14)
+        cons_cli[1,40] := SUBSTR(cons_cli[1,40],1,6)
+        mcidade := cons_cli[1,24]
+        SETCOR(3)
+        DEVPOS(4,43);DEVOUT(mcidade)
+        DEVPOS(0,13);DEVOUT(STR(cons_cli[1,2],5))
+        DEVPOS(0,36);DEVOUT(cons_cli[1,5])
+        DEVPOS(19,15);DEVOUT(STRZERO(mcod_vend,3))
+        @ 4,74 SAY cons_cli[1,25]
+        @ 4,82 SAY cons_cli[1,26] PICT '99999999'
+        @ 5,14 SAY cons_cli[1,116]
+        //@ 5,50 SAY cons_cli[1,27]
+        @ 6,13 SAY cons_cli[1,28]
+        @ 7,13 SAY cons_cli[1,140]
+        @ 8,13 SAY cons_cli[1,32] PICT '@@R 99.999.999/9999-99'
+        @ 8,39 SAY cons_cli[1,33]
+        @ 8,70 SAY cons_cli[1,135] PICT '99999'
+        @ 9,13 SAY cons_cli[1,34] PICT '@@R 999.999.999-99'
+        @ 9,34 SAY cons_cli[1,35]
+        @ 9,57 SAY cons_cli[1,36]
+        @ 9,79 SAY cons_cli[1,37]
+
+        @ 10,13 SAY cons_cli[1,29]
+        @ 10,35 SAY cons_cli[1,30]
+        @ 10,56 SAY cons_cli[1,31]
+
+        @ 11,15 SAY cons_cli[1,98]
+        @ 11,58 SAY cons_cli[1,99]
+        @ 12,13 SAY cons_cli[1,38]
+        @ 12,41 SAY cons_cli[1,40] PICT '@R 99-99-99'
+        @ 12,72 SAY mboleto
+        @ 12,84 SAY cons_cli[1,39]
+        @ 13,13 SAY cons_cli[1,43]
+        @ 13,35 SAY cons_cli[1,44] PICT '999,999.99'
+        @ 13,61 SAY cons_cli[1,59] PICT '999.99'
+        @ 13,79 SAY cons_cli[1,42]
+        @ 14,29 SAY cons_cli[1,45]
+        @ 14,48 SAY cons_cli[1,133]
+        @ 15,14 SAY cons_cli[1,41]
+        @ 15,21 SAY cons_cli[1,138]
+        @ 15,38 SAY cons_cli[1,139]
+        @ 16,15 SAY cons_cli[1,48]
+        @ 17,15 SAY cons_cli[1,113]
+        @ 18,15 SAY cons_cli[1,114]
+
+        @ 19,15 SAY mcod_vend
+        @ 19,67 SAY mcodoper
+        @ 19,82 SAY cons_cli[1,148]
+        @ 19,101 SAY cons_cli[1,109]
+
+        @ 20,15 SAY cons_cli[1,100]
+        @ 20,63 SAY cons_cli[1,101]
+        @ 21,15 SAY cons_cli[1,102]
+        @ 21,41 SAY cons_cli[1,103]
+        @ 21,49 SAY cons_cli[1,104] PICT '99999999'
+        @ 21,65 SAY cons_cli[1,105]
+
+        @ 22,15 SAY cons_cli[1,66]
+        @ 22,48 SAY cons_cli[1,67]
+        @ 22,73 SAY cons_cli[1,68] PICT '999,999.99'
+        @ 23,15 SAY cons_cli[1,69]
+        @ 23,59 SAY cons_cli[1,70]
+        @ 24,15 SAY cons_cli[1,71]
+        @ 24,41 SAY cons_cli[1,72]
+        @ 24,49 SAY cons_cli[1,73] PICT '99999999'
+        @ 24,65 SAY cons_cli[1,74]
+        @ 24,85 SAY cons_cli[1,75]
+
+        @ 25,15 SAY cons_cli[1,82]
+        @ 25,50 SAY cons_cli[1,83]
+        @ 26,15 SAY cons_cli[1,84]
+        @ 26,50 SAY cons_cli[1,85]
+        @ 27,15 SAY cons_cli[1,76]
+        @ 27,50 SAY cons_cli[1,78]
+        @ 28,15 SAY cons_cli[1,79]
+        @ 28,50 SAY cons_cli[1,81]
+        @ 29,15 SAY cons_cli[1,86]
+        @ 29,36 SAY cons_cli[1,87]
+        @ 29,54 SAY cons_cli[1,88]
+        @ 30,15 SAY cons_cli[1,89]
+        @ 30,36 SAY cons_cli[1,90]
+        @ 30,54 SAY cons_cli[1,91]
+        @ 31,15 SAY cons_cli[1,92]
+        @ 31,37 SAY cons_cli[1,93]
+        @ 31,64 SAY cons_cli[1,94]
+        @ 32,15 SAY cons_cli[1,95]
+        @ 32,37 SAY cons_cli[1,96]
+        @ 32,64 SAY cons_cli[1,97]
+
+        @ 33,22 SAY cons_cli[1,134]
+        @ 33,39 SAY mop_hist
+        @ 33,57 SAY mop_tab
+        @ 33,79 SAY maniver
+        @ 34,18 SAY moutros
+        @ 34,40 SAY mdepen
+        setcor(1)
+        ven(mcod_vend,19,19)
+        ver_aniv(cons_cli[1,2])
+        mop_hist := 'N'
+        maniver := 'N'
+        //IF ver_serie() = '141488'
+        //        @ 2,70 GET cons_cli[1,8] PICT '@!' VALID cons_cli[1,8] $ 'C,D,B,R,P,E,O' .AND. lim_get() WHEN men_get(4,70,'Tipos: <C>Cliente <D>iamante <B>rilhante <R>ubi <P>erola  <O>Outros <E>xcluido')
+        //ELSE
+        @ 0,36 GET cons_cli[1,5]
+        @ 1,13 GET cons_cli[1,3] PICT '@!' VALID IF(EMPTY(cons_cli[1,3] ),.F.,.T.)
+        @ 1,67 GET cons_cli[1,9]
+        @ 2,13 GET cons_cli[1,4] PICT '@!'
+        @ 2,70 GET cons_cli[1,8] PICT '@!' VALID cons_cli[1,8] $ 'A,C,D,E,O,R,P,F,U,E,S' .AND. lim_get() WHEN men_get(4,70,'Tipos: <C>Cliente <R>Revenda <P>otencial <F>ilial <U>Funcionarios <A>ssociado <O>Outros <E>xcluido <S>upermercado')
+        @ 3,13 GET cons_cli[1,21] PICT '@!'
+        @ 3,58 GET cons_cli[1,136] PICT '@!'
+        @ 3,74 GET cons_cli[1,137] PICT '@!'
+        @ 4,13 GET cons_cli[1,22] PICT '@!'
+        READ
+        IF LASTKEY() = 27
+                RELEASE mnome_vend,mcom_ven
+                SET KEY 281 TO
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        IF UPDATED()
+                maltera := '*'
+        ENDIF
+        cons_cli[1,24] := saccid(,mcidade,,cons_cli[1,25])
+        SETCOR(3)
+        DEVPOS(4,43);DEVOUT(mcidade)
+        SETCOR(1)
+        @ 4,74 GET cons_cli[1,25] PICT '@!' VALID IF(EMPTY(cons_cli[1,25]),.F.,v_uf(cons_cli[1,25]))
+        @ 4,82 GET cons_cli[1,26] PICT '99999999'
+        @ 5,14 GET cons_cli[1,116] PICT '@!'
+        @ 5,50 GET cons_cli[1,27] PICT '@S40' VALID lim_get() WHEN men_get(0,0,'Exemplo: sac@HTIsistemas.com.br;teste@hotmail.com (Separa os email por ponto e virgual ";" )')
+        @ 6,13 GET cons_cli[1,28]
+        @ 7,13 GET cons_cli[1,140]
+
+        @ 8,13 GET cons_cli[1,32] PICT '@@R 99.999.999/9999-99' VALID pesq_cgc(cons_cli[1,32],'cli',,'cli')
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        IF UPDATED()
+                maltera := '*'
+        ENDIF
+        @ 8,39 GET cons_cli[1,33] PICT '@!'      //VALID IF( TestaIe( minsc, cons_cli[1,25] ),.T.,.F.)             //WHEN ! EMPTY(cons_cli[1,32])
+        @ 8,70 GET mcod_profi PICT '99999' VALID ver_profi(mcod_profi,8,76)
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        IF UPDATED()
+                maltera := '*'
+        ENDIF
+        @ 9,13 GET cons_cli[1,34] PICT '@@R 999.999.999-99' VALID pesq_cpf(cons_cli[1,34],'cli')
+        @ 9,34 GET cons_cli[1,35] PICT '@!'       //WHEN EMPTY(cons_cli[1,32])
+        @ 9,57 GET cons_cli[1,36] PICT '@!'    //WHEN EMPTY(cons_cli[1,32])
+        @ 9,79 GET cons_cli[1,37]            //WHEN EMPTY(cons_cli[1,32])
+
+        @ 10,13 GET cons_cli[1,29]
+        @ 10,35 GET cons_cli[1,30]
+        @ 10,56 GET cons_cli[1,31]
+
+        @ 11,15 GET cons_cli[1,98] PICT '@!'
+        @ 11,58 GET cons_cli[1,99] PICT '@!'
+        @ 12,13 GET cons_cli[1,38] PICT '@!'
+        @ 12,41 GET cons_cli[1,40] PICT '@R 99-99-99'
+        @ 12,72 GET mboleto PICT '@!' VALID mboleto $ 'S,N'
+        @ 12,84 GET cons_cli[1,39] PICT '@!'
+        @ 13,13 GET cons_cli[1,43] PICT '@!' VALID IF(ver_serie() = '141416' .AND. EMPTY(cons_cli[1,43]),.F.,.T.)
+        @ 13,35 GET cons_cli[1,44] PICT '999,999.99' WHEN ver_nivel(mprg+'LIM','ALTERACAO DE CLIENTE *** LIMITE DE CREDITO ****','15',nivel_acess,'*')
+        @ 13,61 GET cons_cli[1,59] PICT '999.99'
+        @ 13,79 GET cons_cli[1,42] PICT '@!' WHEN ver_nivel(mprg+'SPC','ALTERACAO DE CLIENTE *** VERIFICAR O SPC INTERNO ***','15',nivel_acess,'*') VALID cons_cli[1,42] $ 'S,N'
+        @ 14,29 GET cons_cli[1,45] PICT '@!' VALID cons_cli[1,45] $ 'A,V'
+        @ 14,48 GET cons_cli[1,133] PICT '999' VALID ver_cond(cons_cli[1,133],14,52)
+        READ
+        IF LASTKEY() = 27
+                RELEASE mnome_vend,mcom_ven
+                SET KEY 281 TO
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        ver_cond(cons_cli[1,133],14,52)
+        @ 15,14 GET cons_cli[1,41] PICT '@!' WHEN ver_nivel(mprg+'BLOQ','ALTERACAO DE CLIENTE *** BLOQUEIO DE CREDITO DO CLIENTE ***','15',nivel_acess,'*') VALID cons_cli[1,41] $ 'S,N'
+        @ 15,21 GET cons_cli[1,138] WHEN cons_cli[1,41] = 'S' VALID IF(EMPTY(cons_cli[1,138]),.F.,.T.)
+        @ 15,38 GET cons_cli[1,139] WHEN cons_cli[1,41] = 'S' VALID IF(EMPTY(cons_cli[1,139]),.F.,.T.)
+        READ
+        IF UPDATED()
+                maltera := '*'
+        ENDIF
+        IF LASTKEY() = 27
+                RELEASE mnome_vend,mcom_ven
+                SET KEY 281 TO
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        @ 16,15 GET cons_cli[1,48]
+        @ 17,15 GET cons_cli[1,113]
+        @ 18,15 GET cons_cli[1,114]
+        @ 19,15 GET mcod_vend PICT '999' VALID IF(EMPTY(mcod_vend),.F.,ven(mcod_vend,19,20))
+        READ        
+        IF LASTKEY() = 27
+                RELEASE mnome_vend,mcom_ven
+                SET KEY 281 TO
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        ven(mcod_vend,19,19)
+        @ 19,67 GET mcodoper PICT '999' VALID ven(mcodoper)
+        @ 19,82 GET cons_cli[1,148] PICT '999' VALID ven(VAL(cons_cli[1,148]))
+        @ 19,101 GET cons_cli[1,109] PICT '99' VALID ver_regi(cons_cli[1,109],19,104,,2)
+
+        @ 20,15 GET cons_cli[1,100] PICT '@!'
+        @ 20,63 GET cons_cli[1,101] PICT '@!'
+        @ 21,15 GET cons_cli[1,102] PICT '@!'
+        @ 21,41 GET cons_cli[1,103] PICT '@!'
+        @ 21,49 GET cons_cli[1,104] PICT '99999999'
+        @ 21,65 GET cons_cli[1,105] PICT '@!'
+
+        @ 22,15 GET cons_cli[1,66] PICT '@!'
+        @ 22,48 GET cons_cli[1,67] PICT '@!'
+        @ 22,73 GET cons_cli[1,68] PICT '999,999.99'
+        @ 23,15 GET cons_cli[1,69] PICT '@!'
+        @ 23,59 GET cons_cli[1,70] PICT '@!'
+        @ 24,15 GET cons_cli[1,71] PICT '@!'
+        @ 24,41 GET cons_cli[1,72] PICT '@!'
+        @ 24,49 GET cons_cli[1,73] PICT '99999999'
+        @ 24,65 GET cons_cli[1,74] PICT '@!'
+        @ 24,85 GET cons_cli[1,75] PICT '@!'
+
+        @ 25,15 GET cons_cli[1,82] PICT '@!'
+        @ 25,50 GET cons_cli[1,83] PICT '@!'
+        @ 26,15 GET cons_cli[1,84] PICT '@!'
+        @ 26,50 GET cons_cli[1,85] PICT '@!'
+        @ 27,15 GET cons_cli[1,76] PICT '@!'
+        @ 27,50 GET cons_cli[1,78] PICT '@!'
+        @ 28,15 GET cons_cli[1,79] PICT '@!'
+        @ 28,50 GET cons_cli[1,81] PICT '@!'
+        @ 29,15 GET cons_cli[1,86] PICT '@!'
+        @ 29,36 GET cons_cli[1,87] PICT '@!'
+        @ 29,54 GET cons_cli[1,88] PICT '@!'
+        @ 30,15 GET cons_cli[1,89] PICT '@!'
+        @ 30,36 GET cons_cli[1,90] PICT '@!'
+        @ 30,54 GET cons_cli[1,91] PICT '@!'
+        @ 31,15 GET cons_cli[1,92] PICT '@!'
+        @ 31,37 GET cons_cli[1,93] PICT '@!'
+        @ 31,64 GET cons_cli[1,94] PICT '@!'
+        @ 32,15 GET cons_cli[1,95] PICT '@!'
+        @ 32,37 GET cons_cli[1,96] PICT '@!'
+        @ 32,64 GET cons_cli[1,97] PICT '@!'
+
+        @ 33,22 GET cons_cli[1,134] PICT '@!' VALID cons_cli[1,134] $ 'S,N'
+        @ 33,39 GET mop_hist PICT '@!' VALID mop_hist $ 'S,N'  WHEN ver_nivel(mprg+'HIST','ALTERACAO DE CLIENTE *** HISTORICO DO CLIENTE ***','1235',nivel_acess,'*')
+        @ 33,57 GET mop_tab PICT '@!' VALID mop_tab $ 'S,N'
+        @ 33,79 GET maniver PICT '@!' VALID maniver $ 'S,N'
+        @ 34,18 GET moutros PICT '@!' VALID moutros $ 'S,N'
+        READ
+        IF UPDATED()
+                maltera := '*'
+        ENDIF
+        IF LASTKEY() = 27
+                RELEASE mnome_vend,mcom_ven
+                SET KEY 281 TO
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        IF cons_cli[1,41] = 'N'
+                cons_cli[1,138] := CTOD('  /  /  ')
+                cons_cli[1,139]  := SPACE(60)
+        ENDIF
+        IF cons_cli[1,8] = 'U'
+                tela1 := SAVESCREEN(01,00,24,79)
+                botao(15,05,18,75,,'Cod.Correspondente o CONTAS A PAGAR')
+                setcor(1)
+                opcao := 'S'
+                DEVPOS(16,06);DEVOUT('Codigo:')
+                DEVPOS(17,06);DEVOUT('Confirma [S/n]:')
+                @ 16,14 GET cons_cli[1,108] PICT '9999' VALID v_fornece(cons_cli[1,108],16,19)
+                @ 17,22 GET opcao PICT '@!' VALID opcao $ 'S,N'
+                READ
+                IF LASTKEY() = 27 .OR. opcao = 'N'
+                        cons_cli[1,108] := 0
+                ENDIF
+                RESTSCREEN(01,00,24,79,tela1)
+        ENDIF
+        IF mop_hist = 'S'
+                historico(cons_cli[1,2],cons_cli[1,3])
+        ENDIF
+        IF mop_tab = 'S'
+                tabcliprod()
+        ENDIF
+        IF maniver = 'S'
+                tela1 := SAVESCREEN(01,00,24,79)
+                botao(li,ci,lb,cb,,' DATAS DE ANIVERSARIOS ')
+                setcor(1)
+                DEVPOS(li+1,ci+01);DEVOUT('Nome:')
+                DEVPOS(li+1,ci+49);DEVOUT('Data Nascimento:')
+                DEVPOS(li+2,ci+01);DEVOUT('Nome:')
+                DEVPOS(li+2,ci+49);DEVOUT('Data Nascimento:')
+                DEVPOS(li+3,ci+01);DEVOUT('Nome:')
+                DEVPOS(li+3,ci+49);DEVOUT('Data Nascimento:')
+                DEVPOS(li+4,ci+01);DEVOUT('Nome:')
+                DEVPOS(li+4,ci+49);DEVOUT('Data Nascimento:')
+                DEVPOS(li+5,ci+01);DEVOUT('Nome:')
+                DEVPOS(li+5,ci+49);DEVOUT('Data Nascimento:')
+                @ li+1,ci+7 GET cons_cli[1,49] PICT '@!'
+                @ li+1,ci+66 GET cons_cli[1,50]
+                @ li+2,ci+7 GET cons_cli[1,51] PICT '@!'
+                @ li+2,ci+66 GET cons_cli[1,52]
+                @ li+3,ci+7 GET cons_cli[1,53] PICT '@!'
+                @ li+3,ci+66 GET cons_cli[1,54]
+                @ li+4,ci+7 GET cons_cli[1,55] PICT '@!'
+                @ li+4,ci+66 GET cons_cli[1,56]
+                @ li+5,ci+7 GET cons_cli[1,57] PICT '@!'
+                @ li+5,ci+66 GET cons_cli[1,58]
+                READ
+                RESTSCREEN(01,00,24,79,tela1)
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+        ENDIF
+        IF moutros = 'S'
+                op_tela(03,05,22,95,'Dados CONJUGE e AVALISTA')
+                m_cliaux := {}
+                sr_getconnection():exec("SELECT * FROM saccliaux WHERE cod_cli = "+sr_cdbvalue(cons_cli[1,2]),,.t.,@m_cliaux)
+                IF LEN(m_cliaux) = 0
+                        mconjuge        := SPACE(40)
+                        mconj_nasc      := CTOD('  /  /  ')
+                        mconj_cpf       := SPACE(11)
+                        mconj_rg        := SPACE(11)
+                        mconj_empre     := SPACE(20)
+                        mconj_cargo     := SPACE(15)
+                        mconj_salario   := 0
+                        mconj_end       := SPACE(35)
+                        mconj_bairro    := SPACE(20)
+                        mconj_cidade    := SPACE(20)
+                        mconj_uf        := SPACE(2)
+                        mconj_cep       := SPACE(9)
+                        mconj_fone      := SPACE(14)
+                        mconj_obs       := SPACE(50)
+                        mavalista       := SPACE(40)
+                        maval_sexo      := SPACE(1)
+                        maval_civil     := SPACE(1)
+                        maval_nasc      := CTOD('  /  /  ')
+                        maval_cpf       := SPACE(11)
+                        maval_rg        := SPACE(11)
+                        maval_empre     := SPACE(20)
+                        maval_cargo     := SPACE(15)
+                        maval_salario   := 0
+                        maval_end       := SPACE(35)
+                        maval_bairro    := SPACE(20)
+                        maval_cidade    := SPACE(20)
+                        maval_uf        := SPACE(2)
+                        maval_cep       := SPACE(9)
+                        maval_fone      := SPACE(14)
+                        maval_obs       := SPACE(50)
+                ELSE
+                        mconjuge        := m_cliaux[1,2]
+                        mconj_nasc      := m_cliaux[1,3]
+                        mconj_cpf       := m_cliaux[1,4]
+                        mconj_rg        := m_cliaux[1,5]
+                        mconj_empre     := m_cliaux[1,6]
+                        mconj_cargo     := m_cliaux[1,7]
+                        mconj_salario   := m_cliaux[1,8]
+                        mconj_end       := m_cliaux[1,9]
+                        mconj_bairro    := m_cliaux[1,10]
+                        mconj_cidade    := m_cliaux[1,11]
+                        mconj_uf        := m_cliaux[1,12]
+                        mconj_cep       := m_cliaux[1,13]
+                        mconj_fone      := m_cliaux[1,14]
+                        mconj_obs       := m_cliaux[1,15]
+                        mavalista       := m_cliaux[1,16]
+                        maval_sexo      := m_cliaux[1,17]
+                        maval_civil     := m_cliaux[1,18]
+                        maval_nasc      := m_cliaux[1,19]
+                        maval_cpf       := m_cliaux[1,20]
+                        maval_rg        := m_cliaux[1,21]
+                        maval_empre     := m_cliaux[1,22]
+                        maval_cargo     := m_cliaux[1,23]
+                        maval_salario   := m_cliaux[1,24]
+                        maval_end       := m_cliaux[1,25]
+                        maval_bairro    := m_cliaux[1,26]
+                        maval_cidade    := m_cliaux[1,27]
+                        maval_uf        := m_cliaux[1,28]
+                        maval_cep       := m_cliaux[1,29]
+                        maval_fone      := m_cliaux[1,30]
+                        maval_obs       := m_cliaux[1,31]
+                ENDIF
+
+                WHILE .T.
+                        DEVPOS(00,01);DEVOUT('Nome CONJUGE......:')
+                        DEVPOS(01,01);DEVOUT('Data de Nascimento:')
+                        DEVPOS(02,01);DEVOUT('CPF...............:')
+                        DEVPOS(02,34);DEVOUT('RG No.:')
+                        DEVPOS(03,01);DEVOUT('Onde Trabalha.....:')
+                        DEVPOS(04,01);DEVOUT('Cargo.............:')
+                        DEVPOS(04,38);DEVOUT('Salario:')
+                        DEVPOS(05,01);DEVOUT('Endereco..........:')
+                        DEVPOS(06,01);DEVOUT('Bairro............:')
+                        DEVPOS(06,58);DEVOUT('Cidade:')
+                        DEVPOS(07,01);DEVOUT('UF................:')
+                        DEVPOS(07,24);DEVOUT('CEP:')
+                        DEVPOS(07,40);DEVOUT('Telefone:')
+                        DEVPOS(08,01);DEVOUT('Obs...............:')
+                        @ 09,00 TO 09,100
+                        DEVPOS(10,01);DEVOUT('Nome AVALISTA.....:')
+                        DEVPOS(11,01);DEVOUT('Data de Nascimento:')
+                        DEVPOS(11,33);DEVOUT('Sexo:')
+                        DEVPOS(11,40);DEVOUT('Est.Civil:')
+                        DEVPOS(12,01);DEVOUT('CPF...............:')
+                        DEVPOS(12,34);DEVOUT('RG No.:')
+                        DEVPOS(13,01);DEVOUT('Onde Trabalha.....:')
+                        DEVPOS(14,01);DEVOUT('Cargo.............:')
+                        DEVPOS(14,38);DEVOUT('Salario:')
+                        DEVPOS(15,01);DEVOUT('Endereco..........:')
+                        DEVPOS(16,01);DEVOUT('Bairro............:')
+                        DEVPOS(16,58);DEVOUT('Cidade:')
+                        DEVPOS(17,01);DEVOUT('UF................:')
+                        DEVPOS(17,24);DEVOUT('CEP:')
+                        DEVPOS(17,40);DEVOUT('Telefone:')
+                        DEVPOS(18,01);DEVOUT('Obs...............:')
+                        @ 00,21 GET mconjuge PICT '@!'
+                        @ 01,21 GET mconj_nasc
+                        @ 02,21 GET mconj_cpf
+                        @ 02,42 GET mconj_rg
+                        @ 03,21 GET mconj_empre PICT '@!'
+                        @ 04,21 GET mconj_cargo PICT '@!'
+                        @ 04,48 GET mconj_salario PICT '9,999,999.99'
+                        @ 05,21 GET mconj_end PICT '@!'
+                        @ 06,21 GET mconj_bairro PICT '@!'
+                        @ 06,66 GET mconj_cidade PICT '@!'
+                        @ 07,21 GET mconj_uf PICT '@!'
+                        @ 07,28 GET mconj_cep PICT '@!'
+                        @ 07,49 GET mconj_fone
+                        @ 08,21 GET mconj_obs PICT '@!'
+
+                        @ 10,21 GET mavalista PICT '@!'
+                        @ 11,21 GET maval_nasc
+                        @ 11,39 GET maval_sexo PICT '@!' VALID maval_sexo $ 'M,F, '
+                        @ 11,51 GET maval_civil PICT '@!' VALID maval_civil $ 'C,S,D,O, '
+                        @ 12,21 GET maval_cpf
+                        @ 12,42 GET maval_rg
+                        @ 13,21 GET maval_empre PICT '@!'
+                        @ 14,21 GET maval_cargo PICT '@!'
+                        @ 14,48 GET maval_salario PICT '9,999,999.99'
+                        @ 15,21 GET maval_end PICT '@!'
+                        @ 16,21 GET maval_bairro PICT '@!'
+                        @ 16,66 GET maval_cidade PICT '@!'
+                        @ 17,21 GET maval_uf PICT '@!'
+                        @ 17,28 GET maval_cep PICT '@!'
+                        @ 17,49 GET maval_fone
+                        @ 18,21 GET maval_obs PICT '@!'
+                        READ
+                        opcao := op_simnao('S','Confirma os dados Preenchido [S/n]:')
+                        IF opcao = 'N'
+                                LOOP
+                        ELSE
+                                nulo := 'NULL'
+                                IF LEN(m_cliaux) > 0
+                                        ccomm := "UPDATE saccliaux SET "
+                                        ccomm := ccomm + " conjuge        = "+sr_cdbvalue(mconjuge)
+                                        ccomm := ccomm + ",conj_nasc      = "+IF(! EMPTY(mconj_nasc),sr_cdbvalue(mconj_nasc),nulo)
+                                        ccomm := ccomm + ",conj_cpf       = "+sr_cdbvalue(mconj_cpf       )
+                                        ccomm := ccomm + ",conj_rg        = "+sr_cdbvalue(mconj_rg        )
+                                        ccomm := ccomm + ",conj_empre     = "+sr_cdbvalue(mconj_empre     )
+                                        ccomm := ccomm + ",conj_cargo     = "+sr_cdbvalue(mconj_cargo     )
+                                        ccomm := ccomm + ",conj_salario   = "+sr_cdbvalue(mconj_salario   )
+                                        ccomm := ccomm + ",conj_end       = "+sr_cdbvalue(mconj_end       )
+                                        ccomm := ccomm + ",conj_bairro    = "+sr_cdbvalue(mconj_bairro    )
+                                        ccomm := ccomm + ",conj_cidade    = "+sr_cdbvalue(mconj_cidade    )
+                                        ccomm := ccomm + ",conj_uf        = "+sr_cdbvalue(mconj_uf        )
+                                        ccomm := ccomm + ",conj_cep       = "+sr_cdbvalue(mconj_cep       )
+                                        ccomm := ccomm + ",conj_fone      = "+sr_cdbvalue(mconj_fone      )
+                                        ccomm := ccomm + ",conj_obs       = "+sr_cdbvalue(mconj_obs       )
+                                        ccomm := ccomm + ",avalista       = "+sr_cdbvalue(mavalista       )
+                                        ccomm := ccomm + ",aval_sexo      = "+sr_cdbvalue(maval_sexo      )
+                                        ccomm := ccomm + ",aval_civil     = "+sr_cdbvalue(maval_civil     )
+                                        ccomm := ccomm + ",aval_nasc      = "+IF(! EMPTY(maval_nasc),sr_cdbvalue(maval_nasc),nulo)
+                                        ccomm := ccomm + ",aval_cpf       = "+sr_cdbvalue(maval_cpf       )
+                                        ccomm := ccomm + ",aval_rg        = "+sr_cdbvalue(maval_rg        )
+                                        ccomm := ccomm + ",aval_empre     = "+sr_cdbvalue(maval_empre     )
+                                        ccomm := ccomm + ",aval_cargo     = "+sr_cdbvalue(maval_cargo     )
+                                        ccomm := ccomm + ",aval_salario   = "+sr_cdbvalue(maval_salario   )
+                                        ccomm := ccomm + ",aval_end       = "+sr_cdbvalue(maval_end       )
+                                        ccomm := ccomm + ",aval_bairro    = "+sr_cdbvalue(maval_bairro    )
+                                        ccomm := ccomm + ",aval_cidade    = "+sr_cdbvalue(maval_cidade    )
+                                        ccomm := ccomm + ",aval_uf        = "+sr_cdbvalue(maval_uf        )
+                                        ccomm := ccomm + ",aval_cep       = "+sr_cdbvalue(maval_cep       )
+                                        ccomm := ccomm + ",aval_fone      = "+sr_cdbvalue(maval_fone      )
+                                        ccomm := ccomm + ",aval_obs       = "+sr_cdbvalue(maval_obs       )
+                                        ccomm := ccomm + " WHERE cod_cli = "+sr_cdbvalue(cons_cli[1,2])
+                                        sr_getconnection():exec(ccomm,,.f.)
+                                ELSE
+                                        sr_getconnection():exec('INSERT INTO saccliaux ('+;
+                                        'cod_cli   ,'+; //1
+                                        'conjuge        ,'+; //2
+                                        'conj_nasc      ,'+; //3
+                                        'conj_cpf       ,'+; //4
+                                        'conj_rg        ,'+; //5
+                                        'conj_empre     ,'+; //6
+                                        'conj_cargo     ,'+; //7
+                                        'conj_salario   ,'+; //8
+                                        'conj_end       ,'+; //9
+                                        'conj_bairro    ,'+; //10
+                                        'conj_cidade    ,'+; //11
+                                        'conj_uf        ,'+; //12
+                                        'conj_cep       ,'+; //13
+                                        'conj_fone      ,'+; //14
+                                        'conj_obs       ,'+; //15
+                                        'avalista       ,'+; //16
+                                        'aval_sexo      ,'+; //17
+                                        'aval_civil     ,'+; //18
+                                        'aval_nasc      ,'+; //19
+                                        'aval_cpf       ,'+; //20
+                                        'aval_rg        ,'+; //21
+                                        'aval_empre     ,'+; //22
+                                        'aval_cargo     ,'+; //23
+                                        'aval_salario   ,'+; //24
+                                        'aval_end       ,'+; //25
+                                        'aval_bairro    ,'+; //26
+                                        'aval_cidade    ,'+; //27
+                                        'aval_uf        ,'+; //28
+                                        'aval_cep       ,'+; //29
+                                        'aval_fone      ,'+; //30
+                                        'aval_obs       ,'+; //31
+                                        'SR_DELETED )'+;
+                                        ' VALUES ('+;
+                                        sr_cdbvalue(cons_cli[1,2]          )+','+; //1
+                                        sr_cdbvalue(mconjuge        )+','+; //2
+                                        IF(! EMPTY(mconj_nasc),sr_cdbvalue(mconj_nasc),nulo)+','+; //3
+                                        sr_cdbvalue(mconj_cpf       )+','+; //4
+                                        sr_cdbvalue(mconj_rg        )+','+; //5
+                                        sr_cdbvalue(mconj_empre     )+','+; //6
+                                        sr_cdbvalue(mconj_cargo     )+','+; //7
+                                        sr_cdbvalue(mconj_salario   )+','+; //8
+                                        sr_cdbvalue(mconj_end       )+','+; //9
+                                        sr_cdbvalue(mconj_bairro    )+','+; //10
+                                        sr_cdbvalue(mconj_cidade    )+','+; //11
+                                        sr_cdbvalue(mconj_uf        )+','+; //12
+                                        sr_cdbvalue(mconj_cep       )+','+; //13
+                                        sr_cdbvalue(mconj_fone      )+','+; //14
+                                        sr_cdbvalue(mconj_obs       )+','+; //15
+                                        sr_cdbvalue(mavalista       )+','+; //16
+                                        sr_cdbvalue(maval_sexo      )+','+; //17
+                                        sr_cdbvalue(maval_civil     )+','+; //18
+                                        IF(! EMPTY(maval_nasc),sr_cdbvalue(maval_nasc),nulo)+','+; //19
+                                        sr_cdbvalue(maval_cpf       )+','+; //20
+                                        sr_cdbvalue(maval_rg        )+','+; //21
+                                        sr_cdbvalue(maval_empre     )+','+; //22
+                                        sr_cdbvalue(maval_cargo     )+','+; //23
+                                        sr_cdbvalue(maval_salario   )+','+; //24
+                                        sr_cdbvalue(maval_end       )+','+; //25
+                                        sr_cdbvalue(maval_bairro    )+','+; //26
+                                        sr_cdbvalue(maval_cidade    )+','+; //27
+                                        sr_cdbvalue(maval_uf        )+','+; //28
+                                        sr_cdbvalue(maval_cep       )+','+; //29
+                                        sr_cdbvalue(maval_fone      )+','+; //30
+                                        sr_cdbvalue(maval_obs       )+','+; //31
+                                        sr_cdbvalue(' ')+')',,.f.)
+                                ENDIF
+                                sr_getconnection():exec('COMMIT',,.f.)
+                                wvw_lclosewindow()
+                                EXIT
+                        ENDIF
+                ENDDO
+        ENDIF
+        IF mdepen = 'S'
+                sacdepe(cons_cli[1,2])
+        ENDIF
+        opcao := op_simnao('S','Confirma a Alteracao do Cliente [S/n]:')
+        IF opcao = 'N'
+                LOOP
+        ELSE
+                IF EMPTY(cons_cli[1,25])
+                        mensagem('Nao foi preenchido o campo do Estado, Campo Obrigatorio !!!')
+                        @ 9,42 GET cons_cli[1,25] PICT '@!' VALID IF(EMPTY(cons_cli[1,25]),.F.,v_uf(cons_cli[1,25]))
+                        READ
+                        IF LASTKEY() = 27
+                                LOOP
+                        ENDIF
+                ENDIF
+                //atencao(cons_cli[1,2]+'-'+cons_cli[1,21])
+                IF EMPTY(cons_cli[1,5])
+                        cons_cli[1,5] := mdata_sis
+                ENDIF
+                nulo := 'NULL'
+                ccomm := "UPDATE saccli SET razao = "+sr_cdbvalue(cons_cli[1,3] )
+                //IF maltera = '*'
+                //        IF ver_serie() = '141235' .AND. mensagem1('Deseja Atualizar a DATA DE ATUALIZACAO:','S','S,N') = 'S'
+                //                ccomm := ccomm + ",data_atu = "+sr_cdbvalue(mdata_sis)
+                //        ENDIF
+                //ENDIF
+                ccomm := ccomm + ",data_cad  = "+sr_cdbvalue(cons_cli[1,5])
+                ccomm := ccomm + ",nome      = "+sr_cdbvalue(cons_cli[1,4])
+                ccomm := ccomm + ",nascimento= "+IF(! EMPTY(cons_cli[1,9]),sr_cdbvalue(cons_cli[1,9]),nulo)
+                ccomm := ccomm + ",tipo      = "+sr_cdbvalue(cons_cli[1,8]                     )
+                ccomm := ccomm + ",endereco  = "+sr_cdbvalue(cons_cli[1,21]                 )
+                ccomm := ccomm + ",bairro    = "+sr_cdbvalue(cons_cli[1,22]                   )
+                ccomm := ccomm + ",cidade    = "+sr_cdbvalue(cons_cli[1,24]                   )
+                ccomm := ccomm + ",uf        = "+sr_cdbvalue(cons_cli[1,25]                       )
+                ccomm := ccomm + ",cep       = "+sr_cdbvalue(cons_cli[1,26]                      )
+                ccomm := ccomm + ",email     = "+sr_cdbvalue(cons_cli[1,27]                    )
+                ccomm := ccomm + ",rota      = "+sr_cdbvalue(cons_cli[1,28]                     )
+                ccomm := ccomm + ",rota1     = "+sr_cdbvalue(cons_cli[1,140]                    )
+                ccomm := ccomm + ",tel1      = "+sr_cdbvalue(cons_cli[1,29]                     )
+                ccomm := ccomm + ",tel2      = "+sr_cdbvalue(cons_cli[1,30]                     )
+                ccomm := ccomm + ",fax       = "+sr_cdbvalue(cons_cli[1,31]                      )
+                ccomm := ccomm + ",cgc       = "+sr_cdbvalue(cons_cli[1,32]                      )
+                ccomm := ccomm + ",insc      = "+sr_cdbvalue(cons_cli[1,33]                     )
+                ccomm := ccomm + ",cpf       = "+sr_cdbvalue(cons_cli[1,34]                      )
+                ccomm := ccomm + ",rg        = "+sr_cdbvalue(cons_cli[1,35]                       )
+                ccomm := ccomm + ",orgao     = "+sr_cdbvalue(cons_cli[1,36]                    )
+                ccomm := ccomm + ",dat_emi   = "+IF(! EMPTY(cons_cli[1,37]),sr_cdbvalue(cons_cli[1,37]),nulo)
+                ccomm := ccomm + ",comprado  = "+sr_cdbvalue(cons_cli[1,38]                 )
+                ccomm := ccomm + ",contato   = "+sr_cdbvalue(cons_cli[1,39]                  )
+                ccomm := ccomm + ",area      = "+sr_cdbvalue(cons_cli[1,43]                     )
+                ccomm := ccomm + ",limite    = "+sr_cdbvalue(cons_cli[1,44]                   )
+                ccomm := ccomm + ",atac_vare = "+sr_cdbvalue(cons_cli[1,45]                )
+                ccomm := ccomm + ",spc       = "+sr_cdbvalue(cons_cli[1,42]                      )
+                ccomm := ccomm + ",obs       = "+sr_cdbvalue(cons_cli[1,48]                      )
+                ccomm := ccomm + ",prazo_pag = "+sr_cdbvalue(cons_cli[1,40]+mboleto        )
+                ccomm := ccomm + ",bloqueio  = "+sr_cdbvalue(cons_cli[1,41]                 )
+                ccomm := ccomm + ",codvend   = "+sr_cdbvalue(STRZERO(mcod_vend,3)       )
+                ccomm := ccomm + ",codoper   = "+sr_cdbvalue(STRZERO(mcodoper,3)       )
+                ccomm := ccomm + ",desconto  = "+sr_cdbvalue(cons_cli[1,59]                 )
+                ccomm := ccomm + ",dia1_ini  = "+sr_cdbvalue(STRZERO(VAL(cons_cli[1,60]),2) )
+                ccomm := ccomm + ",dia1_fim  = "+sr_cdbvalue(STRZERO(VAL(cons_cli[1,61]),2) )
+                ccomm := ccomm + ",venc1_dup = "+sr_cdbvalue(STRZERO(VAL(cons_cli[1,62]),2))
+                ccomm := ccomm + ",dia2_ini  = "+sr_cdbvalue(STRZERO(VAL(cons_cli[1,63]),2) )
+                ccomm := ccomm + ",dia2_fim  = "+sr_cdbvalue(STRZERO(VAL(cons_cli[1,64]),2) )
+                ccomm := ccomm + ",venc2_dup = "+sr_cdbvalue(STRZERO(VAL(cons_cli[1,65]),2))
+                ccomm := ccomm + ",nome1     = "+sr_cdbvalue(cons_cli[1,49]                    )
+                ccomm := ccomm + ",data_nas1 = "+IF(! EMPTY(cons_cli[1,50]),sr_cdbvalue(cons_cli[1,50]),nulo)
+                ccomm := ccomm + ",nome2     = "+sr_cdbvalue(cons_cli[1,51]                    )
+                ccomm := ccomm + ",data_nas2 = "+IF(! EMPTY(cons_cli[1,52]),sr_cdbvalue(cons_cli[1,52]),nulo)
+                ccomm := ccomm + ",nome3     = "+sr_cdbvalue(cons_cli[1,53]                    )
+                ccomm := ccomm + ",data_nas3 = "+IF(! EMPTY(cons_cli[1,54]),sr_cdbvalue(cons_cli[1,54]),nulo)
+                ccomm := ccomm + ",nome4     = "+sr_cdbvalue(cons_cli[1,55]                    )
+                ccomm := ccomm + ",data_nas4 = "+IF(! EMPTY(cons_cli[1,56]),sr_cdbvalue(cons_cli[1,56]),nulo)
+                ccomm := ccomm + ",nome5     = "+sr_cdbvalue(cons_cli[1,57]                    )
+                ccomm := ccomm + ",data_nas5 = "+IF(! EMPTY(cons_cli[1,58]),sr_cdbvalue(cons_cli[1,58]),nulo)
+                ccomm := ccomm + ",empre_c   = "+sr_cdbvalue(cons_cli[1,66]                  )
+                ccomm := ccomm + ",cargo_c   = "+sr_cdbvalue(cons_cli[1,67]                  )
+                ccomm := ccomm + ",salario_c = "+sr_cdbvalue(cons_cli[1,68]                )
+                ccomm := ccomm + ",end_c     = "+sr_cdbvalue(cons_cli[1,69]                    )
+                ccomm := ccomm + ",bairro_c  = "+sr_cdbvalue(cons_cli[1,70]                 )
+                ccomm := ccomm + ",cidade_c  = "+sr_cdbvalue(cons_cli[1,71]                 )
+                ccomm := ccomm + ",uf_c      = "+sr_cdbvalue(cons_cli[1,72]                     )
+                ccomm := ccomm + ",cep_c     = "+sr_cdbvalue(cons_cli[1,73]                    )
+                ccomm := ccomm + ",fone_c1   = "+sr_cdbvalue(cons_cli[1,74]                  )
+                ccomm := ccomm + ",fone_c2   = "+sr_cdbvalue(cons_cli[1,75]                  )
+                ccomm := ccomm + ",loja1     = "+sr_cdbvalue(cons_cli[1,76]                    )
+                ccomm := ccomm + ",tel_loja1 = "+sr_cdbvalue(cons_cli[1,77]                )
+                ccomm := ccomm + ",desde1    = "+IF(! EMPTY(cons_cli[1,78]),sr_cdbvalue(cons_cli[1,78]),nulo)
+                ccomm := ccomm + ",loja2     = "+sr_cdbvalue(cons_cli[1,79]                    )
+                ccomm := ccomm + ",tel_loja2 = "+sr_cdbvalue(cons_cli[1,80]                )
+                ccomm := ccomm + ",desde2    = "+IF(! EMPTY(cons_cli[1,81]),sr_cdbvalue(cons_cli[1,81]),nulo)
+                ccomm := ccomm + ",nome_r1   = "+sr_cdbvalue(cons_cli[1,82]                  )
+                ccomm := ccomm + ",fone_r1   = "+sr_cdbvalue(cons_cli[1,83]                  )
+                ccomm := ccomm + ",nome_r2   = "+sr_cdbvalue(cons_cli[1,84]                  )
+                ccomm := ccomm + ",fone_r2   = "+sr_cdbvalue(cons_cli[1,85]                  )
+                ccomm := ccomm + ",banco1    = "+sr_cdbvalue(cons_cli[1,86]                   )
+                ccomm := ccomm + ",ag1       = "+sr_cdbvalue(cons_cli[1,87]                      )
+                ccomm := ccomm + ",conta1    = "+sr_cdbvalue(cons_cli[1,88]                   )
+                ccomm := ccomm + ",banco2    = "+sr_cdbvalue(cons_cli[1,89]                   )
+                ccomm := ccomm + ",ag2       = "+sr_cdbvalue(cons_cli[1,90]                      )
+                ccomm := ccomm + ",conta2    = "+sr_cdbvalue(cons_cli[1,91]                   )
+                ccomm := ccomm + ",cartao1   = "+sr_cdbvalue(cons_cli[1,92]                  )
+                ccomm := ccomm + ",no1       = "+sr_cdbvalue(cons_cli[1,93]                      )
+                ccomm := ccomm + ",venc1     = "+IF(! EMPTY(cons_cli[1,94]),sr_cdbvalue(cons_cli[1,94]),nulo)
+                ccomm := ccomm + ",cartao2   = "+sr_cdbvalue(cons_cli[1,95]                  )
+                ccomm := ccomm + ",no2       = "+sr_cdbvalue(cons_cli[1,96]                      )
+                ccomm := ccomm + ",venc2     = "+IF(! EMPTY(cons_cli[1,97]),sr_cdbvalue(cons_cli[1,97]),nulo)
+                ccomm := ccomm + ",pai       = "+sr_cdbvalue(cons_cli[1,98]                      )
+                ccomm := ccomm + ",mae       = "+sr_cdbvalue(cons_cli[1,99]                      )
+                ccomm := ccomm + ",end_cob   = "+sr_cdbvalue(cons_cli[1,100]                  )
+                ccomm := ccomm + ",bairro_cob= "+sr_cdbvalue(cons_cli[1,101]               )
+                ccomm := ccomm + ",cidade_cob= "+sr_cdbvalue(cons_cli[1,102]               )
+                ccomm := ccomm + ",uf_cob    = "+sr_cdbvalue(cons_cli[1,103]                   )
+                ccomm := ccomm + ",cep_cob   = "+sr_cdbvalue(cons_cli[1,104]                  )
+                ccomm := ccomm + ",fone_cob  = "+sr_cdbvalue(cons_cli[1,105]                 )
+                ccomm := ccomm + ",regiao    = "+sr_cdbvalue(cons_cli[1,109]                   )
+                ccomm := ccomm + ",codforn   = "+sr_cdbvalue(STRZERO(cons_cli[1,108],4)      )
+                ccomm := ccomm + ",pocket    = "+sr_cdbvalue(cons_cli[1,134]                   )
+                ccomm := ccomm + ",cod_profi = "+sr_cdbvalue(STRZERO(mcod_profi,5)     )
+                ccomm := ccomm + ",cod_cond  = "+sr_cdbvalue(STRZERO(cons_cli[1,133],3)      )
+                ccomm := ccomm + ",l_obs1    = "+sr_cdbvalue(cons_cli[1,113])
+                ccomm := ccomm + ",l_obs2    = "+sr_cdbvalue(cons_cli[1,114])
+                ccomm := ccomm + ",data_bloq = "+IF(! EMPTY(cons_cli[1,138]),sr_cdbvalue(cons_cli[1,138]),nulo)
+                ccomm := ccomm + ",obs_bloq = "+sr_cdbvalue(cons_cli[1,139])
+                ccomm := ccomm + ",numero   = "+sr_cdbvalue(cons_cli[1,136])
+                ccomm := ccomm + ",complemento= "+sr_cdbvalue(cons_cli[1,137])
+                ccomm := ccomm + ",naturalidade   = "+sr_cdbvalue(cons_cli[1,116])
+                ccomm := ccomm + ",promotor   = "+sr_cdbvalue(cons_cli[1,148])
+                ccomm := ccomm + " WHERE cod_cli = "+sr_cdbvalue(cons_cli[1,2])
+                sr_getconnection():exec(ccomm,,.f.)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF cons_cli[1,8] <> mtipo_cli
+                        sr_getconnection():exec("UPDATE sacdupr SET tip_cli = "+sr_cdbvalue(mtipo)+" WHERE fornec = "+sr_cdbvalue(cons_cli[1,2]),,.f.)
+                ENDIF
+                sr_getconnection():exec('COMMIT',,.f.)
+                mcons_cam := {}
+                sr_getconnection():exec("SELECT atu_cli FROM cam_dba",,.t.,@mcons_cam)
+                IF LEN(mcons_cam) > 0
+                        IF SR_SetActiveConnection(nCnn1) > 0 .AND. mcons_cam[1,1] = 'S'
+                                sr_getconnection():exec(ccomm,,.f.)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                        ENDIF
+                ENDIF
+                SR_SetActiveConnection(nCnn)
+		IF cons_cli[1,33] <> minsc_aux
+		        opcao := op_simnao('S','Deseja Atualizar a INSCRICAO no Movimento deste Cliente [S/n]:')
+        		IF opcao = 'S'
+				mensagem('Aguarde um momento ATUALIZANDO o Movimento deste Cliente...')
+		                sr_getconnection():exec("UPDATE sacmovnt SET insc_cli = "+sr_cdbvalue(SUBSTR(cons_cli[1,33],1,14))+" WHERE cod_cli = "+sr_cdbvalue(cons_cli[1,2]),,.f.)
+		                sr_getconnection():exec("UPDATE sactotnt SET insc_cli = "+sr_cdbvalue(SUBSTR(cons_cli[1,33],1,14))+" WHERE cod_cli = "+sr_cdbvalue(cons_cli[1,2]),,.f.)
+		                sr_getconnection():exec('COMMIT',,.f.)
+
+		        ENDIF
+		ENDIF			
+                opcao := op_simnao('N','Deseja imprimir o cadastro do cliente [S/n]:')
+                IF opcao = 'S'
+                        sac5cad1(cons_cli[1,2])
+                ENDIF
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************** f i m ************************************
+FUNCTION historico(mcodigo_cli,mrazao)
+**************************************
+LOCAL m_hist:={},m_ponto:={},mcons_hist := {},mdata_con,mlin1,mlin2,mlin3,mlin4,mlin5,mlin6,mponto:=0,linhas:=0,i:=0,;
+      lba := 35,cba := 100,m_data := {}
+
+SET KEY -9 TO ctrl_w()
+
+op_tela(01,01,25,100,' HISTORICO DO CLIENTE CODIGO: '+STR(mcodigo_cli,5)+' - '+mrazao)
+CLEAR GETS
+WHILE .T.
+        m_hist  := {}
+        m_ponto := {}
+        m_data := {}
+        mcons_hist := {}
+        sr_getconnection():exec("SELECT * FROM sachist WHERE codcli = "+sr_cdbvalue(mcodigo_cli),,.t.,@mcons_hist)
+        IF LEN(mcons_hist) > 0
+                AADD(m_hist,'Data:'+DTOC(mcons_hist[1,1])+' - '+mcons_hist[1,4])
+                AADD(m_ponto,mcons_hist[1,6])
+                AADD(m_data,mcons_hist[1,1])
+                mdata_con := mcons_hist[1,1]
+                i:=0
+                FOR i = 2 TO LEN(mcons_hist)
+                        IF mdata_con = mcons_hist[i,1]
+                                AADD(m_hist,'                '+mcons_hist[i,4])
+                                AADD(m_ponto,mcons_hist[i,6])
+                                AADD(m_data,mcons_hist[i,1])
+                        ELSE
+                                AADD(m_hist,REPLI('-',76-03))
+                                AADD(m_ponto,0)
+                                AADD(m_data,CTOD('  /  /  '))
+                                AADD(m_hist,'Data:'+DTOC(mcons_hist[i,1])+' - '+mcons_hist[i,4])
+                                AADD(m_ponto,mcons_hist[i,6])
+                                AADD(m_data,mcons_hist[i,1])
+                                mdata_con := mcons_hist[i,1]
+                        ENDIF
+                NEXT
+                AADD(m_hist,PADC('****************************  F  I  M  ****************************',76-03))
+                AADD(m_ponto,0)
+                AADD(m_data,CTOD('  /  /  '))
+        ENDIF
+        setcor(3)
+        //botao(3,01,lba-5,78,,' HISTORICO DO CLIENTE ')
+        IF ! EMPTY(m_hist)
+                mponto := LEN(m_hist)
+                Mensagem('<ENTER> p/alterar ou <ESC>p/Inclusao')
+                mponto := ACHOICE(02,02,24,99,m_hist,,,mponto)
+                IF LASTKEY() = 13
+                        IF m_ponto[mponto] = 0
+                                LOOP
+                        ENDIF
+                        //mlin1 := mcons_hist[mponto,4]
+                        //mdata_con := mcons_hist[mponto,1]
+                        mlin1 := SUBSTR(m_hist[mponto],16)
+                        mdata_con := m_data[mponto]
+                        op_tela(lba-4,01,lba-2,80,' Alteracao Historico ')
+                        setcor(1)
+                        DEVPOS(01,2);DEVOUT('Data:')
+                        DEVPOS(01,16);DEVOUT('-')
+                        @ 01,7 GET mdata_con
+                        @ 01,18 GET mlin1
+                        READ
+                        IF LASTKEY() = 27
+                                wvw_lclosewindow()
+                                EXIT
+                        ENDIF
+                        IF EMPTY(mlin1)
+                                opcao := op_simnao('N','Confirma a Exclusao:')
+                                IF LASTKEY() = 27 .OR. opcao = 'N'
+                                        wvw_lclosewindow()
+                                        LOOP
+                                ENDIF
+                                sr_getconnection():exec("DELETE FROM sachist WHERE SR_RECNO = "+sr_cdbvalue(m_ponto[mponto]),,.f.)
+                                sr_getconnection():exec("COMMIT",,.f.)
+                        ELSE
+                                opcao := op_simnao('S','Confirma a Alteracao:')
+                                IF opcao = 'N'
+                                        wvw_lclosewindow()
+                                        LOOP
+                                ENDIF
+                                sr_getconnection():exec('UPDATE sachist SET descricao  = '+sr_cdbvalue(SUBSTR(mlin1,1,60))+',operador  = '+sr_cdbvalue(cod_operado)+' WHERE SR_RECNO = '+sr_cdbvalue(m_ponto[mponto]),,.f.)
+                                sr_getconnection():exec("COMMIT",,.f.)
+                        ENDIF
+                        wvw_lclosewindow()
+                        LOOP
+                ELSE
+                        mlin1 := mlin2 := mlin3 := mlin4 := mlin5 :=;
+                        mlin6 := SPACE(60)
+                        mdata_con := mdata_sis
+                        op_tela(lba-7,01,lba,80,' INCLUSAO Historico ')
+                        setcor(1)
+                        DEVPOS(01,2);DEVOUT('Data:')
+                        DEVPOS(01,16);DEVOUT('-')
+                        mensagem('Preencha a Data ou <ESC> p/Abandonar')
+                        @ 01,7 GET mdata_con
+                        READ
+                        IF LASTKEY() = 27
+                                wvw_lclosewindow()
+                                EXIT
+                        ENDIF
+                        Mensagem('Descrevar e tecle <F10>p/Gravar ou <ESC>p/abandonar')
+                        setcor(3)
+                        mlin1 := MEMOEDIT(mlin2,01,18,05,cba-1,,,,,,)
+                        setcor(1)
+                        IF LASTKEY() = 27
+                                wvw_lclosewindow()
+                                LOOP
+                        ENDIF
+                        i := 0
+                        linhas := MLCOUNT(mlin1,60)
+                        FOR i = 1 TO  linhas
+                                mlin3 := MEMOLINE(mlin1,60,i,,)
+                                sr_getconnection():exec('INSERT INTO sachist ('+;
+                                'codcli    ,'+; //1
+                                'data      ,'+; //2
+                                'hora      ,'+; //3
+                                'descricao ,'+; //4
+                                'operador  ,'+; //5
+                                'SR_DELETED )'+;
+                                ' VALUES ('+;
+                                sr_cdbvalue(mcodigo_cli)+','+; //1
+                                sr_cdbvalue(mdata_con     )+','+; //2
+                                sr_cdbvalue(TIME()        )+','+; //4
+                                sr_cdbvalue(SUBSTR(mlin3,1,60))+','+; //5
+                                sr_cdbvalue(cod_operado   )+','+; //6
+                                sr_cdbvalue(' ')+')',,.f.)
+                        NEXT
+                        sr_getconnection():exec("COMMIT",,.f.)
+                        wvw_lclosewindow()
+                ENDIF
+        ELSE
+                mlin1 := mlin2 := mlin3 := mlin4 := mlin5 := ;
+                mlin6 := SPACE(60)
+                mdata_con := mdata_sis
+                op_tela(lba-7,01,lba,80,' INCLUSAO Historico ')
+                setcor(1)
+                DEVPOS(01,2);DEVOUT('Data:')
+                DEVPOS(01,16);DEVOUT('-')
+                mensagem('Preencha a Data ou <ESC> p/Abandonar')
+                @ 01,7 GET mdata_con
+                READ
+                IF LASTKEY() = 27
+                        wvw_lclosewindow()
+                        EXIT
+                ENDIF
+                Mensagem('Descrevar e tecle <F10>p/Gravar ou <ESC>p/abandonar')
+                setcor(3)
+                mlin1 := MEMOEDIT(mlin2,01,18,05,cba-1,,,,,,)
+                setcor(1)
+                IF LASTKEY() = 27
+                        wvw_lclosewindow()
+                        LOOP
+                ENDIF
+                i := 0
+                linhas := MLCOUNT(mlin1,60)
+                FOR i = 1 TO  linhas
+                        mlin3 := MEMOLINE(mlin1,60,i,,)
+                        sr_getconnection():exec('INSERT INTO sachist ('+;
+                        'codcli    ,'+; //1
+                        'data      ,'+; //2
+                        'hora      ,'+; //3
+                        'descricao ,'+; //4
+                        'operador  ,'+; //5
+                        'SR_DELETED )'+;
+                        ' VALUES ('+;
+                        sr_cdbvalue(mcodigo_cli)+','+; //1
+                        sr_cdbvalue(mdata_con     )+','+; //2
+                        sr_cdbvalue(TIME()        )+','+; //4
+                        sr_cdbvalue(SUBSTR(mlin3,1,60))+','+; //5
+                        sr_cdbvalue(cod_operado   )+','+; //6
+                        sr_cdbvalue(' ')+')',,.f.)
+                NEXT
+                sr_getconnection():exec("COMMIT",,.f.)
+                wvw_lclosewindow()
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+SET KEY -9 TO
+RETURN NIL

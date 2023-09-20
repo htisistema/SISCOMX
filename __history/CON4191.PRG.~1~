@@ -1,0 +1,175 @@
+MEMVAR getlist,nivel_acess
+******* CON419.PRG: Relatorio -> Duplicatas Vencer/Vencidas
+***  CONTAS A PAGAR X CONTAS A RECEBER
+*********************************************************
+FUNCTION con4191
+****************
+LOCAL MPRG:='CON4191',;
+      mdata1,mdata2,mtit,mtipo,opcao,mcons_cli:={},mcons_forn:={},mcons_desp:={},mtot_desp,mtot_rec
+
+PRIVATE mcod_cli,pag:=0,mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+IF ! ver_nivel(mprg,'RELATORIO DE FUNCIONARIOS','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+*------------------------------------------------------------------
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+*------------------------------------------------------------------
+op_tela(10, 10, 16, 81)
+DEVPOS(00,00);DEVOUT("Cod.Cliente/Funcioario:")
+DEVPOS(01,00);DEVOUT("Data Inicio...........:")
+DEVPOS(02,00);DEVOUT("Data Final............:")
+@ 03,00 TO 03,71
+DEVPOS(04,00);DEVOUT("Cod.Fornecedor/Funcio.:")
+WHILE .T.
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        mcod_cli   := 0
+        mdata1     := DATE()-30
+        mdata2     := DATE()
+        mcons_cli  := {}
+        mcons_forn := {}
+        mcons_desp := {}
+        @ 00,24 GET mcod_cli PICT '99999'  VALID lim_get() .AND. ver_cli(mcod_cli,0,30) WHEN men_get(0,0,'Informe o cliente que deseja ou deixa em branco parea todos')
+        @ 01,24 GET mdata1 VALID lim_get() WHEN men_get(0,0,'Informe a data inicial do periodo que deseja imprimir')
+        @ 02,24 GET mdata2 VALID lim_get() WHEN men_get(0,0,'Informe a data final do periodo que deseja imprimir')
+        READ
+        IF LASTKEY()=27
+                CLOSE ALL
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        IF mdata1=CTOD("  /  /  ")
+                mdata1 := CTOD("11/11/11")
+        ENDIF
+        IF mdata2=CTOD("  /  /  ")
+                mdata2 := CTOD("31/12/99")
+        ENDIF
+        mcons_cli := {}
+        ccomm := "SELECT * FROM saccli WHERE tipo = 'U'"
+        IF ! EMPTY(mcod_cli)
+                ccomm := ccomm + " AND cod_cli = "+sr_cdbvalue(mcod_cli)
+        ENDIF
+        sr_getconnection():exec(ccomm,,.t.,@mcons_cli)
+        IF LEN(mcons_cli) = 0
+                atencao('Nao tem cliente para fazer o relatorio...')
+                LOOP
+        ENDIF
+        IF ! imp_arq('REL_FUNC.TXT','R')
+                LOOP
+        ENDIF
+        mtit := 'RELATORIO DE FUNCIONARIOS'
+        mtipo := DTOC(mdata1)+' a '+DTOC(mdata2)
+        pag:=1
+        i := 0
+        FOR i = 1 TO LEN(mcons_cli)
+                mtot_desp := mtot_rec := 0
+                cons_dup := {}
+                sr_getconnection():exec("SELECT * FROM sacdupp WHERE venc >= "+sr_cdbvalue(mdata1)+" AND venc <= "+sr_cdbvalue(mdata2)+" AND datpag IS NULL AND fornec = "+sr_cdbvalue(mcons_cli[i,108]),,.t.,@cons_dup)
+                IF LEN(cons_dup) = 0
+                        LOOP
+                ELSE
+                        cabecalho(pag,mtit,mtipo)
+                        imprt(mtipo_imp,'N')
+                        imprt(mtipo_imp,'N+')
+                        DEVPOS(PROW()+1,00);DEVOUT("Funcionario: "+mcons_cli[i,2]+' - '+mcons_cli[i,3])
+                        imprt(mtipo_imp,'N-')
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                        imprt(mtipo_imp,'N')
+                        imprt(mtipo_imp,'N+')
+                        DEVPOS(PROW()+1,00);DEVOUT(PADC("P R O V E N T O S",80))
+                        imprt(mtipo_imp,'N-')
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                        DEVPOS(PROW()+1,00);DEVOUT("Documento        Valor R$ Observacao")
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLICATE("=",80))
+                        x := 0
+                        FOR x = 1 TO LEN(cons_dup)
+                                prog_imp(x,DTOC(cons_dup[x,10]))
+                                mcons_desp:={}
+                                sr_getconnection():exec("SELECT * FROM sacdesp WHERE codigo = "+sr_cdbvalue(cons_dup[x,6]),,.t.,@mcons_desp)
+                                IF LEN(mcons_desp) = 0
+                                        LOOP
+                                ENDIF
+                                IF mcons_desp[1,3] # 'D'
+                                        DEVPOS(PROW()+1,00);DEVOUT(cons_dup[x,2]+cons_dup[x,4]+' '+TRANSFORM(cons_dup[x,16],'@E 999,999.99')+' '+SUBSTR(cons_dup[x,22],1,55))
+                                        imprt(mtipo_imp,'N')
+                                        mtot_rec := mtot_rec + cons_dup[x,16]
+                                ENDIF
+                        NEXT
+                        DEVPOS(PROW()+1,15);DEVOUT('----------')
+                        DEVPOS(PROW()+1,00);DEVOUT('Total          '+TRANSFORM(mtot_rec,'999,999.99'))
+                ENDIF
+                DEVPOS(PROW()+2,00);DEVOUT(REPLI('-',80))
+                imprt(mtipo_imp,'N')
+                imprt(mtipo_imp,'N+')
+                DEVPOS(PROW()+1,00);DEVOUT(PADC("D E S C O N T O S",80))
+                imprt(mtipo_imp,'N-')
+                imprt(mtipo_imp,'N')
+                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                DEVPOS(PROW()+1,00);DEVOUT("Documento        Valor R$ Observacao")
+                DEVPOS(PROW()+1,00);DEVOUT(REPLICATE("=",80))
+                IF LEN(cons_dup) > 0
+                        x := 0
+                        FOR x = 1 TO LEN(cons_dup)
+                                prog_imp(x,DTOC(cons_dup[x,10]))
+                                mcons_desp:={}
+                                sr_getconnection():exec("SELECT * FROM sacdesp WHERE codigo = "+sr_cdbvalue(cons_dup[x,6]),,.t.,@mcons_desp)
+                                IF LEN(mcons_desp) = 0
+                                        LOOP
+                                ENDIF
+                                IF mcons_desp[1,3] = 'D'
+                                        DEVPOS(PROW()+1,00);DEVOUT(cons_dup[x,2]+cons_dup[x,4]+' '+TRANSFORM(cons_dup[x,16],'@E 999,999.99')+' '+SUBSTR(cons_dup[x,22],1,53))
+                                        imprt(mtipo_imp,'N')
+                                        mtot_desp := mtot_desp + cons_dup[x,16]
+                                ENDIF
+
+                        NEXT
+                ENDIF
+                cons_dup := {}
+                sr_getconnection():exec("SELECT * FROM sacdupr WHERE venc >= "+sr_cdbvalue(mdata1)+" AND venc <= "+sr_cdbvalue(mdata2)+" AND datpag IS NULL AND fornec = "+sr_cdbvalue(mcons_cli[i,2]),,.t.,@cons_dup)
+                IF LEN(cons_dup) > 0
+                        x := 0
+                        FOR x = 1 TO LEN(cons_dup)
+                                prog_imp(x)
+                                DEVPOS(PROW()+1,00);DEVOUT(cons_dup[x,2]+cons_dup[x,4]+' '+TRANSFORM(cons_dup[x,19],'@E 999,999.99')+' '+SUBSTR(cons_dup[x,46],1,53))
+                                imprt(mtipo_imp,'N')
+                                mtot_desp := mtot_desp + cons_dup[x,19]
+                        NEXT
+                ENDIF
+                DEVPOS(PROW()+1,15);DEVOUT('----------')
+                DEVPOS(PROW()+1,00);DEVOUT('Total          '+TRANSFORM(mtot_desp,'@E 999,999.99'))
+
+                imprt(mtipo_imp,'N')
+                imprt(mtipo_imp,'N+')
+                DEVPOS(PROW()+2,00);DEVOUT(REPLI('-',80))
+                DEVPOS(PROW()+1,00);DEVOUT("Total Liquido R$: "+ALLTRIM(TRANSFORM(mtot_rec - mtot_desp,"@E 99,999,999,999.99")))
+                imprt(mtipo_imp,'N-')
+                imprt(mtipo_imp,'N')
+                SET CENTURY ON
+                DEVPOS(PROW()+3,00);DEVOUT(PADC(RTRIM(m_set[1,134])+', '+DTOC(DATE()),80))
+                DEVPOS(PROW()+3,00);DEVOUT(PADC(REPLI('-',LEN(RTRIM(mcons_cli[i,3]))+2),80))
+                DEVPOS(PROW()+1,00);DEVOUT(PADC(RTRIM(mcons_cli[i,3]),80))
+                DEVPOS(PROW()+2,00);DEVOUT(time())
+                SET CENTURY OFF
+                EJECT
+                SETPRC(00,00)
+        NEXT
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('REL_FUNC.REL')
+        /*
+        IF mimp_tipo = 2
+                lertexto('REL_FUNC.TXT')
+        ELSEIF mtipo_imp = 'D'
+                
+        ELSE
+                MYRUN('DOSPRINTER /RAW /DEL '+ALLTRIM(m_indiv[1,5])+'HTI.REL')
+        ENDIF
+        */
+        EXIT
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*************************** F I M ***************************

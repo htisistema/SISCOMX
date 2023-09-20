@@ -1,0 +1,1019 @@
+MEMVAR nivel_acess,cod_operado,getlist,mtip_term,muf_firm,mdata_sis
+************************************************************
+* FUNCAO DE SOLICITACAO DE O.S.
+* 20/02/2006
+************************************************************
+FUNCTION sacos15(mtp)
+****************
+LOCAL mprg:='SACOS15',;
+      mtela,lci:=00,cci:=00,lba:=40,cba:=79,opcao,;
+      mmarca,mdata_ent,mhora_ent,maparelho,mmodelo,mserie,;
+      mnumero,mdiag1,mdiag2,mdiag3,mdiag4,mvlr_esti,mprev_ent,;
+      macesso1,macesso2,macesso3,macesso4,macesso5,macesso6,macesso7,;
+      macesso8,macesso9,macesso10,mdiag_tec1,mdiag_tec2,;
+      mdiag_tec3,mdiag_tec4,mdiag_tec5,mdiag_tec6,mdiag_tec7,mdiag_tec8,mdiag_tec9,mdiag_tec10,;
+      mautorizo,mdat_ini,mdat_fim,mbaixa,mtot_os:=0,;
+      mqtd_os:=0,mgarantia,mngarantia,mgconserto,mtitulo,;
+      mhist1  := SPACE(60),;
+      mhist2  := SPACE(60),;
+      mhist3  := SPACE(60),;
+      mhist4  := SPACE(60),;
+      mhist5  := SPACE(60),;
+      mhist6  := SPACE(60),;
+      mhist7  := SPACE(60),;
+      mhist8  := SPACE(60),;
+      mhist9  := SPACE(60),;
+      mhist10 := SPACE(60),;
+      mhist11 := SPACE(60),;
+      mhist12 := SPACE(60),;
+      mhist13 := SPACE(60),;
+      mhist14 := SPACE(60),;
+      mhist15 := SPACE(60),;
+      mhist16 := SPACE(60),;
+      mhist17 := SPACE(60),;
+      mhist18 := SPACE(60),;
+      mhist19 := SPACE(60),;
+      mhist20 := SPACE(60)
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mnum_os:=0,mcod_tec,mvia:=2
+*---------------------------------------------
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('sacosno','osno');RETURN NIL;ENDIF
+IF ! AbriArq('sacospro','ospro');RETURN NIL;ENDIF
+IF ! AbriArq('sacoss','oss');RETURN NIL;ENDIF
+*---------------------------------------------
+IF mtp = NIL
+        mtitulo := 'CONSULTA DA O.S.'
+	IF ! ver_nivel(mprg+'C',mtitulo,'1235',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+ELSEIF mtp = '2'
+	mtitulo := '2a.VIA DA O.S.'
+        IF ! ver_nivel(mprg+'2',mtitulo,'1235',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+        mvia := 1
+ELSEIF mtp = 'A'
+	mtitulo := 'ALTERACAO DA O.S.'
+        IF ! ver_nivel(mprg+'A',mtitulo,'1235',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+ELSEIF mtp = 'E'
+	mtitulo := 'CANCELAR O.S.'
+        IF ! ver_nivel(mprg+'CAN',mtitulo,'1235',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+ELSEIF mtp = 'D'
+	mtitulo := 'DIAGNOSTICO DO TECNICO NA O.S.'
+        IF ! ver_nivel(mprg+'D',mtitulo,'1235',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+ENDIF
+op_tela(0,0,50,79,mtitulo,,1)
+SET KEY -8 TO sac130()           // inclusao de clientes
+WHILE .T.
+        limpa(0,0,50,120)
+        exibi_prg(mprg)
+        mtipo_imp := m_indiv[1,18]
+        mnum_os := 0
+        DEVPOS(lci,cci+1);DEVOUT(' No.O.S.:  ')
+        DEVPOS(lci+1,cci+1);DEVOUT('Cliente:')
+        DEVPOS(lci+2,cci+1);DEVOUT('Entrada:           Hora:')
+        IF m_set[1,37] = 'S'
+                DEVPOS(lci+3,cci+1);DEVOUT('Placa..:')
+                DEVPOS(lci+3,cci+27);DEVOUT('Km....:')
+        ELSE
+                DEVPOS(lci+3,cci+1);DEVOUT('Serie..:')
+                DEVPOS(lci+3,cci+27);DEVOUT('Numero:')
+        ENDIF
+        DEVPOS(lci+4,cci+1);DEVOUT('Marca..:')
+        DEVPOS(lci+4,cci+27);DEVOUT('Modelo:')
+        DEVPOS(lci+5,cci+1);DEVOUT('Diagnostico do Cliente:')
+        DEVPOS(lci+15,cci+1);DEVOUT('Valor Estipulado:')
+        DEVPOS(lci+15,cci+32);DEVOUT('Previsao Entrega:')
+        DEVPOS(lci+16,cci+1);DEVOUT('Acessorios:                             Acessorio:')
+        DEVPOS(lci+17,cci+1);DEVOUT('Acessorios:                             Acessorio:')
+        DEVPOS(lci+18,cci+1);DEVOUT('Acessorios:                             Acessorio:')
+        DEVPOS(lci+19,cci+1);DEVOUT('Acessorios:                             Acessorio:')
+        DEVPOS(lci+20,cci+1);DEVOUT('Acessorios:                             Acessorio:')
+        DEVPOS(lci+21,cci+1);DEVOUT('Codigo do Tecnico.....: ')
+        DEVPOS(lci+22,cci+1);DEVOUT('Diagnostico do Tecnico:')
+        DEVPOS(lci+26,cci+1);DEVOUT('Aut:                 Dt.Ini:         Final:         Baixa:         Ped:        ')
+        DEVPOS(lci+27,cci+1);DEVOUT('[ ] Garantia   [ ] Nao Garantia   [ ] Garantia Conserto')
+        setcor(3)
+        @ lci+28,cci+1 TO lci+28,cba+1
+        DEVPOS(lci+29,cci+1);DEVOUT(PADC('H I S T O R I C O',cba-cci))
+        @ lci+30,cci+1 TO lci+30,cba+1
+        setcor(1)
+
+        @ lci,cci+11 GET mnum_os PICT '99999'
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        **************************
+        SELE('oss');ORDSETFOCUS(1)
+        GO TOP
+        **************************
+        IF ! oss->(DBSEEK(STRZERO(mnum_os,6)))
+                atencao('Esta O.S. nao foi encontrada em nosso arquivos')
+                LOOP
+        ENDIF
+        ver_cli(VAL(oss->cod_cli),lci+1,cci+16)
+        setcor(3)
+        DEVPOS(lci+1,cci+10);DEVOUT(oss->cod_cli)
+        DEVPOS(lci+2,cci+10);DEVOUT(oss->data_ent)
+        DEVPOS(lci+2,cci+26);DEVOUT(oss->hora_ent)
+        DEVPOS(lci+3,cci+10);DEVOUT(oss->serie)
+        DEVPOS(lci+3,cci+35);DEVOUT(oss->numero)
+        DEVPOS(lci+4,cci+10);DEVOUT(oss->marca)
+        DEVPOS(lci+4,cci+35);DEVOUT(oss->modelo)
+        DEVPOS(lci+5,cci+25);DEVOUT(oss->diag1)
+        DEVPOS(lci+6,cci+25);DEVOUT(oss->diag2)
+        DEVPOS(lci+7,cci+25);DEVOUT(oss->diag3)
+        DEVPOS(lci+8,cci+25);DEVOUT(oss->diag4)
+        DEVPOS(lci+9,cci+25);DEVOUT(oss->diag5)
+        DEVPOS(lci+10,cci+25);DEVOUT(oss->diag6)
+        DEVPOS(lci+11,cci+25);DEVOUT(oss->diag7)
+        DEVPOS(lci+12,cci+25);DEVOUT(oss->diag8)
+        DEVPOS(lci+13,cci+25);DEVOUT(oss->diag9)
+        DEVPOS(lci+14,cci+25);DEVOUT(oss->diag10)
+        DEVPOS(lci+15,cci+19);DEVOUTPICT(oss->vlr_esti,'999,999.99')
+        DEVPOS(lci+15,cci+50);DEVOUT(oss->prev_ent)
+        DEVPOS(lci+16,cci+14);DEVOUT(oss->acesso1);ver_acess(oss->acesso1,lci+10,cci+18,,0)
+        setcor(3)
+        DEVPOS(lci+17,cci+14);DEVOUT(oss->acesso2);ver_acess(oss->acesso2,lci+11,cci+18,,0)
+        setcor(3)
+        DEVPOS(lci+18,cci+14);DEVOUT(oss->acesso3);ver_acess(oss->acesso3,lci+12,cci+18,,0)
+        setcor(3)
+        DEVPOS(lci+19,cci+14);DEVOUT(oss->acesso4);ver_acess(oss->acesso4,lci+13,cci+18,,0)
+        setcor(3)
+        DEVPOS(lci+20,cci+14);DEVOUT(oss->acesso5);ver_acess(oss->acesso5,lci+14,cci+18,,0)
+        setcor(3)
+        DEVPOS(lci+16,cci+52);DEVOUT(oss->acesso6);ver_acess(oss->acesso6,lci+10,cci+18,,0)
+        setcor(3)
+        DEVPOS(lci+17,cci+52);DEVOUT(oss->acesso7);ver_acess(oss->acesso7,lci+11,cci+18,,0)
+        setcor(3)
+        DEVPOS(lci+18,cci+52);DEVOUT(oss->acesso8);ver_acess(oss->acesso8,lci+12,cci+18,,0)
+        setcor(3)
+        DEVPOS(lci+19,cci+52);DEVOUT(oss->acesso9);ver_acess(oss->acesso9,lci+13,cci+18,,0)
+        setcor(3)
+        DEVPOS(lci+20,cci+52);DEVOUT(oss->acesso10);ver_acess(oss->acesso10,lci+14,cci+18,,0)
+        setcor(3)
+        DEVPOS(lci+21,cci+25);DEVOUT(oss->cod_tec)
+        DEVPOS(lci+22,cci+25);DEVOUT(oss->diag_tec1)
+        DEVPOS(lci+23,cci+25);DEVOUT(oss->diag_tec2)
+        DEVPOS(lci+24,cci+25);DEVOUT(oss->diag_tec3)
+        DEVPOS(lci+25,cci+25);DEVOUT(oss->diag_tec4)
+        DEVPOS(lci+26,cci+05);DEVOUT(oss->autorizo)
+        DEVPOS(lci+26,cci+29);DEVOUT(oss->dat_ini)
+        DEVPOS(lci+26,cci+44);DEVOUT(oss->dat_fim)
+        DEVPOS(lci+26,cci+59);DEVOUT(oss->baixa)
+        DEVPOS(lci+26,cci+72);DEVOUT(oss->num_ped)
+        DEVPOS(lci+27,cci+2) ;DEVOUT(oss->garantia)
+        DEVPOS(lci+27,cci+17);DEVOUT(oss->ngarantia)
+        DEVPOS(lci+27,cci+36);DEVOUT(oss->gconserto)
+        DEVPOS(lci+31,cci+2);DEVOUT(oss->hist1)
+        DEVPOS(lci+32,cci+2);DEVOUT(oss->hist2)
+        DEVPOS(lci+33,cci+2);DEVOUT(oss->hist3)
+        DEVPOS(lci+34,cci+2);DEVOUT(oss->hist4)
+        DEVPOS(lci+35,cci+2);DEVOUT(oss->hist5)
+        DEVPOS(lci+36,cci+2);DEVOUT(oss->hist6)
+        DEVPOS(lci+37,cci+2);DEVOUT(oss->hist7)
+        DEVPOS(lci+38,cci+2);DEVOUT(oss->hist8)
+        DEVPOS(lci+39,cci+2);DEVOUT(oss->hist9)
+        DEVPOS(lci+40,cci+2);DEVOUT(oss->hist10)
+        DEVPOS(lci+41,cci+2);DEVOUT(oss->hist11)
+        DEVPOS(lci+42,cci+2);DEVOUT(oss->hist12)
+        DEVPOS(lci+43,cci+2);DEVOUT(oss->hist13)
+        DEVPOS(lci+44,cci+2);DEVOUT(oss->hist14)
+        DEVPOS(lci+45,cci+2);DEVOUT(oss->hist15)
+        DEVPOS(lci+46,cci+2);DEVOUT(oss->hist16)
+        DEVPOS(lci+47,cci+2);DEVOUT(oss->hist17)
+        DEVPOS(lci+48,cci+2);DEVOUT(oss->hist18)
+        DEVPOS(lci+49,cci+2);DEVOUT(oss->hist19)
+        DEVPOS(lci+50,cci+2);DEVOUT(oss->hist20)
+        IF mtp = NIL
+                mensagem('Pressione qualquer tecla p/Retornar')
+                INKEY(0)
+                LOOP
+        ELSEIF mtp = '2'
+                opcao := mensagem1('Confirma a 2a.Via da O.S.','S','S,N')
+                sacosimp(mnum_os)
+                wvw_lclosewindow()
+                RETURN NIL
+        ELSEIF mtp = 'E'
+                IF oss->pag = 'C'
+                        atencao('Esta O.S. ja foi Cancelada')
+                        LOOP
+                ENDIF
+                opcao := mensagem1('Confirma o CANCELAMENTO da O.S.','N','S,N')
+        ENDIF
+        IF LASTKEY() = 27 .OR. opcao = 'N'
+                LOOP
+        ENDIF
+        IF mtp = '2'
+                sacosimp(mnum_os)
+        ELSEIF mtp = 'E'
+                BLOQREG()
+                oss->pag := 'C'
+                oss->baixa := mdata_sis
+                DBCOMMIT()
+                DBUNLOCK()
+                ****************************
+                SELE('ospro');ORDSETFOCUS(1)
+                GO TOP
+                *****************************
+                IF ospro->(DBSEEK(STRZERO(mnum_os,6)))
+                        WHILE ospro->num_os = STRZERO(mnum_os,6) .AND. ! EOF()
+                                *************
+                                SELE('merc');ORDSETFOCUS(1)
+                                GO TOP
+                                *************
+                                IF ! merc->(DBSEEK(ospro->cod_merc))
+                                        atencao('Produto nao encontrado em nosso Arquivos')
+                                        LOOP
+                                ENDIF
+                                IF ! BLOQREG()
+                                        LOOP
+                                ENDIF
+                                merc-> saldo_mer := merc->saldo_mer + ospro->quantd
+                                DBCOMMITALL()
+                                DBUNLOCKALL()
+                                ***************
+                                SELE('ospro');ORDSETFOCUS(1)
+                                ***************
+                                SKIP
+                        ENDDO
+                ENDIF
+        ELSEIF mtp = 'A'
+                mcod_cli     := VAL(oss->cod_cli)
+                mdata_ent    := oss->data_ent
+                mhora_ent    := oss->hora_ent
+                mmarca       := oss->marca
+                mmodelo      := oss->modelo
+                mserie       := oss->serie
+                mnumero      := oss->numero
+                mdiag1       := oss->diag1
+                mdiag2       := oss->diag2
+                mdiag3       := oss->diag3
+                mdiag4       := oss->diag4
+                mdiag5       := oss->diag5
+                mdiag6       := oss->diag6
+                mdiag7       := oss->diag7
+                mdiag8       := oss->diag8
+                mdiag9       := oss->diag9
+                mdiag10      := oss->diag10
+                mvlr_esti    := oss->vlr_esti
+                mprev_ent    := oss->prev_ent
+                macesso1     := oss->acesso1
+                macesso2     := oss->acesso2
+                macesso3     := oss->acesso3
+                macesso4     := oss->acesso4
+                macesso5     := oss->acesso5
+                macesso6     := oss->acesso6
+                macesso7     := oss->acesso7
+                macesso8     := oss->acesso8
+                macesso9     := oss->acesso9
+                macesso10    := oss->acesso10
+                mautorizo    := oss->autorizo
+                mgarantia    := oss->garantia
+                mngarantia   := oss->ngarantia
+                mgconserto   := oss->gconserto
+                mhist1       := oss->hist1
+                mhist2       := oss->hist2
+                mhist3       := oss->hist3
+                mhist4       := oss->hist4
+                mhist5       := oss->hist5
+                mhist6       := oss->hist6
+                mhist7       := oss->hist7
+                mhist8       := oss->hist8
+                mhist9       := oss->hist9
+                mhist10      := oss->hist10
+                mhist11      := oss->hist11
+                mhist12      := oss->hist12
+                mhist13      := oss->hist13
+                mhist14      := oss->hist14
+                mhist15      := oss->hist15
+                mhist16      := oss->hist16
+                mhist17      := oss->hist17
+                mhist18      := oss->hist18
+                mhist19      := oss->hist19
+                mhist20      := oss->hist20
+                setcor(1)
+                @ lci+1,cci+10 GET mcod_cli PICT '99999' VALID ver_cli(mcod_cli,lci+1,cci+16)
+                READ
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+                @ lci+2,cci+10 GET mdata_ent
+                @ lci+2,cci+26 GET mhora_ent
+                @ lci+3,cci+10 GET mserie PICT '@!'
+                @ lci+3,cci+35 GET mnumero PICT '@!'
+                @ lci+4,cci+10 GET mmarca PICT '@!'
+                @ lci+4,cci+35 GET mmodelo PICT '@!'
+                @ lci+5,cci+25 GET mdiag1
+                @ lci+6,cci+25 GET mdiag2
+                @ lci+7,cci+25 GET mdiag3
+                @ lci+8,cci+25 GET mdiag4
+                @ lci+9,cci+25 GET mdiag5
+                @ lci+10,cci+25 GET mdiag6
+                @ lci+11,cci+25 GET mdiag7
+                @ lci+12,cci+25 GET mdiag8
+                @ lci+13,cci+25 GET mdiag9
+                @ lci+14,cci+25 GET mdiag10
+                @ lci+15,cci+19 GET mvlr_esti PICT '999,999.99'
+                @ lci+15,cci+50 GET mprev_ent
+                @ lci+16,cci+14 GET macesso1 PICT '999' VALID ver_acess(macesso1,lci+10,cci+18,,0)
+                @ lci+17,cci+14 GET macesso2 PICT '999' VALID ver_acess(macesso2,lci+11,cci+18,,0)
+                @ lci+18,cci+14 GET macesso3 PICT '999' VALID ver_acess(macesso3,lci+12,cci+18,,0)
+                @ lci+19,cci+14 GET macesso4 PICT '999' VALID ver_acess(macesso4,lci+13,cci+18,,0)
+                @ lci+20,cci+14 GET macesso5 PICT '999' VALID ver_acess(macesso5,lci+14,cci+18,,0)
+                @ lci+16,cci+52 GET macesso6 PICT '999' VALID ver_acess(macesso6,lci+10,cci+18,,0)
+                @ lci+17,cci+52 GET macesso7 PICT '999' VALID ver_acess(macesso7,lci+11,cci+18,,0)
+                @ lci+18,cci+52 GET macesso8 PICT '999' VALID ver_acess(macesso8,lci+12,cci+18,,0)
+                @ lci+19,cci+52 GET macesso9 PICT '999' VALID ver_acess(macesso9,lci+13,cci+18,,0)
+                @ lci+20,cci+52 GET macesso10 PICT '999' VALID ver_acess(macesso10,lci+14,cci+18,,0)
+                @ lci+26,cci+05 GET mautorizo
+                @ lci+27,cci+2 GET mgarantia PICT '@!' VALID mgarantia $ 'X, '
+                @ lci+27,cci+17 GET mngarantia PICT '@!' VALID mngarantia $ 'X, ' WHEN EMPTY(mgarantia)
+                @ lci+27,cci+36 GET mgconserto PICT '@!' VALID mgconserto $ 'X, ' WHEN EMPTY(mgarantia) .AND. EMPTY(mngarantia)
+                @ lci+31,cci+2 GET mhist1
+                @ lci+32,cci+2 GET mhist2
+                @ lci+33,cci+2 GET mhist3
+                @ lci+34,cci+2 GET mhist4
+                @ lci+35,cci+2 GET mhist5
+                @ lci+36,cci+2 GET mhist6
+                @ lci+37,cci+2 GET mhist7
+                @ lci+38,cci+2 GET mhist8
+                @ lci+39,cci+2 GET mhist9
+                @ lci+40,cci+2 GET mhist10
+                @ lci+41,cci+2 GET mhist11
+                @ lci+42,cci+2 GET mhist12
+                @ lci+43,cci+2 GET mhist13
+                @ lci+44,cci+2 GET mhist14
+                @ lci+45,cci+2 GET mhist15
+                @ lci+46,cci+2 GET mhist16
+                @ lci+47,cci+2 GET mhist17
+                @ lci+48,cci+2 GET mhist18
+                @ lci+49,cci+2 GET mhist19
+                @ lci+50,cci+2 GET mhist20
+                READ
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+                opcao := mensagem1('Confirma a Operacao:','S','S,N')
+                IF LASTKEY() = 27 .OR. opcao = 'N'
+                        LOOP
+                ENDIF
+                BLOQREG()
+                oss->operador    := cod_operado
+                oss->cod_cli     := mcod_cli
+                oss->data_ent    := mdata_ent
+                oss->hora_ent    := mhora_ent
+                oss->marca       := mmarca
+                oss->modelo      := mmodelo
+                oss->serie       := mserie
+                oss->numero      := mnumero
+                oss->diag1       := mdiag1
+                oss->diag2       := mdiag2
+                oss->diag3       := mdiag3
+                oss->diag4       := mdiag4
+                oss->diag5       := mdiag5
+                oss->diag6       := mdiag6
+                oss->diag7       := mdiag7
+                oss->diag8       := mdiag8
+                oss->diag9       := mdiag9
+                oss->diag10      := mdiag10
+                oss->vlr_esti    := mvlr_esti
+                oss->prev_ent    := mprev_ent
+                oss->garantia    := mgarantia
+                oss->ngarantia   := mngarantia
+                oss->gconserto   := mgconserto
+                oss->acesso1     := macesso1
+                oss->acesso2     := macesso2
+                oss->acesso3     := macesso3
+                oss->acesso4     := macesso4
+                oss->acesso5     := macesso5
+                oss->acesso6     := macesso6
+                oss->acesso7     := macesso7
+                oss->acesso8     := macesso8
+                oss->acesso9     := macesso9
+                oss->acesso10    := macesso10
+                oss->autorizo    := mautorizo
+                oss->hist1       := mhist1
+                oss->hist2       := mhist2
+                oss->hist3       := mhist3
+                oss->hist4       := mhist4
+                oss->hist5       := mhist5
+                oss->hist6       := mhist6
+                oss->hist7       := mhist7
+                oss->hist8       := mhist8
+                oss->hist9       := mhist9
+                oss->hist10      := mhist10
+                oss->hist11      := mhist11
+                oss->hist12      := mhist12
+                oss->hist13      := mhist13
+                oss->hist14      := mhist14
+                oss->hist15      := mhist15
+                oss->hist16      := mhist16
+                oss->hist17      := mhist17
+                oss->hist18      := mhist18
+                oss->hist19      := mhist19
+                oss->hist20      := mhist20
+                DBCOMMIT()
+                DBUNLOCK()
+        ELSEIF mtp='D'
+                mcod_tec   := cod_operado
+                mdiag_tec1 := oss->diag_tec1
+                mdiag_tec2 := oss->diag_tec2
+                mdiag_tec3 := oss->diag_tec3
+                mdiag_tec4 := oss->diag_tec4
+                mautorizo  := oss->autorizo
+                mdat_ini   := oss->dat_ini
+                mdat_fim   := oss->dat_fim
+                mbaixa     := oss->baixa
+                setcor(1)
+                @ lci+15,cci+25 GET mcod_tec PICT '999' VALID ver_ven(mcod_tec)
+                READ
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+                setcor(3)
+                DEVPOS(lci+15,cci+29);DEVOUT(sen->snome)
+                setcor(1)
+                @ lci+16,cci+25 GET mdiag_tec1
+                @ lci+17,cci+25 GET mdiag_tec2
+                @ lci+18,cci+25 GET mdiag_tec3
+                @ lci+19,cci+25 GET mdiag_tec4
+                @ lci+20,cci+05 GET mautorizo
+                @ lci+20,cci+29 GET mdat_ini
+                @ lci+20,cci+44 GET mdat_fim
+                @ lci+20,cci+59 GET mbaixa
+                READ
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+                opcao := mensagem1('Confirma a Operacao:','S','S,N')
+                IF LASTKEY() = 27 .OR. opcao = 'N'
+                        LOOP
+                ENDIF
+                BLOQREG()
+                oss->cod_tec    := mcod_tec
+                oss->diag_tec1  := mdiag_tec1
+                oss->diag_tec2  := mdiag_tec2
+                oss->diag_tec3  := mdiag_tec3
+                oss->diag_tec4  := mdiag_tec4
+                oss->autorizo   := mautorizo
+                oss->dat_ini    := mdat_ini
+                oss->dat_fim    := mdat_fim
+                oss->baixa      := mbaixa
+                DBCOMMIT()
+                DBUNLOCK()
+                os_prod(mnum_os)
+       ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+********************************** F I M ***************************************
+**********************************
+*INCLUSAO DE PRODUTOS NA O.S.
+**********************************
+FUNCTION os_prod(mn)
+******************
+LOCAL MPRG:='OS_PROD',;
+      msele,morde,lc:=07,cc:=29,la:=22,ca:=79,mtot_ped:=0,msubtotal:=0,point:=0,;
+      pode,f:=0,mmontador:=0,mmontador1:=0,mobs_prod:=SPACE(40)
+
+PRIVATE mcod_merc,mquantd:=1,mdesconto,mvlr_fat,mmerc,li,ci,lb,cb,;
+        lci,cci,lba,cba,tela,tela1,mcod_bc,mponto,mreg,mvarejo:=1,mperc:=0
+
+IF ! ver_nivel(mprg,'INCLUSAO DE PRODUTO NA O.S.','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+IF mn <> NIL
+        mn_os := mn
+ELSE
+        mn_os := 0
+ENDIF
+
+mtip_term := m_cfg[2]
+IF ! AbriArq('saclog','log');RETURN NIL;ENDIF
+GO BOTT
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('merc_det','deta');RETURN NIL;ENDIF
+IF ! AbriArq('sacospro','ospro');RETURN NIL;ENDIF
+IF ! AbriArq('sacoss','oss');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*---------------------------------------------
+lci = 02
+cci = 00
+lba = 16
+cba = 79
+
+li = 17
+ci = 00
+lb = 21
+cb = 79
+op_tela(00,00,24,79,' INCLUSAO DE PRODUTO NA O.S. ')
+tela1 = SAVESCREEN(li,ci-1,lb+1,cb)
+malteracao := 0
+setcor(3)
+//botao(lci-1,cci,lba,cba,,' INCLUSAO DE PRODUTO NA O.S. ')
+@ lci+2,cci+1 TO lci+2,cba-1
+DEVPOS(lci,cci+1);DEVOUT('No.O.S.: ')
+DEVPOS(lci,cci+19);DEVOUT('Cliente:')
+setcor(1)
+DEVPOS(lci+1,cci+1);DEVOUT('Cod.')
+DEVPOS(lci+1,cci+7);DEVOUT('Descricao')
+DEVPOS(lci+1,cci+53);DEVOUT('Qtd.')
+DEVPOS(lci+1,cci+58);DEVOUT('Vlr.Unit.')
+DEVPOS(lci+1,cci+70);DEVOUT('Vlr.Total')
+setcor(3)
+botao(li,ci,lb,cb)
+@ li+2,ci+1 TO li+2,cb-1
+setcor(1)
+DEVPOS(li,ci+1);DEVOUT('Cod.')
+DEVPOS(li,ci+7);DEVOUT('Descricao')
+DEVPOS(li,ci+53);DEVOUT('Qtd.')
+DEVPOS(li,ci+58);DEVOUT('Vlr.Unit.')
+DEVPOS(li,ci+70);DEVOUT('Vlr.Total')
+DEVPOS(li+3,ci+58);DEVOUT('Sub-Total:')
+tela_ant := SAVESCREEN(00,00,24,79)
+mensagem('Digite o Numero do O.S. - <ESC>Retorna')
+@ lci,cci+09 GET mn_os PICT '999999' WHEN mn = NIL
+READ
+IF LASTKEY() = 27
+        RELEASE ALL
+        wvw_lclosewindow()
+        RETURN NIL
+ENDIF
+**************************
+SELE('oss');ORDSETFOCUS(1)
+GO TOP
+**************************
+IF ! oss->(DBSEEK(STRZERO(mn_os,6)))
+        atencao('Esta O.S. nao foi encontrada em nosso arquivos')
+        RELEASE ALL
+        wvw_lclosewindow()
+        RETURN NIL
+ENDIF
+IF oss->pag = 'C'
+        atencao('Esta O.S. ja foi Cancelada')
+        RELEASE ALL
+        wvw_lclosewindow()
+        RETURN NIL
+ELSEIF oss->pag = 'P'
+        atencao('Esta O.S. ja foi FECHADA')
+        RELEASE ALL
+        wvw_lclosewindow()
+        RETURN NIL
+ENDIF
+mcod_tec := oss->cod_tec
+ver_cli(VAL(oss->cod_cli))
+setcor(3)
+DEVPOS(lci,cci+29);DEVOUT(oss->cod_cli+'-'+cli->razao)
+WHILE .T.
+        setcor(3)
+        botao(li,ci,lb,cb)
+        @ li+2,ci+1 TO li+2,cb-1
+        setcor(1)
+        DEVPOS(li,ci+1);DEVOUT('Cod.')
+        DEVPOS(li,ci+7);DEVOUT('Descricao')
+        DEVPOS(li,ci+53);DEVOUT('Qtd.')
+        DEVPOS(li,ci+58);DEVOUT('Vlr.Unit.')
+        DEVPOS(li,ci+70);DEVOUT('Vlr.Total')
+        DEVPOS(li+3,ci+58);DEVOUT('Sub-Total:')
+        msubtotal := 0
+        mensagem('<ENTER> Alteracao ou Inclusao - <ESC>Retorna')
+        ***************
+        SELE('ospro');ORDSETFOCUS(1)
+        GO TOP
+        ***************
+        IF ospro->(DBSEEK(STRZERO(mn_os,6)))
+                point=RECNO()
+                WHILE STRZERO(mn_os,6) = ospro->num_os
+                        msubtotal := msubtotal + ospro->quantd * ospro->vlr_fat
+                        mtot_ped := mtot_ped + ospro->quantd * ospro->vlr_fat
+                        SKIP
+                ENDDO
+                GO point
+                setcor(3)
+                DEVPOS(li+3,ci+69);DEVOUTPICT(msubtotal,'9999999.99')
+                DEVPOS(lci,cci+09);DEVOUT(STRZERO(mn_os,6)+' ')
+                setcor(1)
+                pode := .T.
+                mcod_merc := 0
+                point=RECNO()
+                FOR f=1 TO 11
+                        IF EOF() .OR. ospro->num_os <> STRZERO(mn_os,6)
+                                setcor(3)
+                                DEVPOS(lci+2+f,cci+1);DEVOUT(SPACE(5))
+                                DEVPOS(lci+2+f,cci+7);DEVOUT(SPACE(40))
+                                DEVPOS(lci+2+f,cci+48);DEVOUT(TRANSFORM(0,'99999.99'))
+                                DEVPOS(lci+2+f,cci+58);DEVOUT(TRANSFORM(0,'999999.99'))
+                                DEVPOS(lci+2+f,cci+69);DEVOUT(TRANSFORM(0,'999999.99'))
+                                setcor(1)
+                                LOOP
+                        ENDIF
+                        setcor(3)
+                        DEVPOS(lci+2+f,cci+1);DEVOUT(ospro->cod_merc)
+                        DEVPOS(lci+2+f,cci+7);DEVOUT(ospro->merc)
+                        DEVPOS(lci+2+f,cci+48);DEVOUT(TRANSFORM(ospro->quantd,'99999.99'))
+                        DEVPOS(lci+2+f,cci+58);DEVOUT(TRANSFORM(ospro->vlr_fat,'999999.99'))
+                        DEVPOS(lci+2+f,cci+69);DEVOUT(TRANSFORM(ospro->quantd * ospro->vlr_fat,'999999.99'))
+                        setcor(1)
+                        SKIP
+                NEXT f
+                IF EOF() .OR. STRZERO(mn_os,6) <> ospro->num_os
+                        pode=.F.
+                ENDIF
+                GO point
+        ENDIF
+        INKEY(0)
+        DO CASE
+                CASE LASTKEY()=5
+                        IF ! BOF()
+                                SKIP -1
+                                pode=.T.
+                        ENDIF
+                CASE LASTKEY()=24
+                        IF ! EOF() .AND. pode=.T.
+                                SKIP
+                        ENDIF
+                CASE LASTKEY()=18
+                        IF ! BOF()
+                                SKIP -9
+                                pode=.T.
+                        ENDIF
+                CASE LASTKEY()=3
+                        IF ! EOF() .AND. pode=.T.
+                                SKIP 9
+                        ENDIF
+                CASE LASTKEY()=27
+                        EXIT
+                CASE LASTKEY() = 13
+                        mmerc := SPACE(40)
+                        mcod_bc := SPACE(14)
+                        mvlr_fat := mtot_ped := mcod_merc := mmontador  := ;
+                        mmontador1 := 0
+                        mquantd := 1
+                        mobs_prod := SPACE(40)
+                        mensagem('Digite o codigo ou nome da mercadoria - <ESC>Abandonar')
+                        @ li+1,ci+1 GET mcod_bc PICT '@!'     //VALID lim_get() WHEN men_get(lba-03,cci+17,'Informe o Cod.do produto <ENTER>descricao <F4>pesquisar <ALT+A>Alterar Produto')
+                        READ
+                        IF LASTKEY() = 27
+                                wvw_lclosewindow()
+                                RETURN NIL
+                        ENDIF
+                        IF ! EMPTY(mcod_bc)
+                                IF SUBSTR(mcod_bc,1,1) = '2' .AND. (LEN(RTRIM(mcod_bc)) > 5 .OR. VAL(mcod_bc) = 0)
+                                        mcod_merc := VAL(SUBSTR(mcod_bc,2,5))
+                                        *************
+                                        SELE('merc');ORDSETFOCUS(1)
+                                        *************
+
+                                        IF ! merc->(DBSEEK(mcod_merc))
+                                                *************
+                                                SELE('merc');ORDSETFOCUS(1)
+                                                *************
+                                                atencao('Codigo Barra nao cadastrado')
+                                                LOOP
+                                        ENDIF
+                                ELSEIF LEN(RTRIM(mcod_bc)) > 5 .OR. VAL(mcod_bc) = 0
+                                        *************
+                                        SELE('merc');ORDSETFOCUS(6)
+                                        *************
+                                        IF ! merc->(DBSEEK(mcod_bc))
+                                                *************
+                                                SELE('merc');ORDSETFOCUS(8)
+                                                GO TOP
+                                                *************
+                                                IF ! merc->(DBSEEK(SUBSTR(mcod_bc,1,10)))
+                                                        atencao('Codigo de BARRA e REFERENCIA AUXILIAR nao cadastrado')
+                                                        LOOP
+                                                ENDIF
+                                                mreg := cons_ref(merc->ref)
+                                                IF ! EMPTY(mreg)
+                                                        GO mreg
+                                                ELSE
+                                                        LOOP
+                                                ENDIF
+                                        ENDIF
+                                        mcod_merc := VAL(mcod_bc)
+                                ELSE
+                                        mcod_merc := VAL(mcod_bc)
+                                        *************
+                                        SELE('merc');ORDSETFOCUS(1)
+                                        *************
+
+                                        IF ! merc->(DBSEEK(mcod_merc))
+                                                *************
+                                                SELE('merc');ORDSETFOCUS(1)
+                                                *************
+                                                atencao('Codigo da mercadoria nao cadastrado')
+                                                LOOP
+                                        ENDIF
+                                ENDIF
+                        ELSEIF EMPTY(mmerc)
+                                IF(m_set[1,93] <> 'A',f4_merc(,,STRZERO(mvarejo,1),mperc),f4_merc1(,,STRZERO(mvarejo,1),mperc))
+                                //f4_merc(,,STRZERO(mvarejo,1),mperc)
+                                mmerc := merc->merc
+                                IF LASTKEY() = 27
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        IF EMPTY(mcod_bc) .AND. EMPTY(mmerc)
+                                LOOP
+                        ENDIF
+                        mcod_merc := VAL(merc->cod_merc)
+                        *************
+                        SELE('merc');ORDSETFOCUS(1)
+                        GO TOP
+                        *************
+                        merc->(DBSEEK(mcod_merc))
+                        ***************
+                        SELE('ospro');ORDSETFOCUS(1)
+                        GO TOP
+                        ***************
+                        marcado := 0
+                        IF ospro->(DBSEEK(STRZERO(mn_os,6)+mcod_merc))
+                                marcado := RECNO()
+                                mmerc   := ospro->merc
+                                mquantd := ospro->quantd
+                                mquant_aux := ospro->quantd
+                                mvlr_fat := ospro->vlr_fat
+                                mmontador := VAL(ospro->montador)
+                                mmontador1:= VAL(ospro->montador1)
+                                mobs_prod := ospro->obs_prod
+                        ENDIF
+                        *************
+                        SELE('merc');ORDSETFOCUS(1)
+                        *************
+                        IF marcado = 0
+                                mmerc := merc->merc
+                        ENDIF
+                        mvlr_fat := iat(merc->pr_venda,m_set[1,103])
+                        setcor(3)
+                        @ li+01,ci+01 SAY mcod_merc
+                        setcor(1)
+                        IF merc->promocao > 0
+                                setcor(3)
+                                @ li+1,ci+07 SAY LEFT(merc->merc,35)
+                                setcor(1)
+                                mpromocao = merc->promocao
+                                IF mvlr_fat = 0
+                                        mvlr_fat = iat(merc->pr_venda - (merc->pr_venda * (mpromocao / 100)),m_set[1,103])
+                                        mp_venda = mvlr_fat
+                                ENDIF
+                                SETCOLOR([6])
+                                @ li+1,COL()+1 SAY '(P)'
+                                SETCOLOR([1])
+                        ELSE
+                                setcor(3)
+                                @ li+1,ci+07 SAY merc->merc
+                                setcor(1)
+                                IF mvlr_fat = 0
+                                        mvlr_fat = iat(merc->pr_venda,m_set[1,103])
+                                ENDIF
+                        ENDIF
+                        IF SUBSTR(m_set[1,9],1,1) = 'P'
+                                telaobs := SAVESCREEN(lba-2,cci,lba,cba)
+                                botao(lba-2,cci+5,lba,cba-20,,' OBSERVACAO: ','D')
+                                @ lba-1,cci+6 GET mobs_prod
+                                READ
+                                RESTSCREEN(lba-2,cci,lba,cba,telaobs)
+                        ENDIF
+                        IF merc->livre_desc = 'S'
+                                @ li+1,ci+7 GET mmerc PICT '@!'
+                                READ
+                                IF LASTKEY() = 27
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        @ li+03,ci+01 SAY 'Saldo:'
+                        setcor(3)
+                        @ li+03,ci+08 SAY merc->saldo_mer PICT ALLTRIM(m_set[1,99])
+                        @ li+1,ci+58 SAY iat(merc->pr_venda,m_set[1,103]) PICT ALLTRIM(m_set[1,98])
+                        setcor(1)
+                        IF merc->unidade = 'KG ' .OR. merc->unidade = 'L  '
+                                mmasc_qtd := '99,999.999'
+                        ELSEIF merc->unidade = 'M  ' .OR. merc->unidade = 'MT '
+                                mmasc_qtd := '999,999.99'
+                        ELSEIF merc->unidade = 'UN ' .OR. merc->unidade = 'PC '
+                                mmasc_qtd := '9,999,999'
+                        ELSE
+                                mmasc_qtd := ALLTRIM(m_set[1,99])
+                        ENDIF
+
+                        @ li+1,ci+48 GET mquantd PICT mmasc_qtd
+                        READ
+                        IF LASTKEY() = 27
+                                ***************
+                                SELE('ospro');ORDSETFOCUS(1)
+                                ***************
+                                LOOP
+                        ENDIF
+                        IF mquantd = 0
+                                mquant_m := 0
+                                ***************
+                                SELE('ospro');ORDSETFOCUS(1)
+                                ***************
+                                SEEK STRZERO(mn_os,6)
+                                DO WHILE STRZERO(mn_os,6) = ospro->num_os .AND. ! EOF()
+                                        mquant_m ++
+                                        SKIP
+                                ENDDO
+                                IF mquant_m <= 1
+                                        limpa(01,00,01,40)
+                                        atencao('Nao e possivel excluir esta mercadoria')
+                                        **************
+                                        SELE('ospro');ORDSETFOCUS(1)
+                                        ***************
+                                        LOOP
+                                ENDIF
+                                opcao := op_simnao('S','Confirma Exclusao da Mercadoria:')
+                                IF opcao = 'S'
+                                        malteracao := 1
+                                        *************
+                                        SELE('merc');ORDSETFOCUS(1)
+                                        GO TOP
+                                        *************
+                                        SEEK mcod_merc
+                                        IF ! FOUND();LOOP;ENDIF
+                                        IF ! BLOQREG()
+                                                LOOP
+                                        ENDIF
+                                        merc-> saldo_mer := merc->saldo_mer + mquant_aux
+                                        ***************
+                                        SELE('ospro');ORDSETFOCUS(1)
+                                        ***************
+                                        GO marcado
+                                        IF ! BLOQREG()
+                                                LOOP
+                                        ENDIF
+                                        DELE
+                                        DBCOMMITALL()
+                                        DBUNLOCKALL()
+                                        sr_getconnection():exec("DELETE FROM sacospro WHERE SR_DELETED = 'T'",,.f.)
+                                        sr_getconnection():exec("COMMIT",,.f.)
+                                        LOOP
+                                ELSE
+                                        ***************
+                                        SELE('ospro');ORDSETFOCUS(1)
+                                        ***************
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        IF merc->promocao > 0
+                                @ li+1,ci+58 SAY mvlr_fat PICT ALLTRIM(m_set[1,98])
+                        ELSE
+                                mensagem('Digite o valor do produto - <ESC>Abandonar')
+                                @ li+01,ci+58 GET mvlr_fat PICT ALLTRIM(m_set[1,98])
+                                READ
+                                IF LASTKEY() = 27
+                                        ***************
+                                        SELE('ospro');ORDSETFOCUS(1)
+                                        ***************
+                                        DBUNLOCKALL()
+                                        LOOP
+                                ENDIF
+                                IF iat(merc->pr_venda,m_set[1,103]) > mvlr_fat
+                                        IF ((iat(merc->pr_venda,m_set[1,103]) - mvlr_fat)/iat(merc->pr_venda,m_set[1,103]))*100 > m_set[1,33]
+                                                IF ! aut_sen('Desconto a maior.. senha de autorizacao:','LIB_DESC')
+                                                        LOOP
+                                                ENDIF
+                                        ENDIF
+                                ENDIF
+                                IF m_set[1,38] = 'C'
+                                        IF mvlr_fat < iat(merc->pr_venda,m_set[1,103])
+                                                IF mvlr_fat < merc->cust_real
+                                                        IF ! aut_sen('Senha de autorizacao:','LIB_DESC')
+                                                                LOOP
+                                                        ENDIF
+                                                ENDIF
+                                        ENDIF
+                                ELSEIF m_set[1,38] = 'V'
+                                        IF mvlr_fat < iat(merc->pr_venda,m_set[1,103])
+                                                IF mvlr_fat < iat(merc->pr_venda,m_set[1,103])
+                                                        IF ! aut_sen('Senha de autorizacao:','LIB_DESC')
+                                                                LOOP
+                                                        ENDIF
+                                                ENDIF
+                                        ENDIF
+                                ENDIF
+                        ENDIF
+                        mtot_ped = 0
+                        mtot_ped := mvlr_fat * mquantd
+                        setcor(3)
+                        @ li+01,ci+69 SAY mtot_ped PICT '9999999.99'
+                        IF m_set[1,37] = 'S'
+                                mtel_carro:=SAVESCREEN(01,00,23,79)
+                                botao(10,25,13,75,,' Informe os Montadores ')
+                                DEVPOS(11,26);DEVOUT('Montador 1:')
+                                DEVPOS(12,26);DEVOUT('Montador 2:')
+                                @ 11,38 GET mmontador PICT '999' VALID ven(mmontador,11,42)
+                                @ 12,38 GET mmontador1 PICT '999' VALID IF(mmontador1 = mmontador,.F.,ven(mmontador1,12,42)) WHEN ! EMPTY(mmontador)
+                                READ
+                                opcao := mensagem1('Confirma os Montador:','S','S,N',15)
+                                IF LASTKEY() = 27 .OR. opcao = 'N'
+                                        RESTSCREEN(01,00,23,79,mtel_carro)
+                                        LOOP
+                                ENDIF
+                                RESTSCREEN(01,00,23,79,mtel_carro)
+                        ENDIF
+                        IF marcado > 0
+                                setcor(1)
+                                opcao := op_simnao('S','Confirma Alteracao da Mercadoria:')
+                                IF opcao = 'S' .OR. LASTKEY() = 13
+                                        malteracao := 1
+                                        mdesconto := 0
+                                        ***************
+                                        SELE('ospro');ORDSETFOCUS(1)
+                                        ***************
+                                        GO marcado
+                                        IF ! BLOQREG()
+                                                LOOP
+                                        ENDIF
+                                        ospro-> merc     := mmerc
+                                        ospro-> quantd   := mquantd
+                                        ospro-> vlr_fat  := mvlr_fat
+                                        ospro-> montador := STRZERO(mmontador,3)
+                                        ospro-> montador1:= STRZERO(mmontador1,3)
+                                        ospro-> obs_prod := mobs_prod
+                                        DBCOMMITALL()
+                                        DBUNLOCKALL()
+                                        *************
+                                        SELE('merc');ORDSETFOCUS(1)
+                                        GO TOP
+                                        *************
+                                        IF ! merc->(DBSEEK(mcod_merc));LOOP;ENDIF
+                                        IF ! BLOQREG()
+                                                LOOP
+                                        ENDIF
+                                        merc-> saldo_mer := merc->saldo_mer + (mquant_aux - mquantd)
+                                        DBCOMMITALL()
+                                        DBUNLOCKALL()
+                                        ***************
+                                        SELE('ospro');ORDSETFOCUS(1)
+                                        ***************
+                                        LOOP
+                                ELSE
+                                        ***************
+                                        SELE('ospro');ORDSETFOCUS(1)
+                                        ***************
+                                        LOOP
+                                ENDIF
+                        ELSE
+                                setcor(1)
+                                opcao := op_simnao('S','Confirma Inclusao da Mercadoria [S/n]:')
+                                IF opcao = 'S' .OR. LASTKEY() = 13
+                                        ****************
+                                        SELE('ospro');ORDSETFOCUS(1)
+                                        ****************
+                                        IF ! ADIREG()
+                                                LOOP
+                                        ENDIF
+                                        mhora = TIME()
+                                        ospro-> num_os   := STRZERO(mn_os,6)
+                                        ospro-> dat_ent := mdata_sis
+                                        ospro-> cod_merc := mcod_merc
+                                        ospro-> merc := mmerc
+                                        ospro-> quantd := mquantd
+                                        ospro-> vlr_fat := mvlr_fat
+                                        ospro-> cod_tec    := mcod_tec
+                                        ospro-> montador := STRZERO(mmontador,3)
+                                        ospro-> montador1:= STRZERO(mmontador1,3)
+                                        ospro-> obs_prod := mobs_prod
+                                        DBCOMMITALL()
+                                        DBUNLOCKALL()
+                                        *************
+                                        SELE('merc');ORDSETFOCUS(1)
+                                        GO TOP
+                                        *************
+                                        IF ! merc->(DBSEEK(mcod_merc));LOOP;ENDIF
+                                        IF ! BLOQREG()
+                                                LOOP
+                                        ENDIF
+                                        merc-> saldo_mer := merc->saldo_mer - mquantd
+                                        DBCOMMITALL()
+                                        DBUNLOCKALL()
+                                        ***************
+                                        SELE('ospro');ORDSETFOCUS(1)
+                                        ***************
+                                        LOOP
+                                ELSE
+                                        ***************
+                                        SELE('ospro');ORDSETFOCUS(1)
+                                        ***************
+                                        LOOP
+                                ENDIF
+                        ENDIF
+        ENDCASE
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+******************************* f i m ***************************************
+

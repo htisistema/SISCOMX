@@ -1,0 +1,29 @@
+<!--
+################################################
+# xDevStudio Project - xdev@kssoftware.com.br  #
+# Created @ 01/08/2007 21:51:38                #
+#                                              #
+### Standard xDev Config - Layout v1.5 #########
+-->
+<project>
+   <option compiler="5001">
+   <option outputname="cor">
+   <option targettype="EXE">
+   <option outputpath="">
+   <option root="($)">
+   <option runpath="">
+   <option runparams="">
+   <option pathch="ch">
+   <option pathlib="lib">
+   <option pathobj="C:\helio\siachb">
+   <option pathtooutput="C:\helio\siachb">
+   <option defines="">
+   <option documentroot="">
+
+   <compilerparam name="Harbour.xCompiler">
+      <option presetsname="5001">
+   </compilerparam>
+
+   <unit filename="cor.prg" compile="Sim">
+   <unit filename="lib\gtwvw.lib" compile="Sim">
+</project>

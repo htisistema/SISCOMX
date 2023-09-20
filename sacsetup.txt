@@ -1,0 +1,166 @@
+v11.10.03 
+               0.66
+               3.10
+               0.00
+N
+               2.00
+               5.00
+0  
+S 
+N
+M
+P
+N
+LPT1
+LPT1
+N
+S
+SACNFPE1
+PE
+                 17
+R
+S
+ORCAMENTO No.: 
+COTACAO...No.: 
+**** Agradecemos sua preferencia, Volte sempre ****         
+NAO ACEITAMOS DEVOLUCOES APOS 24 HS , DEVOLUCOES SO COM NOTA
+DE COMPRA OU GARANTIA DO PRODUTO ESTE COM DEFEITO DE FABRICA
+         COMERCIAL 2001 AGRADECE SUA PREFERENCIA            
+                                                            
+                                                            
+                                                            
+                                                            
+               5.00
+                  0
+N
+S
+N
+N
+S
+S
+               5.00
+              10.00
+              15.00
+              20.00
+S
+                  1
+V
+LPT1
+                 30
+               0.00
+               0.23
+APOS O VENCIMENTO O SISTEMA BlOQUEIA AUTOMATICAMENTE SEU    
+CREDITO SEM PREVIO AVISO,DESDE JA AGRADECE A DIRECAO        
+N
+                                              
+* Protestar apos 05 dias de vencido           
+* Nao dispensar juros de mora                 
+* Juros de 0,23% ao dia                       
+* Pedido n§                                   
+* Valor R$              Venct§                
+N
+N
+F
+                  1
+F
+                  1
+F
+                  1
+F
+                  1
+                  0
+               0.00
+                  0
+               0.00
+                  0
+               0.00
+                  0
+               0.00
+R
+S
+S
+            
+N
+00001
+                 12
+N
+N
+P
+LPT3
+B
+6
+N
+N
+  /  /  
+  /  /  
+                    
+9999,999.999
+999,999.999
+999999.999
+N
+S
+N
+                  3
+S
+N
+                  0
+S
+S
+N
+S
+N
+S
+              0.500
+              0.000
+N
+              0.000
+S
+               0.00
+S
+                  0
+                  0
+                  0
+70220389000166141225
+001
+N
+DA68F8CC66872399C970828E56974B3BFE8CDAA2A5C15E90B23B33CBAD97B9CCCC165B5EE269C8C88C5A6C7FB814C702F9E1760C1AFC7CB17A9BAEFD8788550E3DC969D5608A2553CF2B0B89633F8C47BDC1773E61D81C3F791B5D694FC9192B0B89F425B4EC69747079C6BCC4C7C86E854CFBD3A5034E7714BC2053E9A15D57
+Comercial 2001                                    
+019466846     
+CELESTE DISTRIBUIDORA DE ALIMENTOS LTDA.               
+Comercial de Construcao 2001 Ltda. 
+R
+AV.CONGRESSO E.INTERNACIONAL            
+SAO JOSE                      
+CARPINA                       
+55819903
+8136211058
+com2001@piernet.com.br                            
+24/11/97
+AV.CONGRESSO E.INTERNACIONAL      
+01179
+                      
+SAO JOSE       
+55819220
+HERIBERTO ANDRADE L COUTINHO
+8136211058  
+44839391491
+C
+N
+C
+N
+E
+S
+           90000.00
+           90000.00
+S
+              
+              
+C
+F
+1179  
+          
+                  0
+                  0
+              0.000 
+
+EAD26B4F9812FD0457BD557B8C7A9C7ADC4DE2AE480FAD8901CB9622A067586769CA4A114FA16E5E034B836EA62F626ECB2DF6D632E69FCD9D84DBFAD6FDBCE9256304FA3D1BBD56660D8C44EC24E5C51E54BD46DF253DED6F4670190BCBDBC423EEBCE8949C5F6CEF6BC5F8D884C409C6F85D0863C8A549F17448B1999072DDB6A

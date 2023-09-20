@@ -1,0 +1,219 @@
+*****************************************
+* ALTERACAO DAS COMISSAO
+******************************************
+MEMVAR getlist,nivel_acess,mdata_sis,cod_operado
+
+FUNCTION sacaltco()
+***************
+LOCAL MPRG:='SACALTCO',mtitulo:='ALTERACAO DE VENDEDOR, OPERADOR E MONTADORES',;
+      lci,cci,lba,cba,opcao,mnum_ped:=0,mnum_aux:=0,menvelope,;
+      mcod_vend,mcod_oper,mmontador,mmontador1,mcli,moper,mvend,tot_p,;
+      li,ci,la,ca,tela1,tela
+
+PRIVATE mnome_vend,mcom_ven,mcom_ap,cons_cli := {}
+IF ! ver_nivel(mprg,mtitulo,'15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+lci := 11
+cci := 02
+lba := 20
+cba := 76
+
+li := 07
+ci := 29
+la := 22
+ca := 79
+tela := SAVESCREEN(00,00,24,79)
+*---------------------------------------------------------------------------
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('sacmov','mov');RETURN NIL;ENDIF
+*---------------------------------------------------------------------------
+DO WHILE .T.
+        mt_pedido = 0
+        SET DELETED ON
+        ****************
+        SELE('ped_s');ORDSETFOCUS(6)
+        GO TOP
+        ****************
+        mnum_ped = 0
+        menvelope := SPACE(10)
+        mcod_vend := 0
+        mcod_oper := 0
+        mmontador := 0
+        mmontador1:= 0
+        mensagem('Digite o No.do pedido que deseja Alterar')
+        botao(lci,cci,lba,cba,,mtitulo)
+        @ lci+1,cci+2 SAY 'No. Pedido........:'
+        @ lci+2,cci+2 SAY 'No.Envelope/Placa.:'
+        @ lci+3,cci+2 SAY 'Cliente...........:'
+        @ lci+4,cci+2 SAY 'Total Pedido R$...:'
+        @ lci+5,cci+2 SAY 'Codigo Vendedor...:'
+        @ lci+6,cci+2 SAY 'Codigo Operador...:'
+        @ lci+7,cci+2 SAY 'Codigo Montador 1.:'
+        @ lci+8,cci+2 SAY 'Codigo Montador 2.:'
+        @ lci+1,cci+22 GET mnum_ped PICT '999999'
+        @ lci+2,cci+22 GET menvelope PICT '@!' WHEN EMPTY(mnum_ped)
+        READ
+        IF LASTKEY() = 27
+                RESTSCREEN(00,00,24,79,tela)
+                RETURN NIL
+        ENDIF
+        IF ! EMPTY(mnum_ped)
+                ****************
+                SELE('ped_s');ORDSETFOCUS(6)
+                GO TOP
+                ****************
+                IF ! ped_s->(DBSEEK(STRZERO(mnum_ped,6)))
+                        atencao('Nao Existe este No.pedido em nosso Arquivo !!!')
+                        LOOP
+                ENDIF
+        ELSEIF ! EMPTY(menvelope)
+                ****************
+                SELE('ped_s');ORDSETFOCUS(10)
+                GO TOP
+                ****************
+                IF ! ped_s->(DBSEEK(menvelope))
+                        atencao('Nao Existe este No.ENVELOPE em nosso Arquivo !!!')
+                        LOOP
+                ENDIF
+                mnum_aux := ped_s->pnum_ped
+                mcli     := ped_s->pcod_cli
+                moper    := ped_s->pcod_oper
+                mvend    := ped_s->pcod_vend
+                mtot_p   := 0
+                WHILE menvelope = ped_s->penvelope .AND. ! EOF()
+                        AADD(m_pos,RECNO())
+                        WHILE mnum_aux = ped_s->pnum_ped .AND. ! EOF()
+                                mtot_p := mtot_p + (ped_s->pquantd * ped_s->pvlr_fat)
+                                SKIP
+                        ENDDO
+                        AADD(m_pedido,mnum_aux+'  '+mcli+'  '+TRANSFORM(mtot_p,'999,999.99')+'  '+mvend+'  '+moper)
+                        mnum_aux := ped_s->pnum_ped
+                        mcli     := ped_s->pcod_cli
+                        moper    := ped_s->pcod_oper
+                        mvend    := ped_s->pcod_vend
+                        mtot_p   := 0
+                ENDDO
+                tela1 := SAVESCREEN(01,00,24,79)
+                mensagem('<> Consulta  - <ESC> Retorna  -  <ENTER> p/Confirmar')
+                botao(li,ci,la,ca)
+                setcor(3)
+                DEVPOS(li+1,ci+01);DEVOUT('No.Pedido')
+                DEVPOS(li+1,ci+16);DEVOUT('Cod.Cliente')
+                DEVPOS(li+1,ci+19);DEVOUT('Valor Pedido')
+                DEVPOS(li+1,ci+25);DEVOUT('Vendedor')
+                DEVPOS(li+1,ci+42);DEVOUT('Operador')
+                @ li+2,ci+1 TO li+2,ca-1
+                setcor(10);point := ACHOICE(li+3,ci+1,la-1,ca-1,m_pedido,,,point)
+
+                DO CASE
+                        CASE LASTKEY()=27
+                                RESTSCREEN(01,00,24,79,tela1)
+                                LOOP
+                        CASE LASTKEY() = 13
+                                RESTSCREEN(01,00,24,79,tela1)
+                                GO m_pos[point]
+                ENDCASE
+                mnum_ped := VAL(ped_s->pnum_ped)
+        ELSE
+                LOOP
+        ENDIF
+        ****************
+        SELE('ped_s');ORDSETFOCUS(6)
+        GO TOP
+        ****************
+        IF ! ped_s->(DBSEEK(STRZERO(mnum_ped,6)))
+                atencao('Nao Existe este No.pedido em nosso Arquivo !!!')
+                LOOP
+        ENDIF
+        mpoint := RECNO()
+        WHILE STRZERO(mnum_ped,6) = ped_s->pnum_ped .AND. ! EOF()
+                mt_pedido := mt_pedido + (ped_s->pquantd * ped_s->pvlr_fat)
+                SKIP
+        ENDDO
+        GO mpoint
+        mcod_vend := VAL(ped_s->pcod_vend)
+        mnome_vend := ped_s->pvendedor
+        mcod_oper := VAL(ped_s->pcod_oper)
+        mmontador := VAL(ped_s->pmontador)
+        mmontador1:= VAL(ped_s->pmontador1)
+        ven(mcod_vend,lci+5,cci+26)
+        ven(mcod_oper,lci+6,cci+26)
+        ven(mmontador,lci+7,cci+26)
+        ven(mmontador1,lci+8,cci+26)
+        setcor(3)
+        @ lci+3,cci+22 SAY ped_s->pcod_cli
+        @ lci+4,cci+26 SAY TRANSFORM(mt_pedido,'999,999.99')
+        ver_cli(VAL(ped_s->pcod_cli),lci+3,cci+28)
+        setcor(1)
+        @ lci+5,cci+22 GET mcod_vend PICT '999' VALID ven(mcod_vend,lci+5,cci+26)
+        @ lci+6,cci+22 GET mcod_oper PICT '999' VALID ven(mcod_oper,lci+6,cci+26)
+        @ lci+7,cci+22 GET mmontador PICT '999' VALID ven(mmontador,lci+7,cci+26)
+        @ lci+8,cci+22 GET mmontador1 PICT '999' VALID ven(mmontador1,lci+8,cci+26)
+        READ
+        IF LASTKEY() = 27 .OR. (mcod_vend = VAL(ped_s->pcod_vend) .AND. mcod_oper = VAL(ped_s->pcod_oper);
+                                .AND. mmontador = VAL(ped_s->pmontador) .AND. mmontador1= VAL(ped_s->pmontador1))
+                RESTSCREEN(00,00,24,79,tela)
+                LOOP
+        ENDIF
+        ven(mcod_vend,lci+5,cci+26)
+        opcao := op_simnao('N','Confirma o Processo da Alteracao:')
+        IF LASTKEY() = 27 .OR. opcao = 'N'
+                RESTSCREEN(00,00,24,79,tela)
+                LOOP
+        ENDIF
+        ****************
+        SELE('ped_s');ORDSETFOCUS(6)
+        GO mpoint
+        ****************
+        mensagem('Atualizando arquivo de PEDIDO')
+        WHILE STRZERO(mnum_ped,6) = ped_s->pnum_ped .AND. ! EOF()
+                BLOQREG()
+                ped_s->pcod_vend := STRZERO(mcod_vend,3)
+                ped_s->pvendedor := mnome_vend
+                ped_s->pcod_oper := STRZERO(mcod_oper,3)
+                ped_s->pmontador := STRZERO(mmontador,3)
+                ped_s->pmontador1:= STRZERO(mmontador1,3)
+                DBUNLOCK()
+                SKIP
+        ENDDO
+        DBCOMMITALL()
+        ****************
+        SELE('mov');ORDSETFOCUS(5)
+        GO TOP
+        ****************
+        IF  mov->(DBSEEK(STRZERO(mnum_ped,6)))
+                mensagem('Atualizando arquivo de MOVIMENTO')
+                WHILE STRZERO(mnum_ped,6) = mov->num_ped .AND. ! EOF()
+                        BLOQREG()
+                        mov->cod_vend := STRZERO(mcod_vend,3)
+                        mov->cod_oper := STRZERO(mcod_oper,3)
+                        mov->montador := STRZERO(mmontador,3)
+                        mov->montador1:= STRZERO(mmontador1,3)
+                        DBUNLOCK()
+                        SKIP
+                ENDDO
+                DBCOMMITALL()
+        ENDIF
+        ****************
+        SELE('dupr');ORDSETFOCUS(7)
+        GO TOP
+        ****************
+        IF  dupr->(DBSEEK(STRZERO(mnum_ped,6)))
+                mensagem('Atualizando arquivo de DUPLICATA')
+                WHILE STRZERO(mnum_ped,6) = dupr->num_ped .AND. ! EOF()
+                        BLOQREG()
+                        dupr->vendedor := STRZERO(mcod_vend,3)
+                        DBUNLOCK()
+                        SKIP
+                ENDDO
+                DBCOMMITALL()
+        ENDIF
+        mensagem('Fim do Processo...')
+        INKEY(3)
+ENDDO
+RETURN NIL
+

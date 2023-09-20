@@ -1,0 +1,68 @@
+********************
+* 07/04/2009
+********************
+FUNCTION sacseri1
+*****************
+LOCAL mprg := 'SACSERI1',opcao,mserial,cons_seri:={}
+PRIVATE mcod_merc:=0,mobs
+
+IF ! ver_nivel(mprg,'CONTROLE DE SERIAL (INCLUSAO)','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+op_tela(05,10,08,71,'CONTROLE DE SERIAL (INCLUSAO)')
+WHILE .T.
+        mcod_merc := 0
+        limpa(00,00,33,100)
+        DEVPOS(00,00);DEVOUT("Codigo do Produto.:")
+        DEVPOS(01,00);DEVOUT("Digite a Serial...:")
+        DEVPOS(02,00);DEVOUT("Observacao........:")
+        @ 00,20 GET mcod_merc PICT '99999' VALID ver_cod(mcod_merc,00,28)
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        WHILE .T.
+                mserial := SPACE(20)
+                mobs    := SPACE(60)
+                @ 01,20 GET mserial
+                @ 02,20 GET mobs PICT '@!'
+                READ
+                IF LASTKEY() = 27
+                        EXIT
+                ENDIF
+                cons_seri := {}
+                cComm  := "SELECT * FROM sacserial WHERE cod_prod = "+sr_cdbvalue(mcod_merc)
+                cComm  := ccomm + " AND serial = "+sr_cdbvalue(mserial)
+                cComm  := ccomm + " AND data_baix IS NULL"
+                sr_getconnection():exec(ccomm,,.t.,@cons_seri)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(cons_seri) > 0
+                        atencao('ESTA SERIAL JA ESTAR CADASTRO COM ESTE PRODUTO....')
+                        LOOP
+                ENDIF
+                opcao := op_simnao('S','Confirma a Inclusao da Serial:')
+                IF LASTKEY() = 27 .OR. opcao = 'N'
+                        LOOP
+                ENDIF
+                sr_getconnection():exec('INSERT INTO sacserial (cod_prod,'+;
+                                                             'serial,'+;
+                                                             'data_incl,'+;
+                                                             'hora_incl,'+;
+                                                             'oper_incl,'+;
+                                                             'obs_incl ,'+;
+                                                             'SR_DELETED )'+;
+                                                             ' VALUES ('+;
+                                                              sr_cdbvalue(mcod_merc)+','+; //1
+                                                              sr_cdbvalue(mserial)+','+; //2
+                                                              sr_cdbvalue(mdata_sis)+','+; //3
+                                                              sr_cdbvalue(TIME())+','+; //4
+                                                              sr_cdbvalue(cod_operado)+','+; //5
+                                                              sr_cdbvalue(mobs)+','+; //6
+                                                              sr_cdbvalue(' ')+')',,.f.)
+                sr_getconnection():exec("COMMIT",,.f.)
+        ENDDO
+ENDDO
+
+

@@ -1,0 +1,164 @@
+MEMVAR getlist,nivel_acess
+********************************************************
+* AGRUPAMENTO ROMANEIO DE CARGA
+*******************************************************
+
+FUNCTION sac5rom4(ml,mn)
+******************
+LOCAL MPRG:='SAC5ROM4',;
+      lci,cci,lba,cba,li,ci,lb,cb,tela,mtot_ped,mtot_p,;
+      mtot_ger,mtot_qtd,mreg:=0,lc,cc,la,ca,i
+
+PRIVATE M_pedido:={},m_num:={},opcao,mtot_tempo,op_total,mnum_roma,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),marq_ali,mtip_cons,mal,mno,ali,mc_cli:={}
+
+IF ! ver_nivel(mprg,'AGRUPAMENTO DE ROMANEIO DE CARGA','123456',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+ali := mal := ml
+mno := mn
+
+lci := cci := 10
+lba := 12
+cba := 42
+
+lc := 13
+cc := 10
+la := 18
+ca := 42
+
+li := 04
+ci := 45
+lb := 21
+cb := 75
+
+*****************************************************
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+//
+IF ! AbriArq('sacorcam','orcam');RETURN NIL;ENDIF
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('sactran','tran');RETURN NIL;ENDIF
+IF ! AbriArq('sacprodu','produ');RETURN NIL;ENDIF
+IF ! AbriArq('sacnopro','nopro');RETURN NIL;ENDIF
+IF ! AbriArq('sacroma','roma');RETURN NIL;ENDIF
+IF ! AbriArq('sacnorom','norom');RETURN NIL;ENDIF
+*****************************************************
+i := 2
+op_tela(00,00,24,79,' AGRUPAMENTO DE ROMANEIOS ')
+botao(li,ci,lb,cb,,' Romaneios Solicitados ')
+DEVPOS(li+1,ci+1);DEVOUT('No.Rom.   Valor Pedido')
+botao(lc,cc,la,ca,,' T O T A I S ')
+DEVPOS(lc+1,cc+2);DEVOUT('Valor dos Pedidos....:')
+DEVPOS(lc+2,cc+2);DEVOUT('Total Valor..........:')
+DEVPOS(lc+3,cc+2);DEVOUT('Quantidade de Pedidos:')
+DEVPOS(lc+4,cc+2);DEVOUT('Total Peso...........:')
+DEVPOS(lc+5,cc+2);DEVOUT('Total Tempo..........:')
+DEVPOS(lc+6,cc+2);DEVOUT('Quantidade de Entrega:')
+mtot_ped := mtot_p := mtot_ger := mtot_tempo := mtot_qtd   := 0
+ASIZE(m_pedido,0)
+ASIZE(m_num,0)
+ASIZE(m_pedido,0)
+mc_cli := {}
+mtipo_imp := m_indiv[1,18]
+WHILE .T.
+        mensagem('Digite o No.Romaneio Desejado - <ENTER><ENTER>p/imprimir - <ESC>abandonar')
+        ****************************
+        SELE(mal);ORDSETFOCUS(1)
+        GO TOP
+        ****************************
+        mnum_roma := 0
+
+        botao(lci,cci,lba,cba,,' No. do Romaneio ')
+        @ li+2,ci+1 TO li+2,cb-1
+
+        DEVPOS(lci+1,cci+2);DEVOUT('Digite o No.Romaneio:')
+        @ lci+1,cci+25 GET mnum_roma PICT '999999'
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        IF EMPTY(mnum_roma)
+                @ lci+1,cci+25 GET mnum_roma PICT '999999'
+                READ
+                IF LASTKEY() = 27;LOOP;ENDIF
+                IF EMPTY(mnum_roma)
+                        imp_rel('2','ROMANEIOS')
+                        IF (opcao = 'N' .OR. LASTKEY() = 27) .AND. (mimp_tipo = 1 .OR. mimp_tipo = 0)
+                                LOOP
+                        ENDIF
+                        setcor(3)
+                        botao(li,ci,lb,cb)
+                        DEVPOS(li+1,ci+1);DEVOUT('No.Ped.   Valor Pedido')
+                        setcor(1)
+                        i := 2
+                        ASIZE(m_pedido,0)
+                        ASIZE(m_num,0)
+                        LOOP
+                ENDIF
+        ENDIF
+        IF ! (mal)->(DBSEEK(STRZERO(mnum_roma,6)))
+                atencao('Nao existe este Romaneio')
+                LOOP
+        ENDIF
+        IF ASCAN(m_num,STRZERO(mnum_roma,6)) > 0
+                atencao('Este pedido ja foi solicitado OK !!!')
+                LOOP
+        ENDIF
+        IF (mal)->ped_orc = 'O'
+                marq_ali := 'orcam'
+                mtip_cons := 'O'
+        ELSE
+                marq_ali := 'ped_s'
+                mtip_cons := 'P'
+        ENDIF
+        AADD(m_num,(mal)->num_roma)
+        IF ASCAN(mc_cli,(mal)->pcod_cli) = 0
+                AADD(mc_cli,(mal)->pcod_cli)
+        ENDIF
+        WHILE (mal)->num_roma = STRZERO(mnum_roma,6) .AND. ! EOF()
+                mreg := RECNO()
+                IF (mal)->cancel = 'C' .OR. (mal)->cancel = 'E'
+                        SKIP
+                        LOOP
+                ENDIF
+                ****************************
+                SELE(marq_ali);ORDSETFOCUS(1)
+                GO TOP
+                ****************************
+
+                IF ! (marq_ali)->(DBSEEK((mal)->num_ped));atencao('Pedido nao encontrado no arquivos');LOOP;ENDIF
+                WHILE (mal)->num_ped = (marq_ali)->pnum_ped .AND. ! EOF()
+                        AADD(m_pedido,{(marq_ali)->pnum_ped,(marq_ali)->pcod_merc,(marq_ali)->pmerc,(marq_ali)->punidade,(marq_ali)->ppeso,;
+                             (marq_ali)->pquantd,(marq_ali)->pvlr_fat,(marq_ali)->pcod_cli,(marq_ali)->pcod_vend,(marq_ali)->pvendedor})
+                        mtot_ped := mtot_ped + ((marq_ali)->pquantd * (marq_ali)->pvlr_fat)
+                        mtot_ger := mtot_ger + ((marq_ali)->pquantd * (marq_ali)->pvlr_fat)
+                        mtot_p := mtot_p + ((marq_ali)->pquantd * (marq_ali)->ppeso)
+                        mtot_tempo := mtot_tempo + (VAL((marq_ali)->plocal))
+                        SKIP
+                ENDDO
+                SETCOR(3)
+                DEVPOS(lc+1,cc+25);DEVOUT(TRANSFORM(mtot_ped,'999,999,999.99'))
+                DEVPOS(lc+2,cc+25);DEVOUT(TRANSFORM(mtot_ger,'999,999,999.99'))
+                DEVPOS(lc+4,cc+25);DEVOUT(TRANSFORM(mtot_p,'999,999,999.9999'))
+                DEVPOS(lc+5,cc+25);DEVOUT(TRANSFORM(LEN(m_num),'999,999'))
+                DEVPOS(lc+6,cc+25);DEVOUT(TRANSFORM(LEN(mc_cli),'999,999'))
+                SETCOR(1)
+                i := 0
+                FOR i = 1 TO LEN(m_num)
+                        IF i = 12
+                                SCROLL(li+i,ci+1,lb-2,cb-1,1)
+                        ENDIF
+                        DEVPOS(li+2+i,ci+01);DEVOUT(m_num[i])
+                NEXT
+                mtot_ped := 0
+                ****************************
+                SELE(mal);ORDSETFOCUS(1)
+                GO mreg
+                SKIP
+                ****************************
+        ENDDO
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+********************************** F I M ******************************************
+

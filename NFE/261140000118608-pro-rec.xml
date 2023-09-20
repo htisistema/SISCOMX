@@ -1,0 +1,12 @@
+<retConsReciNFe versao="2.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_08.03.00.047</verAplic>
+<nRec>261140000118608</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF> <protNFe versao="2.00"><infProt Id="NFe1"><tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_08.03.00.047</verAplic>
+<chNFe>26140211156983000176550010000000471000000475</chNFe>
+<dhRecbto>2014-02-04T18:50:43</dhRecbto><cStat>203</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: Emissor n&#xE3;o habilitado para emiss&#xE3;o da NF-e</xMotivo>
+</infProt></protNFe></retConsReciNFe>

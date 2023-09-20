@@ -1,0 +1,57 @@
+OK: [ECF]
+DataMovimento = 28/05/12
+NumSerie = DR0511BR000000298977
+NumSerieMFD = 12025620110800229135
+NumECF = 001
+NumLoja = 001
+NumCOOInicial = 104
+NumCOO = 000104
+NumCRZ = 000013
+NumCRO = 000001
+NumGNF = 000007
+NumCCF = 000057
+NumCFD = 000000
+NumCDC = 000000
+NumGRG = 000001
+NumGNFC = 000000
+NumCFC = 000000
+NumNCN = 000000
+NumCCDC = 000000
+
+[Totalizadores]
+VendaBruta = 349
+GrandeTotal = 26159,61
+TotalDescontos = 0
+TotalCancelamentos = 0
+TotalAcrescimos = 0
+TotalDescontosISSQN = 0
+TotalCancelamentosISSQN = 0
+TotalAcrescimosISSQN = 0
+TotalNaoFiscal = 0
+TotalDescontosOPNF = 0
+TotalCancelamentosOPNF = 0
+TotalAcrescimosOPNF = 0
+
+[Aliquotas]
+01T2500 = 0
+02T1800 = 0
+03T1200 = 0
+04T0700 = 0
+05T0500 = 0
+06T1700 = 0
+07T0240 = 0
+
+[OutrasICMS]
+TotalICMS = 0
+TotalISSQN = 0
+TotalSubstituicaoTributaria = 0
+TotalNaoTributado = 0
+TotalIsencao = 349
+TotalSubstituicaoTributariaISSQN = 0
+TotalNaoTributadoISSQN = 0
+TotalIsencaoISSQN = 0
+
+[NaoFiscais]
+01_Sangria = 0
+02_Suprimento = 0
+03_Recebimento = 0

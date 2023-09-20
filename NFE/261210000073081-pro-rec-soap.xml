@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NFeRetAutorizacao4"><retConsReciNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_1.5.5</verAplic>
+<nRec>261210000073081</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF><dhRecbto>2021-02-23T09:55:26-03:00</dhRecbto>
+ <protNFe versao="4.00"><infProt Id="NFe1"><tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_1.5.5</verAplic>
+<chNFe>26210224494200000106550010000010601477779635</chNFe>
+<dhRecbto>2021-02-23T09:55:26-03:00</dhRecbto><cStat>693</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: Al&#xED;quota de ICMS superior a definida para a opera&#xE7;&#xE3;o interestadual [nItem: 1]</xMotivo>
+</infProt></protNFe></retConsReciNFe></nfeResultMsg></soapenv:Body></soapenv:Envelope>

@@ -1,0 +1,42 @@
+17/09/08 20:36:54: Connection Error: -1 (check fb.log) - Database:  - Username : SYSDBA (Password not shown for security)	
+19/09/08 13:08:49: SQLExecDirect Error
+violation of PRIMARY or UNIQUE KEY constraint "SACPED_S_PK" on table "SACPED_S" - Native error code 335544665
+Command sent to database : 
+insert into sacped_s (pempresa,pnum_ped,ptermina,pdat_ped,pgru_sub,pcod_merc,pmerc,punidade,pespecie,penvelope,ppeso,ppeso_liq,pgramatura,pquantd,ppacote,ppecas,ppre_dig,pdesc,pvlr_fat,ppre_venda,ppr_venda1,pcust_real,pcust_merc,pcod_cli,pcgc,pcpf,pplaca,pcarro,pmodelo,pkm,pcod_fab,pfabrica,pcod_oper,pcomi_oper,pcod_vend,pvendedor,palimento ,pcod_fin  ,pcod_tab  ,pvlr_pres ,pcond_veze,pcond_inte,phora     ,ptp_vend  ,pvlr_ent  ,pisento   ,ppromocao ,pmontador ,pmontador1,pcomissao ,pcom_mont ,pprazo    ,pbebida   ,pipi      ,pobs_prod ,pind_icms ,pstat_item,psit_trib ,pobs1,pobs2,pobs3,pobs4,plocal,chassis,descri1,descri2,descri3,descri4,descri5,pproducao,pcod_tran,pos,sr_deleted) values ('001','000002','HELIO-NOTE','2008/09/19','00101','00002','SENHA 02','UN','0000','',0.000,0.000,0.000,1,0,0,50.00,0,50.00,0.000,0.0000,0.0000,0.0000,'00001','','','','','','','0000','','999',0,'999','HRB SOLUCOES EM INFORMATICA','','000','000',0,'00','DN000000000000000000000000000000000000000000000','13:07:47','AV',0,'N',0.00,'000','000',0.00,0.00,0,0.00,0.0000,'','01','','T','ZE VAQUEIRO e COMPAINHA','GRUPO BOI VOADO','','','','','','','','','','','','000000','')
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+FECHA_TP     Linha : 1187
+(b)SAC23PDV     Linha : 876
+HBGETLIST:GETDOSETKEY     Linha : 710
+HBGETLIST:GETAPPLYKEY     Linha : 288
+HBGETLIST:READER     Linha : 210
+READMODAL     Linha : 141
+SAC23PDV     Linha : 880
+AFTERINKEY     Linha : 1047
+(b)SAC0     Linha : 950
+INKEY     Linha : 0
+SAC0     Linha : 977
+SENHA     Linha : 1267
+MAIN     Linha : 345	
+19/09/08 13:10:43: SQLExecDirect Error
+violation of PRIMARY or UNIQUE KEY constraint "SACPED_S_PK" on table "SACPED_S" - Native error code 335544665
+Command sent to database : 
+insert into sacped_s (pempresa,pnum_ped,ptermina,pdat_ped,pgru_sub,pcod_merc,pmerc,punidade,pespecie,penvelope,ppeso,ppeso_liq,pgramatura,pquantd,ppacote,ppecas,ppre_dig,pdesc,pvlr_fat,ppre_venda,ppr_venda1,pcust_real,pcust_merc,pcod_cli,pcgc,pcpf,pplaca,pcarro,pmodelo,pkm,pcod_fab,pfabrica,pcod_oper,pcomi_oper,pcod_vend,pvendedor,palimento ,pcod_fin  ,pcod_tab  ,pvlr_pres ,pcond_veze,pcond_inte,phora     ,ptp_vend  ,pvlr_ent  ,pisento   ,ppromocao ,pmontador ,pmontador1,pcomissao ,pcom_mont ,pprazo    ,pbebida   ,pipi      ,pobs_prod ,pind_icms ,pstat_item,psit_trib ,pobs1,pobs2,pobs3,pobs4,plocal,chassis,descri1,descri2,descri3,descri4,descri5,pproducao,pcod_tran,pos,sr_deleted) values ('001','000003','HELIO-NOTE','2008/09/19','00101','00005','SENHA 05','UN','0000','',0.000,0.000,0.000,1,0,0,0.000,0,0.000,0,0.0000,0,0.0000,'00001','','','','','','','0000','','999',0,'999','HRB SOLUCOES EM INFORMATICA','','000','000',0,'00','DN000000000000000000000000000000000000000000000','13:10:07','AV',0,'N',0.00,'000','000',0.00,0.00,0,0.00,0.0000,'','01','','T','ZE VAQUEIRO e COMPAINHA','GRUPO BOI VOADOR','','','','','','','','','','','','000000','')
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+FECHA_TP     Linha : 1187
+(b)SAC23PDV     Linha : 876
+HBGETLIST:GETDOSETKEY     Linha : 710
+HBGETLIST:GETAPPLYKEY     Linha : 288
+HBGETLIST:READER     Linha : 210
+READMODAL     Linha : 141
+SAC23PDV     Linha : 880
+SAC0     Linha : 983
+SENHA     Linha : 1267
+MAIN     Linha : 345	

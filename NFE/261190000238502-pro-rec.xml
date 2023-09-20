@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><retConsReciNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_23.00.01.192</verAplic>
+<nRec>261190000238502</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF><dhRecbto>2019-07-02T18:12:05-03:00</dhRecbto>
+ <protNFe versao="4.00"><infProt Id="NFe1"><tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_23.00.01.192</verAplic>
+<chNFe>26190724494200000106550010000000051000000057</chNFe>
+<dhRecbto>2019-07-02T18:12:05-03:00</dhRecbto><cStat>539</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: Duplicidade de NF-e com diferen&#xE7;a na Chave de Acesso [chNFe: 26180124494200000106550010000000051000000053][nRec: 261180000183377]</xMotivo>
+</infProt></protNFe></retConsReciNFe>

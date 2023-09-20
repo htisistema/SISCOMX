@@ -1,0 +1,1282 @@
+*****************************
+* FECHAMENTO DO PEDIDO
+*****************************
+MEMVAR getlist
+FUNCTION fecha_tp(mtip,magrupar,orc_tp)
+*****************
+LOCAL lcia,ccia,lbaa,cbaa,mopcao,mdocum,mvenc,mcodvend,mtot_prazo:=0,mprazo_aux:=0,opcao,;
+      mtotitens:=0,mtel_carro,mdesc_alt:=0,i,tela_ped,mtelemark:=' ',;
+      mdesc_aux:=0,mppag:=' ',mcli_aux:=' ',mop_desc := ' ',cons_presen:={},mpd_entrega,cam_db := {},;
+      cComm,cons_ped:={}
+
+MEMVAR ali,no,mcod_cli,mcod_vend,mnome_ven,m_matriz,m_codigo,m_num,mcod_aux,;
+       mnum_ped,mlci,mlib_spc,mprz,mtp_venda,mcond_veze,mdata_sis,m_dia,cod_operado,;
+       m_alt,msit_tip,sovenda,mproducao,mcont_item,mtela,m_pedido,m_cbarra,mflag,mcom_oper,m_vlr,;
+       mtot_limite,mlim_venc,mlim_avenc,mobs1,mobs2,mobs3,mobs4,mplaca,mcarro,mmodelo,mkm,mnum_os,mcod_pres
+
+PRIVATE mdocumento,mvalor_aux,mtipo_aux,mextenso,mhora,mdata,f,mforma_pg,modo_pg,mvlr_ent,mfin,;
+        mt_pedido,mtot_desc,mtot_quant,mdesconto,mtraco,mcondicao,mprazo,;
+        mperc,mlinha,lin,mlin,mdesc,mvlr_desc,mcartao,mdup,mcheque,;
+        mdinheiro,mend,mbairro,mcidade,muf,minsc,mcgc,mcpf,mcond_int,mvia,mtot_itens,malteracao:=0,;
+        mdif,mnome,tela,mpoint,mquantd_prod,mtaxa_adm:=0,mnome_cli,mjuros,mjuros_aux,mlimite:=0,mautoriza,;
+        mpagina,mp,mvalor_ent,mtipo_fin,maliq_fin,mcobra_fin,mcod_fin,mtaxa_fin,mvalor_pres,mvalor_fin,mquantd,mporta_imp,;
+        mnome_trans,mcgc_trans,mend_trans,mmun_trans,muf_trans,minsc_trans,mplaca_trans,mcod_tran,mnum_trans,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mtipo_pg,mmontador:=0,mmontador1:=0,;
+        memissao:=CTOD('  /  /  '),mcart_ban:=' ',mtab_pre:='',cons_cli:={}
+
+SET KEY -8 TO sac130()           // inclusao de clientes
+IF ! AbriArq('sacfin','fin');RETURN NIL;ENDIF
+IF ! AbriArq('saccheq','cheq');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+IF ! AbriArq('sacmov','mov');RETURN NIL;ENDIF
+IF ! AbriArq('sacoss','oss');RETURN NIL;ENDIF
+IF ! AbriArq('sacospro','ospro');RETURN NIL;ENDIF
+IF ! AbriArq('saccarta','car');RETURN NIL;ENDIF
+IF ! AbriArq('merc_det','deta');RETURN NIL;ENDIF
+IF ! AbriArq('sactran','tran');RETURN NIL;ENDIF
+CLEAR GETS
+lcia := ccia := 0
+lbaa := 24
+cbaa := 75
+mtraco := REPLI('=',80)
+mlinha := lin := mlin := mtot_limite:= mlim_venc := mlim_avenc := mautoriza := ;
+mvlr_ent := 0
+i = 1
+IF magrupar = 1 .OR. magrupar = 2
+        ali := 'ped_s'
+        no  := 'noped'
+ENDIF
+IF ali = 'ped_s'
+        IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+        IF ! AbriArq('sacnoped','noped');RETURN NIL;ENDIF
+ELSE
+        IF ! AbriArq('sacorcam','orcam');RETURN NIL;ENDIF
+        IF ! AbriArq('sacnoorc','noorc');RETURN NIL;ENDIF
+ENDIF
+*IF mtip = 'SAC23P1' .OR. mtip = '1';lim_get();ENDIF
+CLEAR GETS
+mp := ' '
+i:=0
+IF (ver_serie() = '141287' .OR. ver_serie() = '14128D') .AND. (mtip = '1' .OR. mtip = 'SAC23P1')
+        ver_pedido()    // mesmo PRG
+ENDIF
+
+IF m_set[1,84] > 0 .AND. (mtip = 'SAC23P1' .OR. mtip = '1' .OR. mtip = 'SAC23ORC') .AND. EMPTY(mcod_cli)
+        mcod_cli := m_set[1,84]
+ENDIF
+mt_pedido := 0
+op_tela(10,10,13,70,' Confirmacao de Vendedor ')
+WHILE .T.
+        muf_trans := SPACE(2)
+        mcod_tran := SPACE(4)
+        mplaca_trans := SPACE(7)
+        mnum_trans := SPACE(8)
+        minsc_trans := SPACE(11)
+        mcgc_trans := SPACE(13)
+        mmun_trans := SPACE(20)
+        mnome_trans := SPACE(30)
+        mend_trans := SPACE(40)
+        mcodvend := mcod_vend
+        IF m_set[1,108] = 'S'           //.AND. m_indiv[1,26] = 'N'
+                DEVPOS(01,01);DEVOUT('Vendedor:')
+                setcor(3)
+                DEVPOS(01,11);DEVOUT(mcod_vend+'-'+mnome_ven)
+                DEVPOS(02,01);DEVOUT('Pressione <ENTER> p/continuar ou Altere o Vendedor')
+                setcor(1)
+                @ 01,11 GET mcod_vend PICT '999' VALID IF(ver_ven(mcod_vend),.T.,.F.)
+                READ
+                mnome_ven := sen->snome
+                IF m_set[1,10] = 'S' .AND. mcod_vend <> mcod_aux;
+                   .AND. mcod_cli <> m_set[1,84];
+                   .AND. ! aut_sen('Cod. Vend. Diferente do Vend. Resp.CLIENTE, Senha autorizacao:','LIBCLIVEN',,mcod_cli)
+                        LOOP
+                ENDIF
+                IF mcodvend <> mcod_vend
+                        mopcao := ' '
+                        DEVPOS(01,01);DEVOUT('Vendedor:')
+                        setcor(3)
+                        DEVPOS(01,11);DEVOUT(mcod_vend+'-'+mnome_ven)
+                        DEVPOS(02,01);DEVOUT('Para Confirma pressione qualquer tecla ou <ESC>retornar')
+                        setcor(1)
+                        @ 50,00 GET mopcao 
+                        READ
+                        //INKEY(0)
+                        IF LASTKEY() = 27
+                                SET KEY 28 TO menu_cons()
+                                wvw_lclosewindow()
+                                RETURN NIL
+                        ENDIF
+                ENDIF
+                IF m_set[1,69] = 'S' .AND. mcod_vend <> cod_operado
+                        mtelemark := mensagem1('Esta Venda e [T]->TELE MARKETING ou [N]->NORMAL:',' ','T,N')
+                        IF LASTKEY() = 27
+                                LOOP
+                        ENDIF
+                ENDIF
+        ENDIF
+        EXIT
+ENDDO
+wvw_lclosewindow()
+op_tela(05,10,30,85,'F E C H A M E N T O    D O    O R C A M E N T O ')
+WHILE .T.
+        IF orc_tp = '*'
+                mtelemark := mtele_mark
+        ENDIF
+        SET KEY 28 TO menu_cons()
+        *********
+        SELE(ali);ORDSETFOCUS(1)
+        *********
+        mpd_entrega := CTOD('  /  /  ')
+        mnome_cli := mnome := SPACE(40)
+        mcartao := mdup := mcheque := mdinheiro := mcobra_fin := SPACE(1)
+        mend := SPACE(35)
+        mbairro := mcidade := SPACE(20)
+        muf := mcond_int := SPACE(2)
+        minsc := mcgc := SPACE(14)
+        mcpf = SPACE(11)
+        mtipo_fin := SPACE(3)
+        mvlr_desc := mdesc := mvalor_ent := maliq_fin := mcod_fin := ;
+        mtaxa_fin := mvalor_aux := mvalor_pres := mvalor_fin := mdesc_alt := ;
+        mmontador := mmontador1 := 0
+        mensagem('Preencha os campos de acordo com o HELP - <ESC> p/retornar')
+        //botao(lcia,ccia,lbaa,cbaa)
+        @ lcia+2,ccia TO lcia+2,cbaa
+        @ lcia+6,ccia TO lcia+6,cbaa
+        @ lcia+17,ccia TO lcia+17,cbaa
+        @ lcia+19,ccia TO lcia+19,cbaa
+
+        setcor(1)
+        IF m_indiv[1,9] <> 'V'
+                DEVPOS(lcia+01,ccia+1);DEVOUT('Sub-Total do Pedido:')
+                DEVPOS(lcia+02,ccia+20);DEVOUT('Indentificacao Cliente')
+                DEVPOS(lcia+06,ccia+20);DEVOUT('Condicoes de Pagamento')
+                DEVPOS(lcia+3,ccia+1);DEVOUT('Cod.:')
+                DEVPOS(lcia+4,ccia+1);DEVOUT('CPF.:')
+                DEVPOS(lcia+4,ccia+28);DEVOUT('| Media de dias em Atraso:')
+                DEVPOS(lcia+5,ccia+1);DEVOUT('CGC.:')
+                DEVPOS(lcia+5,ccia+28);DEVOUT('| Quantidade Documento...:')
+                DEVPOS(lcia+16,ccia+1);DEVOUT('Previsao de Entrega......:')
+                DEVPOS(lcia+20,ccia+1);DEVOUT('Observacoes:')
+                ****
+        ELSE
+                DEVPOS(lcia+01,ccia+1);DEVOUT('Sub-Total do Pedido:')
+                DEVPOS(lcia+17,ccia+1);DEVOUT('Vaqueiros..:')
+                DEVPOS(lcia+18,ccia+1);DEVOUT('Patrocinio.:')
+                DEVPOS(lcia+21,ccia+1);DEVOUT('Sub-Total do Pedido:')
+        ENDIF
+        IF mtip = '1' .OR. mtip = 'SAC23ORC'
+                mtipo_imp := m_indiv[1,10]
+                mporta_imp := m_indiv[1,7]
+                mquantd := m_indiv[1,11]
+                IF magrupar = 100
+                        mobs1 := orcam->pobs1
+                        mobs2 := orcam->pobs2
+                        mobs3 := orcam->pobs3
+                        mobs4 := orcam->pobs4
+                ENDIF
+                ****
+                mnum_ped := mt_pedido := i := mtotitens := 0
+                mvia := '1a.via'
+                FOR i = 1 TO LEN(m_codigo)
+                        IF m_matriz[i,1] = NIL
+                                LOOP
+                        ENDIF
+                        IF m_matriz[i,2] < m_matriz[i,8]
+                                mdesc_alt := mdesc_alt + ((m_matriz[i,1] * m_matriz[i,2]) - (m_matriz[i,1] * m_matriz[i,8]))
+                        ENDIF
+                        mt_pedido = mt_pedido + (m_matriz[i,2] * m_matriz[i,1])
+                        mtotitens ++
+                        IF ver_serie() = '141235' .OR. ver_serie() = '141274'
+                                mt_pedido := mt_pedido + ((m_matriz[i,2] * m_matriz[i,1]) * (m_matriz[i,22]/100))
+                        ENDIF
+                NEXT
+                IF LEN(m_codigo) = 0
+                        atencao('Nao foi Solicitacao nenhum Pedido neste momento')
+                        SET KEY -8 TO
+                        EXIT
+                ENDIF
+                i = 1
+
+                ***
+        ELSEIF mtip = '*'
+                mtipo_imp := m_indiv[1,10]
+                mporta_imp := m_indiv[1,7]
+                mquantd := m_indiv[1,11]
+                ***
+                mvia := '2a.Alt'
+                aret:={}
+                IF ali = 'ped_s'
+                        cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                ELSE
+                        cComm  := "SELECT * FROM sacorcam WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                ENDIF
+                sr_getconnection():exec('COMMIT',,.f.)
+                sr_getconnection():exec(ccomm,,.t.,@aret)
+                IF LEN(aret) = 0
+                        EXIT
+                ENDIF
+/*
+                ***************
+                SELE(ali);ORDSETFOCUS(1)
+                GO TOP
+                ***************
+                IF ! (ali)->(DBSEEK(STRZERO(mnum_ped,6)))
+                        EXIT
+                ENDIF
+*/
+                mcod_cli := VAL(aret[1,23])
+                mmontador := VAL(aret[1,36])
+                mmontador1 := VAL(aret[1,38])
+                mplaca := aret[1,26]
+                mcarro := aret[1,27]
+                mmodelo := aret[1,28]
+                mkm     := aret[1,29]
+                mobs1 := aret[1,86]
+                mobs2 := aret[1,87]
+                mobs3 := aret[1,88]
+                mobs4 := aret[1,89]
+                mtab_pre := aret[1,42]
+                mt_pedido := 0
+                mtp_venda := aret[1,45]
+                mpd_entrega := aret[1,101]
+                i:=0
+                FOR i = 1 TO LEN(aret)
+                        mt_pedido := mt_pedido + aret[i,14] * aret[i,17]
+                        IF aret[i,17] < aret[i,20]
+                                mdesc_alt := mdesc_alt + ((aret[i,14] * aret[i,17]) - (aret[i,14] * aret[i,21]))
+                        ENDIF
+                        IF ver_serie() = '141235' .OR. ver_serie() = '141274'
+                                mt_pedido := mt_pedido + ((aret[i,14] * aret[i,17]) * (aret[i,57]/100))
+                        ENDIF
+                NEXT
+        ELSE
+                SET KEY -8 TO
+                EXIT
+        ENDIF
+        IF ali = 'orcam'
+                janela(lcia,cbaa,' FECHAMENTO DO ORCAMENTO ','*')
+                mtipo_imp := m_indiv[1,10]
+                mporta_imp := m_indiv[1,12]
+                mquantd := m_indiv[1,15]
+                mvia := 'ORCAM'
+        ENDIF
+        IF SUBSTR(m_set[1,9],1,1) = 'S' .OR. SUBSTR(m_set[1,9],2,1) = 'S' .OR. magrupar = 1
+                IF magrupar = 1
+                        mobs1 := mobs2 := mobs3 := mobs4 := SPACE(40)
+                        i := 0
+                        FOR i =1 TO LEN(m_num)
+                                IF i > 0 .AND. i <=6
+                                        mobs1 := RTRIM(mobs1)+m_num[i]+','
+                                ELSEIF i > 7 .AND. i <= 12
+                                        mobs2 := RTRIM(mobs2)+m_num[i]+','
+                                ELSEIF i > 14 .AND. i <= 18
+                                        mobs3 := RTRIM(mobs3)+m_num[i]+','
+                                ELSEIF i > 21 .AND. i <= 24
+                                        mobs4 := RTRIM(mobs4)+m_num[i]+','
+                                ENDIF
+                        NEXT
+                        mobs1 := SUBSTR(mobs1,1,40)
+                        mobs2 := SUBSTR(mobs2,1,40)
+                        mobs3 := SUBSTR(mobs3,1,40)
+                        mobs4 := SUBSTR(mobs4,1,40)
+                ENDIF
+                //SET KEY 28 TO
+                WHILE .T. .AND. m_indiv[1,26] = 'N'
+                        IF m_indiv[1,9] <> 'V'
+                                @ lcia+20,ccia+14 GET mobs1
+                        ELSE
+                                @ lcia+20,ccia+14 GET mobs1 VALID IF(EMPTY(mobs1),.F.,.T.)
+                        ENDIF
+                                @ lcia+21,ccia+14 GET mobs2 WHEN ! EMPTY(mobs1)
+                                @ lcia+22,ccia+14 GET mobs3 WHEN ! EMPTY(mobs2)
+                                @ lcia+23,ccia+14 GET mobs4 WHEN ! EMPTY(mobs3)
+                        READ
+                        IF LASTKEY() = 27
+                                EXIT
+                        ENDIF
+                        opcao := op_simnao('S','Confirma as OBSERVACOES [S/n]:')
+                        IF opcao = 'N'
+                                LOOP
+                        ENDIF
+                        EXIT
+                ENDDO
+        ENDIF
+        SET KEY 28 TO menu_cons()
+        setcor(3)
+        //WVW_DrawLabel(,lcia+01,ccia+22,ALLTRIM(TRANSFORM(mt_pedido,'99,999,999.99')),,,,, 'arial black',60,20,,,,,)
+        WVW_DrawLabel(,lcia+01,ccia+22,ALLTRIM(TRANSFORM(mt_pedido,'99,999,999.99')),,,,, 'Arial Black',23,30,,,,,)
+
+        //DEVPOS(lcia+01,ccia+22);DEVOUTPICT(mt_pedido,'99,999,999.99')
+        setcor(1)
+        mcli_aux := mcod_cli
+    IF m_indiv[1,9] <> 'V'
+        IF mtip = '*' .OR. ali <> 'ped_s'       //.OR. orc_tp <> NIL
+                @ lcia+3,ccia+7 GET mcod_cli PICT '99999'       //WHEN m_set[1,17] = 'S' .AND. m_set[1,100] = 'N' .AND. m_set[1,10] = 'N' .AND. ali <> 'ped_s'    // men_get(lcia+4,ccia+7,'Informe o Cod.do Cliente - <ENTER>outro campo - <F1>Pesquisar - <F9>p/Incluir Clientes') .AND.          //.AND. m_indiv[1,26] = 'N'
+        ELSE
+                @ lcia+3,ccia+7 GET mcod_cli PICT '99999' WHEN m_set[1,17] = 'S' .AND. m_set[1,10] = 'N'    // men_get(lcia+4,ccia+7,'Informe o Cod.do Cliente - <ENTER>outro campo - <F1>Pesquisar - <F9>p/Incluir Clientes') .AND.          //.AND. m_indiv[1,26] = 'N'
+        ENDIF
+        @ lcia+3,ccia+14 GET mnome_cli PICT '@!' WHEN EMPTY(mcod_cli)
+        @ lcia+4,ccia+7 GET mcpf PICT '@@R 999.999.999-99' WHEN EMPTY(mcod_cli) .AND. EMPTY(mnome_cli)          //.AND. men_get(lcia+5,ccia+7,'Informe o CPF do Cliente - <ENTER>outro campo - <F7>p/pesquisar')
+        @ lcia+5,ccia+7 GET mcgc PICT '@@R 99.999.999/9999-99' WHEN EMPTY(mcod_cli) .AND. EMPTY(mnome_cli)
+        READ
+        IF mp = '*'
+                mp := ' '
+                LOOP
+        ENDIF
+        IF LASTKEY() = 27
+                IF mtip = '*' .AND. malteracao = 1
+                        atencao('Voce nao pode Sair esta alteracao sem fazer o FECHAMENTO porque este pedido ja foi ALTERADO OK')
+                        LOOP
+                ENDIF
+                CLEAR GETS
+                SET KEY -8 TO
+                EXIT
+        ENDIF
+        *****************
+        SELE('cli')
+        *****************
+        IF ! EMPTY(mcod_cli)
+                *****************
+                ORDSETFOCUS(1)
+                *****************
+                cli->(DBSEEK(mcod_cli))
+        ELSEIF ! EMPTY(mnome_cli)
+                *****************
+                ORDSETFOCUS(2)
+                *****************
+                cli->(DBSEEK(RTRIM(mnome_cli),.T.))
+                f7_cli()
+                *****************
+                ORDSETFOCUS(1)
+                *****************
+                cli->(DBSEEK(mcod_cli))
+                IF LASTKEY() = 27
+                       LOOP
+                ENDIF
+        ELSEIF ! EMPTY(mcpf)
+                *****************
+                ORDSETFOCUS(4)
+                *****************
+                cli->(DBSEEK(mcpf))
+        ELSEIF ! EMPTY(mcgc)
+                *****************
+                ORDSETFOCUS(3)
+                *****************
+                cli->(DBSEEK(mcgc))
+        ENDIF
+        IF ! FOUND()
+                atencao('Cliente nao cadastrado !!!')
+                LOOP
+        ENDIF
+        IF cli->bloqueio = 'S'
+                atencao('Este CLIENTE ESTA COM CREDITO BLOQUEADO PELO SISTEMA EM '+DTOC(cli->data_bloq))
+                LOOP
+        ENDIF
+        IF STRZERO(VAL(mtab_pre),3) # STRZERO(VAL(cli->cod_cond),3) .AND. ! aut_sen('Tabela de Condicao Pagamento COD.TABELA: '+STRZERO(VAL(cli->cod_cond),3)+' e Diferente do Pedido Original COD.TABELA: '+STRZERO(VAL(mtab_pre),3)+', Senha autorizacao:','LIBTABPAG',,mcod_cli)
+                LOOP
+        ENDIF
+        //SET KEY 28 TO
+        IF ! EMPTY(mnome_cli) .OR. ! EMPTY(mcod_cli) .OR. ! EMPTY(mcpf) .OR. ! EMPTY(mcgc)
+                setcor(3)
+                DEVPOS(lcia+3,ccia+7);DEVOUT(STR(mcod_cli))
+                DEVPOS(lcia+3,ccia+14);DEVOUT(cli->razao)
+                setcor(1)
+                mcod_cli = cli->cod_cli
+                mnome_cli = cli->razao
+                mend := cli->endereco+', '+RTRIM(cli->numero)+IF(! EMPTY(RTRIM(cli->complemento)),' - Compl.:'+RTRIM(cli->complemento),'')
+                mbairro := cli->bairro
+                mcidade := cli->cidade
+                muf := cli->uf
+                mcgc := cli->cgc
+                mcpf := cli->cpf
+                minsc := cli->insc
+                mlimite := cli->limite
+                IF mcod_cli <> m_set[1,84] .AND. ! limite(mcod_cli,mt_pedido,'*')
+                        UNLOCK
+                        LOOP
+                ENDIF
+                IF ! EMPTY(mdocum)
+                        atencao('Existe estes documentos deste cliente: '+mdocum,9)
+                ENDIF
+        ENDIF
+        setcor(3)
+        DEVPOS(lcia+3,ccia+7);DEVOUTPICT(mcod_cli,'99999')
+        DEVPOS(lcia+4,ccia+7);DEVOUTPICT(mcpf,'@@R 999.999.999-99')
+        DEVPOS(lcia+4,ccia+55);DEVOUTPICT(cli->dia_atras,'999.99')
+        DEVPOS(lcia+5,ccia+7);DEVOUTPICT(mcgc,'@@R 99.999.999/9999-99')
+        DEVPOS(lcia+5,ccia+55);DEVOUTPICT(cli->qtd_doc,'9999')
+        setcor(1)
+        IF mcli_aux <> mcod_cli
+                mlib_spc := ' '
+                IF ! spc(mcod_cli,mt_pedido,,,)
+                        LOOP
+                ENDIF
+        ENDIF
+        IF m_set[1,37] = 'S'
+                mtel_carro:=SAVESCREEN(01,00,23,79)
+                botao(10,25,17,75,,' Dados do Carro ')
+                DEVPOS(11,26);DEVOUT('Placa No..:')
+                DEVPOS(12,26);DEVOUT('Marca.....:')
+                DEVPOS(13,26);DEVOUT('Modelo....:')
+                DEVPOS(14,26);DEVOUT('KM........:')
+                @ 11,38 GET mplaca PICT '@!'
+                READ
+                IF ver_envelope(mplaca,'*',IF(ali='orcam','*',))
+                        IF(EMPTY(mcarro),mcarro := aret[1,27],mcarro)
+                        IF(EMPTY(mmodelo),mmodelo := aret[1,28],mmodelo)
+                        IF(EMPTY(mkm),mkm := aret[1,29],mkm)
+                ENDIF
+                @ 12,38 GET mcarro PICT '@!'
+                @ 13,38 GET mmodelo PICT '@!'
+                @ 14,38 GET mkm PICT '@!'
+                READ
+                opcao := mensagem1('Confirma os dados digitados:','S','S,N',18)
+                IF LASTKEY() = 27 .OR. opcao = 'N'
+                        RESTSCREEN(01,00,23,79,mtel_carro)
+                        LOOP
+                ENDIF
+                RESTSCREEN(01,00,23,79,mtel_carro)
+        ENDIF
+        /*
+        IF ver_serie() = '141287' .OR. ver_serie() = '14128D'
+                mtel_carro:=SAVESCREEN(01,00,23,79)
+                botao(10,35,13,75,,' Dados do Pedido Externo ')
+                DEVPOS(11,36);DEVOUT('No.Pedido.:')
+                @ 11,48 GET mplaca PICT '@!'
+                READ
+                opcao := mensagem1('Confirma os dados digitados:','S','S,N',16)
+                IF LASTKEY() = 27 .OR. opcao = 'N'
+                        RESTSCREEN(01,00,23,79,mtel_carro)
+                        LOOP
+                ENDIF
+                RESTSCREEN(01,00,23,79,mtel_carro)
+        ENDIF
+        */
+    ENDIF
+        setcor(1)
+        mjuros := mjuros_aux := mforma_pg := 0
+        IF m_indiv[1,26] = 'N' .OR. ver_serie() = '141414'         // NAO AUTOCAIXA
+                DEVPOS(lcia+7,ccia+1);DEVOUT('Forma de Pagamento:')
+                IF SUBSTR(cli->prazo_pag,1,2) = '00' .OR. (EMPTY(VAL(mcons_tabpg)) .AND. ! EMPTY(mcod_cond))
+                        SETCOLOR('W/B,B/W')
+                        DEVPOS(lcia+7,ccia+20);DEVOUT('1> AVISTA')
+                        setcor(1)
+                        DEVPOS(lcia+7,ccia+34);DEVOUT('1> Aprazo')
+                        mforma_pg := 1
+                ELSEIF EMPTY(mprz)
+                	setcor(10)
+                        @ lcia+7,ccia+20 PROMPT '1> Avista'
+                        @ lcia+7,ccia+34 PROMPT '2> Aprazo'
+                        SET INTEN ON
+                        MENU TO mforma_pg
+                	setcor(1)
+                ELSE
+                        DEVPOS(lcia+7,ccia+20);DEVOUT('1> Avista')
+                        SETCOLOR('W/B,B/W')
+                        DEVPOS(lcia+7,ccia+34);DEVOUT('2> APRAZO')
+                        setcor(1)
+                        mforma_pg := 2
+                ENDIF
+                IF mtp_venda = 'AV' .AND. mtip = '*'
+                        IF mforma_pg = 2
+                                IF ! aut_sen('Forma de Pagamento estar Diferente da Emissao, Senha autorizacao:','FORMPAGPED',,mcod_cli)
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                ENDIF
+
+                DO CASE
+                        CASE mforma_pg = 1
+                                mtp_venda = 'AV'
+                                modo_pg := 0
+                                DEVPOS(lcia+8,ccia+1);DEVOUT('Modo de Pagamento:')
+                        	setcor(10)
+                                @ lcia+8,ccia+20 PROMPT '1> Dinheiro'
+                                @ lcia+8,ccia+34 PROMPT '2> Cheque'
+                                SET INTEN ON
+                                MENU TO modo_pg
+                        	setcor(1)
+                                IF modo_pg = 1
+                                        mtipo_pg := 'DN'
+                                        mdinheiro := '*'
+                                ELSEIF modo_pg = 2
+                                        mtipo_pg := 'CH'
+                                        mcheque := '*'
+                                        IF ! spc(mcod_cli,mt_pedido,,,mlib_spc)
+                                                UNLOCK
+                                                LOOP
+                                        ELSEIF mnum_os > 0 .AND. ! spc(mcod_cli,mt_pedido,,,mlib_spc)
+                                                UNLOCK
+                                                LOOP
+                                        ELSEIF ! limite(mcod_cli,mt_pedido)
+                                                UNLOCK
+                                                LOOP
+                                        ENDIF
+                                ENDIF
+                        CASE mforma_pg = 2
+                                IF ! spc(mcod_cli,mt_pedido,,,mlib_spc)
+                                        UNLOCK
+                                        LOOP
+                                ELSEIF mnum_os > 0 .AND. ! spc(mcod_cli,mt_pedido,,,mlib_spc)
+                                        UNLOCK
+                                        LOOP
+                                ELSEIF ! limite(mcod_cli,mt_pedido)
+                                        UNLOCK
+                                        LOOP
+                                ENDIF
+                                mtp_venda = 'AP'
+                                modo_pg := 0
+                                DEVPOS(lcia+8,ccia+1);DEVOUT('Modo de Pag.:')
+                        	setcor(10)
+                                @ lcia+8,ccia+15 PROMPT '1> Cheque'
+                                @ lcia+8,ccia+25 PROMPT '2> Cartao'
+                                @ lcia+8,ccia+35 PROMPT '3> Duplicata'
+                                @ lcia+8,ccia+48 PROMPT '4> Financiamento'
+                                SET INTEN ON
+                                MENU TO modo_pg
+                        	setcor(1)
+                                DO CASE
+                                        CASE modo_pg = 2
+                                                mtipo_pg := 'CT'
+                                                mcond_veze := '01 '
+                                                mcond_int := ' '
+                                                mcartao := '*'
+                                                DEVPOS(lcia+9,ccia+1);DEVOUT('Condicoes de Pagamento: A PRAZO')
+                                                DEVPOS(lcia+10,ccia+1);DEVOUT('Quatidade de vezes:')
+                                                @ lcia+10,ccia+21 GET mcond_veze PICT '@@R 9-99' VALID IF(EMPTY(mcond_veze),.F.,IF(VAL(SUBSTR(mcond_veze,1,1))>1,.F.,.T.))
+                                                READ
+                                                IF m_dia[1] > m_set[1,49] .AND. ! aut_sen('Prazo Permitido '+TRANSFORM(m_set[1,49],'999')+' Solicitado '+STRZERO(m_dia[1],3)+' - Autorizacao:','LIB_PRZ',,mcod_cli)
+                                                        DBUNLOCK();LOOP
+                                                ENDIF
+                                                IF VAL(SUBSTR(mcond_veze,1,1)) = 1
+                                                        DEVPOS(lcia+11,ccia+1);devout('Valor Entrada R$..:')
+                                                        @ lcia+11,ccia+21 GET mvlr_ent PICT '99,999.99' VALID IF(EMPTY(mvlr_ent),.F.,.T.)
+                                                        READ
+                                                ENDIF
+                                                IF VAL(SUBSTR(mcond_veze,2,2)) > 0
+                                                        m_dia[1]:=IF(EMPTY(m_dia[1]),VAL(SUBSTR(cli->prazo_pag,1,2)),m_dia[1])
+                                                        m_dia[2]:=IF(EMPTY(m_dia[2]),VAL(SUBSTR(cli->prazo_pag,3,2)),m_dia[2])
+                                                        m_dia[3]:=IF(EMPTY(m_dia[3]),VAL(SUBSTR(cli->prazo_pag,5,2)),m_dia[3])
+                                                        DEVPOS(lcia+10,ccia+25);DEVOUT('Para os Dias:')
+                                                        @ lcia+10,ccia+39 GET m_dia[1] PICT '999' VALID ! EMPTY(m_dia[1])
+                                                        @ lcia+10,ccia+43 GET m_dia[2] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 2 VALID ! EMPTY(m_dia[2])
+                                                        @ lcia+10,ccia+47 GET m_dia[3] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 3 VALID ! EMPTY(m_dia[3])
+                                                        @ lcia+10,ccia+51 GET m_dia[4] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 4 VALID ! EMPTY(m_dia[4])
+                                                        @ lcia+10,ccia+55 GET m_dia[5] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 5 VALID ! EMPTY(m_dia[5])
+                                                        @ lcia+10,ccia+59 GET m_dia[6] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 6 VALID ! EMPTY(m_dia[6])
+                                                        @ lcia+10,ccia+63 GET m_dia[7] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 7 VALID ! EMPTY(m_dia[7])
+                                                        @ lcia+11,ccia+39 GET m_dia[8] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 8 VALID ! EMPTY(m_dia[8])
+                                                        @ lcia+11,ccia+43 GET m_dia[9] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 9 VALID ! EMPTY(m_dia[9])
+                                                        @ lcia+11,ccia+47 GET m_dia[10] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 10 VALID ! EMPTY(m_dia[10])
+                                                        @ lcia+11,ccia+51 GET m_dia[11] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 11 VALID ! EMPTY(m_dia[11])
+                                                        @ lcia+11,ccia+55 GET m_dia[12] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 12 VALID ! EMPTY(m_dia[12])
+                                                        @ lcia+11,ccia+59 GET m_dia[13] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 13 VALID ! EMPTY(m_dia[13])
+                                                        @ lcia+11,ccia+63 GET m_dia[14] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 14 VALID ! EMPTY(m_dia[14])
+                                                        @ lcia+12,ccia+39 GET m_dia[15] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 15 VALID ! EMPTY(m_dia[15])
+                                                        READ
+                                                ENDIF
+                                        CASE modo_pg = 4
+                                                mtipo_pg := 'FI'
+                                                mfin := '*'
+                                                mtipo_fin := SPACE(3)
+                                                mcobra_fin := SPACE(1)
+                                                mvalor_ent := maliq_fin := ;
+                                                mcod_fin := mtaxa_fin := ;
+                                                mvalor_aux := mvalor_pres := ;
+                                                mvalor_fin := mtaxa_fin := 0
+                                                DEVPOS(lcia+9,ccia+1);DEVOUT('Cod.do Financiamento..:')
+                                                DEVPOS(lcia+10,ccia+1);devout('Tipo do Financiamento:')
+                                                DEVPOS(lcia+10,ccia+32);DEVOUT('Aliquota:')
+                                                DEVPOS(lcia+11,ccia+1);DEVOUT('Valor da Entrada.....:')
+                                                DEVPOS(lcia+12,ccia+1);DEVOUT('Valor das prestacoes.:')
+                                                DEVPOS(lcia+12,ccia+39);DEVOUT('Taxa R$:')
+                                                @ lcia+9,ccia+25 GET mcod_fin PICT '999' VALID ver_finan(mcod_fin,lcia+9,ccia+29)
+                                                @ lcia+10,ccia+25 GET mtipo_fin PICT '@R 9+99' VALID IF(LEN(ALLTRIM(mtipo_fin))<3,.F.,.T.) .AND. ver_aliq(mcod_fin,mtipo_fin)
+                                                READ
+                                                mcond_veze := mtipo_fin
+                                                mcond_int  := '30'
+                                                setcor(3)
+                                                DEVPOS(lcia+10,ccia+42);DEVOUTPICT(maliq_fin,'99.999999')
+                                                setcor(1)
+                                                IF maliq_fin > 0
+                                                        mvalor_pres := iat((mt_pedido + mtaxa_fin) * maliq_fin,2) + mtaxa_adm
+                                                        IF VAL(SUBSTR(mtipo_fin,1,1)) > 0
+                                                                mvalor_ent := mvalor_pres
+                                                        ENDIF
+                                                        @ lcia+11,ccia+28 GET mvalor_ent PICT '99,999.99' WHEN SUBSTR(mtipo_fin,1,1) = '1'              //.AND. men_get(lcia+12,ccia+21,'Valor da Entrada do Fiananciamento')  VALID lim_get()
+                                                        READ
+                                                        IF mvalor_ent <> mvalor_pres
+                                                                mvalor_pres := mvalor_fin := ;
+                                                                mvalor_aux := 0
+                                                                mtipo_aux := '0'+SUBSTR(mtipo_fin,2,2)
+                                                                IF ! ver_aliq(mcod_fin,mtipo_aux)
+                                                                        LOOP
+                                                                ENDIF
+                                                                setcor(3)
+                                                                DEVPOS(lcia+10,ccia+42);DEVOUTPICT(maliq_fin,'99.999999')
+                                                                setcor(1)
+                                                                mvalor_aux := (mt_pedido + mtaxa_fin) - mvalor_ent
+                                                                mvalor_pres := iat(mvalor_aux * maliq_fin,2) + mtaxa_adm
+                                                                mvalor_fin := (VAL(SUBSTR(mtipo_fin,2,2)) * mvalor_pres) + mvalor_ent
+                                                        ELSE
+*                                                               mvalor_aux := mt_pedido - mvalor_ent
+*                                                               mvalor_pres := iat((mvalor_aux + mtaxa_fin) * maliq_fin,2)
+                                                                mvalor_fin := (VAL(SUBSTR(mtipo_fin,1,1))+VAL(SUBSTR(mtipo_fin,2,2))) * mvalor_pres
+                                                        ENDIF
+                                                ELSE
+                                                        @ lcia+11,ccia+28 GET mvalor_ent PICT '99,999.99' WHEN SUBSTR(mtipo_fin,1,1) = '1'              //.AND. men_get(lcia+12,ccia+21,'Valor da Entrada do Fiananciamento')  VALID lim_get()
+                                                        @ lcia+12,ccia+28 GET mvalor_pres PICT '99,999.99'
+                                                        READ
+                                                        mvalor_fin := (VAL(SUBSTR(mtipo_fin,2,2)) * mvalor_pres) + mvalor_ent
+                                                        IF mvalor_fin < mt_pedido
+                                                                atencao('O Valor do financiamento estar menor que o Valor do Pedido')
+                                                                LOOP
+                                                        ENDIF
+                                                ENDIF
+                                                IF mcobra_fin = 'S'
+                                                        mjuros := (mvalor_fin/mt_pedido)
+                                                        mt_pedido := mvalor_fin
+                                                ELSE
+                                                        mjuros := 1
+                                                        mt_pedido := mvalor_fin
+                                                ENDIF
+                                                setcor(3)
+                                                DEVPOS(lcia+10,ccia+42);DEVOUTPICT(mjuros,'99.999999')
+                                                setcor(1)
+                                                setcor(3)
+                                                DEVPOS(lcia+12,ccia+25);DEVOUT(SUBSTR(mtipo_fin,2,2)+'X')
+                                                DEVPOS(lcia+12,ccia+28);DEVOUTPICT(mvalor_pres,'99,999.99')
+                                                DEVPOS(lcia+12,ccia+48);DEVOUTPICT(mtaxa_fin,'99,999.99')
+                                                DEVPOS(lcia+12,COL()+1);DEVOUTPICT(mtaxa_adm,'99,999.99')
+                                                setcor(1)
+                                        CASE modo_pg = 1  .OR. modo_pg = 3
+                                                IF modo_pg = 1
+                                                        mtipo_pg := 'CH'
+                                                        mcheque := '*'
+                                                ELSEIF modo_pg = 3
+                                                        mtipo_pg := 'DU'
+                                                        mdup := '*'
+                                                        mcart_ban := ' '
+                                                        IF ver_serie() = '141410'
+                                                                mcart_ban := mensagem1('Tipo de Duplicata:','C','C,B',,,'*')
+                                                        ENDIF
+                                                ENDIF
+                                                IF ! EMPTY(cli->dia1_ini) .OR. ! EMPTY(cli->dia2_ini)
+                                                        IF VAL(SUBSTR(DTOC(mdata_sis),1,2)) >= VAL(cli->dia1_ini) .AND. VAL(SUBSTR(DTOC(mdata_sis),1,2)) <= VAL(cli->dia1_fim)
+                                                                mcond_int := STRZERO(CTOD(cli->venc1_dup+SUBSTR(DTOC(mdata_sis),3)) - mdata_sis,2)
+                                                                m_dia[1] := VAL(mcond_int)
+                                                        ELSEIF VAL(SUBSTR(DTOC(mdata_sis),1,2)) >= VAL(cli->dia2_ini) .AND. VAL(SUBSTR(DTOC(mdata_sis),1,2)) <= VAL(cli->dia2_fim)
+*                                                               mcond_int := STRZERO(CTOD(cli->venc2_dup+'/'+STRZERO(VAL(SUBSTR(DTOC(mdata_sis),4,2))+1,2)+'/'+IF(VAL(SUBSTR(DTOC(mdata_sis),7))=12,STRZERO(VAL(SUBSTR(DTOC(mdata_sis),7))+1,2),SUBSTR(DTOC(mdata_sis),7)))-mdata_sis,2)
+                                                                mcond_int := STRZERO(CTOD(cli->venc2_dup+'/';
+                                                                +STRZERO(IF(VAL(SUBSTR(DTOC(mdata_sis),4,2))<12,VAL(SUBSTR(DTOC(mdata_sis),4,2))+1,1),2);
+                                                                +'/';
+                                                                +IF(VAL(SUBSTR(DTOC(mdata_sis),4,2))=12,STRZERO(IF(VAL(SUBSTR(DTOC(mdata_sis),7))=99,00,VAL(SUBSTR(DTOC(mdata_sis),7))+1),2),SUBSTR(DTOC(mdata_sis),7)))-mdata_sis,2)
+                                                                m_dia[1] := VAL(mcond_int)
+                                                        ENDIF
+                                                ENDIF
+                                                DEVPOS(lcia+9,ccia+1);DEVOUT('Condicoes de Pagamento: A PRAZO')
+                                                DEVPOS(lcia+10,ccia+1);DEVOUT('Quatidade de vezes:')
+                                                IF ver_serie() = '141410'
+                                                        @ lcia+10,ccia+21 GET mcond_veze PICT '@@R 9-99' VALID IF(EMPTY(mcond_veze),.F.,IF(VAL(SUBSTR(mcond_veze,1,1))>1,.F.,.T.))
+                                                ELSE
+                                                        @ lcia+10,ccia+21 GET mcond_veze PICT '@@R 9-99' VALID IF(EMPTY(mcond_veze),.F.,IF(VAL(SUBSTR(mcond_veze,1,1))>1,.F.,.T.)) WHEN EMPTY(mcod_cond)
+                                                ENDIF
+                                                READ
+                                                IF EMPTY(mcod_cond) .AND. m_dia[1] > m_set[1,49] .AND. ! aut_sen('Prazo Permitido '+TRANSFORM(m_set[1,49],'999')+' Solicitado '+STRZERO(m_dia[1],3)+' - Autorizacao:','LIB_PRZ',,mcod_cli)
+                                                        DBUNLOCK();LOOP
+                                                ENDIF
+                                                IF VAL(SUBSTR(mcond_veze,1,1)) = 1
+                                                        DEVPOS(lcia+11,ccia+1);devout('Valor Entrada R$..:')
+                                                        @ lcia+11,ccia+21 GET mvlr_ent PICT '99,999.99' VALID IF(EMPTY(mvlr_ent),.F.,.T.)
+                                                        READ
+                                                ENDIF
+                                                IF VAL(SUBSTR(mcond_veze,2,2)) > 0
+                                                        m_dia[1]:=IF(EMPTY(m_dia[1]),VAL(SUBSTR(cli->prazo_pag,1,2)),m_dia[1])
+                                                        m_dia[2]:=IF(EMPTY(m_dia[2]),VAL(SUBSTR(cli->prazo_pag,3,2)),m_dia[2])
+                                                        m_dia[3]:=IF(EMPTY(m_dia[3]),VAL(SUBSTR(cli->prazo_pag,5,2)),m_dia[3])
+                                                        DEVPOS(lcia+10,ccia+25);DEVOUT('Para os Dias:')
+                                                        @ lcia+10,ccia+39 GET m_dia[1] PICT '999' VALID ! EMPTY(m_dia[1]) .AND. vencim((mdata_sis+m_dia[1]))
+                                                        @ lcia+10,ccia+43 GET m_dia[2] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 2 VALID ! EMPTY(m_dia[2])
+                                                        @ lcia+10,ccia+47 GET m_dia[3] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 3 VALID ! EMPTY(m_dia[3])
+                                                        @ lcia+10,ccia+51 GET m_dia[4] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 4 VALID ! EMPTY(m_dia[4])
+                                                        @ lcia+10,ccia+55 GET m_dia[5] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 5 VALID ! EMPTY(m_dia[5])
+                                                        @ lcia+10,ccia+59 GET m_dia[6] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 6 VALID ! EMPTY(m_dia[6])
+                                                        @ lcia+10,ccia+63 GET m_dia[7] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 7 VALID ! EMPTY(m_dia[7])
+                                                        @ lcia+11,ccia+39 GET m_dia[8] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 8 VALID ! EMPTY(m_dia[8])
+                                                        @ lcia+11,ccia+43 GET m_dia[9] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 9 VALID ! EMPTY(m_dia[9])
+                                                        @ lcia+11,ccia+47 GET m_dia[10] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 10 VALID ! EMPTY(m_dia[10])
+                                                        @ lcia+11,ccia+51 GET m_dia[11] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 11 VALID ! EMPTY(m_dia[11])
+                                                        @ lcia+11,ccia+55 GET m_dia[12] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 12 VALID ! EMPTY(m_dia[12])
+                                                        @ lcia+11,ccia+59 GET m_dia[13] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 13 VALID ! EMPTY(m_dia[13])
+                                                        @ lcia+11,ccia+63 GET m_dia[14] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 14 VALID ! EMPTY(m_dia[14])
+                                                        @ lcia+12,ccia+39 GET m_dia[15] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 15 VALID ! EMPTY(m_dia[15])
+                                                        READ
+                                                ENDIF
+                                ENDCASE
+                                IF LASTKEY() = 27;LOOP;ENDIF
+                ENDCASE
+                IF LASTKEY() = 27;LOOP;ENDIF
+                IF (mtp_venda = 'AV' .OR. m_set[1,35] = 'S' .OR. malteracao = 1) .AND. m_set[1,105] <> 'S' .AND. mdesc_alt = 0    // .AND. mtipo_pg <> 'FI'
+                        mop_desc := ' '
+			DEVPOS(lcia+13,ccia+1);DEVOUT('Desconto [1] (%)  [2] (R$):')
+			@ lcia+13,COL()+1 GET mop_desc VALID mop_desc $ '1,2, '
+                        READ
+                        IF mop_desc = '1'
+                                SETCOLOR('i*')
+                                DEVPOS(lcia+13,ccia+10);DEVOUT('[1] (%)')
+                                setcor(1)
+                                @ lcia+13,ccia+29 GET mdesc PICT ALLTRIM(m_set[1,98])
+                                READ
+                                IF mdesc > m_set[1,33] .AND. ! aut_sen('Desconto a maior.. senha de autorizacao:','LIB_DESC',,mcod_cli)
+                                        LOOP
+                                ENDIF
+                                mdesc := mdesc/100
+                                mvlr_desc := mt_pedido * mdesc
+                                mt_pedido := mt_pedido - (mt_pedido * mdesc)
+                        ELSEIF mop_desc = '2'
+                                SETCOLOR('i*')
+                                DEVPOS(lcia+13,ccia+19);DEVOUT('[2] (R$)')
+                                setcor(1)
+                                @ lcia+13,ccia+29 GET mdesc PICT ALLTRIM(m_set[1,98])
+                                READ
+                                mdesc := (mdesc/mt_pedido)
+                                IF mdesc*100 > m_set[1,33] .AND. ! aut_sen('Desconto a maior.. senha de autorizacao:','LIB_DESC',,mcod_cli)
+                                        LOOP
+                                ENDIF
+                                mvlr_desc := mt_pedido * mdesc
+                                mt_pedido := mt_pedido - (mt_pedido * mdesc)
+                        ELSE
+                                SETCOLOR('i*')
+                                DEVPOS(lcia+13,ccia+29);DEVOUT('Nenhum Desconto')
+                                setcor(1)
+                                mdesc := 0
+                        ENDIF
+                        setcor(3)
+                        DEVPOS(lcia+18,ccia+01);DEVOUT('Desconto R$:')
+                        setcor(1)
+                        DEVPOS(lcia+18,ccia+14);DEVOUT(TRANSFORM(mvlr_desc,'999,999,999.99'))
+                        setcor(3)
+                ENDIF
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+
+        ELSE
+                IF ! EMPTY(mprz)
+                        mtp_venda = 'AP'
+                        modo_pg := mforma_pg := 2
+                        DEVPOS(lcia+8,ccia+1);DEVOUT('Modo de Pagamento:')
+                        setcor(3)
+                        DEVPOS(lcia+7,ccia+22);DEVOUT('2> Aprazo')
+                        setcor(1)
+                        mtipo_pg := 'DU'
+                        mdup := '*'
+                        m_dia[1] := mprz
+                ELSE
+                        mtp_venda = 'AV'
+                        modo_pg := mforma_pg := 1
+                        DEVPOS(lcia+8,ccia+1);DEVOUT('Modo de Pagamento:')
+                        setcor(3)
+                        DEVPOS(lcia+7,ccia+22);DEVOUT('1> Avista')
+                        setcor(1)
+                        mtipo_pg := 'DN'
+                        mdinheiro := '*'
+                ENDIF
+        ENDIF           // autocaixa
+
+        @ lcia+16,ccia+29 GET mpd_entrega
+        READ
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        IF ! EMPTY(mpd_entrega)
+                DEVPOS(lcia+16,ccia+30);DEVOUT(' - '+ver_dia(mpd_entrega))
+        ENDIF
+
+        @ lcia+17,ccia+1 TO lcia+17,cbaa-1
+        DEVPOS(lcia+18,ccia+30);DEVOUT('TOTAL PEDIDO:')
+        setcor(1)
+        DEVPOS(lcia+18,ccia+44);DEVOUT(TRANSFORM(mt_pedido,'999,999,999.99'))
+        /*
+        IF ver_serie() = '141204'
+                DEVPOS(lcia+21,ccia+1);DEVOUT('Cod.Transp.:')
+                f5_trans(@mnome_trans,@mcgc_trans,@mend_trans,@mmun_trans,;
+                        @muf_trans,@minsc_trans,@mplaca_trans,@mcod_tran)
+                DEVPOS(lcia+21,ccia+14);DEVOUT(mcod_tran+'-'+mnome_trans)
+        ENDIF
+        */
+        IF ali='orcam' .AND. ver_serie() = '141235'
+                mopcao := op_simnao('N','Deseja colocar este ORCAMENTO para PRODUCAO: ')
+                IF mopcao = 'S';mppag:='P';ENDIF
+        ENDIF
+        mopcao := op_simnao('S','Confirma Fechamento do Pedido [S/n]:')
+        IF mopcao = 'N'
+                SET KEY -8 TO
+                EXIT
+        ELSEIF mopcao = 'S'
+                IF mtip = 'SAC23P1' .OR. mtip = '1' .OR. mtip = 'SAC23ORC'
+                        mensagem('Aguarde um momento Gerando NUMERO para o PEDIDO....')
+                        //sr_starttrace()
+                        lExit := .T.
+                        while lExit
+                                sr_begintransaction()
+                                try
+                                IF ali = 'ped_s'
+                                        aret:={}
+                                        sr_getconnection():exec( "select numero from  sacnoped where sr_recno = 1 for update with lock",,.t.,@aret)
+                                        if len(aRet)  = 0
+                                                sr_getconnection():exec("insert into sacnoped (numero,sr_deleted,sr_recno)   values (" + sr_cdbvalue(strzero(1,6) ) + ",' ',1)",,.f.)
+                                                mnum_ped = 1
+                                        else
+                                                mnum_ped = VAL(aret[1,1])+1
+                                                mnum = strzero(VAL(aret[1,1])+1,6)
+                                                sr_getconnection():exec("update sacnoped set numero = " + sr_cdbvalue(mnum) + ", data_ped = " + sr_cdbvalue( mdata_sis) + " where sr_recno = 1 ",,.f.)
+                                        endif
+                                ELSE
+                                        aret:={}
+                                        sr_getconnection():exec( "select numero from  sacnoorc where sr_recno = 1 for update with lock",,.t.,@aret)
+                                        if len(aRet)  = 0
+                                                sr_getconnection():exec("insert into sacnoorc (numero,sr_deleted,sr_recno)   values (" + sr_cdbvalue(strzero(1,6) ) + ",' ',1)",,.f.)
+                                                mnum_ped = 1
+                                        else
+                                                mnum_ped = VAL(aret[1,1])+1
+                                                mnum = strzero(VAL(aret[1,1])+1,6)
+                                                sr_getconnection():exec("update sacnoorc set numero = " + sr_cdbvalue(mnum) + ", data_ped = " + sr_cdbvalue( mdata_sis) + " where sr_recno = 1 ",,.f.)
+                                        endif
+
+                                ENDIF
+                                sr_committransaction()
+                                lExit:=.F.
+                                catch e
+                                tracelog(valtoprg())
+                                sr_COMMITtransaction()
+
+                        END
+                        sr_endtransaction()
+                        END
+                        IF mjuros = 0;mjuros := 1;ENDIF
+                        IF ver_ven(mcod_vend)
+                                mnome_ven := sen->snome
+                        ENDIF
+
+                        mcont_item := 0
+                        *********
+                        SELE(ali);ORDSETFOCUS(1)
+                        *********
+                        i := 0
+                        mcampo_arq := 'pempresa,'   ;//1
+                                      +'pnum_ped,'  ;//2
+                                      +'ptermina,'  ;//3
+                                      +'pdat_ped,'  ;//4
+                                      +'pgru_sub,'  ;//5
+                                      +'pcod_merc,' ;//6
+                                      +'pmerc,'     ;//7
+                                      +'punidade,'  ;//8
+                                      +'pespecie,'  ;//9
+                                      +'penvelope,' ;//10
+                                      +'ppeso,'     ;//11
+                                      +'ppeso_liq,' ;//12
+                                      +'pgramatura,';//13
+                                      +'pquantd,'   ;//14
+                                      +'ppacote,'   ;//15
+                                      +'ppecas,'    ;//16
+                                      +'ppre_dig,'  ;//17
+                                      +'pdesc,'     ;//18
+                                      +'pvlr_fat,'  ;//19
+                                      +'ppre_venda,';//20
+                                      +'ppr_venda1,';//21
+                                      +'pcust_real,';//22
+                                      +'pcust_merc,';//23
+                                      +'pcod_cli,'  ;//24
+                                      +'pcgc,'      ;//25
+                                      +'pcpf,'      ;//26
+                                      +'pplaca,'    ;//27
+                                      +'pcarro,'    ;//28
+                                      +'pmodelo,'   ;//29
+                                      +'pkm,'       ;//30
+                                      +'pcod_fab,'  ;//31
+                                      +'pfabrica,'  ;//32
+                                      +'pcod_oper,' ;//33
+                                      +'pcomi_oper,';//34
+                                      +'pcod_vend,' ;//35
+                                      +'pvendedor,' ;//36
+                                      +'palimento ,';//37
+                                      +'pcod_fin  ,';//38
+                                      +'pcod_tab  ,';//39
+                                      +'pvlr_pres ,';//40
+                                      +'pcond_veze,';//41
+                                      +'pcond_inte,';//42
+                                      +'phora     ,';//43
+                                      +'ptp_vend  ,';//44
+                                      +'pvlr_ent  ,';//45
+                                      +'pisento   ,';//46
+                                      +'ppromocao ,';//47
+                                      +'pmontador ,';//48
+                                      +'pmontador1,';//49
+                                      +'pcomissao ,';//50
+                                      +'pcom_mont ,';//51
+                                      +'pprazo    ,';//52
+                                      +'pbebida   ,';//53
+                                      +'pipi      ,';//54
+                                      +'pobs_prod ,';//55
+                                      +'pind_icms ,';//56
+                                      +'pstat_item,';//57
+                                      +'psit_trib ,';//58
+                                      +'pobs1,'     ;//59
+                                      +'pobs2,'     ;//60
+                                      +'pobs3,'     ;//61
+                                      +'pobs4,'     ;//62
+                                      +'plocal,'    ;//63
+                                      +'chassis,'   ;//64
+                                      +'descri1,'   ;//65
+                                      +'descri2,'   ;//66
+                                      +'descri3,'   ;//67
+                                      +'descri4,'   ;//68
+                                      +'descri5,'   ;//69
+                                      +'pproducao,' ;//70
+                                      +'pcod_tran,' ;//71
+                                      +'pos,'       ;//72
+                                      +'cod_pres,'  ;//73
+                                      +'pd_entrega,';//74
+                                      +'pfecha'      //75
+
+
+                        FOR i = 1 TO LEN(m_codigo)
+                                IF EMPTY(m_codigo[i]) .OR. m_codigo[i] = NIL
+                                        LOOP
+                                ENDIF
+                                mensagem('Aguarde um momento Atualizando o Arquivo de PEDIDO... Codigo da Mercadoria: '+m_codigo[i])
+                                /*
+                                IF EMPTY(mplaca)
+                                        mplaca := SPACE(10)
+                                        IF m_matriz[i,6] = 'PL'
+                                                mplaca := m_matriz[i,24]
+                                        ELSEIF m_matriz[i,6] <> 'EV'
+                                                mplaca := mplaca
+                                        ELSE
+                                                mplaca:= m_matriz[i,24]
+                                        ENDIF
+                                ENDIF
+                                */
+                                mdesc_aux := mdesc
+                                IF m_matriz[i,2] < m_matriz[i,8]
+                                        IF ! EMPTY(merc->desc_merc) .AND. mdesc > merc->desc_merc/100 .AND. (ver_serie() = '141220' .OR. ver_serie() = '141350' .OR. ver_serie()='141384')
+                                                mdesc_aux := merc->desc_merc/100
+                                        ENDIF
+                                        m_matriz[i,2] := m_matriz[i,8] - (m_matriz[i,8] * (mdesc_aux + (m_matriz[i,3]/100)))
+                                ELSE
+                                        IF ! EMPTY(merc->desc_merc) .AND. mdesc > merc->desc_merc/100 .AND. (ver_serie() = '141220' .OR. ver_serie() = '141350' .OR. ver_serie()='141384')
+                                                mdesc_aux := merc->desc_merc/100
+                                        ENDIF
+                                        m_matriz[i,2] := m_matriz[i,2] - (m_matriz[i,2] * mdesc_aux)
+                                ENDIF                                                                    // 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72
+                                IF ali = 'ped_s'
+                                        cComm  := 'INSERT INTO sacped_s ('+mcampo_arq+',sr_deleted) VALUES ('
+                                ELSE
+                                        cComm  := 'INSERT INTO sacorcam ('+mcampo_arq+',sr_deleted) VALUES ('
+                                ENDIF
+                                cComm  := ccomm + sr_cdbvalue(mcodempresa)+','+; //1
+                                sr_cdbvalue(STRZERO(mnum_ped,6))+','+;//2
+                                sr_cdbvalue(SUBSTR(NETNAME(),1,10))+','+;//3
+                                sr_cdbvalue(mdata_sis)+','+;//4
+                                sr_cdbvalue(m_matriz[i,4]           )+','+;//5
+                                sr_cdbvalue(m_codigo[i]             )+','+;//6
+                                sr_cdbvalue(m_matriz[i,5]           )+','+;//7
+                                sr_cdbvalue(m_matriz[i,6]           )+','+;//8
+                                sr_cdbvalue(m_matriz[i,23]          )+','+;//9
+                                sr_cdbvalue(IF(! EMPTY(mplaca),mplaca,m_matriz[i,24]))+','+;//10
+                                sr_cdbvalue(m_matriz[i,7]           )+','+;//11
+                                sr_cdbvalue(m_matriz[i,17]          )+','+;//12
+                                sr_cdbvalue(m_matriz[i,35]          )+','+;//13
+                                sr_cdbvalue(m_matriz[i,1]           )+','+;//14
+                                sr_cdbvalue(m_matriz[i,42]          )+','+;//15
+                                sr_cdbvalue(m_matriz[i,43]          )+','+;//16
+                                sr_cdbvalue(m_matriz[i,2]           )+','+;//17
+                                sr_cdbvalue(IF(m_matriz[i,2] < m_matriz[i,8],m_matriz[i,3] + (mdesc_aux * 100),pdesc := mdesc_aux * 100))+','+;//18
+                                sr_cdbvalue(m_matriz[i,2] * mjuros  )+','+;//19
+                                sr_cdbvalue(IF(m_matriz[i,14] > 0,m_matriz[i,2],m_matriz[i,8]))+','+;//20
+                                sr_cdbvalue(m_matriz[i,40])+','+;                            //21
+                                sr_cdbvalue(m_matriz[i,9])+','+;                             //22
+                                sr_cdbvalue(m_matriz[i,18])+','+;                            //23
+                                sr_cdbvalue(mcod_cli)+','+;                       //24
+                                sr_cdbvalue(mcgc)+','+;                                      //25
+                                sr_cdbvalue(mcpf)+','+;                                      //26
+                                sr_cdbvalue(mplaca)+','+;                                    //27
+                                sr_cdbvalue(mcarro)+','+;                                    //28
+                                sr_cdbvalue(mmodelo)+','+;                                   //29
+                                sr_cdbvalue(mkm)+','+;                                       //30
+                                sr_cdbvalue(m_matriz[i,10])+','+;                            //31
+                                sr_cdbvalue(LEFT(m_matriz[i,11],30))+','+;                   //32
+                                sr_cdbvalue(cod_operado)+','+;                               //33
+                                sr_cdbvalue(mcom_oper)+','+;                                 //34
+                                sr_cdbvalue(IF(magrupar > 1,mcod_vend,m_pedido[1,9]))+','+;  //35
+                                sr_cdbvalue(IF(magrupar > 1,mnome_ven,m_pedido[1,10]))+','+; //36
+                                sr_cdbvalue(m_matriz[i,12])+','+;                            //37
+                                sr_cdbvalue(STRZERO(mcod_fin,3))+','+;                       //38
+                                sr_cdbvalue(STRZERO(mcod_cond,3))+','+;                      //39
+                                sr_cdbvalue(mvalor_pres)+','+;                               //40
+                                sr_cdbvalue(mcond_veze)+','+;                                //41
+                                sr_cdbvalue(IF(! EMPTY(mcond_int),mtipo_pg+STRZERO(VAL(mcond_int),3),mtipo_pg+STRZERO(m_dia[1],3)+STRZERO(m_dia[2],3)+STRZERO(m_dia[3],3)+STRZERO(m_dia[4],3)+STRZERO(m_dia[5],3)+STRZERO(m_dia[6],3)+STRZERO(m_dia[7],3)+STRZERO(m_dia[8],3)+STRZERO(m_dia[9],3)+STRZERO(m_dia[10],3)+STRZERO(m_dia[11],3)+STRZERO(m_dia[12],3)+STRZERO(m_dia[13],3)+STRZERO(m_dia[14],3)+STRZERO(m_dia[15],3)))+','+;//42
+                                sr_cdbvalue(m_matriz[i,25])+','+;             //43
+                                sr_cdbvalue(mtp_venda)+','+;                  //44
+                                sr_cdbvalue(mvlr_ent)+','+;                   //45
+                                sr_cdbvalue(m_matriz[i,13])+','+;             //46
+                                sr_cdbvalue(m_matriz[i,14])+','+;             //47
+                                sr_cdbvalue(STRZERO(m_matriz[i,37],3))+','+;  //48
+                                sr_cdbvalue(STRZERO(m_matriz[i,38],3))+','+;  //49
+                                sr_cdbvalue(m_matriz[i,15])+','+;             //50
+                                sr_cdbvalue(m_matriz[i,39])+','+;             //51
+                                sr_cdbvalue(m_matriz[i,34])+','+;             //52
+                                sr_cdbvalue(m_matriz[i,16])+','+;             //53
+                                sr_cdbvalue(m_matriz[i,22])+','+;             //54
+                                sr_cdbvalue(m_matriz[i,36])+','+;             //55
+                                sr_cdbvalue(m_matriz[i,26])+','+;             //56
+                                sr_cdbvalue(mtelemark)+','+;                  //57
+                                sr_cdbvalue(m_matriz[i,27])+','+;             //58
+                                sr_cdbvalue(mobs1)+','+;                      //59
+                                sr_cdbvalue(mobs2)+','+;                      //60
+                                sr_cdbvalue(mobs3)+','+;                      //61
+                                sr_cdbvalue(mobs4)+','+;                      //62
+                                sr_cdbvalue(SUBSTR(m_matriz[i,21],1,2))+','+; //63
+                                sr_cdbvalue(m_matriz[i,28])+','+;             //64
+                                sr_cdbvalue(m_matriz[i,29])+','+;             //65
+                                sr_cdbvalue(m_matriz[i,30])+','+;             //66
+                                sr_cdbvalue(m_matriz[i,31])+','+;             //67
+                                sr_cdbvalue(m_matriz[i,32])+','+;             //68
+                                sr_cdbvalue(m_matriz[i,33])+','+;             //69
+                                sr_cdbvalue(mproducao)+','+;                  //70
+                                sr_cdbvalue(mcod_tran)+','+;                  //71
+                                sr_cdbvalue(STRZERO(mnum_os,6))+','+;         //72
+                                sr_cdbvalue(STRZERO(m_matriz[i,44],5))+','+;  //73
+                                IF(! EMPTY(mpd_entrega),sr_cdbvalue(mpd_entrega),'NULL')+','+; //74
+                                sr_cdbvalue('F')+','+;                        //75
+                                sr_cdbvalue(' ')+')'
+                                sr_getconnection():exec(ccomm,,.f.)
+                                sr_getconnection():exec("COMMIT",,.f.)
+                                IF ali = 'ped_s' .AND. ! EMPTY(m_matriz[i,28])
+                                        cComm  := "UPDATE merc_det SET venda='V',n_ped="+sr_cdbvalue(STRZERO(mnum_ped,6))+",dat_venda="+sr_cdbvalue(mdata_sis)+",vl_vendido="+sr_cdbvalue(m_matriz[i,2] * mjuros)+" WHERE  merc_det.codigo = "+sr_cdbvalue(m_codigo[i])+" AND merc_det.chassis  = "+sr_cdbvalue(m_matriz[i,28])+" AND merc_det.venda IS NULL"
+                                        sr_getconnection():exec(ccomm,,.f.)
+                                ELSE
+                                        cComm  := "UPDATE saccli SET ult_orc="+sr_cdbvalue(mdata_sis)+" WHERE  cod_cli = "+sr_cdbvalue(mcod_cli)
+                                        sr_getconnection():exec(ccomm,,.f.)
+                                ENDIF
+                                //sr_getconnection():exec("COMMIT",,.f.)
+                                IF ali = 'ped_s' .AND. m_matriz[i,44] > 0
+                                        cons_presen:={}
+                                        cComm  := "SELECT * FROM sacpresen WHERE codcli = "+sr_cdbvalue(STRZERO(m_matriz[i,44],5))+" AND cod_merc = "+sr_cdbvalue(m_codigo[i])
+                                        sr_getconnection():exec(ccomm,,.t.,cons_presen)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+                                        cComm  := "UPDATE sacpresen SET qtd ="+sr_cdbvalue(cons_presen[1,6] - m_matriz[i,1])+" WHERE codcli = "+sr_cdbvalue(STRZERO(m_matriz[i,44],5))+" AND cod_merc = "+sr_cdbvalue(m_codigo[i])
+                                        sr_getconnection():exec(ccomm,,.f.)
+                                ENDIF
+                                m_codigo[i] = '     '
+*                               IF magrupar > 1
+*                                       m_merc[i] = SPACE(40)
+*                               ENDIF
+                                m_matriz[i,1] := m_matriz[i,2] := m_matriz[i,3] = 0
+                        NEXT
+                        sr_getconnection():exec("COMMIT",,.f.)
+                        IF ! EMPTY(mnum_os)
+                               cComm  := "UPDATE sacoss SET pag = 'P',baixa="+sr_cdbvalue(mdata_sis)+",num_ped="+sr_cdbvalue(STRZERO(mnum_ped,6))+" WHERE  sacoss.num_os = "+sr_cdbvalue(STRZERO(mnum_os,6))
+                               sr_getconnection():exec(ccomm,,.f.)
+                                sr_getconnection():exec("COMMIT",,.f.)
+                        ENDIF
+*                       ASIZE(m_merc,0)
+                        //op_tela(02,10,08,89,,'1','1')
+                        op_tela(02,10,08,89,,'1')
+                        SUB_BANNER(01,01,'PEDIDO:'+STRZERO(mnum_ped,6))
+                        //DEVPOS(13,01);DEVOUT(PADC('Pressione qualquer tecla p/continuar',78))
+                        setcor(1)
+                        atencao('Foi Gerada o Numero do Pedido: '+STRZERO(mnum_ped,6))
+                        wvw_lclosewindow()
+                ELSEIF mtip = '*'
+                        ver_ven(mcod_vend)
+                        mnome_ven := sen->snome
+                        i := 0
+                        cons_ped := {}
+                        cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                        sr_getconnection():exec(ccomm,,.t.,@cons_ped)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        FOR i = 1 TO LEN(cons_ped)
+                                ccomm := 'UPDATE sacped_s SET pcod_cli = '+sr_cdbvalue(mcod_cli)
+                                IF mdesc_alt = 0
+                                        ccomm := ccomm + ',ppre_dig = '+sr_cdbvalue(cons_ped[i,17] - (cons_ped[i,17] * mdesc))
+                                        ccomm := ccomm + ',pdesc = '+sr_cdbvalue(mdesc * 100)
+                                ENDIF
+                                IF mjuros > 0
+                                        ccomm := ccomm + ',pvlr_fat = '+sr_cdbvalue(iat((cons_ped[i,18] - (cons_ped[i,18] * mdesc)) * mjuros,2))
+                                ELSE
+                                        ccomm := ccomm + ',pvlr_fat = '+sr_cdbvalue(iat(cons_ped[i,18] - (cons_ped[i,18] * mdesc),2))
+                                ENDIF
+                                IF ! EMPTY(mcond_int)
+                                        ccomm := ccomm + ',pcond_inte = '+sr_cdbvalue(mtipo_pg+STRZERO(VAL(mcond_int),3))
+                                ELSE
+                                        ccomm := ccomm + ',pcond_inte = '+sr_cdbvalue(mtipo_pg+STRZERO(m_dia[1],3)+STRZERO(m_dia[2],3)+STRZERO(m_dia[3],3)+STRZERO(m_dia[4],3)+STRZERO(m_dia[5],3)+STRZERO(m_dia[6],3)+STRZERO(m_dia[7],3)+STRZERO(m_dia[8],3)+STRZERO(m_dia[9],3)+STRZERO(m_dia[10],3)+STRZERO(m_dia[11],3)+STRZERO(m_dia[12],3)+STRZERO(m_dia[13],3)+STRZERO(m_dia[14],3)+STRZERO(m_dia[15],3))
+                                ENDIF
+                                IF ver_serie() <> '141425' .AND. ver_serie() <> '141477'
+                                        ccomm := ccomm + ',penvelope = '+sr_cdbvalue(mplaca)
+                                ENDIF
+                                ccomm := ccomm + ',pcgc = '+sr_cdbvalue(mcgc)
+                                ccomm := ccomm + ',pcpf = '+sr_cdbvalue(mcpf)
+                                ccomm := ccomm + ',ptp_vend = '+sr_cdbvalue(mtp_venda)
+                                ccomm := ccomm + ',pcod_fin = '+sr_cdbvalue(STRZERO(mcod_fin,3))
+                                ccomm := ccomm + ',pvlr_pres = '+sr_cdbvalue(mvalor_pres)
+                                ccomm := ccomm + ',pcond_veze = '+sr_cdbvalue(mcond_veze)
+                                ccomm := ccomm + ',pvlr_ent = '+sr_cdbvalue(mvlr_ent)
+                                ccomm := ccomm + ',pcod_vend = '+sr_cdbvalue(mcod_vend)
+                                ccomm := ccomm + ',pvendedor = '+sr_cdbvalue(mnome_ven)
+                                ccomm := ccomm + ',pstat_item = '+sr_cdbvalue(mtelemark)
+                                ccomm := ccomm + ',pobs1 = '+sr_cdbvalue(mobs1)
+                                ccomm := ccomm + ',pobs2 = '+sr_cdbvalue(mobs2)
+                                ccomm := ccomm + ',pobs3 = '+sr_cdbvalue(mobs3)
+                                ccomm := ccomm + ',pobs4 = '+sr_cdbvalue(mobs4)
+                                ccomm := ccomm + ',pcod_tran = '+sr_cdbvalue(mcod_tran)
+                                ccomm := ccomm + ",pfecha = 'F'"
+                                ccomm := ccomm + ',ppag = '+sr_cdbvalue(mppag)
+                                IF ! EMPTY(mpd_entrega)
+                                        ccomm := ccomm + ",pd_entrega = "+sr_cdbvalue(mpd_entrega)
+                                ENDIF
+                                ccomm := ccomm + " WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))+" AND pcod_merc = "+sr_cdbvalue(cons_ped[i,6])
+                                sr_getconnection():exec(ccomm,,.f.)
+                        NEXT
+                        sr_getconnection():exec("COMMIT",,.f.)
+                        ****************
+                        SELE(ali);ORDSETFOCUS(1)
+                        ****************
+                ENDIF
+                MYRUN('DEL SACROT.DBF')
+                cons_ped := {}
+                IF ali = 'ped_s'
+                        cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                        sr_getconnection():exec(ccomm,,.t.,@cons_ped)
+                ELSE
+                        cComm  := "SELECT * FROM sacorcam WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                        sr_getconnection():exec(ccomm,,.t.,@cons_ped)
+                ENDIF
+                sr_getconnection():exec('COMMIT',,.f.)
+                mtot_itens := 0
+                mcondicao := cons_ped[1,43]
+                IF VAL(SUBSTR(mcond_veze,2,2)) = 1
+                        mprazo := SUBSTR(cons_ped[1,44],3,3)
+                ELSE
+                        mprazo := STRZERO(m_dia[1],3)
+                ENDIF
+                mdata := cons_ped[1,4]
+                mhora := cons_ped[1,47]
+                m_matriz:={}
+                m_codigo:={}
+                m_Cbarra:={}
+                m_alt:={}
+                SET KEY 28 TO menu_cons()
+                IF ver_serie() = '141302' .AND. SUBSTR(mvia,1,6) = '2a.via'
+                        boleto()
+                        mflag := 0
+                ELSE
+                        //IF m_set[1,13] = 'S' .AND. ((m_indiv[1,9] <> 'B' .OR. m_indiv[1,14] <> 'B') .AND. (m_indiv[1,9] <> 'L' .OR. m_indiv[1,14] <> 'L'))
+                        IF ((m_indiv[1,9] <> 'B' .OR. m_indiv[1,14] <> 'B') .AND. (m_indiv[1,9] <> 'L' .OR. m_indiv[1,14] <> 'L'))
+                                IF ! imp_arq('PD'+STRZERO(mnum_ped,6)+'.REL','T')
+                                        CLEAR GETS
+                                        **********
+                                        SELE('merc');ORDSETFOCUS(1)
+                                        **********
+                                        mt_pedido := mflag := 0
+                                        SET KEY -8 TO
+                                        WHILE LASTKEY() = 27
+                                                mensagem('Tecle <ENTER> p/Continuar...')
+                                                INKEY(0)
+                                        ENDDO
+                                        IF ((m_set[1,83] = 'S' .OR. m_set[1,83] = 'I') .AND. sovenda = 1 .AND. ali = 'ped_s' .AND. msit_tip <> 'VENDA') .OR. m_indiv[1,26] = 'S'
+                                                SET KEY -9 TO
+                                                //sac30(mnum_ped)
+                                                SET KEY -9 TO fecha_tp          // neste mesmo PRG. <F10>Tecla
+                                                SET KEY -8 TO sac130()           // inclusao de clientes
+                                        ENDIF
+                                        EXIT
+                                ENDIF
+                        ELSEIF (m_indiv[1,9] <> 'B' .AND. m_indiv[1,14] <> 'B');
+                               .AND. (m_indiv[1,9] <> 'L'  .AND. m_indiv[1,14] <> 'L')
+                                mensagem('Aguarde um momento imprimido pedido')
+                                SET DEVICE TO PRINT
+                                SET PRINT TO (mporta_imp)
+                        ENDIF
+/*
+                        IF ver_serie() = '141287' .OR. ver_serie() = '14128D' .OR. ver_serie() = '141351'
+                                ped_jw1()
+                                mflag := 0
+                        ELSEIF (ali = 'orcam' .AND. m_indiv[1,14] = 'G') .OR. m_indiv[1,9] = 'G'
+                                ped_jw()
+                                mflag := 0
+*/
+                        IF (ali = 'orcam' .AND. m_indiv[1,14] = 'B') .OR. m_indiv[1,9] = 'B'
+                                boleto()
+                                mflag := 0
+                        ELSEIF (ali = 'orcam' .AND. m_indiv[1,14] = 'L') .OR. m_indiv[1,9] = 'L'
+                                boleto('*')
+                                mflag := 0
+                        ELSEIF (ali = 'orcam' .AND. m_indiv[1,14] = 'T') .OR. m_indiv[1,9] = 'T'
+                                bole_term()
+                                mflag := 0
+                        ELSEIF (ali = 'orcam' .AND. m_indiv[1,14] = 'F') .OR. m_indiv[1,9] = 'F'
+                                formula()
+                        ELSEIF (ali = 'orcam' .AND. m_indiv[1,14] = 'F1') .OR. m_indiv[1,9] = 'F1'
+                                formula()
+                        ENDIF
+                ENDIF
+                SET DEVICE TO SCREEN;SET PRINT TO;SET PRINT OFF
+                IF ! EMPTY(mnum_os) .AND. m_set[1,42] = 'S'
+                        mopcao := op_simnao('S','Deseja Imprimir o RECIBO da O.S.:')
+                        IF mopcao = 'S'
+                                rec_os(mcod_cli,mnome_cli,mnum_ped,mnum_os,mmodelo,mplaca,mt_pedido)
+                        ENDIF
+                ENDIF
+                mobs1 := mobs2 := mobs3 := mobs4 := SPACE(39)
+                mt_pedido := 0
+                CLEAR GETS
+                **********
+                SELE('merc');ORDSETFOCUS(1)
+                **********
+                IF ((m_set[1,83] = 'S' .OR. m_set[1,83] = 'I') .AND. sovenda = 1 .AND. ali = 'ped_s' .AND. msit_tip <> 'VENDA') .OR. m_indiv[1,26] = 'S'
+                        SET KEY -9 TO
+                        IF LASTKEY() = 27
+                                mensagem('Tecle <ENTER> para continuar...')
+                                INKEY(0)
+                        ENDIF
+                        //sac30(mnum_ped)
+	                cons_ped := {}
+                        cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                        sr_getconnection():exec(ccomm,,.t.,@cons_ped)
+                        sr_getconnection():exec('COMMIT',,.f.)
+			WHILE EMPTY(cons_ped[1,49])
+                        	IF ! aut_sen('SENHA de Liberacao para Sair o Recebimento','Sair_REC',10)
+	                                mensagem('Tecle <ENTER> para continuar...')
+        	                        INKEY(0)
+					//sac30(mnum_ped)
+				ELSE
+					EXIT
+                        	ENDIF                                                                                                                                                                                                                                                                                                                                                                   
+                        ENDDO
+                        SET KEY -9 TO fecha_tp          // neste mesmo PRG. <F10>Tecla
+                        SET KEY -8 TO sac130()           // inclusao de clientes
+                ENDIF
+                mflag := 0
+                CLEAR GETS
+                SET KEY -8 TO
+                conf_impressao('PD'+STRZERO(mnum_ped,6)+'.REL')
+                IF mimp_tipo = 2
+                        atencao('Pressione <ENTER> p/continuar')
+                        //INKEY(0)
+                ENDIF
+                i:=0
+                FOR i = 1 TO 15
+                        m_dia[i] := m_vlr[i] := 0
+                NEXT
+                EXIT
+        ENDIF
+ENDDO
+SET KEY -8 TO
+*mflag := 0
+*RELEASE ALL
+SET KEY 28 TO menu_cons()
+wvw_lclosewindow()
+RETURN NIL
+

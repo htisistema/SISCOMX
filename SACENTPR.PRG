@@ -1,0 +1,191 @@
+*******************************************************
+* FUNCAO P/ENTRADA DE MERCADORIAS PRODUCAO
+*******************************************************
+
+FUNCTION sacentpr(mno)
+******************
+LOCAL mprg:='SACENTPR',;
+      lci,cci,lba,cba,mquantd,opcao,m_ent:={},i_ent:=0,mdata,mn_pedido
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mcod_cli,mcod_vend,mnome_cli,mcod_barr
+
+mtitulo:='ENTRADA DE MERCADORI NA PRODUCAO'
+IF ! ver_nivel(mprg,mtitulo,'156',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+lci := cci := 0
+lba := 22
+cba := 90
+*----------------------------------------------
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+*--------------------------------------------------
+op_tela(01,10,29,90,'ENTRADA DE MERCADORIA NA PRODUCAO')
+WHILE .T.
+        mcod_cli := mcod_vend := mn_pedido := 0
+        mnome_cli := SPACE(40)
+        mdata := mdata_sis
+        exibi_prg(mprg)
+        DEVPOS(lci+1,cci);DEVOUT('Codigo Cliente.:')
+        DEVPOS(lci+2,cci);DEVOUT('Codigo Vendedor:')
+        DEVPOS(lci+3,cci);DEVOUT('Data...........:')
+        DEVPOS(lci+3,cci+38);DEVOUT('No.Pedido:')
+        @ lci+4,cci TO lci+4,cba
+        DEVPOS(lci+5,01);DEVOUT('Cod.   Descricao')
+        DEVPOS(lci+5,52);DEVOUT('Qtd.')
+        @ lci+6,cci TO lci+6,cba
+        SET KEY -8 TO sac130()           // inclusao de clientes
+        WVW_DrawBoxGet(,lci+1,cci+18,5)
+        WVW_DrawBoxGet(,lci+1,cci+25,LEN(mnome_cli))
+        @ lci+1,cci+18 GET mcod_cli PICT '99999'
+        @ lci+1,cci+25 GET mnome_cli PICT '@!' WHEN EMPTY(mcod_cli)
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN
+        ENDIF
+        IF ! EMPTY(mcod_cli)
+                *****************
+                SELE('cli');ORDSETFOCUS(1)
+                *****************
+                IF ! cli->(DBSEEK(mcod_cli))
+                        atencao('Cliente nao cadastrado !!!')
+                        LOOP
+                ENDIF
+        ELSEIF ! EMPTY(mnome_cli)
+                *****************
+                SELE('cli');IF(ver_serie() = '141253',ORDSETFOCUS(8),ORDSETFOCUS(2))
+                *****************
+                IF ! cli->(DBSEEK(RTRIM(mnome_cli)))
+                        atencao('Cliente nao cadastrado !!!')
+                        LOOP
+                ELSE
+                        f7_cli()
+                        mcod_cli := cli->cod_cli
+                        IF LASTKEY() = 27
+                                LOOP
+                        ENDIF
+                ENDIF
+        ENDIF
+        IF EMPTY(mnome_cli) .AND. EMPTY(mcod_cli)
+                LOOP
+        ENDIF
+        setcor(3)
+        DEVPOS(lci+1,cci+25);DEVOUT(cli->razao)
+        setcor(1)
+        IF cli->bloqueio = 'S'
+                atencao('Este CLIENTE ESTA COM CREDITO BLOQUEADO PELO SISTEMA')
+                LOOP
+        ENDIF
+        WVW_DrawBoxGet(,lci+2,cci+18,3)
+        @ lci+2,cci+18 GET mcod_vend PICT '999' VALID IF(ver_ven(STRZERO(mcod_vend,3)),.T.,.F.)
+        READ
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        setcor(3)
+        DEVPOS(lci+2,cci+25);DEVOUT(sen->snome)
+        setcor(1)
+        @ lci+3,cci+18 GET mdata VALID IF(EMPTY(mdata),.F.,.T.)
+        @ lci+3,cci+49 GET mn_pedido PICT '999999' VALID IF(EMPTY(mn_pedido),.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        opcao := op_simnao('S','Confirma o DADOS Preenchido:')
+        IF opcao = 'N' .OR. LASTKEY() = 27
+                LOOP
+        ENDIF
+        m_ent:={}
+        i_ent:=0
+        WHILE .T.
+                setcor(3)
+                botao(23,00,25,79)
+                setcor(1)
+                DEVPOS(23,01);DEVOUT('Cod.   Descricao')
+                DEVPOS(23,52);DEVOUT('Qtd.')
+                mcod_barra := SPACE(14)
+                mcod_merc := mquantd := 0
+                mensagem('Digite o Codigo da Mercadoria - <ESC>Finalizar ou Sair')
+                @ 24,01 GET mcod_barra PICT '@!'
+                READ
+                IF LASTKEY() = 27
+                        EXIT
+                ENDIF
+                *****************
+                SELE('merc')
+                *****************
+                IF ! EMPTY(mcod_barra)
+                        IF LEN(ALLTRIM(mcod_barra)) > 5
+                                ORDSETFOCUS(6)
+                                merc->(DBSEEK(mcod_barra))
+                        ELSE
+                                ORDSETFOCUS(1)
+                                merc->(DBSEEK(STRZERO(VAL(mcod_barra),5)))
+                        ENDIF
+                        IF ! FOUND()
+                                atencao('Codigo nao Cadastrado')
+                                LOOP
+                        ENDIF
+                ELSE
+                        IF(m_set[1,93] <> 'A',f4_merc(),f4_merc1())
+                        IF LASTKEY() = 27
+                                LOOP
+                        ENDIF
+                ENDIF
+                mcod_merc := VAL(merc->cod_merc)
+                setcor(3)
+                DEVPOS(24,01);DEVOUT('             ')
+                DEVPOS(24,01);DEVOUT(STRZERO(mcod_merc,5))
+                DEVPOS(24,07);DEVOUT(LEFT(merc->merc,30))
+                setcor(1)
+                @ 24,48 GET mquantd PICT ALLTRIM(m_set[1,99]) VALID IF(EMPTY(mquantd),.F.,.T.)
+                READ
+                IF LASTKEY() = 27;LOOP;ENDIF
+                opcao := op_simnao('S','Confirma Inclusao da Mercadoria [S/n]:')
+                IF opcao = 'N';LOOP;ENDIF
+                AADD(m_ent,{merc->cod_merc,mquantd})
+                
+                IF i_ent = 7
+                        SCROLL(lci+6+i_ent,cci,lba-2,cba-1,1)
+                ELSE
+                        i_ent++
+                ENDIF
+                setcor(3)
+                DEVPOS(lci+6+i_ent,cci+01);DEVOUT(STRZERO(mcod_merc,5)+' '+merc->merc+' '+TRANSFORM(mquantd,ALLTRIM(m_set[1,99])))
+                setcor(1)
+        ENDDO
+        IF LEN(m_ent) > 0 
+                opcao := op_simnao('S','Confirma todas as Informacoes para Inclusao:')
+                IF opcao = 'N';LOOP;ENDIF
+                FOR i = 1 TO LEN(m_ent)
+                        aret := {}
+                        sr_getconnection():exec("select saldo_est,merc from sacmerc where cod_merc = "+sr_cdbvalue(m_ent[i,1]),,.t.,@aret)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        sr_getconnection():exec("update sacmerc set saldo_est = "+sr_cdbvalue(aret[1,1] + m_ent[i,2])+" where cod_merc = "+sr_cdbvalue(m_ent[i,1]),,.f.)
+                        sr_getconnection():exec('INSERT INTO sacentprod (empresa,data,n_pedido,'+;
+                                'cod_cli,cod_vend,'+;
+                                'cod_oper,cod_merc,merc,'+;
+                                'quantd,flag,SR_DELETED )'+;
+                                ' VALUES ('+;
+                                sr_cdbvalue(mcodempresa)+','+; //1
+                                sr_cdbvalue(mdata)+','+; //2
+                                sr_cdbvalue(STRZERO(mn_pedido,6))+','+; //3
+                                sr_cdbvalue(mcod_cli)+','+; //4
+                                sr_cdbvalue(STRZERO(mcod_vend,3))+','+; //5
+                                sr_cdbvalue(cod_operado)+','+; //6
+                                sr_cdbvalue(m_ent[i,1])+','+; //7
+                                sr_cdbvalue(aret[1,2])+','+; //8
+                                sr_cdbvalue(m_ent[i,2])+','+; //9
+                                sr_cdbvalue('E')+','+; //10
+                                sr_cdbvalue(' ')+')',,.f.)
+
+                NEXT
+                sr_getconnection():exec('COMMIT',,.f.)
+                atencao('Esta OPERACAO foi realizada com sucesso...')
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+********************************** F I M ******************************************

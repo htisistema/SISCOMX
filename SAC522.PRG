@@ -1,0 +1,219 @@
+***********************************************
+* RELATORIO DE MOVIMENTO DE PRODUTO P/VENDEDOR
+***********************************************
+MEMVAR getlist,nivel_acess,mdata_sis
+
+FUNCTION sac522
+****************
+LOCAL MPRG:='SAC522',mtitulo:='RELATORIO MOVIMENTO P/PRODUTO/VENDEDOR',;
+      lci,cci,lba,cba,opcao,i:=0,;
+      mtot_dif,mvlr_sai,mdoc,mtot_ped,;
+      point,mtot_cust,mtot_prven,mtot_comiss,mtraco,mdesc,;
+      mdata_dia,mtot_dia,mcom_dia,mcod_cli,mcod_vend,mcod_merc,mdata1,mdata2,;
+      msai_bal,mtot_quantd,muf,mquantd,mpag,mtit,mtipo,mcod_mont,mcons_merc := {},;
+      cons_arq := {},vEmp := {},aret:={},cComm
+
+PRIVATE mcliente,mcpf,mcgc,mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),cons_cli:={}
+
+IF ! ver_nivel(mprg,mtitulo,'156',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+mtraco := REPLI('=',132)
+
+lci := cci := 0
+lba := 07
+cba := 70
+*-----------------------------------------------------
+mtipo_imp := m_indiv[1,18]
+op_tela(lci,cci,lba+2,cba,mtitulo)
+WHILE .T.
+        exibi_prg(mprg)
+        mcod_vend := mcod_merc := mcod_mont := mquantd := 0
+        mcliente := SPACE(30)
+        mcpf := SPACE(11)
+        mcgc := SPACE(14)
+        mdoc := SPACE(8)
+        mdata1 := mdata_sis - 31
+        mdata2 := mdata_sis
+        muf := SPACE(2)
+        mensagem('Preencha os Campos - <ESC>p/Sair')
+        DEVPOS(lci+1,cci+2);DEVOUT('Codigo Vendedor:')
+        DEVPOS(lci+2,cci+2);DEVOUT('Codigo Montador:')
+        DEVPOS(lci+3,cci+2);DEVOUT('Codigo Produto.:')
+        DEVPOS(lci+4,cci+2);DEVOUT('Sigla do Estado:')
+        DEVPOS(lci+5,cci+2);DEVOUT('Data Inicial...:')
+        DEVPOS(lci+6,cci+2);DEVOUT('Data Final.....:')
+
+        @ lci+1,cci+20 GET mcod_vend PICT '999' VALID IF(EMPTY(mcod_vend),.T.,ven(mcod_vend,lci+1,cci+25))
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        @ lci+2,cci+20 GET mcod_mont PICT '999' VALID IF(EMPTY(mcod_mont),.T.,ven(mcod_mont,lci+2,cci+25))
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        @ lci+3,cci+19 GET mcod_merc PICT '99999' VALID IF(EMPTY(mcod_merc),.F.,ver_cod(mcod_merc,lci+3,cci+25,.F.,0))
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        @ lci+4,cci+19 GET muf PICT '@!' VALID v_uf(muf)
+        @ lci+5,cci+19 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ lci+6,cci+19 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        mensagem('Aguarde o Coletando dados p/ impressao...')
+	mcons_merc := {}
+	sr_getconnection():exec("SELECT merc FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(mcod_merc),,.t.,@mcons_merc)
+        sr_getconnection():exec('COMMIT',,.f.)
+	IF LEN(mcons_merc) = 0
+                atencao('Codigo nao Cadastrado')
+                LOOP
+	ENDIF
+        ************************************************************
+        cComm  := "SELECT data_s_e,documento,produto,cod_cli,vl_vend,quantd,pr_venda,pr_unit,comissao FROM sacmov WHERE data_s_e  BETWEEN "+sr_cdbvalue(mdata1)+" AND "+sr_cdbvalue(mdata2)+" AND ent_sai = 'S' AND tipo = '02' AND documento NOT LIKE 'BL%'"
+        IF ! EMPTY(mcod_vend)
+                ccomm := ccomm + " AND cod_vend = "+sr_cdbvalue(STRZERO(mcod_vend,3))
+        ENDIF
+        IF ! EMPTY(mcod_mont)
+
+                ccomm := ccomm + " AND (montador = "+sr_cdbvalue(STRZERO(mcod_mont,3))+" OR montador1 = "+sr_cdbvalue(STRZERO(mcod_mont,3))+")"
+        ENDIF
+        IF ! EMPTY(mcod_merc)
+                ccomm := ccomm + " AND codigo = "+sr_cdbvalue(mcod_merc)
+        ENDIF
+        ccomm := ccomm + " ORDER BY data_s_e,cod_vend"
+        cons_arq := {}
+        sr_getconnection():exec(ccomm,,.t.,@cons_arq)
+        sr_getconnection():exec('COMMIT',,.f.)
+
+        IF LEN(cons_arq) = 0
+                atencao('Nao existe documento neste Periodo...')
+                LOOP
+        ENDIF
+        mdata_dia := mdata_dia := cons_arq[1,1]
+        mcom_dia := mtot_dia := mtot_comiss := mtot_cust := mtot_prven :=;
+        mtot_dif := mvlr_sai := mtot_ped := msai_bal := ;
+        mtot_quantd := 0
+        mdoc := cons_arq[1,2]
+        mensagem('Espere o Final da Impressao OK !!!')
+        marq := 'MOV_VEND.REL'
+        IF ! imp_arq('MOV_VEND.REL','R')
+                LOOP
+        ENDIF
+        mpag := 1
+        mtit := 'Vendedor: '+STRZERO(mcod_vend,3)
+        IF ! EMPTY(mcod_mont)
+                mtit := mtit+' - Montador:'+STRZERO(mcod_mont,3)
+        ENDIF
+        IF ! EMPTY(muf)
+                mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)+' do Estado: '+muf
+        ELSE
+                mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)
+        ENDIF
+        cabecalho(mpag,mtit,mtipo)
+        IF ! EMPTY(mcod_merc)
+                DEVPOS(PROW()+1,00);DEVOUT('Produto: '+STRZERO(mcod_merc,5)+' - '+cons_arq[1,3])
+                imprt(mtipo_imp,'C')
+                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        ENDIF
+        imprt(mtipo_imp,'C')
+        DEVPOS(PROW()+1,00);DEVOUT('  Data    Cod.          Cliente                           Doc.(NF)      Quantd.     Vlr.Total ')
+        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        i:=0
+        FOR i = 1 TO LEN(cons_arq)
+                prog_imp(RECNO())
+                IF ! EMPTY(muf)
+                        IF (! ver_cli(cons_arq[i,4],,,1));
+                           .OR. (muf <> cons_cli[1,25])
+                                LOOP
+                        ENDIF
+                ENDIF
+                mcliente := SPACE(30)
+                mdoc := cons_arq[i,2]
+                mtot_ped := mtot_quantd := 0
+                mcod_cli := cons_arq[i,4]
+                ver_cli(cons_arq[i,4])
+                mdata := cons_arq[i,1]
+                WHILE i <= LEN(cons_arq) .AND. mdoc = cons_arq[i,2]
+                        mvlr_sai = mvlr_sai + cons_arq[i,5] * cons_arq[i,6]
+                        mtot_dif = mtot_dif + (cons_arq[i,6] * cons_arq[i,7] - cons_arq[i,6] * cons_arq[i,5])
+                        mtot_quantd = mtot_quantd + cons_arq[i,6]
+                        mtot_prven = mtot_prven + cons_arq[i,7] * cons_arq[i,6]
+                        mtot_cust = mtot_cust + cons_arq[i,8] * cons_arq[i,6]
+                        mtot_comiss = mtot_comiss + ((cons_arq[i,5] * cons_arq[i,6]) * (cons_arq[i,9] / 100))
+                        mtot_ped = mtot_ped + (cons_arq[i,5] * cons_arq[i,6])
+                        mtot_dia = mtot_dia + cons_arq[i,5] * cons_arq[i,6]
+                        mcom_dia = mcom_dia + ((cons_arq[i,5] * cons_arq[i,6]) * (cons_arq[i,9] / 100))
+                        i++
+                ENDDO
+                DEVPOS(PROW()+1,00);DEVOUT(DTOC(mdata)+'  '+STR(mcod_cli,5)+'-'+mcliente+'  '+mdoc+'  '+TRANSFORM(mtot_quantd,'999999.99')+'  '+TRANSFORM(mtot_ped,'9,999,999.99'))
+                /*
+                IF mdata <> cons_arq[i,1] .AND. mtot_dia > 0
+                        DEVPOS(PROW()+2,04);DEVOUT('Total do Dia R$.:')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtot_dia,'999,999,999.99')
+                        DEVPOS(PROW()+1,04);DEVOUT('Comissao Dia R$.:')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mcom_dia,'999,999,999.99')
+*                       DEVPOS(PROW(),PCOL()+1);DEVOUTPICT((mtot_dia * (mcomissao / 100)) + mcom_dia,'999,999,999.99')
+                        DEVPOS(PROW()+1,00);DEVOUT(' ')
+                        mcom_dia := mtot_dia := 0
+                ENDIF
+                */
+                IF PROW() >= 59
+                        EJECT
+                        mpag ++
+                        cabecalho(mpag,mtit,mtipo)
+                        IF ! EMPTY(mcod_merc)
+                                DEVPOS(PROW()+1,00);DEVOUT('Produto: '+STRZERO(mcod_merc,5)+' - '+mcons_merc[1,1])
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        ENDIF
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT('  Data    Cod.          Cliente                           Doc.(NF)      Quantd.     Vlr.Total ')
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                ENDIF
+        NEXT
+        IF PROW() >= 59
+                 EJECT
+                 mpag ++
+                 cabecalho(mpag,mtit,mtipo)
+        ENDIF
+        imprt(mtipo_imp,'N')
+        DEVPOS(PROW()+2,04);DEVOUT('Resumo Geral')
+        DEVPOS(PROW(),04);DEVOUT('Resumo Geral')
+        DEVPOS(PROW()+1,04);DEVOUT('Total de Saidas R$..:')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvlr_sai,'999,999,999.99')
+        DEVPOS(PROW()+1,04);DEVOUT('Desconto Medio R$...:')
+        IF mtot_dif < 0
+                mtot_dif := 0
+        ENDIF
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtot_dif,'999,999,999.99')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT('em (%):')
+        mdesc := (mtot_prven - mvlr_sai) / mtot_prven * 100
+        IF mdesc < 0
+                mdesc = 0
+        ENDIF
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mdesc,'999.99')
+        DEVPOS(PROW()+1,04);DEVOUT('Lucro Medio R$......:')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvlr_sai - mtot_cust,'999,999,999.99')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT('em (%):')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT((mvlr_sai - mtot_cust) / mtot_cust * 100,'999.99')
+        DEVPOS(PROW()+1,04);DEVOUT('Comissao R$.........:')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtot_comiss,'999,999,999.99')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtot_comiss,'999,999,999.99')
+*       DEVPOS(PROW(),PCOL()+1);DEVOUTPICT((mvlr_sai * (mcomissao / 100)) + mtot_comiss,'999,999,999.99')
+        DEVPOS(PROW()+2,00);DEVOUT(TIME())
+        EJECT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao(marq)
+        EXIT
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*************************** F I M **********************************************
+

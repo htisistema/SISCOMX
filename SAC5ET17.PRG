@@ -1,0 +1,212 @@
+MEMVAR getlist
+******************************************************
+* ETIQUETA DE CODIGO DE BARRA IMPRESSORA "ELTRON 2742"
+******************************************************
+
+FUNCTION sac5et17
+*****************
+LOCAL mprg:='SAC5ET17'
+
+LOCAL tela,lci,cci,lba,cba,opcao,bar,texto,qtde,wcod,cqtde,mtipo:=SPACE(1),enter,;
+      mpreco,edescri,edescri1,ecodi,cons_merc:={},mpreco1,mprc,mcod_merc:=0
+PRIVATE mtip_term,mcod_bc:=' ',mcod_forn:=0,mgrupo,msub_grupo,mtab_pr1,mtab_pr2,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+
+enter=chr(13)+chr(10)      // O ENTER DEVE ESTAR NO FINAL DE TODA A LINHA
+lci := cci := 0
+lba := 04
+cba := 75
+*---------------------------------------------
+mtip_term := m_cfg[2]
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*---------------------------------------------
+***********************************************
+SELE('merc');ORDSETFOCUS(1);GO TOP
+***********************************************
+exibi_prg(mprg)
+mtipo:= 'P'
+op_tela(10,10,20,90,' Emissao Etiquetas de Codigo de Barra ELTRON ou ZEBRA')
+WHILE .T.
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        QTDE=SPACE(24)
+        mcod_bc := SPACE(14)
+        mcod_forn := 0
+        msub_grupo = SPACE(2)
+        mgrupo := SPACE(5)
+        mtab_pr1 := mtab_pr2 := 0
+        @ lci  ,cci+1 SAY "Codigo do Fornecedor....:"
+        @ lci+1,cci+1 SAY "Codigo do Grupo.........:"
+        @ lci+2,cci+1 SAY "Codigo do Sub-Grupo.....:"
+        @ lci+3,cci+1 SAY "Codigo do Produto.......:"
+        @ lci+4,cci+1 SAY "Tabela p/Preco 1........:"
+        @ lci+5,cci+1 SAY "Tabela p/Preco 2........:"
+        @ lci+6,cci+1 SAY "Tipo Etiqueta [G]rande [M]edia [P]equena:"
+        @ lci+7,cci+1 SAY "Deseja Imprimir Preco de Atacado [S/N]..:"
+        @ lci+8,cci+1 SAY "Quantidade de Etiquetas ................:"
+        @ lci  ,cci+27 GET mcod_forn PICT '9999' VALID v_fornece(mcod_forn,lci,cci+41)
+        @ lci+1,cci+27 GET mgrupo PICT '999' VALID v_gru_cod(mgrupo,2,lci+1,cci+31)
+        @ lci+2,cci+27 GET msub_grupo PICT '99' WHEN ! EMPTY(mgrupo) VALID ver_sgru(VAL(mgrupo),VAL(msub_grupo),lci+2,cci+31)
+        @ lci+3,cci+27 GET mcod_bc PICT '@!' WHEN EMPTY(mcod_forn) .AND. EMPTY(mgrupo) VALID IF(EMPTY(mcod_bc),.F.,.T.)
+        READ
+        IF LASTKEY()=27
+                EXIT
+        ENDIF
+        IF ! EMPTY(mcod_bc)
+                cons_merc := {}
+                IF LEN(ALLTRIM(mcod_bc)) > 5
+                        ccomm := "SELECT * FROM sacmerc WHERE cod_barr = "+sr_cdbvalue(mcod_bc)
+                ELSE
+                        ccomm := "SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(STRZERO(VAL(mcod_bc),5))
+                ENDIF
+                sr_getconnection():exec(ccomm,,.t.,@cons_merc)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(cons_merc) = 0
+                        atencao('Produto nao encontrado no arquivo....')
+                        LOOP
+                ENDIF
+                IF EMPTY(cons_merc[1,2])
+                        atencao('Este Produto estar sem codigo de barra, Nao pode ser impresso !!!')
+                ENDIF
+                setcor(3)
+                DEVPOS(lci+3,cci+41);DEVOUT(cons_merc[1,9])
+                setcor(1)
+        ELSEIF ! EMPTY(mcod_forn)
+                cons_merc := {}
+                ccomm := "SELECT * FROM sacmerc WHERE cod_fab = "+sr_cdbvalue(STRZERO(mcod_forn,4))
+                ccomm := ccomm + "AND NOT disp = 'N'"
+                //ccomm := ccomm + "AND (cod_barr IS NOT NULL OR cod_barr = ' ')"
+                IF ! EMPTY(mgrupo)
+                        ccomm := ccomm + " AND gru_sub LIKE "+sr_cdbvalue(STRZERO(VAL(mgrupo),3)+'%')
+                ENDIF
+                IF ! EMPTY(msub_grupo)
+                        ccomm := ccomm + " AND gru_sub LIKE "+sr_cdbvalue(ALLTRIM(mgrupo)+ALLTRIM(msub_grupo))
+                ENDIF
+                sr_getconnection():exec(ccomm,,.t.,@cons_merc)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(cons_merc) = 0
+                        atencao('Nao foi encontrado nenhum produto....')
+                        LOOP
+                ENDIF
+        ELSE
+                mcod_merc := IF(m_set[1,93] <> 'A',f4_merc(,,STRZERO(mvarejo,1),mperc),f4_merc1(,,STRZERO(mvarejo,1),mperc))
+                //mcod_merc := VAL(f4_merc(,,STRZERO(mvarejo,1),mperc))
+                ccomm := "SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(mcod_merc)
+                sr_getconnection():exec(ccomm,,.t.,@cons_merc)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(cons_merc) = 0
+                        atencao('Produto nao encontrado no arquivo....')
+                        LOOP
+                ENDIF
+                IF EMPTY(cons_merc[1,2])
+                        atencao('Este Produto estar sem codigo de barra, Nao pode ser impresso !!!')
+                ENDIF
+                setcor(3)
+                DEVPOS(lci+3,cci+41);DEVOUT(cons_merc[1,9])
+                setcor(1)
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+        ENDIF
+        mprc := 'N'
+        @ lci+4,cci+27 GET mtab_pr1 PICT '999' VALID ver_cond(mtab_pr1,lci+4,cci+31)
+        @ lci+5,cci+27 GET mtab_pr2 PICT '999' VALID ver_cond(mtab_pr2,lci+5,cci+31)
+        @ lci+6,cci+43 GET mtipo PICT "@!" VALID mtipo $ 'G,P,M'
+        @ lci+7,cci+43 GET mprc PICT "@!" VALID mprc $ 'S,N'
+        @ lci+8,cci+43 GET qtde PICT "99999" VALID IF(EMPTY(qtde),.F.,.T.)
+        READ
+        IF LASTKEY()=27
+                LOOP
+        ENDIF
+        cqtde := ALLTRIM(qtde)
+        IF ! imp_arq('TAB_PRECO.REL','R')
+                LOOP
+        ENDIF
+        //SET DEVICE TO PRINT
+        //SET PRINT TO 'LPT1'
+        //SET PRINT TO etq.rel
+        i:=0
+        FOR i = 1 TO LEN(cons_merc)
+                IF mtipo = 'P'
+                        Edescri := SUBSTR(cons_merc[i,8]+'-'+cons_merc[i,9],1,17)
+                        Edescri1:= SUBSTR(cons_merc[i,8]+'-'+cons_merc[i,9],18,17)
+                        Ecodi   := ALLTRIM(cons_merc[i,2])
+                        @ 00,00 say 'N' + enter
+                        @ 00,00 say 'S2' + enter
+                        @ 00,00 say 'D7' + enter
+                        @ 00,00 say 'ZT' + enter
+                        @ 00,00 say 'R30,0' + enter
+                        @ 00,00 say 'Q120,24' + ENTER
+                        @ 00,00 say 'A50,03,0,2,1,1,N,"' + Edescri + '"' + enter
+                        @ 00,00 say 'A270,03,0,2,1,1,N,"' + Edescri + '"' + enter
+                        @ 00,00 say 'A485,03,0,2,1,1,N,"' + Edescri + '"' + enter
+                        @ 00,00 say 'A50,20,0,2,1,1,N,"' + Edescri1+ '"' + enter
+                        @ 00,00 say 'A265,20,0,2,1,1,N,"' + Edescri1+ '"' + enter
+                        @ 00,00 say 'A480,20,0,2,1,1,N,"' + Edescri1+ '"' + enter
+                        IF ! EMPTY(ecodi)
+                                @ 00,00 say 'B50,38,0,1,1,2,40,B,"' + Ecodi + '"' + enter
+                                @ 00,00 say 'B270,38,0,1,1,2,40,B,"' + Ecodi + '"' + enter
+                                @ 00,00 say 'B485,38,0,1,1,2,40,B,"' + Ecodi + '"' + enter
+                        ENDIF
+                        @ 00,00 say 'P' + cqtde + enter
+                ELSEIF mtipo = 'G'
+                        Edescri := cons_merc[i,8]+'-'+cons_merc[i,9]
+                        mpreco  := 'R$ '+ALLTRIM(TRANSFORM(cons_merc[i,46],'999,999.99'))
+                        IF ! EMPTY(mtab_pr1)
+                                cons_ := {}
+                                sr_getconnection():exec("SELECT percent FROM sactabpg WHERE codigo = "+sr_cdbvalue(STRZERO(mtab_pr1,3)),,.t.,@cons_)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                                IF LEN(cons_) > 0
+                                        mpreco  := 'R$ '+ALLTRIM(TRANSFORM(cons_merc[i,46]*(cons_[1,1]/100+1),'999,999.99'))
+                                ENDIF
+                        ENDIF
+                        mpreco1 := ALLTRIM(SUBSTR(TRANSFORM(cons_merc[i,47],'999999.99'),1,6)+SUBSTR(TRANSFORM(cons_merc[i,47],'999999.99'),8))
+                        IF ! EMPTY(mtab_pr2)
+                                cons_ := {}
+                                sr_getconnection():exec("SELECT percent FROM sactabpg WHERE codigo = "+sr_cdbvalue(STRZERO(mtab_pr2,3)),,.t.,@cons_)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                                IF LEN(cons_) > 0
+                                        mpreco1 := ALLTRIM(SUBSTR(TRANSFORM(cons_merc[i,46]*(cons_[1,1]/100+1),'999999.99'),1,6)+SUBSTR(TRANSFORM(cons_merc[i,46]*(cons_[1,1]/100+1),'999999.99'),8))
+                                ENDIF
+                        ENDIF
+                        Ecodi   := ALLTRIM(cons_merc[i,2])
+                        @ 00,00 say 'N' + enter
+                        @ 00,00 say 'S2' + enter
+                        @ 00,00 say 'D7' + enter
+                        @ 00,00 say 'ZT' + enter
+                        @ 00,00 say 'R30,0' + enter
+                        @ 00,00 say 'Q240,16' + ENTER
+                        @ 00,00 say 'A120,05,0,2,1,2,N,"' + Edescri + '"' + enter
+                        IF ! EMPTY(ecodi)
+                                @ 00,00 say 'B120,35,0,1,2,2,50,B,"' + Ecodi + '"' + enter
+                        ENDIF
+                        @ 00,00 say 'A120,120,0,3,3,3,N,"'+ mpreco +'"' + enter
+                        IF mprc = 'S'
+                                @ 00,00 say 'A550,170,0,1,2,2,N,"'+ mpreco1 +'"' + enter
+                        ENDIF
+                        @ 00,00 say 'P' + cqtde + enter
+                ELSE
+                        Edescri := cons_merc[i,8]+'-'+cons_merc[i,9]
+                        mpreco  := 'R$ '+ALLTRIM(TRANSFORM(cons_merc[i,46],'999,999.99'))
+                        Ecodi   := ALLTRIM(cons_merc[i,2])
+                        @ 00,00 say 'N' + enter
+                        @ 00,00 say 'S2' + enter
+                        @ 00,00 say 'D7' + enter
+                        @ 00,00 say 'ZT' + enter
+                        @ 00,00 say 'R30,0' + enter
+                        @ 00,00 say 'Q240,16' + ENTER
+                        @ 00,00 say 'A119,04,0,2,1,1,N,"' + Edescri + '"' + enter
+                        IF ! EMPTY(ecodi)
+                                @ 00,00 say 'B120,33,0,1,2,2,50,B,"' + Ecodi + '"' + enter
+                        ENDIF
+                        @ 00,00 say 'A120,120,0,3,3,3,N,"'+ mpreco +'"' + enter
+                        @ 00,00 say 'P' + cqtde + enter
+                ENDIF
+        NEXT
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('TAB_PRECO.REL')
+ENDDO
+wvw_lclosewindow()
+RETURN NIL

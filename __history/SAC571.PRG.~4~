@@ -1,0 +1,1067 @@
+***********************************************
+* TABELA DE FABRICANTES
+************************************************
+MEMVAR getlist,nivel_acess
+
+FUNCTION sac571
+***************
+LOCAL MPRG:='SAC571',mtitulo:='RELATORIO DE CONSULTA DE FORNECEDOR/OUTROS',;
+      opcao,i,mtraco,mtit,mtipo,m_arq:={},lci,cci,lba,cba,mop,tela,mtot_fab,mlin,;
+      m_forn:={},;
+      li,ci,lb,cb,tela1,mpag,mgeral,mresumo,mresumo1,mparcialg,mparcialr,mresumol,;
+      msaldo:=' '
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mcod_forn,mcompras:=0,mtipo_conta
+
+IF ! ver_nivel(mprg,mtitulo,'156',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+mtraco := REPLI('=',80)
+*------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+IF ! AbriArq('sacdesp','cdesp');RETURN NIL;ENDIF
+*------------------------------------------------------------------
+**** VARIAVEIS DE IMPRESSAO ***
+mtipo_imp := m_indiv[1,18]
+*******************************
+lci := cci := 0
+lba := 14
+cba := 70
+
+li := ci := 0
+lb := 17
+cb := 65
+
+op_tela(15,10,24,70,mtitulo)
+
+WHILE .T.
+        exibi_prg(mprg)
+        mtipo_conta := SPACE(4)
+        mgeral:=mresumo:=mresumo1:=mresumoL:=mparcialg:=mparcialr:=msaldo:=SPACE(1)
+        @ lci+2,cci TO lci+2,cba
+        DEVPOS(lci+1,cci+1);DEVOUT('Tipo de Conta....:')
+        DEVPOS(lci+3,cci+1);DEVOUT('Cadastro Compl...:')
+        DEVPOS(lci+4,cci+1);DEVOUT('Cod/Nome/Tipo/UF.:')
+        DEVPOS(lci+5,cci+1);DEVOUT('Codigo/Nome).....:')
+        DEVPOS(lci+6,cci+1);DEVOUT('Cod/Nome/Local...:')
+        DEVPOS(lci+7,cci+1);DEVOUT('Parcial Geral....:')
+        DEVPOS(lci+8,cci+1);DEVOUT('Parcial Resumo...:')
+        @ lci+1,cci+20 GET mtipo_conta PICT '9999' VALID lim_get() .AND. verdesp(mtipo_conta,lci+1,cci+25) WHEN men_get(lci+2,cci+20,'Identifique o Grupo da Conta preenchendo so o primeiro digito da conta, ou preenchendo todo os espaco p/o tipo de conta <F9>p/Consultar ou deixando em BRANCO p/TODOS')
+        @ lci+3,cci+20 GET mgeral  PICT '@!' VALID mgeral $ 'X, '         //AND lim_get() WHEN men_get(lci+2,cci+20,'Identifique o Grupo da Conta preenchendo so o primeiro digito da conta, ou preenchendo todo os espaco p/o tipo de conta <F9>p/Consultar ou deixando em BRANCO p/TODOS')
+        @ lci+4,cci+20 GET mresumo PICT '@!' VALID mresumo $ 'X, ' WHEN EMPTY(mgeral)        //AND lim_get() WHEN men_get(lci+2,cci+20,'Identifique o Grupo da Conta preenchendo so o primeiro digito da conta, ou preenchendo todo os espaco p/o tipo de conta <F9>p/Consultar ou deixando em BRANCO p/TODOS')
+        @ lci+5,cci+20 GET mresumo1 PICT '@!' VALID mresumo1 $ 'X, ' WHEN EMPTY(mgeral) .AND. EMPTY(mresumo)         //AND lim_get() WHEN men_get(lci+2,cci+20,'Identifique o Grupo da Conta preenchendo so o primeiro digito da conta, ou preenchendo todo os espaco p/o tipo de conta <F9>p/Consultar ou deixando em BRANCO p/TODOS')
+        @ lci+6,cci+20 GET mresumoL PICT '@!' VALID mresumoL $ 'X, ' WHEN EMPTY(mgeral) .AND. EMPTY(mresumo) .AND. EMPTY(mresumo1)         //AND lim_get() WHEN men_get(lci+2,cci+20,'Identifique o Grupo da Conta preenchendo so o primeiro digito da conta, ou preenchendo todo os espaco p/o tipo de conta <F9>p/Consultar ou deixando em BRANCO p/TODOS')
+        @ lci+7,cci+20 GET mparcialg PICT '@!' VALID mparcialg $ 'X, ' WHEN EMPTY(mgeral) .AND. EMPTY(mresumo) .AND. EMPTY(mresumo1) .AND. EMPTY(mresumoL)         //AND lim_get() WHEN men_get(lci+2,cci+20,'Identifique o Grupo da Conta preenchendo so o primeiro digito da conta, ou preenchendo todo os espaco p/o tipo de conta <F9>p/Consultar ou deixando em BRANCO p/TODOS')
+        @ lci+8,cci+20 GET mparcialr PICT '@!' VALID mparcialr $ 'X, ' WHEN EMPTY(mgeral) .AND. EMPTY(mresumo) .AND. EMPTY(mresumo1) .AND. EMPTY(mresumoL) .AND. EMPTY(mparcialg)         //AND lim_get() WHEN men_get(lci+2,cci+20,'Identifique o Grupo da Conta preenchendo so o primeiro digito da conta, ou preenchendo todo os espaco p/o tipo de conta <F9>p/Consultar ou deixando em BRANCO p/TODOS')
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        IF mgeral = 'X'
+                mop := 1
+        ELSEIF mresumo = 'X'
+                mop := 2
+        ELSEIF mresumo1 = 'X'
+                mop := 3
+        ELSEIF mparcialg = 'X'
+                mop := 4
+        ELSEIF mparcialg = 'X'
+                mop := 5
+        ELSEIF mresumoL = 'X'
+                mop := 6
+        ELSE
+                LOOP
+        ENDIF        
+        setcor(1)
+        IF mop = 1
+                mtot_fab := 0
+                IF ! imp_arq('CON_FORN.REL','R')
+                        LOOP
+                ENDIF
+                ***************
+                SELE('forn');ORDSETFOCUS(2)
+                GO TOP
+                ***************
+                mlin := 0
+                mpag := 1
+                IF ! EMPTY(mtipo_conta)
+                        mtipo := 'Tipo de Conta: '+mtipo_conta+' - '+cdesp->desc1
+                ENDIF
+                mtit := 'Relatorio Cadastro Fabricantes'
+                cabecalho(mpag,mtit,mtipo)
+                WHILE ! EOF() .AND. LASTKEY() <> 27
+                        IF ! EMPTY(mtipo_conta) .AND. mtipo_conta <> forn->tipo
+                                SKIP
+                                LOOP
+                        ENDIF
+                        IF mlin = 7
+                                EJECT
+                                mlin := 0
+                                mpag ++
+                                cabecalho(mpag,mtit,mtipo)
+                                LOOP
+                        ENDIF
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT('Data Cadastro: '+DTOC(forn->data_cad))
+                        DEVPOS(PROW(),65);DEVOUT('Telefone.: '+forn->tel1)
+                        DEVPOS(PROW()+1,00);DEVOUT('Codigo..: '+forn->cod_forn+' - '+forn->razao)
+                        DEVPOS(PROW(),65);DEVOUT('Telefone.: '+forn->tel2)
+                        IF forn->cgc <> SPACE(14)
+                                DEVPOS(PROW()+1,00);DEVOUT('CNPJ....: '+TRANSFORM(forn->cgc,'@@R 99.999.999/9999-99')+' -  Insc.: '+forn->insc)
+                        ELSE
+                                DEVPOS(PROW()+1,00);DEVOUT('CPF.....: '+TRANSFORM(forn->cpf,'@@R 999.999.999-99')+' -  Insc.: '+forn->insc)
+                        ENDIF
+                        DEVPOS(PROW(),65);DEVOUT('Fax......: '+forn->fax)
+                        DEVPOS(PROW()+1,00);DEVOUT('Endereco: '+forn->endereco)
+                        DEVPOS(PROW(),65);DEVOUT('Prazo Pg.: '+forn->prazo_pag)
+                        DEVPOS(PROW()+1,00);DEVOUT('Bairro..: '+forn->bairro)
+                        DEVPOS(PROW(),65);DEVOUT('Gerente..: '+forn->ct_gerente)
+                        DEVPOS(PROW()+1,00);DEVOUT('Cidade..: '+forn->cidade)
+                        DEVPOS(PROW(),65);DEVOUT('Vendedor.: '+forn->ct_vendedo)
+                        DEVPOS(PROW()+1,00);DEVOUT('Estado..: '+forn->uf+' -  CEP: '+forn->cep+' -  Cx.Postal: '+forn->cpostal)
+                        DEVPOS(PROW(),65);DEVOUT('Limite...: '+TRANSFORM(forn->limite,'99,999,999.99'))
+                        imprt(mtipo_imp,'N',1)
+                        DEVPOS(PROW(),00);DEVOUT(mtraco)
+                        mlin ++
+                        mtot_fab ++
+                        SKIP
+                ENDDO
+                imprt(mtipo_imp,'N',1)
+                DEVPOS(PROW()+1,00);DEVOUT('Total de Fabricante: '+TRANSFORM(mtot_fab,'999,999.99'))
+                DEVPOS(PROW()+2,00);DEVOUT(TIME())
+                EJECT
+                SETPRC(00,00)
+        ELSEIF mop = 2
+                ASIZE(m_arq,0)
+                i = 1
+                ***************
+                SELE('forn');ORDSETFOCUS(2)
+                GO TOP
+                ***************
+                mensagem('Aguarde um momento coletando dados OK !!!')
+                IF ! imp_arq('CON_FORN.REL','R')
+                        LOOP
+                ENDIF
+                mpag := 1
+                IF ! EMPTY(mtipo_conta)
+                        mtipo := 'Tipo de Conta: '+mtipo_conta+' - '+cdesp->desc1
+                ENDIF
+                mtit := 'Tabela de Codigo dos Fabricantes'
+                cabecalho(mpag,mtit,mtipo)
+                imprt(mtipo_imp,'C')
+                DEVPOS(PROW()+1,00);DEVOUT('Cod.')
+                DEVPOS(PROW(),PCOL()+2);DEVOUT('Descricao                               ')
+                DEVPOS(PROW(),PCOL()+2);DEVOUT('Tipo de Conta                  ')
+                DEVPOS(PROW(),PCOL()+2);DEVOUT('UF')
+                DEVPOS(PROW(),PCOL()+2);DEVOUT('CNPJ')
+                imprt(mtipo_imp,'N')
+                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                imprt(mtipo_imp,'C')
+                WHILE ! EOF() .AND. LASTKEY() <> 27
+                        IF ! EMPTY(mtipo_conta) .AND. mtipo_conta <> forn->tipo
+                                SKIP
+                                LOOP
+                        ENDIF
+                        DEVPOS(PROW()+1,00);DEVOUT(forn->cod_forn)
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(forn->razao)
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(forn->tipo)
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(verdesp(forn->tipo,,,,1))
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(forn->uf)
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(forn->cgc,'@@R 99.999.999/9999-99'))
+                        IF PROW() >= 59
+                                EJECT
+                                mpag ++
+                                cabecalho(mpag,mtit,mtipo)
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,00);DEVOUT('Cod.')
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('Descricao                               ')
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('Tipo de Conta                  ')
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('UF')
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('CNPJ')
+                                imprt(mtipo_imp,'N')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                                imprt(mtipo_imp,'C')
+                        ENDIF
+                        SKIP
+                ENDDO
+                DEVPOS(PROW()+2,00);DEVOUT(TIME())
+                EJECT
+                SETPRC(00,00)
+        ELSEIF mop = 6
+                msaldo := op_simnao('S','Imprimir o Saldo e Valor de Custo por Fornecedor:')
+                ASIZE(m_arq,0)
+                i = 1
+                cons_forn := {}
+                cComm  := "SELECT * FROM sacforn "
+                IF ! EMPTY(mtipo_conta)
+                        ccomm  := ccomm + " WHERE tipo = "+sr_cdbvalue(mtipo_conta)
+                ENDIF
+                ccomm := ccomm + " ORDER BY razao"
+                sr_getconnection():exec(ccomm,,.t.,@cons_forn)
+                IF LEN(cons_forn) = 0
+                        atencao('Nao existe nenhum Fornecedor...')
+                        LOOP
+                ENDIF
+                mensagem('Aguarde um momento coletando dados OK !!!')
+                IF ! imp_arq('CON_FORN.REL','R')
+                        LOOP
+                ENDIF
+                mpag := 1
+                IF ! EMPTY(mtipo_conta)
+                        mtipo := 'Tipo de Conta: '+mtipo_conta+' - '+cdesp->desc1
+                ENDIF
+                mtit := 'Tabela de Codigo dos Fabricantes'
+                cabecalho(mpag,mtit,mtipo)
+                imprt(mtipo_imp,'N')
+                DEVPOS(PROW()+1,00);DEVOUT('Cod.')
+                DEVPOS(PROW(),PCOL()+2);DEVOUT('Descricao                               ')
+                DEVPOS(PROW(),PCOL()+2);DEVOUT('Local')
+                DEVPOS(PROW(),PCOL()+5);DEVOUT('Cidade              ')
+                DEVPOS(PROW(),PCOL()+2);DEVOUT('UF')
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(' Qtd.Itens')
+                IF msaldo = 'S'
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('     Saldo')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('  Custo Merc.')
+                ENDIF        
+                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                i := 0
+                FOR i = 1 TO LEN(cons_forn)
+                        DEVPOS(PROW()+1,00);DEVOUT(cons_forn[i,1])
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(cons_forn[i,2])
+                        DEVPOS(PROW(),PCOL()+3);DEVOUT(cons_forn[i,11])
+                        DEVPOS(PROW(),PCOL()+3);DEVOUT(cons_forn[i,8])
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(cons_forn[i,9])
+                        cons_item := {}
+                        cComm  := "SELECT COUNT(*),SUM(saldo_mer),SUM(saldo_mer*cust_merc) FROM sacmerc WHERE cod_fab = "+sr_cdbvalue(cons_forn[i,1])
+                        sr_getconnection():exec(ccomm,,.t.,@cons_item)
+                        IF LEN(cons_item) > 0
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(cons_item[1,1],'999,999.99'))
+                                IF msaldo = 'S'                                
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(cons_item[1,2],'999,999.99'))
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(cons_item[1,3],'99,999,999.99'))
+                                ENDIF
+                        ENDIF
+                
+                        IF PROW() >= 59
+                                EJECT
+                                mpag ++
+                                cabecalho(mpag,mtit,mtipo)
+                                imprt(mtipo_imp,'N')
+                                DEVPOS(PROW()+1,00);DEVOUT('Cod.')
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('Descricao                               ')
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('Local')
+                                DEVPOS(PROW(),PCOL()+5);DEVOUT('Cidade              ')
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('UF')
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(' Qtd.Itens')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        ENDIF
+                NEXT
+                DEVPOS(PROW()+2,00);DEVOUT('Quantidade de Fornecedores:'+TRANSFORM(LEN(cons_forn),'999,999,999'))
+                DEVPOS(PROW()+2,00);DEVOUT(TIME())
+                EJECT
+                SETPRC(00,00)
+        ELSEIF mop = 3
+                ASIZE(m_arq,0)
+                i = 1
+                IF ! imp_arq('CON_FORN.REL','R')
+                        LOOP
+                ENDIF
+                ***************
+                SELE('forn');ORDSETFOCUS(2)
+                GO TOP
+                ***************
+                mensagem('Aguarde um momento coletando dados OK !!!')
+                WHILE ! EOF() .AND. LASTKEY() <> 27
+                        IF ! EMPTY(mtipo_conta) .AND. mtipo_conta <> forn->tipo
+                                SKIP
+                                LOOP
+                        ENDIF
+                        AADD(m_arq,{forn->cod_forn,forn->razao})
+                        SKIP
+                ENDDO
+                mpag := 1
+                IF ! EMPTY(mtipo_conta)
+                        mtipo := 'Tipo de Conta: '+mtipo_conta+' - '+cdesp->desc1
+                ENDIF
+                mtit := 'Tabela de Codigo dos Fabricantes'
+                cabecalho(mpag,mtit,mtipo)
+                imprt(mtipo_imp,'C')
+                DEVPOS(PROW()+1,00);DEVOUT('Cod.')
+                DEVPOS(PROW(),06);DEVOUT('Descricao')
+                DEVPOS(PROW(),50);DEVOUT('Cod.')
+                DEVPOS(PROW(),56);DEVOUT('Descricao')
+                imprt(mtipo_imp,'N')
+                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                i := 0
+                FOR i = 1 TO LEN(m_arq)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(m_arq[i,1])
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(m_arq[i,2])
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('|')
+                        IF i+52 > LEN(m_arq) .AND. PROW() >= 59
+                                EXIT
+                        ENDIF
+                        IF i+52 > LEN(m_arq)
+                                LOOP
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(m_arq[i+52,1])
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(m_arq[i+52,2])
+                        ENDIF
+                        IF PROW() >= 59
+                                EJECT
+                                mpag ++
+                                cabecalho(mpag,mtit,mtipo)
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,00);DEVOUT('Cod.')
+                                DEVPOS(PROW(),06);DEVOUT('Descricao')
+                                DEVPOS(PROW(),50);DEVOUT('Cod.')
+                                DEVPOS(PROW(),56);DEVOUT('Descricao')
+                                imprt(mtipo_imp,'N')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                                i = i + 52
+                                LOOP
+                        ENDIF
+                NEXT
+                DEVPOS(PROW()+2,00);DEVOUT(TIME())
+                EJECT
+                SETPRC(00,00)
+        ELSEIF mop = 4
+                ASIZE(m_forn,0)
+                setcor(1)
+                ***************
+                SELE('forn');ORDSETFOCUS(1)
+                GO TOP
+                ***************
+                op_tela(li,ci,lb+2,cb)
+                WHILE .T.
+                        setcor(3)
+                        @ lb-2,ci TO lb-2,cb
+                        setcor(1)
+                        mcod_forn := 0
+                        mensagem('Pressione qualquer tecla para continuar incluindo')
+                        ACHOICE(li+1,ci+1,lb-3,cb-1,m_forn)
+                        DEVPOS(lb-1,ci+1);DEVOUT('Codigo:')
+                        mensagem('Digite Codigo Fornecedor ou <ENTER><ENTER> p/imprimir <ESC>retornar')
+                        @ lb-1,ci+9 GET mcod_forn PICT '9999' VALID v_fornece(mcod_forn,lb-1,ci+14)
+                        READ
+                        IF LASTKEY() = 27
+                                EXIT
+                        ENDIF
+                        IF EMPTY(mcod_forn)
+                                mensagem('Digite Codigo Fornecedor ou <ENTER> p/imprimir <ESC>retornar')
+                                @ lb-1,ci+9 GET mcod_forn PICT '9999' VALID v_fornece(mcod_forn,lb-1,ci+14)
+                                READ
+                                IF LASTKEY() = 27 .OR. EMPTY(mcod_forn)
+                                        EXIT
+                                ENDIF
+                        ENDIF
+
+                        IF ! forn->(DBSEEK(STRZERO(mcod_forn,4)))
+                                atencao('Fornecedor nao Cadastrado')
+                                LOOP
+                        ENDIF
+                        IF ASCAN(m_forn,STRZERO(mcod_forn,4)) > 0
+                                opcao := mensagem1('Fornecedor ja solicitado deseja Excluir [s/N]:','N','S,N')
+                                IF LASTKEY() = 27 .OR. opcao = 'N'
+                                        LOOP
+                                ENDIF
+                                m_forn[ASCAN(m_forn,STRZERO(mcod_forn,4))] := '** Registro Cancelado **'
+                                LOOP
+                        ENDIF
+                        opcao := op_simnao('S','Confirma o FORNECEDOR [S/n]:')
+                        IF opcao = 'N'
+                                LOOP
+                        ENDIF
+                        AADD(m_forn,forn->cod_forn+'  '+forn->razao)
+                ENDDO
+                IF LASTKEY() = 27
+                        wvw_lclosewindow()
+                        LOOP
+                ENDIF
+                mtot_fab := 0
+                IF ! imp_arq('CON_FORN.REL','R')
+                        LOOP
+                ENDIF
+                mlin := 0
+                mpag := 1
+                mtit := 'Relatorio Cadastro Fabricantes'
+                cabecalho(mpag,mtit,mtipo)
+                i = 0
+                FOR i = 1 TO LEN(m_forn)
+                        IF m_forn[i] = '** Registro Cancelado **'
+                                LOOP
+                        ENDIF
+                        forn->(DBSEEK(SUBSTR(m_forn[i],1,4)))
+                        IF mlin = 7
+                                EJECT
+                                mlin := 0
+                                mpag ++
+                                cabecalho(mpag,mtit,mtipo)
+                                LOOP
+                        ENDIF
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT('Data Cadastro: '+DTOC(forn->data_cad))
+                        DEVPOS(PROW(),65);DEVOUT('Telefone.: '+forn->tel1)
+                        DEVPOS(PROW()+1,00);DEVOUT('Codigo..: '+forn->cod_forn+' - '+forn->razao)
+                        DEVPOS(PROW(),65);DEVOUT('Telefone.: '+forn->tel2)
+                        IF forn->cgc <> SPACE(14)
+                                DEVPOS(PROW()+1,00);DEVOUT('CNPJ....: '+TRANSFORM(forn->cgc,'@@R 99.999.999/9999-99')+' -  Insc.: '+forn->insc)
+                        ELSE
+                                DEVPOS(PROW()+1,00);DEVOUT('CPF.....: '+TRANSFORM(forn->cpf,'@@R 999.999.999-99')+' -  Insc.: '+forn->insc)
+                        ENDIF
+                        DEVPOS(PROW(),65);DEVOUT('Fax......: '+forn->fax)
+                        DEVPOS(PROW()+1,00);DEVOUT('Endereco: '+forn->endereco)
+                        DEVPOS(PROW(),65);DEVOUT('Prazo Pg.: '+forn->prazo_pag)
+                        DEVPOS(PROW()+1,00);DEVOUT('Bairro..: '+forn->bairro)
+                        DEVPOS(PROW(),65);DEVOUT('Gerente..: '+forn->ct_gerente)
+                        DEVPOS(PROW()+1,00);DEVOUT('Cidade..: '+forn->cidade)
+                        DEVPOS(PROW(),65);DEVOUT('Vendedor.: '+forn->ct_vendedo)
+                        DEVPOS(PROW()+1,00);DEVOUT('Estado..: '+forn->uf+' -  CEP: '+forn->cep+' -  Cx.Postal: '+forn->cpostal)
+                        DEVPOS(PROW(),65);DEVOUT('Limite...: '+TRANSFORM(forn->limite,'99,999,999.99'))
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        mlin ++
+                        mtot_fab ++
+                NEXT
+                imprt(mtipo_imp,'N',1)
+                DEVPOS(PROW()+1,00);DEVOUT('Total de Fabricante: '+TRANSFORM(mtot_fab,'999,999.99'))
+                DEVPOS(PROW()+2,00);DEVOUT(TIME())
+                EJECT
+                SETPRC(00,00)
+        ELSEIF mop = 5
+                ASIZE(m_forn,0)
+                tela1 := SAVESCREEN(01,00,24,79)
+                setcor(1)
+                ***************
+                SELE('forn');ORDSETFOCUS(1)
+                GO TOP
+                ***************
+                WHILE .T.
+                        setcor(3)
+                        botao(li,ci,lb,cb)
+                        @ lb-2,ci+1 TO lb-2,cb-1
+                        setcor(1)
+                        mcod_forn := 0
+                        mensagem('Pressione qualquer tecla para continuar incluindo')
+                        ACHOICE(li+1,ci+1,lb-3,cb-1,m_forn)
+                        mensagem('Digite Codigo Fornecedor ou <ENTER><ENTER> p/imprimir <ESC>retornar')
+                        DEVPOS(lb-1,ci+1);DEVOUT('Codigo:')
+                        @ lb-1,ci+9 GET mcod_forn PICT '9999' VALID v_fornece(mcod_forn,lb-1,ci+14)
+                        READ
+                        IF LASTKEY() = 27
+                                RESTSCREEN(01,00,24,79,tela1)
+                                EXIT
+                        ENDIF
+                        IF EMPTY(mcod_forn)
+                                mensagem('Digite Codigo Fornecedor ou <ENTER> p/imprimir <ESC>retornar')
+                                @ lb-1,ci+9 GET mcod_forn PICT '9999' VALID v_fornece(mcod_forn,lb-1,ci+14)
+                                READ
+                                IF LASTKEY() = 27 .OR. EMPTY(mcod_forn)
+                                        RESTSCREEN(01,00,24,79,tela1)
+                                        EXIT
+                                ENDIF
+                        ENDIF
+
+                        IF ! forn->(DBSEEK(STRZERO(mcod_forn,4)))
+                                atencao('Fornecedor nao Cadastrado')
+                                LOOP
+                        ENDIF
+                        IF ASCAN(m_forn,STRZERO(mcod_forn,4)) > 0
+                                opcao := op_simnao('N','Fornecedor ja solicitado deseja Excluir [s/N]:')
+                                IF LASTKEY() = 27 .OR. opcao = 'N'
+                                        LOOP
+                                ENDIF
+                                m_forn[ASCAN(m_forn,STRZERO(mcod_forn,4))] := '** Registro Cancelado **'
+                                LOOP
+                        ENDIF
+                        opcao := op_simnao('S','Confirma o FORNECEDOR [S/n]:')
+                        IF opcao = 'N'
+                                LOOP
+                        ENDIF
+                        AADD(m_forn,forn->cod_forn+'  '+forn->razao)
+                ENDDO
+                IF LASTKEY() = 27
+                        wvw_lclosewindow()                        
+                        LOOP
+                ENDIF
+                ASIZE(m_arq,0)
+                i = 0
+                ***************
+                SELE('forn');ORDSETFOCUS(1)
+                GO TOP
+                ***************
+                mensagem('Aguarde um momento coletando dados OK !!!')
+                FOR i = 1 TO LEN(m_forn)
+                        forn->(DBSEEK(SUBSTR(m_forn[i],1,4)))
+                        AADD(m_arq,{forn->cod_forn,forn->razao})
+                NEXT
+                IF ! imp_arq('CON_FORN.REL','R')
+                        LOOP
+                ENDIF
+                mpag := 1
+                mtit := 'Tabela de Codigo dos Fabricantes'
+                cabecalho(mpag,mtit,mtipo)
+                DEVPOS(PROW()+1,00);DEVOUT('Cod.')
+                DEVPOS(PROW(),06);DEVOUT('Nome do Fabricante')
+                DEVPOS(PROW(),40);DEVOUT('Cod.')
+                DEVPOS(PROW(),46);DEVOUT('Nome do Fabricante')
+                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                i := 0
+                FOR i = 1 TO LEN(m_arq)
+                        DEVPOS(PROW()+1,00);DEVOUT(m_arq[i,1])
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(m_arq[i,2])
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('|')
+                        IF i+52 > LEN(m_arq) .AND. PROW() >= 59
+                                EXIT
+                        ENDIF
+                        IF i+52 > LEN(m_arq)
+                                LOOP
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(m_arq[i+52,1])
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(m_arq[i+52,2])
+                        ENDIF
+                        IF PROW() >= 59
+                                EJECT
+                                mpag ++
+                                cabecalho(mpag,mtit,mtipo)
+                                DEVPOS(PROW()+1,00);DEVOUT('Cod.')
+                                DEVPOS(PROW(),06);DEVOUT('Nome do Fabricante')
+                                DEVPOS(PROW(),40);DEVOUT('Cod.')
+                                DEVPOS(PROW(),46);DEVOUT('Nome do Fabricante')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                                i = i + 52
+                                LOOP
+                        ENDIF
+                NEXT
+                DEVPOS(PROW()+2,00);DEVOUT(TIME())
+                EJECT
+                SETPRC(00,00)
+        ELSE
+                EXIT
+        ENDIF
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('CON_FORN.REL')
+        EXIT
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*************************************  F I M  *************************************
+************************************************
+* TABELA DE GRUPOS E SUB-GRUPOS
+************************************************
+FUNCTION sac575()
+***************
+LOCAL telaprin,opcao,i,mquantd,mtraco,mtit,mtipo,mpag,mgrupo
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+mtraco := REPLI('=',80)
+mquantd := 0
+*-------------------------------------------------------------------------
+op_tela(10,10,12,80,'Tabela de GRUPOS')
+IF ! AbriArq('sacgrupo','grup');RETURN NIL;ENDIF
+*-------------------------------------------------------------------------
+WHILE .T.
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        mgrupo := SPACE(5)
+        mensagem('Preencha os Campos ou em Branco p/Imprimir todos - <ESC>p/Abandonar')
+        setcor(1)
+        DEVPOS(00,01);DEVOUT('Cod.Grupo......:')
+        @ 00,19 GET mgrupo PICT '999' VALID v_gru_cod(mgrupo,2,00,23)
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+
+	IF ! imp_arq('CON_GRU.REL','R')
+        	wvw_lclosewindow()
+	        RETURN NIL
+	ENDIF
+	***************
+	SELE('grup');ORDSETFOCUS(1)
+	GO TOP
+	***************
+	mensagem('Espere o Final da Impressao OK !!!')
+	mpag := 1
+	mtit := 'Tabela de Grupos e Sub-Grupos'
+	mtipo := 'p/ Terminal'
+	cabecalho(mpag,mtit,mtipo)
+	DEVPOS(PROW()+1,00);DEVOUT('Grupos')
+	DEVPOS(PROW(),00);DEVOUT('Grupos')
+	DEVPOS(PROW(),08);DEVOUT('Sub-Grupos')
+	DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+	WHILE ! EOF()
+	        mensagem('Imprimindo o Produto: '+grup->gru_sub+' - '+grup->merc)
+		IF ! EMPTY(mgrupo) .AND. ALLTRIM(mgrupo) <> SUBSTR(grup->gru_sub,1,3)
+			SKIP
+			LOOP
+		ENDIF
+        	IF LEN(RTRIM(grup->gru_sub)) = 3
+	                DEVPOS(PROW()+2,00);DEVOUT(RTRIM(grup->gru_sub)+' - '+grup->merc)
+	        ELSE
+        	        DEVPOS(PROW()+1,08);DEVOUTPICT(grup->gru_sub,'@@R 999.99')
+                	DEVPOS(PROW(),PCOL());DEVOUT(' - '+grup->merc)
+	        ENDIF
+        	SKIP
+	        IF PROW() >= 59
+        	        EJECT
+                	mpag ++
+	                cabecalho(mpag,mtit,mtipo)
+        	        DEVPOS(PROW()+1,00);DEVOUT('Grupos')
+                	DEVPOS(PROW(),00);DEVOUT('Grupos')
+	                DEVPOS(PROW(),08);DEVOUT('Sub-Grupos')
+        	        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                	LOOP
+	        ENDIF
+	ENDDO
+	SETPRC(00,00)
+	SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('CON_GRU.REL')
+ENDDO
+RETURN NIL
+******************************* F I M ***************************************
+* TABELA DE CONSULTAS CADASTRO DE PRODUTOS
+************************************************
+FUNCTION sac576()
+***************
+LOCAL telaprin,opcao,i,mquantd,mtraco,mtit,mtipo,point,mpag
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mcompras:=0
+
+mtraco := REPLI('=',80)
+mquantd := 0
+*-------------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('sacgrupo','grup');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*-------------------------------------------------------------------------
+
+WHILE .T.
+        mquantd := mensagem2('Quantidade de Copias:',mquantd,'99',,'N')
+        IF LASTKEY() = 27
+                RETURN NIL
+        ENDIF
+        IF EMPTY(mquantd);LOOP;ENDIF
+        mensagem('Espere o Final da Impressao OK !!!')
+        IF ! imp_arq('CON_PROD.REL','R')
+                LOOP
+        ENDIF
+        WHILE .T.
+                ***************
+                SELE('merc');ORDSETFOCUS(1)
+                GO TOP
+                ***************
+                i := 0
+                FOR i = 1 TO mquantd
+                        mpag := 1
+                        mtit := 'Consulta Cadastro de Produtos'
+                        cabecalho(mpag,mtit,mtipo)
+                        WHILE ! EOF()
+                                IF merc->cod_merc = SPACE(5);SKIP;LOOP;ENDIF
+                                point := RECNO()
+                                DEVPOS(PROW()+1,00);DEVOUT('Produto..: '+merc->cod_merc+' - '+merc->merc)
+                                DEVPOS(PROW(),00);DEVOUT(PADL('Data Cad.: '+DTOC(merc->data_cad),80))
+                                DEVPOS(PROW(),00);DEVOUT('Produto..: '+merc->cod_merc+' - '+merc->merc)
+                                DEVPOS(PROW()+1,00);DEVOUT('Grupo....: '+SUBSTR(merc->gru_sub,1,3)+'   -')
+                                pr_gru(SUBSTR(merc->gru_sub,1,3)+'  ',PROW(),PCOL()+1)
+                                DEVPOS(PROW()+1,00);DEVOUT('Sub-Grupo: '+merc->gru_sub+' -')
+                                pr_gru(merc->gru_sub,PROW(),PCOL()+1)
+                                DEVPOS(PROW()+1,00);DEVOUT('Fabrica..: '+merc->cod_fab+'  - '+merc->fabrica)
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,00);DEVOUT('Unid.:')
+                                DEVPOS(PROW(),07);DEVOUT(merc->unidade)
+                                DEVPOS(PROW(),10);DEVOUT('Peso Liq.:')
+                                DEVPOS(PROW(),21);DEVOUT(TRANSFORM(merc->peso_liq,'9999.999'))
+                                DEVPOS(PROW(),31);DEVOUT('Bruto:')
+                                DEVPOS(PROW(),38);DEVOUT(TRANSFORM(merc->peso,'9999.999'))
+                                DEVPOS(PROW(),48);DEVOUT('Alim.:')
+                                DEVPOS(PROW(),55);DEVOUT(merc->alimento)
+                                DEVPOS(PROW(),57);DEVOUT('Isento:')
+                                DEVPOS(PROW(),65);DEVOUT(merc->isento)
+                                DEVPOS(PROW(),67);DEVOUT('% Lucro:')
+                                DEVPOS(PROW(),76);DEVOUT(TRANSFORM(merc->p_lucro,'999.99'))
+                                DEVPOS(PROW(),84);DEVOUT('Comissao:')
+                                DEVPOS(PROW(),94);DEVOUT(TRANSFORM(merc->comissao,'999.99'))
+                                DEVPOS(PROW(),102);DEVOUT('Est.Min.:')
+                                DEVPOS(PROW(),112);DEVOUT(TRANSFORM(merc->est_min,'9999.99'))
+                                DEVPOS(PROW(),121);DEVOUT('Max.:')
+                                DEVPOS(PROW(),127);DEVOUT(TRANSFORM(merc->est_max,'9999.99'))
+                                imprt(mtipo_imp,'N',1)
+                                DEVPOS(PROW(),00);DEVOUT(REPLI('-',80))
+                                SKIP
+                                IF PROW() >= 59
+                                        EJECT
+                                        mpag ++
+                                        cabecalho(mpag,mtit,mtipo)
+                                        LOOP
+                                ENDIF
+                        ENDDO
+                NEXT
+                EJECT;SETPRC(00,00);SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF;SET PRINT TO
+                EXIT
+        ENDDO
+        conf_impressao('CON_PROD.REL')
+        CLOSE ALL;RETURN NIL
+ENDDO
+RETURN NIL
+**************** f i m **********************************
+
+FUNCTION pr_gru(vgru,ld,cd)
+**********************
+
+LOCAL msele,morde
+
+msele := SELE()
+morde := INDEXORD()
+
+WHILE .T.
+        **************
+        SELE('grup')
+        ORDSETFOCUS(1)
+        GO TOP
+        **************
+
+        IF ! grup->(DBSEEK(vgru))
+                SELE(msele)
+                ORDSETFOCUS(morde)
+                RETURN NIL
+        ENDIF
+        DEVPOS(ld,cd);DEVOUT(grup->merc)
+        SELE(msele)
+        ORDSETFOCUS(morde)
+        RETURN NIL
+ENDDO
+RETURN NIL
+********************** F I M ********************************
+************************************************
+* TABELA DE CONSULTA DE DESPESAS
+************************************************
+
+FUNCTION sac573()
+***************
+
+LOCAL opcao,mquantd,mtraco,mtit,mtipo,i,mprg:='SAC573',mpag
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mcod_forn,mcompras:=0,mtipo_conta
+
+mtraco := REPLI('=',80)
+mquantd := 0
+*-------------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('saccadde','desp');RETURN NIL;ENDIF
+*-------------------------------------------------------------------------
+
+WHILE .T.
+	********* VARIAVEIS DE IMPRESSAO *******************
+	mtipo_imp := m_indiv[1,18]
+	****************************************************
+        mquantd := mensagem2('Quantidade de Copias:',mquantd,'99',,'N')
+        IF LASTKEY() = 27
+                CLOSE ALL
+                RETURN NIL
+        ENDIF
+        IF ! imp_arq('CON_DESPE.REL','R')
+                LOOP
+        ENDIF
+        i := 0
+        FOR i = 1 TO mquantd
+                ***************
+                SELE('desp')
+                ORDSETFOCUS(2)
+                GO TOP
+                ***************
+                mensagem('Espere o Final da Impressao OK !!! - <ESC>cancelar a impressao')
+                mpag := 1
+                mtit := 'Tabela de consulta de DESPESAS'
+                cabecalho(mpag,mtit,mtipo,mprg)
+                imprt(mtipo_imp,'C',1)
+                DEVPOS(PROW(),00);DEVOUT(PADC('Codigo  Descricao'+SPACE(70),136))
+                imprt(mtipo_imp,'N',1)
+                DEVPOS(PROW(),00);DEVOUT(mtraco)
+                WHILE ! EOF()
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(PADC(' '+desp->codigo+'   '+desp->desc1+' '+desp->desc2,136))
+                        SKIP
+                        IF PROW() >= 59
+                                mpag++
+                                EJECT
+                                cabecalho(mpag,mtit,mtipo)
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,00);DEVOUT(PADC('Codigo  Descricao'+SPACE(70),136))
+                                imprt(mtipo_imp,'N')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        ENDIF
+                ENDDO
+        NEXT
+        EJECT
+	SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('CON_DESPE.REL')
+        CLOSE ALL
+        RETURN NIL
+ENDDO
+RETURN NIL
+**************** f i m **********************************
+************************************************
+* TABELA DE CONSULTA DE CONTA DESPESAS
+************************************************
+FUNCTION sac574()
+***************
+LOCAL mprg := 'SAC574',;
+      opcao,mquantd,mtraco,mtit,mtipo,i,mpag
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+mtraco := REPLI('=',80)
+mquantd := 0
+*-------------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('sacdesp','cdesp');RETURN NIL;ENDIF
+*------------------------------------------------------------------
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+
+WHILE .T.
+        mquantd := mensagem2('Quantidade de Copias:',mquantd,'99',,'N')
+        IF LASTKEY() = 27
+                RETURN NIL
+        ENDIF
+        IF ! imp_arq('TAB_DESP.REL','R')
+                LOOP
+        ENDIF
+        i := 0
+        FOR i = 1 TO mquantd
+                ***************
+                SELE('cdesp');ORDSETFOCUS(1)
+                GO TOP
+                ***************
+                mpag := 1
+                mtit := 'Tabela de consulta de DESPESAS'
+                cabecalho(mpag,mtit,mtipo,mprg)
+                imprt(mtipo_imp,'N')
+                DEVPOS(PROW()+1,00);DEVOUT('Codigo  Descricao')
+                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                WHILE ! EOF()
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+1,00);DEVOUT(cdesp->codigo+'    '+cdesp->desc1)
+                        SKIP
+                        IF PROW() >= 59
+                                mpag++
+                                EJECT
+                                cabecalho(mpag,mtit,mtipo)
+                                imprt(mtipo_imp,'N')
+                                DEVPOS(PROW()+1,00);DEVOUT('Codigo  Descricao')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        ENDIF
+                ENDDO
+        NEXT
+        EJECT;SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('TAB_DESP.REL')
+        RETURN NIL
+ENDDO
+RETURN NIL
+**************** f i m **********************************
+************************************************
+* TABELA DE CONSULTA TABELA COND.PAGAMENTO
+************************************************
+
+FUNCTION sac577()
+***************
+LOCAL mprg := 'SAC577',;
+      opcao,mquantd,mtraco,mtit,mtipo,i,f,mpag,ccomm,m_tabpg:={}
+      
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+mtraco := REPLI('=',80)
+mquantd := 0
+********* VARIAVEIS DE IMPRESSAO *******************
+mtipo_imp := m_indiv[1,18]
+****************************************************
+m_tabpg := {}
+cComm  := "SELECT * FROM sactabpg ORDER BY codigo"
+sr_getconnection():exec(ccomm,,.t.,@m_tabpg)
+IF LEN(m_tabpg) = 0
+        atencao('Nao existe nenhuma TABELA CONDICAO DE PAGAMENTO....')
+        RETURN NIL
+ENDIF
+WHILE .T.
+        mquantd := mensagem2('Quantidade de Copias:',mquantd,'99',,'N')
+        IF LASTKEY() = 27
+                RETURN NIL
+        ENDIF
+        IF ! imp_arq('TAB_COND.REL','R')
+                LOOP
+        ENDIF
+        f := 0
+        FOR f = 1 TO mquantd
+                mpag := 1
+                mtit := 'Tabelas CONDICOES DE PAGAMENTOS'
+                cabecalho(mpag,mtit,mtipo,mprg)
+                imprt(mtipo_imp,'N')
+                DEVPOS(PROW()+1,00);DEVOUT('Cod   Descricao               (%) Cond Dia Dia Dia Dia Dia Dia Dia Dia Dia Dia Dia Dia Dia Dia Dia Comissao')
+                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                i := 0
+                FOR i = 1 TO LEN(m_tabpg)
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+1,00);DEVOUT(m_tabpg[i,3]+' - '+m_tabpg[i,4]+' '+TRANSFORM(m_tabpg[i,5],'999.99')+'  '+m_tabpg[i,6]+' ')
+                        DEVPOS(PROW(),PCOL());DEVOUT(TRANSFORM(m_tabpg[i,7],'999')+' '+TRANSFORM(m_tabpg[i,8],'999')+' '+TRANSFORM(m_tabpg[i,9],'999')+' '+TRANSFORM(m_tabpg[i,10],'999')+' ')
+                        DEVPOS(PROW(),PCOL());DEVOUT(TRANSFORM(m_tabpg[i,11],'999')+' '+TRANSFORM(m_tabpg[i,12],'999')+' '+TRANSFORM(m_tabpg[i,13],'999')+' '+TRANSFORM(m_tabpg[i,14],'999')+' ')
+                        DEVPOS(PROW(),PCOL());DEVOUT(TRANSFORM(m_tabpg[i,15],'999')+' '+TRANSFORM(m_tabpg[i,16],'999')+' '+TRANSFORM(m_tabpg[i,17],'999')+' '+TRANSFORM(m_tabpg[i,18],'999')+' ')
+                        DEVPOS(PROW(),PCOL());DEVOUT(TRANSFORM(m_tabpg[i,19],'999')+' '+TRANSFORM(m_tabpg[i,20],'999')+' '+TRANSFORM(m_tabpg[i,21],'999')+' '+TRANSFORM(m_tabpg[i,22],'999.99'))
+                        IF PROW() >= 59
+                                mpag++
+                                EJECT
+                                cabecalho(mpag,mtit,mtipo)
+                                imprt(mtipo_imp,'N')
+                                DEVPOS(PROW()+1,00);DEVOUT('Cod   Descricao               (%) Cond Dia Dia Dia Dia Dia Dia Dia Dia Dia Dia Dia Dia Dia Dia Dia Comissao')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        ENDIF
+                NEXT
+        NEXT
+        EJECT;SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('TAB_COND.REL')
+        RETURN NIL
+ENDDO
+RETURN NIL
+**************** f i m **********************************
+************************************************
+* TABELA DE CONSULTA OPERADROES E VENDEDORES
+************************************************
+
+FUNCTION sac578()
+***************
+LOCAL mprg := 'SAC578',;
+      opcao,mquantd,mtraco,mtit,mtipo,i,f,mpag,ccomm,m_vend:={}
+      
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+mtraco := REPLI('=',80)
+mquantd := 0
+********* VARIAVEIS DE IMPRESSAO *******************
+mtipo_imp := m_indiv[1,18]
+****************************************************
+m_vend := {}
+cComm  := "SELECT * FROM insopera ORDER BY scod_op"
+sr_getconnection():exec(ccomm,,.t.,@m_vend)
+IF LEN(m_vend) = 0
+        atencao('Nao existe nenhuma OPERADOR/VENDEDOR....')
+        RETURN NIL
+ENDIF
+WHILE .T.
+        mquantd := mensagem2('Quantidade de Copias:',mquantd,'99',,'N')
+        IF LASTKEY() = 27
+                RETURN NIL
+        ENDIF
+        IF ! imp_arq('TAB_OPER.REL','R')
+                LOOP
+        ENDIF
+        f := 0
+        FOR f = 1 TO mquantd
+                mpag := 1
+                mtit := 'Tabelas OPERADORES/VENDEDORES'
+                cabecalho(mpag,mtit,mtipo,mprg)
+                imprt(mtipo_imp,'N')
+                DEVPOS(PROW()+1,00);DEVOUT('Cod   Nome                           Cat Modulo     Com.AV Com.AP Com.Oper       Cota Nivel')
+                DEVPOS(PROW()+1,00);DEVOUT(mtraco)                                                                      
+                i := 0
+                FOR i = 1 TO LEN(m_vend)
+                        imprt(mtipo_imp,'CN')
+                        DEVPOS(PROW()+1,00);DEVOUT(m_vend[i,1]+' - '+m_vend[i,2]+'  '+m_vend[i,3]+'  ')
+                        DEVPOS(PROW(),PCOL())
+                        IF m_vend[i,4] = 'S'
+                                DEVOUT('SISCOM     ')
+                        ELSEIF m_vend[i,4] = 'C'
+                                DEVOUT('CAIXA      ')
+                        ELSEIF m_vend[i,4] = 'V'
+                                DEVOUT('VENDA      ')
+                        ELSEIF m_vend[i,4] = 'M'
+                                DEVOUT('VENDA/CAIXA')
+                        ELSE
+                                DEVOUT('SISCOM     ')
+                        ENDIF
+                        DEVPOS(PROW(),PCOL());DEVOUT(TRANSFORM(m_vend[i,7],'999.99')+' '+TRANSFORM(m_vend[i,8],'999.99')+'   '+TRANSFORM(m_vend[i,9],'999.99')+' '+TRANSFORM(m_vend[i,10],'999,999.99')+'  ')
+                        DEVPOS(PROW(),PCOL());DEVOUT(m_vend[i,13])
+                        IF PROW() >= 59
+                                mpag++
+                                EJECT
+                                cabecalho(mpag,mtit,mtipo)
+                                imprt(mtipo_imp,'N')
+                                DEVPOS(PROW()+1,00);DEVOUT('Codigo  Descricao')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        ENDIF
+                NEXT
+        NEXT
+        EJECT;SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('TAB_OPER.REL')
+        RETURN NIL
+ENDDO
+RETURN NIL
+**************** f i m **********************************
+************************************************
+* IMPRESSAO DE NIVEIS DE ACESSO
+************************************************
+FUNCTION sac579()
+***************
+LOCAL mprg := 'SAC579',;
+      opcao,mquantd,mtraco,mtit,mtipo,i,f,mpag,ccomm,m_tabpg:={}
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+mtraco := REPLI('=',132)
+mquantd := 0
+********* VARIAVEIS DE IMPRESSAO *******************
+mtipo_imp := m_indiv[1,18]
+****************************************************
+m_tabpg := {}
+cComm  := "SELECT * FROM sacconf ORDER BY descri"
+sr_getconnection():exec(ccomm,,.t.,@m_tabpg)
+IF LEN(m_tabpg) = 0
+        atencao('Nao existe nenhuma NIVEIS DE ACESSO....')
+        RETURN NIL
+ENDIF
+WHILE .T.
+        mquantd := mensagem2('Quantidade de Copias:',mquantd,'99',,'N')
+        IF LASTKEY() = 27
+                RETURN NIL
+        ENDIF
+        IF ! imp_arq('TAB_NIVEL.REL','R')
+                LOOP
+        ENDIF
+        f := 0
+        FOR f = 1 TO mquantd
+                mpag := 1
+                mtit := 'Relatorio de Niveis de Acesso'
+                cabecalho(mpag,mtit,mtipo,mprg)
+                imprt(mtipo_imp,'C')
+                DEVPOS(PROW()+1,00);DEVOUT('Descricao                                                      Nivel       Modulo')
+                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                i := 0
+                FOR i = 1 TO LEN(m_tabpg)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(m_tabpg[i,2])
+                        DEVPOS(PROW(),PCOL()+3);DEVOUT(m_tabpg[i,3])
+                        DEVPOS(PROW(),PCOL()+3);DEVOUT(m_tabpg[i,1])
+                        IF PROW() >= 59
+                                mpag++
+                                EJECT
+                                cabecalho(mpag,mtit,mtipo)
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,00);DEVOUT('Descricao                                                      Nivel       Modulo')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        ENDIF
+                NEXT
+        NEXT
+        EJECT;SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('TAB_NIVEL.REL')
+        RETURN NIL
+ENDDO
+RETURN NIL

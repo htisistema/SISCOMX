@@ -1,0 +1,3 @@
+20210130-02:21:19.580 00000C70 - ERROR: ERROR 10054 -1 in TransportTCP1::ReadExact()#2 in TrClient::Run()#239
+20211127-16:55:21.278 00001B48 - ERROR: ERROR 10054 -1 in TransportTCP1::ReadExact()#2 in TrClient::Run()#239
+20211127-17:38:26.654 00000E04 - ERROR: ERROR 10054 -1 in TransportTCP1::ReadExact()#2 in TrClient::Run()#239

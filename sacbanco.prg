@@ -1,0 +1,413 @@
+#include "inkey.ch"              // constantes de codigos das teclas
+*********************************************************
+* FUNCAO P/CONSULTAR, INCLUIR, ALTERAR E EXCLUIR BANCOS
+*********************************************************
+MEMVAR getlist,nivel_acess,cod_operado
+
+FUNCTION sacbanco(mconsulta)
+*****************
+LOCAL mprg:='SACBANCO',;
+      f7lci,f7cci,f7lba,f7cba,f7opcao,;
+      oconsprod,ocolprod[11],f7i,f7nkey,;
+      mcod_banco,mnome_banco,mnum_banco,magencia,mdv_ag,mc_c,mdv_cc,q_ban,mmodalidade:=' ',mn_conv,mcod_cedente,;
+      mDiasProt:=0,mlocal_pg:=SPACE(80),mdespesa := 0,mcarteira:=SPACE(3),mdig_ag_cc,mcod_trans
+
+
+IF ! ver_nivel(mprg,'CADASTRO DE BANCOS ','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+f7lci := f7cci := 0
+f7lba := 20
+f7cba := 88
+
+op_tela(05,10,25,98,memp_resa+SPACE(50)+" CADASTRO DE BANCOS ",,1)
+
+IF ! AbriArq('sacbanco','sacban');RETURN NIL;ENDIF
+SELE('sacban')
+setcor(10);oconsprod := TBROWSEDB(f7lci,f7cci,f7lba-1,f7cba,'sacban')
+ocolprod[1] := TBCOLUMNNEW('Cod.',{||sacban->cod_banco})
+ocolprod[2] := TBCOLUMNNEW('No.',{||sacban->num_banco})
+ocolprod[3] := TBCOLUMNNEW('Banco',{||sacban->nome_banco})
+ocolprod[4] := TBCOLUMNNEW('Agencia',{||sacban->agencia})
+ocolprod[5] := TBCOLUMNNEW('DV',{||sacban->dv_ag})
+ocolprod[6] := TBCOLUMNNEW('Conta',{||sacban->c_c})
+ocolprod[7] := TBCOLUMNNEW('DV',{||sacban->dv_cc})
+ocolprod[8] := TBCOLUMNNEW('Modalidade',{||sacban->modalidade})
+ocolprod[9] := TBCOLUMNNEW('No.Convenio',{||sacban->n_conv})
+ocolprod[10] := TBCOLUMNNEW('Cod.Cedente',{||sacban->cod_cedente})
+ocolprod[11] := TBCOLUMNNEW('Dias Protesta',{||sacban->diasprot})
+f7i:=0
+FOR f7i=1 TO LEN(ocolprod)
+        oconsprod:ADDCOLUMN(ocolprod[f7i])
+NEXT
+oconsprod:HEADSEP := CHR(196)
+oconsprod:COLSEP := CHR(179)
+WHILE .T.
+        exibi_prg(mprg)
+        mensagem('<P>esquisa <I>nclusao <ENTER>p/Alterar e Excluir <ESC>Retornar')
+        f7nkey := 0
+        oconsprod:FORCESTABLE()
+        f7nkey := INKEY(0)
+        IF f7nkey == K_ESC
+                mcod_banco := mcodigo_ban := 0
+                EXIT
+        ELSEIF f7nkey = 73 .OR. f7nkey = 105
+                op_tela(10,10,25,80,' Inclusao Banco ')
+                WHILE .T.
+                        GO BOTT
+                        mensagem('Digite o Codigo do Banco a incluido. [ESC] Abandona')
+                        mcod_banco := STRZERO(VAL(sacban->cod_banco)+1,3)
+                        mnome_banco:= SPACE(30)
+                        mnum_banco := mcarteira:=SPACE(3)
+                        magencia   := mc_c := SPACE(15)
+                        mn_conv := SPACE(12)
+                        mcod_cedente := SPACE(10)
+                        mdig_ag_cc := mmodalidade  := mcod_trans := SPACE(8)
+                        mdv_cc := mdv_ag := ' '
+                        mDiasProt := mdespesa := 0
+                        mlocal_pg := 'Até o vencimento, pagável em qualquer banco. Após o vencimento, em qualquer agencia do '
+                        DEVPOS(00,00);DEVOUT('Codigo Banco........:')
+                        DEVPOS(01,00);DEVOUT('Numero Banco........:')
+                        DEVPOS(02,00);DEVOUT('Nome Banco..........:')
+                        DEVPOS(03,00);DEVOUT('Agencia.............:')
+                        DEVPOS(03,39);DEVOUT('DV:')
+                        DEVPOS(04,00);DEVOUT('Conta...............:')
+                        DEVPOS(04,39);DEVOUT('DV:')
+                        DEVPOS(05,00);DEVOUT('Digito Ag/Conta.....:')
+                        DEVPOS(06,00);DEVOUT('Modalidade..........:')
+                        DEVPOS(07,00);DEVOUT('No.Convenio.........:')
+                        DEVPOS(08,00);DEVOUT('Codigo Cedente......:')
+                        DEVPOS(09,00);DEVOUT('Codigo da Carteira..:')
+                        DEVPOS(10,00);DEVOUT('Codigo Transmissao..:')
+                        DEVPOS(11,00);DEVOUT('Dias p/Protestar....:')
+                        DEVPOS(12,00);DEVOUT('Valor da Despesa R$.:')
+                        DEVPOS(13,00);DEVOUT('Local de Pagamento..:')
+                        //DEVPOS(13,00);DEVOUT('Tipo Cobranca [R][S]:')
+                        //DEVPOS(14,00);DEVOUT('Forma de Cadastro...:')
+                        @ 00,22 GET mcod_banco PICT "999" VALID IF(EMPTY(mcod_banco),.F.,.T.)
+                        READ
+                        IF LASTKEY()=27
+                                wvw_lclosewindow()
+                                EXIT
+                        ENDIF
+                        q_ban := {}
+                        sr_getconnection():exec("SELECT * FROM sacbanco WHERE cod_banco = "+sr_cdbvalue(mcod_banco),,.t.,@q_ban)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(q_ban) > 0
+                                atencao("Este Forma de Pagamento ja existe!!!")
+                                LOOP
+                        ENDIF
+                        mensagem("Digite o Nome/Agencia do Cartao. [ESC] Abandona.")
+                        @ 01,22 GET mnum_banco PICT '@!' VALID IF(EMPTY(mnum_banco),.F.,.T.)
+                        @ 02,22 GET mnome_banco PICT '@!' VALID IF(EMPTY(mnome_banco),.F.,.T.)
+                        @ 03,22 GET magencia PICT '@!' VALID IF(EMPTY(magencia),.F.,.T.)
+                        @ 03,43 GET mdv_ag PICT '@!'
+                        @ 04,22 GET mc_c PICT '@!' VALID IF(EMPTY(mc_c),.F.,.T.)
+                        @ 04,43 GET mdv_cc PICT '@!'
+                        @ 05,22 GET mdig_ag_cc PICT '@!'
+                        @ 06,22 GET mmodalidade PICT '@!'
+                        @ 07,22 GET mn_conv PICT '@!'
+                        @ 08,22 GET mcod_cedente PICT '@!'
+                        @ 09,22 GET mcarteira PICT '@!'
+                        @ 10,22 GET mcod_trans PICT '@!'
+                        @ 11,22 GET mdiasprot PICT '999'
+                        @ 12,22 GET mdespesa PICT '99,999.99'
+                        @ 13,22 GET mlocal_pg PICT '@S40'
+                        READ
+                        IF LASTKEY()=27
+                                LOOP
+                        ENDIF
+                        IF op_simnao('S',"Confirma os dados digitados:") = 'N'
+                                LOOP
+                        ELSE
+                                sr_getconnection():exec('INSERT INTO sacbanco('+;
+                                        'cod_banco, '+;
+                                        'nome_banco,'+;
+                                        'num_banco,'+;
+                                        'agencia,'  +;
+                                        'c_c,'+;
+                                        'cod_trans,'+;
+                                        'dv_cc,'+;
+                                        'dv_ag,'+;
+                                        'cod_cedente,'+;
+                                        'diasprot,'+;
+                                        'local_pg,'+;
+                                        'despesa,'+;
+                                        'carteira,'+;
+                                        'n_conv,'+;
+                                        'dig_ag_cc,'+;
+                                        'modalidade,'+;
+                                        'SR_DELETED )'+;
+                                        ' VALUES ('+;
+                                        sr_cdbvalue(mcod_banco)+','+; //1
+                                        sr_cdbvalue(mnome_banco)+','+; //2
+                                        sr_cdbvalue(mnum_banco)+','+; //3
+                                        sr_cdbvalue(magencia)+','+; //4
+                                        sr_cdbvalue(mc_c)+','+; //5
+                                        sr_cdbvalue(mcod_trans)+','+; //6
+                                        sr_cdbvalue(mdv_cc)+','+; //8
+                                        sr_cdbvalue(mdv_ag)+','+; //9
+                                        sr_cdbvalue(mcod_cedente)+','+; //10
+                                        sr_cdbvalue(mdiasprot)+','+; //11
+                                        sr_cdbvalue(mlocal_pg)+','+; //12
+                                        sr_cdbvalue(mdespesa)+','+; //13
+                                        sr_cdbvalue(mcarteira)+','+; //13
+                                        sr_cdbvalue(mn_conv)+','+; //7
+                                        sr_cdbvalue(mdig_ag_cc)+','+; //7
+                                        sr_cdbvalue(mmodalidade)+','+; //6
+                                        sr_cdbvalue(' ')+')',,.f.)
+                                        sr_getconnection():exec("COMMIT",,.f.)
+                        ENDIF
+                        wvw_lclosewindow()
+                        sacban->( dbCloseArea() )
+                        IF ! AbriArq('sacbanco','sacban');RETURN NIL;ENDIF
+                        SELE('sacban')
+                        GO TOP
+                        *************
+                        setcor(10);oconsprod := TBROWSEDB(f7lci,f7cci,f7lba-1,f7cba,'sacban')
+                        ocolprod[1] := TBCOLUMNNEW('Cod.',{||sacban->cod_banco})
+                        ocolprod[2] := TBCOLUMNNEW('No.',{||sacban->num_banco})
+                        ocolprod[3] := TBCOLUMNNEW('Banco',{||sacban->nome_banco})
+                        ocolprod[4] := TBCOLUMNNEW('Agencia',{||sacban->agencia})
+                        ocolprod[5] := TBCOLUMNNEW('DV',{||sacban->dv_ag})
+                        ocolprod[6] := TBCOLUMNNEW('Conta',{||sacban->c_c})
+                        ocolprod[7] := TBCOLUMNNEW('DV',{||sacban->dv_cc})
+                        ocolprod[8] := TBCOLUMNNEW('Modalidade',{||sacban->modalidade})
+                        ocolprod[9] := TBCOLUMNNEW('No.Convenio',{||sacban->n_conv})
+			ocolprod[10] := TBCOLUMNNEW('Cod.Cedente',{||sacban->cod_cedente})
+                        ocolprod[11] := TBCOLUMNNEW('Dias Protesta',{||sacban->diasprot})
+                        f7i:=0
+                        FOR f7i=1 TO LEN(ocolprod)
+                                oconsprod:ADDCOLUMN(ocolprod[f7i])
+                        NEXT
+                        oconsprod:HEADSEP := CHR(196)
+                        oconsprod:COLSEP := CHR(179)
+                        oconsprod:FORCESTABLE()
+                        EXIT
+                ENDDO
+        ELSEIF f7nkey == K_ENTER
+                mcod_banco := mcodigo_ban := VAL(sacban->cod_banco)
+                IF mconsulta <> NIL
+                        EXIT
+                ENDIF
+                f7opcao := mensagem1('Deseja <A>lterar <E>xcluir:','A','A,E')
+                IF LASTKEY() = 27
+                        EXIT
+                ELSEIF f7opcao = 'A'
+                        op_tela(10,10,25,80,' Alteracao Banco ')
+                        WHILE .T.
+                                mlocal_pg:=SPACE(80)
+                                DEVPOS(00,00);DEVOUT('Codigo Banco........:')
+                                DEVPOS(01,00);DEVOUT('Numero Banco........:')
+                                DEVPOS(02,00);DEVOUT('Nome Banco..........:')
+                                DEVPOS(03,00);DEVOUT('Agencia.............:')
+                                DEVPOS(03,39);DEVOUT('DV:')
+                                DEVPOS(04,00);DEVOUT('Conta...............:')
+                                DEVPOS(04,39);DEVOUT('DV:')
+                                DEVPOS(05,00);DEVOUT('Digito Ag/Conta.....:')
+                                DEVPOS(06,00);DEVOUT('Modalidade..........:')
+                                DEVPOS(07,00);DEVOUT('No.Convenio.........:')
+                                DEVPOS(08,00);DEVOUT('Codigo Cedente......:')
+                                DEVPOS(09,00);DEVOUT('Codigo da Carteira..:')
+                                DEVPOS(10,00);DEVOUT('Codigo Transmissao..:')
+                                DEVPOS(11,00);DEVOUT('Dias p/Protestar....:')
+                                DEVPOS(12,00);DEVOUT('Valor da Despesa R$.:')
+                                DEVPOS(13,00);DEVOUT('Local de Pagamento..:')
+                                mensagem("Altere os campos que deseja. [ESC] Abandona")
+                                setcor(3)
+                                DEVPOS(00,22);DEVOUT(sacban->cod_banco)
+                                setcor(1)
+                                mnome_banco:= sacban->nome_banco
+                                mnum_banco := sacban->num_banco
+                                magencia   := sacban->agencia
+                                mc_c       := sacban->c_c
+                                mdv_cc     := sacban->dv_cc
+                                mdv_ag     := sacban->dv_ag
+                                mdig_ag_cc := sacban->dig_ag_cc
+                                mmodalidade  := sacban->modalidade
+                                mn_conv:= sacban->n_conv
+				mcod_cedente := sacban->cod_cedente
+                                mcarteira  := sacban->carteira
+				mdiasprot := sacban->diasprot
+				mcod_trans := sacban->cod_trans
+                                mdespesa  := sacban->despesa
+                                mlocal_pg := sacban->local_pg
+                                mensagem("Modifique o Nome do Cartao (20 Caract. Maximo). [ESC] Abandona.")
+                                @ 01,22 GET mnum_banco PICT '@!' VALID IF(EMPTY(mnum_banco),.F.,.T.)
+                                @ 02,22 GET mnome_banco PICT '@!' VALID IF(EMPTY(mnome_banco),.F.,.T.)
+                                @ 03,22 GET magencia PICT '@!' VALID IF(EMPTY(magencia),.F.,.T.)
+                                @ 03,43 GET mdv_ag PICT '@!'
+                                @ 04,22 GET mc_c PICT '@!' VALID IF(EMPTY(mc_c),.F.,.T.)
+                                @ 04,43 GET mdv_cc PICT '@!'
+                                @ 05,22 GET mdig_ag_cc PICT '@!'
+                                @ 06,22 GET mmodalidade PICT '@!'
+                                @ 07,22 GET mn_conv PICT '@!'
+                                @ 08,22 GET mcod_cedente PICT '@!'
+                                @ 09,22 GET mcarteira PICT '@!'
+                                @ 10,22 GET mcod_trans PICT '@!'
+                                @ 11,22 GET mdiasprot PICT '999'
+                                @ 12,22 GET mdespesa PICT '99,999.99'
+                                @ 13,22 GET mlocal_pg PICT '@S40'
+                                READ
+                                IF LASTKEY()=27
+                                        GO TOP
+                                        wvw_lclosewindow()
+                                        EXIT
+                                ENDIF
+                                IF op_simnao('S',"Confirma os dados digitados:") = 'N'
+                                        LOOP
+                                ELSE
+                                        sr_getconnection():exec("UPDATE sacbanco SET nome_banco = "+sr_cdbvalue(mnome_banco)+;
+                                                                ",num_banco = "+sr_cdbvalue(mnum_banco)+;
+                                                                ",agencia = "+sr_cdbvalue(magencia)+;
+                                                                ",c_c = "+sr_cdbvalue(mc_c)+;
+                                                                ",dv_cc = "+sr_cdbvalue(mdv_cc)+;
+                                                                ",dv_ag = "+sr_cdbvalue(mdv_ag)+;
+                                                                ",dig_ag_cc = "+sr_cdbvalue(mdig_ag_cc)+;
+                                                                ",modalidade = "+sr_cdbvalue(mmodalidade)+;
+                                                                ",n_conv = "+sr_cdbvalue(mn_conv)+;
+                                                                ",cod_cedente = "+sr_cdbvalue(mcod_cedente)+;
+                                                                ",carteira = "+sr_cdbvalue(mcarteira)+;
+                                                                ",cod_trans = "+sr_cdbvalue(mcod_trans)+;
+                                                                ",diasprot = "+sr_cdbvalue(mdiasprot)+;
+                                                                ",despesa = "+sr_cdbvalue(mdespesa)+;
+                                                                ",local_pg = "+sr_cdbvalue(mlocal_pg)+;
+                                                                " WHERE cod_banco = "+sr_cdbvalue(sacban->cod_banco),,.f.)
+                                        sr_getconnection():exec("COMMIT",,.f.)
+                                ENDIF
+                                wvw_lclosewindow()
+                                sacban->( dbCloseArea() )
+                                IF ! AbriArq('sacbanco','sacban');RETURN NIL;ENDIF
+                                SELE('sacban')
+                                GO TOP
+                                setcor(10);oconsprod := TBROWSEDB(f7lci,f7cci,f7lba-1,f7cba,'sacban')
+                                ocolprod[1] := TBCOLUMNNEW('Cod.',{||sacban->cod_banco})
+                                ocolprod[2] := TBCOLUMNNEW('No.',{||sacban->num_banco})
+                                ocolprod[3] := TBCOLUMNNEW('Banco',{||sacban->nome_banco})
+                                ocolprod[4] := TBCOLUMNNEW('Agencia',{||sacban->agencia})
+                                ocolprod[5] := TBCOLUMNNEW('DV',{||sacban->dv_ag})
+                                ocolprod[6] := TBCOLUMNNEW('Conta',{||sacban->c_c})
+                                ocolprod[7] := TBCOLUMNNEW('DV',{||sacban->dv_cc})
+                                ocolprod[8] := TBCOLUMNNEW('Modalidade',{||sacban->modalidade})
+                                ocolprod[9] := TBCOLUMNNEW('No.Convenio',{||sacban->n_conv})
+				ocolprod[10] := TBCOLUMNNEW('Cod.Cedente',{||sacban->cod_cedente})
+                                ocolprod[11] := TBCOLUMNNEW('Dias Protesta',{||sacban->diasprot})
+                                f7i:=0
+                                FOR f7i=1 TO LEN(ocolprod)
+                                        oconsprod:ADDCOLUMN(ocolprod[f7i])
+                                NEXT
+                                oconsprod:HEADSEP := CHR(196)
+                                oconsprod:COLSEP := CHR(179)
+                                oconsprod:FORCESTABLE()
+                                EXIT
+                        ENDDO
+                ELSEIF f7opcao = 'E'
+                        op_tela(10,10,15,70,' Exclusao Banco ')
+                        WHILE .T.
+                                DEVPOS(00,00);DEVOUT('Codigo Banco.:')
+                                DEVPOS(01,00);DEVOUT('Numero Banco.:')
+                                DEVPOS(02,00);DEVOUT('Nome Banco...:')
+                                DEVPOS(03,00);DEVOUT('Agencia......:')
+                                DEVPOS(04,00);DEVOUT('Conta........:')
+                                DEVPOS(05,00);DEVOUT('Tipo Cobranca:')
+                                mensagem("Altere os campos que deseja. [ESC] Abandona")
+                                setcor(3)
+                                DEVPOS(00,15);DEVOUT(sacban->cod_banco)
+                                DEVPOS(01,15);DEVOUT(sacban->num_banco)
+                                DEVPOS(02,15);DEVOUT(sacban->nome_banco)
+                                DEVPOS(03,15);DEVOUT(sacban->agencia)
+                                DEVPOS(04,15);DEVOUT(sacban->c_c)
+                                setcor(1)
+                                IF op_simnao('N',"Confirma os dados digitados:") = 'N'
+                                        GO TOP
+                                        wvw_lclosewindow()
+                                        EXIT
+                                ELSE
+                                        sr_getconnection():exec("DELETE FROM sacbanco WHERE cod_banco = "+sr_cdbvalue(sacban->cod_banco),,.f.)
+                                        sr_getconnection():exec("COMMIT",,.f.)
+                                ENDIF
+                                wvw_lclosewindow()
+                                *************
+                                SELE('sacban')
+                                GO TOP
+                                *************
+                                setcor(10);oconsprod := TBROWSEDB(f7lci,f7cci,f7lba-1,f7cba,'sacban')
+                                ocolprod[1] := TBCOLUMNNEW('Cod.',{||sacban->cod_banco})
+                                ocolprod[2] := TBCOLUMNNEW('No.',{||sacban->num_banco})
+                                ocolprod[3] := TBCOLUMNNEW('Banco',{||sacban->nome_banco})
+                                ocolprod[4] := TBCOLUMNNEW('Agencia',{||sacban->agencia})
+                                ocolprod[5] := TBCOLUMNNEW('DV',{||sacban->dv_ag})
+                                ocolprod[6] := TBCOLUMNNEW('Conta',{||sacban->c_c})
+                                ocolprod[7] := TBCOLUMNNEW('DV',{||sacban->dv_cc})
+                                ocolprod[8] := TBCOLUMNNEW('Modalidade',{||sacban->modalidade})
+                                ocolprod[9] := TBCOLUMNNEW('No.Convenio',{||sacban->n_conv})
+				ocolprod[10] := TBCOLUMNNEW('Cod.Cedente',{||sacban->cod_cedente})
+                                ocolprod[11] := TBCOLUMNNEW('Dias Protesta',{||sacban->diasprot})
+                                f7i:=0
+                                FOR f7i=1 TO LEN(ocolprod)
+                                        oconsprod:ADDCOLUMN(ocolprod[f7i])
+                                NEXT
+                                oconsprod:HEADSEP := CHR(196)
+                                oconsprod:COLSEP := CHR(179)
+                                oconsprod:FORCESTABLE()
+                                EXIT
+                        ENDDO
+                ENDIF
+                *************
+                SELE('sacban')
+                GO TOP
+                *************
+                setcor(10);oconsprod := TBROWSEDB(f7lci,f7cci,f7lba-1,f7cba,'sacban')
+                ocolprod[1] := TBCOLUMNNEW('Cod.',{||sacban->cod_banco})
+                ocolprod[2] := TBCOLUMNNEW('No.',{||sacban->num_banco})
+                ocolprod[3] := TBCOLUMNNEW('Banco',{||sacban->nome_banco})
+                ocolprod[4] := TBCOLUMNNEW('Agencia',{||sacban->agencia})
+                ocolprod[5] := TBCOLUMNNEW('DV',{||sacban->dv_ag})
+                ocolprod[6] := TBCOLUMNNEW('Conta',{||sacban->c_c})
+                ocolprod[7] := TBCOLUMNNEW('DV',{||sacban->dv_cc})
+                ocolprod[8] := TBCOLUMNNEW('Modalidade',{||sacban->modalidade})
+                ocolprod[9] := TBCOLUMNNEW('No.Convenio',{||sacban->n_conv})
+		ocolprod[10] := TBCOLUMNNEW('Cod.Cedente',{||sacban->cod_cedente})
+                ocolprod[11] := TBCOLUMNNEW('Dias Protesta',{||sacban->diasprot})
+                f7i:=0
+                FOR f7i=1 TO LEN(ocolprod)
+                        oconsprod:ADDCOLUMN(ocolprod[f7i])
+                NEXT
+                oconsprod:HEADSEP := CHR(196)
+                oconsprod:COLSEP := CHR(179)
+                oconsprod:FORCESTABLE()
+        ELSE
+                IF genkey(oconsprod,f7nkey,'sacban')
+                        setcor(10);oconsprod := TBROWSEDB(f7lci,f7cci,f7lba-1,f7cba,'sacban')
+                        ocolprod[1] := TBCOLUMNNEW('Cod.',{||sacban->cod_banco})
+                        ocolprod[2] := TBCOLUMNNEW('No.',{||sacban->num_banco})
+                        ocolprod[3] := TBCOLUMNNEW('Banco',{||sacban->nome_banco})
+                        ocolprod[4] := TBCOLUMNNEW('Agencia',{||sacban->agencia})
+                        ocolprod[5] := TBCOLUMNNEW('DV',{||sacban->dv_ag})
+                        ocolprod[6] := TBCOLUMNNEW('Conta',{||sacban->c_c})
+                        ocolprod[7] := TBCOLUMNNEW('DV',{||sacban->dv_cc})
+                        ocolprod[8] := TBCOLUMNNEW('Modalidade',{||sacban->modalidade})
+                        ocolprod[9] := TBCOLUMNNEW('No.Convenio',{||sacban->n_conv})
+			ocolprod[10] := TBCOLUMNNEW('Cod.Cedente',{||sacban->cod_cedente})
+                        ocolprod[11] := TBCOLUMNNEW('Dias Protesta',{||sacban->diasprot})
+                        f7i:=0
+                        FOR f7i=1 TO LEN(ocolprod)
+                                oconsprod:ADDCOLUMN(ocolprod[f7i])
+                        NEXT
+                        oconsprod:HEADSEP := CHR(196)
+                        oconsprod:COLSEP := CHR(179)
+                        oconsprod:FORCESTABLE()
+                ENDIF
+        ENDIF
+END
+wvw_lclosewindow()
+IF f7nkey == K_ESC
+        RELEASE ALL
+        RETURN mcod_banco
+ELSE
+        RELEASE ALL
+        CLEAR GETS
+        RETURN mcod_banco
+ENDIF
+RETURN NIL
+******************************* f i m *********************************************

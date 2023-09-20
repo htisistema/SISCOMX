@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><nfeRetAutorizacaoLoteResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeRetAutorizacao"><retConsReciNFe versao="3.10" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_15.00.12.091</verAplic>
+<nRec>261160000010342</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF><dhRecbto>2016-01-12T08:10:28-03:00</dhRecbto>
+ <protNFe versao="3.10"><infProt Id="NFe1"><tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_15.00.12.091</verAplic>
+<chNFe>26160111156983000176550010000000431000000433</chNFe>
+<dhRecbto>2016-01-12T08:10:28-03:00</dhRecbto><cStat>229</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: IE do emitente n&#xE3;o informada</xMotivo>
+</infProt></protNFe></retConsReciNFe></nfeRetAutorizacaoLoteResult></soapenv:Body></soapenv:Envelope>

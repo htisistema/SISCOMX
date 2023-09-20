@@ -1,0 +1,89 @@
+NFE.CriarNFe("[Identificacao]
+NaturezaOperacao=VENDAS DENTRO DO ESTADO
+Modelo=55
+Serie=01
+Codigo=037468
+Numero=037468
+Serie=1
+Emissao=29/05/2012
+Saida=29/05/2012
+Tipo=1
+FormaPag=
+Finalidade=1
+[Emitente]
+CNPJ=12808484000189
+IE=042995663
+Razao=CELESTE ALIMENTOS
+Fantasia=CELESTE ALIMENTOS
+Fone=
+CEP=55819903
+Logradouro=RUA NEG.ANDRADE DIAS DE ARRUDA FALC
+Numero=56
+Complemento=
+Bairro=CAXANGA
+CidadeCod=2611606
+Cidade=RECIFE
+UF=PE
+[Destinatario]
+CNPJ=34419039434
+IE=0
+NomeRazao=00025 - ANTONIO DE PADUA
+Fone=3.622-0330
+CEP=55800000
+Logradouro=TRAV.JOSE VIEIRA DA SILVA ,19
+Numero=
+Complemento=
+Bairro=CENTRO
+CidadeCod=2609501
+Cidade=NAZARE DA MATA
+UF=PE
+[Produto001]
+CFOP=5102
+Codigo=000125
+Descricao=HIDRACOR AMARELO FRD 10/2                         HIDRACOR AMARELO FRD 10/2 12345678901234 - EAN: 0000701001250
+NCM=85498555
+Unidade=FD
+Quantidade=1.000
+ValorUnitario=349.00
+ValorTotal=349.00
+[ICMS001]
+CST=40
+ValorBase=0.00
+Aliquota=0.00
+Valor=0.00
+[IPI001]
+CST=40
+ValorBase=349.00
+Aliquota=10.00
+Valor=34.90
+[Total]
+BaseICMS=0.00
+ValorICMS=0.00
+ValorProduto=349.00
+BaseICMSSubstituicao=0.00
+ValorICMSSubstituicao=0.00
+ValorFrete=0.00
+ValorSeguro=0.00
+ValorIPI=34.90
+ValorOutrasDespesas=0.00
+ValorNota=383.90
+[Transportador]
+FretePorConta=0
+CnpjCpf=
+NomeRazao=
+IE=
+Endereco=
+Cidade=
+UF=
+CidadeCod=
+Placa=
+UFPlaca=
+[Volume001]
+Quantidade=1
+Especie=
+Marca=
+Numeracao=
+PesoLiquido=20.00
+PesoBruto=20.00
+[DadosAdicionais]
+Complemento= <<< MD5:7d539b303a4e568e4877cda1e4feadf9>>> - Op.:999                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ")

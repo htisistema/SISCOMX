@@ -1,0 +1,1021 @@
+* INICIO DO SIAC: 14/11/1994 - INICIO DO SISCOM : 14/07/2007
+************************************************************
+//#translate getactive() => MyHBGetActive()
+#include "wvwtools.ch"
+#include "inkey.ch"              // constantes de codigos das teclas
+#include "Fileio.ch"             // funcoes de leitura/gravacao de arquivo
+#include "set.ch"                // constantes da funcao SETKEY()
+#include "wingdi.ch"
+#include "winuser.ch"
+#include "common.ch"
+#include "setcurs.ch"
+#include "getexit.ch"
+//SQLRDD**************
+#include "sqlrdd.ch"
+#include "firebird.ch"     // Needed if you plan to use native connection to Firebird
+#include "msg.ch"
+**********************
+#define COM_CALE
+GLOBAL oApp
+
+FUNCTION main(mtc,mecf,mtipo_tela)
+**********************************
+MEMVAR msist,nivel_acess,getlist
+LOCAL mprg := 'SISPDV',;
+      men,f,num,mcgc_aux,mserie,mponto,mtip_t:=' ',mtela_term,mmapear,lin,linha,linhas,marq:='',;
+      matriz:={},sLinhas := '',i:=0
+
+PUBLIC cor,;
+       mversao    := '2017.5',;
+       mrelease   := '<<R.170519>>',;
+       sistema    := '"SISPDV" Sistema Ponto de Venda',;
+       msit_tip   := 'SISPDV',;
+       mpaf_ecf   := 'FVC0382017',;
+       memp_resa  :='.: HTI Sistemas Ltda :.',;
+       mcnpj_HTI    := '11156983000176',;
+       mim_HTI      := '4130553       ',;
+       mrazao_HTI   := 'J H BELTRAO SERVICOS INFORMATICA LTDA.   ',;
+       mrazao_fan   := 'HTI Sistemas Ltda.',;
+       mend_HTI     := 'PRACA FRANCELINO ARAUJO',;
+       mnum_HTI     := '68',;
+       mcomp_HTI    := '',;
+       mbairro_HTI  := 'CENTRO',;
+       mcidade_HTI  := 'TACAIMBO',;
+       muf_HTI      := 'PE',;
+       mcep_HTI     := '55140000',;
+       mfone_HTI    := '3755.1072',;
+       mpaf_HTI     := 'SISPDV',;
+       mpaf_ver     := '',;
+       mer_paf_ecf  := '0205',;
+       m_md5        := '7d539b303a4e568e4877cda1e4feadf9',;
+       mdenominacao := 'COMERCIAL',;
+mchv_priv    := 'MIICXQIBAAKBgQCjpERggOUIA/e96NFIfOlPkFrCTiRK4T8oE+bgQ4hzCrOJa5EK'+;
+'UNR7sUKHImU4hLEwC5opjRDzh+boATIWDKFHeFQUF86z7mvrsHTKaTiEy2+hGYvZ'+;
+'Qk/Q9Cn2Il/M9o/96ldb6U0Qi+yK6y5CjpIt8tZNardgLkqj9//zuayNvwIDAQAB'+;
+'AoGAbDJ8k2ImDPqyn3qEhe0xRk4n9Dk+fdQYsiMWkEmWupnkw4O/zpZLJ824Mylm'+;
+'y8vQa/f/4mFHR/4fil7gAvwu1cfNwljMalqdYgptFFOX9sLfnNjdY0f02SqwZprm'+;
+'Q/CXjVOuBy/8vyYs13BeSG0LThIe4M7h4tLfU1EgHpZK+oECQQDS3E2Db2Nb++i7'+;
+'YZHUAtJ21ZZtVauHewWHHJvTTuWsLeVPa4kKdDAXf7peZX4SBukiN3ybtQKAsr01'+;
+'4R8+gBDvAkEAxqw/oO2Oxp4Qwl35jb2QVOUY0zzXg6CWBYNod99a5xAheLTjHfeg'+;
+'X16UNiol8l9LuwP9CVDcFBgW3o1tVsuwMQJBAIdwB73HmytnF+rb1d423daEhHW/'+;
+'1EhWRYuuXYyRncZFSIgFy2VSkd1WJnAhgqOzmqVmvHwK/QuLQytLaVUszzMCQQC+'+;
+'FbALWT9x6Wo/jYpngyfFEi1ebqgE2HCxdblOd/WRfm2IAAoNcg+PL/6+lDUaYPMk'+;
+'S/yeHS90SlgXN1mV4e0BAkAGrHKMzGm2m4xo4SkI0dT721kWGF4R4b7LMoB+zpe2'+;
+'fxylYIlvIZ1hNkg28hV/j3TBnPljXZyYioWfAnwb04Tp',;
+mchv_public  := 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCjpERggOUIA/e96NFIfOlPkFrC'+;
+'TiRK4T8oE+bgQ4hzCrOJa5EKUNR7sUKHImU4hLEwC5opjRDzh+boATIWDKFHeFQU'+;
+'F86z7mvrsHTKaTiEy2+hGYvZQk/Q9Cn2Il/M9o/96ldb6U0Qi+yK6y5CjpIt8tZN'+;
+'ardgLkqj9//zuayNvwIDAQAB',;
+       mmodulo      := 'A39E451F7D5F543EB6050750E6D8FCDD7384E44EE8EB5A4190C87BAE67CCFDA6B37C7EAC8E41EC6F51C6F04354BC2A7B05E6F865144E56E867255D84FCFBDE7CEA79876425CA272497D4CE0B0CDA50E384E3D33DDA3C287E3CF87901FCBB9095896E0E1DC22345EB1BFF767A859A84BBE882445D542A9D0177A2BC100E2CD021',;
+       mmd5         := '4dbefd4bcd95ae07b372c3eae62f99a7',;
+       mcgc_firm,minsc_firm,;
+       mend_firm,mcid_firm,mfone_firm,muf_firm,;
+       mens,sis_cidade,;
+       tesc,mcaminho:='',mtip_term,;
+       mcodempresa  := '001',;
+       mmult_emp    :='N',;
+       mdata_sis    :=DATE(),;
+       email_operado  :=SPACE(60),;
+       cod_operado :='   ',;
+       ntask,;
+       tipo_rdd    := 2,;
+       mnum_principal := NIL,;
+       m_cfg:={},;
+       m_set:={},;
+       cons_emp:={},;
+       ncnn:=0,ncnn1:=0,ncnn2:=0,cConnString,m_line := '',m_qp := CHR(13)+CHR(10),;
+       mecf_ligada := 1,;
+       msen_ini := '201319949094',;
+       mtipo_preco:=' ',;
+       sENDER   := '',;
+       mn_sac0,;
+       m_indiv:={},;
+       m_numerocaixa:=''
+
+       //mchv_priv    := 'MIICXAIBAAKBgQCjnkUffV9UPrYFB1Dm2Pzdc4TkTujrWkGQyHuuZ8z9prN8fqyOQexvUcbwQ1S8KnsF5vhlFE5W6GclXYT8+9586nmHZCXKJySX1M4LDNpQ44Tj0z3aPCh+PPh5Afy7kJWJbg4dwiNF6xv/dnqFmoS76IJEXVQqnQF3orwQDizQIQIDAQABAoGAJy5pgyb0wynZUM71srJXq3hUZI/4+xM8DD3WUGePEVbwOGnlTJPA2M+Ogk69ZeoOV9V9ukbok6tHuAzzIdn25zUBsC/g7dt01JbIjBPBSRrF2XUdFS3nB0U6+8E8ajxkHhH1sNlFs67Vli1HTFljQtLvDRrrbLnO+Ipnj27LuLkCQQDNQAVNKpVYxlJfka9CKUku5WRESlQDAGLMdqYTnxHilIfqYaoGzO50/caz9P99QZgcWX0VIHU8zSjCW0KznxkfAkEAzBMGa2TQctjOWrGpAfeEMpGIDrr7dSYQvA9c9ZsJe6jQ3u064puFfCpXYS4pvqjCitkkjekizxkYFBXeHdquvwJAMjGU2lEuor4lSN/cx0ZHcmOAyL6QmwdOIghmBuhgvFNshaIKrY0SR6QEIuAoVt5ir5Qm5bLBWPQnIpik0D55KwJAAiLY2Frvy6P1VQGzETA0FAtt7ymJ5EoHttA6Wt/Kk57KwOqeySxzkz8mNwAys6o0jxuCxHGCScSredpYvttBJQJBAIH0lqm+ARnge65Fs1Idnnjyma5VxCPK+GwwMkzn+bErrC7W/OJvPsbxgWLkcMdUq6eTTXDX5PiQk9Me6sRSsLw=',;
+       //mchv_public  := 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCY5w/Z8m6n1WnYVoMM56CnSNRgGPpD9kzsQcYO/ZMPyiik/qtpVint/LT3nROr8sCqvxUvFo3dUzfu1PKuKjMVwZUyvoMNcqetzQOzlh+s2YDeYOM48zMMAhrjElV1C4JHxQxkUq+DvxeqKPGLzb3uDgH32yHYKu14bbHyIC3JVwIDAQAB',;
+
+
+        mpaf_ver     := mversao
+
+
+       //mchv_priv    := '-----BEGIN RSA PRIVATE KEY-----MIICXAIBAAKBgQCjnkUffV9UPrYFB1Dm2Pzdc4TkTujrWkGQyHuuZ8z9prN8fqyOQexvUcbwQ1S8KnsF5vhlFE5W6GclXYT8+9586nmHZCXKJySX1M4LDNpQ44Tj0z3aPCh+PPh5Afy7kJWJbg4dwiNF6xv/dnqFmoS76IJEXVQqnQF3orwQDizQIQIDAQABAoGAJy5pgyb0wynZUM71srJXq3hUZI/4+xM8DD3WUGePEVbwOGnlTJPA2M+Ogk69ZeoOV9V9ukbok6tHuAzzIdn25zUBsC/g7dt01JbIjBPBSRrF2XUdFS3nB0U6+8E8ajxkHhH1sNlFs67Vli1HTFljQtLvDRrrbLnO+Ipnj27LuLkCQQDNQAVNKpVYxlJfka9CKUku5WRESlQDAGLMdqYTnxHilIfqYaoGzO50/caz9P99QZgcWX0VIHU8zSjCW0KznxkfAkEAzBMGa2TQctjOWrGpAfeEMpGIDrr7dSYQvA9c9ZsJe6jQ3u064puFfCpXYS4pvqjCitkkjekizxkYFBXeHdquvwJAMjGU2lEuor4lSN/cx0ZHcmOAyL6QmwdOIghmBuhgvFNshaIKrY0SR6QEIuAoVt5ir5Qm5bLBWPQnIpik0D55KwJAAiLY2Frvy6P1VQGzETA0FAtt7ymJ5EoHttA6Wt/Kk57KwOqeySxzkz8mNwAys6o0jxuCxHGCScSredpYvttBJQJBAIH0lqm+ARnge65Fs1Idnnjyma5VxCPK+GwwMkzn+bErrC7W/OJvPsbxgWLkcMdUq6eTTXDX5PiQk9Me6sRSsLw=-----END RSA PRIVATE KEY-----',;
+
+       //mchv_priv    := 'E9D4E1CCA464B7E811C7746E43B11943EC2A03667F78AD66F01ABC50AF188FF76C083829B07AA8175E9E1F1B15CF3A39E48957C71A40E15713E9EF345E405CEFDFB5252BE32CB19A76E291C798CC01F64E19C5F25191CF41E666AE4738837E2FB3746123AEDF821578F09496C81634A6D784E4FBB0837C4EEEC3BAEF1B3F94C3',;
+       //mchv_public  := 'CC55E628C3C90F93E5C7B550A9075A52CA999A89D6406CBDEA5508CF4112E00B4D0055E2DEA5BDF7E4AAAE4C4BB4C582DC0EBA14232D2444B949A6FF2DD23FD5B4CDBEAE7A8929D6A3774F4CCD737522F073E86F0724EE886EA493114780EDD87C59A173E0494D3F64DFF91AA7CFF6FD7F1D46AE5BDCA4418AF8E0261491F60D',;
+
+//MYRUN("openssl genrsa -out chave.pem 1024") // GERAR CHAVE PRIVADA
+//MYRUN('openssl rsa -in chave.pem -modulus -out modulo.txt') //GERAR MODULO PARA O XML
+// **************************
+// NA MESMA LINHA DAR SCROLL
+// *** '@S30!' ******
+// ***********************************
+// VERIFICAR DATA DE ALGUM ARQUIVO
+// mdt := directory('siac.exe') [1][3]
+// ***********************************
+
+//nTask := HB_BACKGROUNDADD( {|| DisplayTime()},2000) // tempo em milisegundos
+//SET BACKGROUND TASKS ON
+//atencao(hdserial('C:'))
+//IF mtc = '?'
+//        CLS
+//        atencao('SIAC :[S]=SIAC - [V]=VENDA - [C]=CAIXA - [M]=SIACVEND - [F]=FISCAL - [O]=SIACOPER - [R]eindexar',0)
+//        RETURN NIL
+//ENDIF
+//atencao(strzero( RGB(240,249,144), 8 ))
+
+//SQLRDD***********************************
+//REQUEST SR_ODBC            // Needed if you plan to connect with ODBC
+//REQUEST SR_PGS             // Needed if you plan to use native connection to Postgres
+//REQUEST SR_MYSQL           // Needed if you plan to use native connection to MySQL
+//REQUEST SR_ORACLE          // Needed if you plan to use native connection to Oracle
+
+REQUEST SQLRDD             // SQLRDD should be linked in
+REQUEST SR_FIREBIRD        // Needed if you plan to use native connection to Firebird
+REQUEST DBFCDX
+REQUEST DBFFPT
+*************************************************************************************
+REQUEST HB_CODEPAGE_PTISO
+REQUEST HB_LANG_ES
+REQUEST HB_CODEPAGE_ES
+REQUEST HB_CODEPAGE_ESMWIN
+REQUEST HB_CODEPAGE_ESWIN
+//SETCOLOR('W/1,B/w,,,GR/B')
+//SETCOLOR('W/1,g/w,,,GR+/B')
+WITH OBJECT ( oApp := WvW_tApplication():New( CurDrive() + ":\" + CurDir() ) )
+        :cImagePath := 'C:\HELIO\SIACHB\HTILOGO.JPG'
+        :Setup()
+        :SetTitle( "SISPDV " + mversao+' - '+mrelease )
+        :SetIcon( "winflag.ico" )
+        //:SetIcon( "HTI.ico" )
+        :lDevelopment := .T.
+END
+
+//SetMode(50,120)
+//WVW_SetFont(,'terminal',20,,5)  // 1024X768
+//WVW_SetFont(,"lucida console",13, 7,, PROOF_QUALITY )  // 800X600
+
+WvW_SetGet( "RDD"         ,"DBFCDX")
+WvW_SetGet( "CODEPAGE"    ,255)
+WvW_SetGet( "WIN_ROWS"    ,28)
+WvW_SetGet( "WIN_COLS"    ,88)
+wvw_SetVertCaret(.F.)
+wvw_setmaincoord(.F.)
+//WVW_SetDefLineSpacing(-30)
+//WVW_SetDefLSPACECOLOR(10)
+SET EVENTMASK TO 159
+SET CONS OFF                                                
+SET WRAP ON
+SET DATE BRITI
+SET DELE ON
+SET EPOCH TO 1950
+SET KEY -3 TO menu_fiscal()       // F2 MENU FISCAL
+mdata_sis := DATE()
+IF ! FILE('SACCFG.INI')
+        saccfg('1')
+ENDIF
+
+//mmode := hb_md5file('SACCFG.INI')      MD5 
+//atencao(mmode)
+
+lin := MEMOLINE(MEMOREAD('SACCFG.INI'),110,1,,)
+linhas := linha := 0
+linhas := MLCOUNT(MEMOREAD('SACCFG.INI'),110)
+m_cfg := {}
+FOR linha = 1 TO  linhas
+        lin := MEMOLINE(MEMOREAD('SACCFG.INI'),110,linha,,)
+        IF SUBSTR(lin,5,1) = 'C'
+                AADD(m_cfg,ALLTRIM(SUBSTR(lin,30)))
+        ELSE
+                AADD(m_cfg,VAL(SUBSTR(lin,30)))
+        ENDIF
+NEXT
+fclose('saccfg.ini')
+IF LEN(m_cfg) = 0
+        atencao('Favor verificar o arquivo SACCFG.INI ou entrar em contato com a HTI Sistemas...' )
+        RETURN NIL
+ENDIF
+i := 1
+SETMODE(50,120)
+//WVW_SetFont(,'lucida console',11, 9,FW_MEDIUM, PROOF_QUALITY  )  // 800X600
+//WVW_SetFont(,'terminal',12, 8,, PROOF_QUALITY )  // 800X600
+IF EMPTY(m_cfg[6])
+        WVW_SetFont(,'lucida console',12, 11,, PROOF_QUALITY )  // 800X600
+ELSE
+        WVW_SetFont(,'lucida console',12, 7,FW_BOLD, PROOF_QUALITY )  // 800X600
+ENDIF
+//WVW_SetFont(,'lucida console',12, 11,, PROOF_QUALITY )  // 800X600
+op_tela(00,00,50,120,memp_resa+SPACE(5)+msit_tip+'-'+mversao+' - '+mrelease+IF(m_line = 'OFF','  *** OFF LINE ***','')+SPACE(5)+'FRENTE DE LOJA - '+mpaf_ecf+' - Data:'+DTOC(mdata_sis)+' - '+ver_dia(mdata_sis) )
+//mnum_principal := wvw_nopenwindow('',00,00,50,120)
+wvw_noclose()
+wvw_maximize(0)
+WVW_CenterWindow(,.T.,.T.)
+ncnn := 0
+tipo_rdd := 2
+//mcor := SETCOLOR('b/w+,B/w,,,GR+/B')
+op_tela(10,15,12,85,'A T E N C A O ')
+DEVPOS(01,01);DEVOUT('Tentando CONEXAO com o BANCO DE DADOS, Aguarde um Momento......')
+IF m_cfg[2] = 'S' .AND. ! FILE('SISCOM.GDB')
+        IF SQL_SUCCESS = FBCreateDB( 'siscom.gdb', 'SYSDBA', 'masterkey', 300, 'ISO8859_1')
+                atencao('Banco Criado com SUCESSO')
+        ENDIF
+ENDIF
+RDDSETDEFAULT('SQLRDD')
+SR_SetMultiLang( .t. )
+SR_SetBaseLang( LANG_PT_BR )
+********** CONECTANDO AO FIREBIRD *************************************************
+sacdbf()
+
+nCnn := SR_AddConnection(CONNECT_FIREBIRD,'FIREBIRD='+ALLTRIM(m_cfg[4])+';uid=SYSDBA;pwd=masterkey;charset=ISO8859_1')
+        atencao('ok')
+IF nCnn < 0
+        m_line := 'OFF'
+        atencao('Nao foi possivel Conectar ao Bando de Dados'+m_qp+'Caminho: '+ALLTRIM(m_cfg[4])+m_qp+m_qp+'Sistema operando em OFF LINE...')
+        mensagem('Indexando o Arquivo INSOPERA...')
+        IF ! AbriArq('insopera','sen','E');RETURN NIL;wvw_lclosewindow();ENDIF
+        INDEX ON sen->snome TAG senha TO ('insopera')
+        INDEX ON sen->scod_op TAG codop TO ('insopera')
+        sen->(DBCLOSEAREA())
+
+        mensagem('Indexando o Arquivo SACCARTA...')
+        IF ! AbriArq('saccarta','car','E');RETURN NIL;wvw_lclosewindow();ENDIF
+        INDEX ON car->codigo TAG codigo TO ('saccarta')
+        INDEX ON car->cartao TAG cart TO ('saccarta')
+        car->(DBCLOSEAREA())
+
+        mensagem('Indexando o Arquivo SACCLI...')
+        IF ! AbriArq('saccli','cli','E');RETURN NIL;wvw_lclosewindow();ENDIF
+        INDEX ON cli->cod_cli TAG codigo TO ('saccli') // EVAL dbprogress('CODIGO CLIENTE',,lci,cci+35,mqtd_ind*1,cci+17,0)
+        INDEX ON cli->razao TAG raz TO ('saccli') // EVAL dbprogress('RAZAO',,lci,cci+35,mqtd_ind*2,cci+17,0)
+        INDEX ON cli->cgc TAG cgc TO ('saccli') // EVAL dbprogress('CNPJ',,lci,cci+35,mqtd_ind*3,cci+17,0)
+        INDEX ON cli->cpf TAG cpf TO ('saccli') // EVAL dbprogress('CPF',,lci,cci+35,mqtd_ind*4,cci+17,0)
+        cli->(DBCLOSEAREA())
+
+        mensagem('Indexando o Arquivo SACMERC...')
+        IF ! AbriArq('sacmerc','merc','E');RETURN NIL;wvw_lclosewindow();ENDIF
+        INDEX ON merc->cod_merc TAG codigo TO ('sacmerc') // EVAL dbprogress('VALOR VENDA',,lci,cci+35,mqtd_ind*1,cci+17,0)
+        INDEX ON merc->gru_sub+merc->cod_merc TAG grupo TO ('sacmerc') // EVAL dbprogress('VALOR VENDA',,lci,cci+35,mqtd_ind*2,cci+17,0)
+        INDEX ON merc->merc TAG desc TO ('sacmerc') // EVAL dbprogress('VALOR VENDA',,lci,cci+35,mqtd_ind*3,cci+17,0)
+        INDEX ON merc->cod_fab+merc->merc TAG codfab TO ('sacmerc') // EVAL dbprogress('VALOR VENDA',,lci,cci+35,mqtd_ind*4,cci+17,0)
+        INDEX ON merc->gru_sub+merc->merc TAG grumerc TO ('sacmerc') // EVAL dbprogress('VALOR VENDA',,lci,cci+35,mqtd_ind*5,cci+17,0)
+        INDEX ON merc->cod_barr TAG codbarr TO ('sacmerc') // EVAL dbprogress('VALOR VENDA',,lci,cci+35,mqtd_ind*6,cci+17,0)
+        merc->(DBCLOSEAREA())
+        m_set1 := {}
+        lin := MEMOLINE(MEMOREAD('sacsetup.ini'),110,1,,)
+        linhas := linha := 0
+        linhas := MLCOUNT(MEMOREAD('sacsetup.ini'),110)
+        FOR linha = 1 TO linhas
+                lin := MEMOLINE(MEMOREAD('sacsetup.ini'),110,linha,,)
+                IF EMPTY(SUBSTR(lin,1,3)) .AND. VAL(SUBSTR(lin,20,1)) >= 0 .AND. ! EMPTY(ALLTRIM(lin))
+                        AADD(m_set1,VAL(ALLTRIM(lin)))
+                ELSE
+                        AADD(m_set1,ALLTRIM(lin))
+                ENDIF
+        NEXT
+        m_set := {}
+        AADD(m_set,{m_set1[1],m_set1[2],m_set1[3],m_set1[4],m_set1[5],m_set1[6],m_set1[7],m_set1[8],m_set1[9],m_set1[10],;
+                    m_set1[11],m_set1[12],m_set1[13],m_set1[14],m_set1[15],m_set1[16],m_set1[17],m_set1[18],m_set1[19],m_set1[20],;
+                    m_set1[21],m_set1[22],m_set1[23],m_set1[24],m_set1[25],m_set1[26],m_set1[27],m_set1[28],m_set1[29],m_set1[30],;
+                    m_set1[31],m_set1[32],m_set1[33],m_set1[34],m_set1[35],m_set1[36],m_set1[37],m_set1[38],m_set1[39],m_set1[40],;
+                    m_set1[41],m_set1[42],m_set1[43],m_set1[44],m_set1[45],m_set1[46],m_set1[47],m_set1[48],m_set1[49],m_set1[50],;
+                    m_set1[51],m_set1[52],m_set1[53],m_set1[54],m_set1[55],m_set1[56],m_set1[57],m_set1[58],m_set1[59],m_set1[60],;
+                    m_set1[61],m_set1[62],m_set1[63],m_set1[64],m_set1[65],m_set1[66],m_set1[67],m_set1[68],m_set1[69],m_set1[70],;
+                    m_set1[71],m_set1[72],m_set1[73],m_set1[74],m_set1[75],m_set1[76],m_set1[77],m_set1[78],m_set1[79],m_set1[80],;
+                    m_set1[81],m_set1[82],m_set1[83],m_set1[84],m_set1[85],m_set1[86],m_set1[87],m_set1[88],m_set1[89],m_set1[90],;
+                    m_set1[91],m_set1[92],m_set1[93],m_set1[94],m_set1[95],m_set1[96],m_set1[97],m_set1[98],m_set1[99],m_set1[100],;
+                    m_set1[101],m_set1[102],m_set1[103],m_set1[104],m_set1[105],m_set1[106],m_set1[107],m_set1[108],m_set1[109],m_set1[110],;
+                    m_set1[111],m_set1[112],m_set1[113],m_set1[114],m_set1[115],m_set1[116],m_set1[117],m_set1[118],m_set1[119],m_set1[120],;
+                    m_set1[121],m_set1[122],m_set1[123],m_set1[124],m_set1[125],m_set1[126],m_set1[127],m_set1[128],m_set1[129],m_set1[130],;
+                    m_set1[131],m_set1[132],m_set1[133],m_set1[134],m_set1[135],m_set1[136],m_set1[137],m_set1[138],m_set1[139],m_set1[140],;
+                    m_set1[141],m_set1[142],m_set1[143],m_set1[144],m_set1[145],m_set1[146],m_set1[147],m_set1[148],m_set1[149],m_set1[150],;
+                    m_set1[151],m_set1[152],m_set1[153],m_set1[154],m_set1[155],m_set1[156],m_set1[157],m_set1[158],m_set1[159],m_set1[160],;
+                    m_set1[161],m_set1[162],m_set1[163],m_set1[164],m_set1[165],m_set1[166],m_set1[167],m_set1[168],m_set1[169],m_set1[170],;
+                    m_set1[171],m_set1[172],m_set1[173]})
+
+
+        m_set1 := {}
+        lin := MEMOLINE(MEMOREAD('sacindiv.ini'),110,1,,)
+        linhas := linha := 0
+        linhas := MLCOUNT(MEMOREAD('sacindiv.ini'),110)
+        FOR linha = 1 TO linhas
+                lin := MEMOLINE(MEMOREAD('sacindiv.ini'),110,linha,,)
+                IF EMPTY(SUBSTR(lin,1,3)) .AND. VAL(SUBSTR(lin,20,1)) >= 0 .AND. ! EMPTY(ALLTRIM(lin))
+                        AADD(m_set1,VAL(ALLTRIM(lin)))
+                ELSE
+                        AADD(m_set1,ALLTRIM(lin))
+                ENDIF
+
+                //mensagem(strzero(linha,3) )
+                //atencao(m_set1[linha])
+        NEXT
+        m_indiv := {}
+        AADD(m_indiv,{m_set1[1],m_set1 [2],m_set1[3],m_set1[4],m_set1[5],m_set1[6],m_set1[7],m_set1[8],m_set1[9],m_set1[10],;
+                    m_set1[11],m_set1[12],m_set1[13],m_set1[14],m_set1[15],m_set1[16],m_set1[17],m_set1[18],m_set1[19],m_set1[20],;
+                    m_set1[21],m_set1[22],m_set1[23],m_set1[24],m_set1[25],m_set1[26],m_set1[27],m_set1[28],m_set1[29],m_set1[30],;
+                    m_set1[31],m_set1[32],m_set1[33],m_set1[34],m_set1[35],m_set1[36],m_set1[37],m_set1[38],m_set1[39],m_set1[40],;
+                    m_set1[41],m_set1[42],m_set1[43]})
+
+        //atencao(sr_ShowVector( m_set))
+        //atencao("Nao foi possivel conectar ao BANCO DE DADOS. Verificar o Caminho do Banco de Dados no SACCFG.INI ou se o FIREBIRD estar Instalado, Caso nao tenha sucesso contactar com o Administrador da REDE")
+        //Quit
+ELSE
+        SR_SetActiveConnection(nCnn)
+        m_line := 'ON'
+        IF mtc = 'CONFIG' .OR. mtc = 'config'
+                setcor(1)
+                //sacconf_ecf()
+                fecha_conexaoDB()
+                QUIT
+        ENDIF
+        m_indiv:={}
+        sr_getconnection():exec("SELECT * FROM sacindiv WHERE terminal = "+sr_cdbvalue(SUBSTR(m_cfg[1],1,20)),,.t.,@m_indiv)
+        IF LEN(m_indiv) = 0
+                atencao('Este terminal: '+SUBSTR(m_cfg[1],1,20)+' nao estar configurado favor entrar em contato com HTI Sistemas(81)'+mfone_HTI)
+        ENDIF
+        mmd5 := MEMOLINE(MEMOREAD('HTImd5.ini'),110,1,,)
+        m_indiv[1,2] := ALLTRIM(mmd5)
+        /*
+        IF mtc = 'setup'
+                sacsql()
+        ENDIF
+        IF mtc = 'indexar'
+                CLOSE ALL
+                saccdx('*',mecf)
+                wvw_lclosewindow()
+                QUIT
+        ENDIF
+        */
+        IF m_cfg[2] = 'S'
+                sacsql()
+                IF ! saccdx()
+                        atencao('Existe algum problema com os indices procure o suporte')
+                        CLOSE ALL
+                        fecha_conexaoDB()
+                        QUIT
+                ENDIF
+        ENDIF
+        m_set:={}
+        sr_getconnection():exec("SELECT * FROM sacsetup",,.t.,@m_set)
+        IF LEN(m_set) = 0
+                atencao('VAZIO')
+        ENDIF
+        IF EMPTY(m_set[1,123])
+                incl_firma()
+        ENDIF
+        m_set[1,123] := DCRIPTO(SUBSTR(m_set[1,123],1,14))+DCRIPTO(SUBSTR(m_set[1,123],15,6))
+        mcgc_aux := m_set[1,123]
+        mcgc_firm := SUBSTR(mcgc_aux,1,2)+'.'+SUBSTR(mcgc_aux,3,3)+'.'+SUBSTR(mcgc_aux,6,3)+'/'+SUBSTR(mcgc_aux,9,4)+'-'+SUBSTR(mcgc_aux,13,2)
+        minsc_firm := m_set[1,128]
+        mend_firm := RTRIM(m_set[1,132])+', '+RTRIM(m_set[1,160])+IF(! EMPTY(m_set[1,161]),' - '+RTRIM(m_set[1,161]),'')
+        mcid_firm := RTRIM(m_set[1,134])+'-'+m_set[1,19]
+        mfone_firm := RTRIM(m_set[1,136])
+        sis_cidade := RTRIM(m_set[1,134])
+        IF m_set[1,131] = 'F'
+                memp_resa := RTRIM(m_set[1,130])
+        ELSE
+                memp_resa := RTRIM(m_set[1,129])
+        ENDIF
+        mensagem('Carga do SISPDV OFF do Arquivo: SACTOTNT, Aguarde...')
+        dbUseArea( .T., "DBFCDX","sactotnt", "totnt" )
+        dbUseArea( .T., "SQLRDD", "sactotnt", "sql_totnt", .F. )
+        Append from "sactotnt" VIA "DBFCDX"
+
+        mensagem('Carga do SISPDV OFF do Arquivo: SACMOVNT, Aguarde...')
+        dbUseArea( .T., "DBFCDX","sacmovnt", "movnt" )
+        dbUseArea( .T., "SQLRDD", "sacmovnt", "sql_movnt", .F. )
+        Append from "sacmovnt" VIA "DBFCDX"
+
+        mensagem('Carga do SISPDV OFF do Arquivo: SACMOV, Aguarde...')
+        dbUseArea( .T., "DBFCDX","sacmov", "mov" )
+        dbUseArea( .T., "SQLRDD", "sacmov", "sql_mov", .F. )
+        Append from "sacmov" VIA "DBFCDX"
+
+        mensagem('Carga do SISPDV OFF do Arquivo: R1, Aguarde...')
+        dbUseArea( .T., "DBFCDX","r1", "ir1" )
+        WHILE ! EOF()
+                sr_getconnection():exec('INSERT INTO r1 ('+;
+                        'NUMERO_FAB   ,'+; //1
+                        'MF_ADICIONAL ,'+; //2
+                        'TIPO_ECF     ,'+; //3
+                        'MARCA_ECF    ,'+; //4
+                        'MODELO_ECF   ,'+; //5
+                        'VERSAO_SB    ,'+; //6
+                        'DATA_INSTSB  ,'+; //7
+                        'HORA_INSTSB  ,'+; //8
+                        'NUM_SEQ_ECF  ,'+; //9
+                        'CNPJ_USU     ,'+; //10
+                        'INSC_USU     ,'+; //11
+                        'CNPJ_DESENV  ,'+; //12
+                        'INSC_ESTDESEN,'+; //13
+                        'INSC_MUNDESEN,'+; //14
+                        'DENOMI_DESEN ,'+; //15
+                        'NOME_PAF     ,'+; //16
+                        'VERSAO_PAF   ,'+; //17
+                        'COD_MD5_PAF  ,'+; //18
+                        'DATA_INI     ,'+; //19
+                        'DATA_FINAL   ,'+; //20
+                        'VERSAO_ER_PAF,'+; //21
+                        'CHV_CRIPT    ,'+; //22
+                        'SR_DELETED )'+;
+                        ' VALUES ('+;
+                        sr_cdbvalue(ir1->NUMERO_FAB  )+','+; //1
+                        sr_cdbvalue(ir1->MF_ADICION  )+','+; //2
+                        sr_cdbvalue(ir1->TIPO_ECF    )+','+; //3
+                        sr_cdbvalue(ir1->MARCA_ECF   )+','+; //4
+                        sr_cdbvalue(ir1->MODELO_ECF  )+','+; //5
+                        sr_cdbvalue(ir1->VERSAO_SB   )+','+; //6
+                        sr_cdbvalue(ir1->DATA_INSTS  )+','+; //7
+                        sr_cdbvalue(ir1->HORA_INSTS  )+','+; //8
+                        sr_cdbvalue(ir1->NUM_SEQ_EC  )+','+; //9
+                        sr_cdbvalue(ir1->CNPJ_USU    )+','+; //9
+                        sr_cdbvalue(ir1->INSC_USU    )+','+; //9
+                        sr_cdbvalue(ir1->CNPJ_DESEN  )+','+; //9
+                        sr_cdbvalue(ir1->INSC_ESTDE  )+','+; //9
+                        sr_cdbvalue(ir1->INSC_MUNDE  )+','+; //9
+                        sr_cdbvalue(ir1->DENOMI_DES  )+','+; //9
+                        sr_cdbvalue(ir1->NOME_PAF    )+','+; //9
+                        sr_cdbvalue(ir1->VERSAO_PAF  )+','+; //9
+                        sr_cdbvalue(ir1->COD_MD5_PA  )+','+; //9
+                        sr_cdbvalue(ir1->DATA_INI    )+','+; //9
+                        sr_cdbvalue(ir1->DATA_FINAL  )+','+; //9
+                        sr_cdbvalue(ir1->VERSAO_ER_  )+','+; //9
+                        sr_cdbvalue(ir1->CHV_CRIPT   )+','+; //10
+                        sr_cdbvalue(' ')+')',,.f.)
+                SKIP
+        ENDDO
+        mensagem('Carga do SISPDV OFF do Arquivo: r2, Aguarde...')
+        dbUseArea( .T., "DBFCDX","r2", "ir2" )
+        WHILE ! EOF()
+                IF EMPTY(ir2->data_mov)
+                        SKIP
+                        LOOP
+                ENDIF
+                sr_getconnection():exec('INSERT INTO r2 ('+;
+                        'NUMERO_FAB     ,'+; //1
+                        'MF_ADICIONAL   ,'+; //2
+                        'MODELO_ECF     ,'+; //3
+                        'NUMERO_USU     ,'+; //4
+                        'CRZ            ,'+; //5
+                        'COO            ,'+; //6
+                        'CRO            ,'+; //7
+                        'DATA_MOV       ,'+; //8
+                        'DATA_EMI       ,'+; //9
+                        'HORA_EMI       ,'+; //10
+                        'VENDA_BRUTA    ,'+; //11
+                        'PARAMETRO      ,'+; //12
+                        'COO_INI        ,'+; //13
+                        'COO_FIM        ,'+; //14
+                        'CHV_CRIPT      ,'+; //15
+                        'SR_DELETED)'+;
+                        ' VALUES ('+;
+                        sr_cdbvalue(ir2->NUMERO_FAB   )+','+; //1
+                        sr_cdbvalue(ir2->MF_ADICION   )+','+; //2
+                        sr_cdbvalue(ir2->MODELO_ECF   )+','+; //3
+                        sr_cdbvalue(ir2->NUMERO_USU   )+','+; //4
+                        sr_cdbvalue(ir2->CRZ          )+','+; //5
+                        sr_cdbvalue(ir2->COO          )+','+; //6
+                        sr_cdbvalue(ir2->CRO          )+','+; //7
+                        sr_cdbvalue(ir2->DATA_MOV     )+','+; //8
+                        sr_cdbvalue(ir2->DATA_EMI     )+','+; //9
+                        sr_cdbvalue(ir2->HORA_EMI     )+','+; //9
+                        sr_cdbvalue(ir2->VENDA_BRUT   )+','+; //9
+                        sr_cdbvalue(ir2->PARAMETRO    )+','+; //9
+                        sr_cdbvalue(ir2->COO_INI      )+','+; //9
+                        sr_cdbvalue(ir2->COO_FIM      )+','+; //9
+                        sr_cdbvalue(ir2->CHV_CRIPT    )+','+; //9
+                        sr_cdbvalue(' ')+')',,.f.)
+                SKIP
+        ENDDO
+
+        mensagem('Carga do SISPDV OFF do Arquivo: r3, Aguarde...')
+        dbUseArea( .T., "DBFCDX","r3", "ir3" )
+        WHILE ! EOF()
+                IF EMPTY(ir3->data_mov)
+                        SKIP
+                        LOOP
+                ENDIF
+                sr_getconnection():exec('INSERT INTO r3 ('+;
+                        'NUMERO_FAB   ,'+; //1
+                        'MF_ADICIONAL ,'+; //2
+                        'MODELO_ECF   ,'+; //3
+                        'NUMERO_USU   ,'+; //4
+                        'CRZ          ,'+; //5
+                        'TOTAL_PARCIAL,'+; //6
+                        'VALOR_ACU    ,'+; //7
+                        'DATA_MOV     ,'+; //8
+                        'CHV_CRIPT    ,'+; //9
+                        'SR_DELETED )'+;
+                        ' VALUES ('+;
+                        sr_cdbvalue(ir3->NUMERO_FAB)+','+; //1
+                        sr_cdbvalue(ir3->MF_ADICION)+','+; //2
+                        sr_cdbvalue(ir3->MODELO_ECF)+','+; //3
+                        sr_cdbvalue(ir3->NUMERO_USU)+','+; //4
+                        sr_cdbvalue(ir3->CRZ       )+','+; //5
+                        sr_cdbvalue(ir3->TOTAL_PARC)+','+; //6
+                        sr_cdbvalue(ir3->VALOR_ACU )+','+; //7
+                        sr_cdbvalue(ir3->DATA_MOV  )+','+; //13
+                        sr_cdbvalue(ir3->CHV_CRIPT )+','+; //13
+                        sr_cdbvalue(' ')+')',,.f.)
+                SKIP
+        ENDDO
+
+        mensagem('Carga do SISPDV OFF do Arquivo: r4, Aguarde...')
+        dbUseArea( .T., "DBFCDX","r4", "ir4" )
+        WHILE ! EOF()
+                IF EMPTY(ir4->data_mov)
+                        SKIP
+                        LOOP
+                ENDIF
+                sr_getconnection():exec('INSERT INTO r4 ('+;
+                        'NUMERO_FAB   ,'+; //1
+                        'MF_ADICIONAL ,'+; //2
+                        'MODELO_ECF   ,'+; //3
+                        'NUMERO_USU   ,'+; //4
+                        'CCF_CVC_CBP  ,'+; //5
+                        'COO          ,'+; //6
+                        'DATA_INI     ,'+; //7
+                        'SUB_TOTAL    ,'+; //8
+                        'DESCONT      ,'+; //9
+                        'IND_DESCONT  ,'+; //10
+                        'ACRES_SUB    ,'+; //11
+                        'IND_ACRESC   ,'+; //12
+                        'VLR_LIQ      ,'+; //13
+                        'IND_CANCEL   ,'+; //14
+                        'CANCEL_ACRESC,'+; //15
+                        'ORD_DESC_ACRE,'+; //16
+                        'NOME_CLIENTE ,'+; //17
+                        'CNPJ_CPF     ,'+; //18
+                        'DATA_MOV     ,'+; //19
+                        'CHV_CRIPT    ,'+; //19
+                        'SR_DELETED )'+;
+                        ' VALUES ('+;
+                        sr_cdbvalue(ir4->NUMERO_FAB)+','+; //1
+                        sr_cdbvalue(ir4->MF_ADICION)+','+; //2
+                        sr_cdbvalue(ir4->MODELO_ECF)+','+; //3
+                        sr_cdbvalue(ir4->NUMERO_USU)+','+; //4
+                        sr_cdbvalue(ir4->CCF_CVC_CB)+','+; //5
+                        sr_cdbvalue(ir4->COO       )+','+; //6
+                        sr_cdbvalue(ir4->DATA_INI  )+','+; //7
+                        sr_cdbvalue(ir4->SUB_TOTAL )+','+; //8
+                        sr_cdbvalue(ir4->DESCONT   )+','+; //9
+                        sr_cdbvalue(ir4->IND_DESCON)+','+; //10
+                        sr_cdbvalue(ir4->ACRES_SUB )+','+; //11
+                        sr_cdbvalue(ir4->IND_ACRESC)+','+; //12
+                        sr_cdbvalue(ir4->VLR_LIQ   )+','+; //13
+                        sr_cdbvalue(ir4->IND_CANCEL)+','+; //14
+                        sr_cdbvalue(ir4->CANCEL_ACR)+','+; //15
+                        sr_cdbvalue(ir4->ORD_DESC_A)+','+; //16
+                        sr_cdbvalue(ir4->NOME_CLIEN)+','+; //17
+                        sr_cdbvalue(ir4->CNPJ_CPF  )+','+; //18
+                        sr_cdbvalue(ir4->DATA_MOV  )+','+; //13
+                        sr_cdbvalue(ir4->CHV_CRIPT )+','+; //19
+                        sr_cdbvalue(' ')+')',,.f.)
+                SKIP
+        ENDDO
+        mensagem('Carga do SISPDV OFF do Arquivo: r5, Aguarde...')
+        dbUseArea( .T., "DBFCDX","r5", "ir5" )
+        WHILE ! EOF()
+                IF EMPTY(ir5->data_mov)
+                        SKIP
+                        LOOP
+                ENDIF
+                sr_getconnection():exec('INSERT INTO r5 ('+;
+                        'NUMERO_FAB   ,'+; //1
+                        'MF_ADICIONAL ,'+; //2
+                        'MODELO_ECF   ,'+; //3
+                        'NUMERO_USU   ,'+; //4
+                        'COO          ,'+; //5
+                        'CCF_CVC_CBP  ,'+; //6
+                        'NUM_ITEM     ,'+; //7
+                        'COD_PROD     ,'+; //8
+                        'DESCRICAO    ,'+; //9
+                        'QUANTIDADE   ,'+; //10
+                        'UNIDADE      ,'+; //11
+                        'VLR_UNIT     ,'+; //12
+                        'DESCON_ITEM  ,'+; //13
+                        'ACRESC_ITEM  ,'+; //14
+                        'VLR_LIQ      ,'+; //15
+                        'TOTAL_PARCIAL,'+; //16
+                        'IND_CANCEL   ,'+; //17
+                        'QUANT_CANCEL ,'+; //18
+                        'VLR_CANCEL   ,'+; //19
+                        'CANCEL_ACRES ,'+; //20
+                        'IAT          ,'+; //21
+                        'IPPT         ,'+; //22
+                        'CASASDECQTD,'+; //23
+                        'CASASDECUNI,'+; //24
+                        'DATA_MOV     ,'+; //25
+                        'CHV_CRIPT    ,'+; //26
+                        'SR_DELETED )'+;
+                        ' VALUES ('+;
+                        sr_cdbvalue(ir5->NUMERO_FAB)+','+; //1
+                        sr_cdbvalue(ir5->MF_ADICION)+','+; //2
+                        sr_cdbvalue(ir5->MODELO_ECF)+','+; //3
+                        sr_cdbvalue(ir5->NUMERO_USU)+','+; //4
+                        sr_cdbvalue(ir5->COO       )+','+; //5
+                        sr_cdbvalue(ir5->CCF_CVC_CB)+','+; //6
+                        sr_cdbvalue(ir5->NUM_ITEM  )+','+; //7
+                        sr_cdbvalue(ir5->COD_PROD  )+','+; //8
+                        sr_cdbvalue(ir5->DESCRICAO )+','+; //9
+                        sr_cdbvalue(ir5->QUANTIDADE)+','+; //10
+                        sr_cdbvalue(ir5->UNIDADE   )+','+; //11
+                        sr_cdbvalue(ir5->VLR_UNIT  )+','+; //12
+                        sr_cdbvalue(ir5->DESCON_ITE)+','+; //13
+                        sr_cdbvalue(ir5->ACRESC_ITE)+','+; //14
+                        sr_cdbvalue(ir5->VLR_LIQ   )+','+; //15
+                        sr_cdbvalue(ir5->TOTAL_PARC)+','+; //16
+                        sr_cdbvalue(ir5->IND_CANCEL)+','+; //17
+                        sr_cdbvalue(ir5->QUANT_CANC)+','+; //18
+                        sr_cdbvalue(ir5->VLR_CANCEL)+','+; //19
+                        sr_cdbvalue(ir5->CANCEL_ACR)+','+; //20
+                        sr_cdbvalue(ir5->IAT       )+','+; //21
+                        sr_cdbvalue(ir5->IPPT      )+','+; //22
+                        sr_cdbvalue(ir5->CASASDECQT)+','+; //23
+                        sr_cdbvalue(ir5->CASASDECUN)+','+; //24
+                        sr_cdbvalue(ir5->DATA_MOV  )+','+; //25
+                        sr_cdbvalue(ir5->CHV_CRIPT )+','+; //26
+                        sr_cdbvalue(' ')+')',,.f.)
+                SKIP
+        ENDDO
+        mensagem('Carga do SISPDV OFF do Arquivo: r6, Aguarde...')
+        dbUseArea( .T., "DBFCDX","r6", "ir6" )
+        WHILE ! EOF()
+                IF EMPTY(ir6->data_mov)
+                        SKIP
+                        LOOP
+                ENDIF
+                sr_getconnection():exec('INSERT INTO r6 ('+;
+                        'NUMERO_FAB  ,'+; //1
+                        'MF_ADICIONAL,'+; //2
+                        'MODELO_ECF  ,'+; //3
+                        'NUMERO_USU  ,'+; //4
+                        'COO         ,'+; //5
+                        'GNF         ,'+; //6
+                        'GRG         ,'+; //7
+                        'CDC         ,'+; //8
+                        'DENOMICAO   ,'+; //9
+                        'DATA_FINAL  ,'+; //10
+                        'HORA_FINAL  ,'+; //11
+                        'DATA_MOV    ,'+; //12
+                        'CHV_CRIPT   ,'+; //13
+                        'SR_DELETED )'+;
+                        ' VALUES ('+;
+                        sr_cdbvalue(ir6->NUMERO_FAB)+','+; //1
+                        sr_cdbvalue(ir6->MF_ADICION)+','+; //2
+                        sr_cdbvalue(ir6->MODELO_ECF)+','+; //3
+                        sr_cdbvalue(ir6->NUMERO_USU)+','+; //4
+                        sr_cdbvalue(ir6->COO       )+','+; //5
+                        sr_cdbvalue(ir6->GNF       )+','+; //6
+                        sr_cdbvalue(ir6->GRG       )+','+; //7
+                        sr_cdbvalue(ir6->CDC       )+','+; //8
+                        sr_cdbvalue(ir6->DENOMICAO )+','+; //9
+                        sr_cdbvalue(ir6->DATA_FINAL)+','+; //10
+                        sr_cdbvalue(ir6->HORA_FINAL)+','+; //11
+                        sr_cdbvalue(ir6->DATA_MOV  )+','+; //12
+                        sr_cdbvalue(ir6->CHV_CRIPT )+','+; //26
+                        sr_cdbvalue(' ')+')',,.f.)
+                SKIP
+        ENDDO
+        mensagem('Carga do SISPDV OFF do Arquivo: r7, Aguarde...')
+        dbUseArea( .T., "DBFCDX","r7", "ir7" )
+        WHILE ! EOF()
+                IF EMPTY(ir7->data_mov)
+                        SKIP
+                        LOOP
+                ENDIF
+                sr_getconnection():exec('INSERT INTO r7 ('+;
+                        'NUMERO_FAB  ,'+; //1
+                        'MF_ADICIONAL,'+; //2
+                        'MODELO_ECF  ,'+; //3
+                        'NUMERO_USU  ,'+; //4
+                        'COO         ,'+; //5
+                        'CCF         ,'+; //6
+                        'GNF         ,'+; //7
+                        'MEIO_PAG    ,'+; //8
+                        'VLR_PAGO    ,'+; //9
+                        'IND_ESTORNO ,'+; //10
+                        'VLR_ESTORNO ,'+; //11
+                        'DATA_MOV    ,'+; //12
+                        'CHV_CRIPT   ,'+; //13
+                        'SR_DELETED )'+;
+                        ' VALUES ('+;
+                        sr_cdbvalue(ir7->NUMERO_FAB)+','+; //1
+                        sr_cdbvalue(ir7->MF_ADICION)+','+; //2
+                        sr_cdbvalue(ir7->MODELO_ECF)+','+; //3
+                        sr_cdbvalue(ir7->NUMERO_USU)+','+; //4
+                        sr_cdbvalue(ir7->COO       )+','+; //5
+                        sr_cdbvalue(ir7->CCF       )+','+; //6
+                        sr_cdbvalue(ir7->GNF       )+','+; //7
+                        sr_cdbvalue(ir7->MEIO_PAG  )+','+; //8
+                        sr_cdbvalue(ir7->VLR_PAGO  )+','+; //9
+                        sr_cdbvalue(ir7->IND_ESTORN)+','+; //10
+                        sr_cdbvalue(ir7->VLR_ESTORN)+','+; //11
+                        sr_cdbvalue(ir7->DATA_MOV  )+','+; //12
+                        sr_cdbvalue(ir7->CHV_CRIPT )+','+; //26
+                        sr_cdbvalue(' ')+')',,.f.)
+                sr_getconnection():exec("COMMIT",,.f.)
+                SKIP
+        ENDDO
+        DBCLOSEALL()
+        MYRUN('DEL R1.DBF')
+        MYRUN('DEL R2.DBF')
+        MYRUN('DEL R3.DBF')
+        MYRUN('DEL R4.DBF')
+        MYRUN('DEL R5.DBF')
+        MYRUN('DEL R6.DBF')
+        MYRUN('DEL R7.DBF')
+        MYRUN('DEL SACTOTNT.DBF')
+        MYRUN('DEL SACMOVNT.DBF')
+        MYRUN('DEL SACMOV.DBF')
+        mensagem('Copiando a Tabela SACSETUP...')
+	FCLOSE('sacsetup.ini')
+        SET DEVI TO PRINT
+        SET PRINT ON
+        SET PRINT TO 'sacsetup.ini'
+        DEVPOS(PROW(),0);DEVOUT(m_set[1,1])
+        i:=0
+        FOR i = 2 TO 173
+                DEVPOS(PROW()+1,0);DEVOUT(m_set[1,i])
+        NEXT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        FCLOSE('sacsetup.ini')
+
+	FCLOSE('sacindiv.ini')
+        SET DEVI TO PRINT
+        SET PRINT ON
+        SET PRINT TO 'sacindiv.ini'
+        DEVPOS(PROW(),0);DEVOUT(m_indiv[1,1])
+        i:=0
+        FOR i = 2 TO 43
+                DEVPOS(PROW()+1,0);DEVOUT(m_indiv[1,i])
+        NEXT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        FCLOSE('sacindiv.ini')
+        IF EMPTY(m_cfg[2])
+                mtela_term := SAVESCREEN(00,00,24,79)
+                atencao('Este Computador nao estar configurado')
+                botao(10,10,12,55,,'Configuracao do Terminal ')
+                DEVPOS(11,11);DEVOUT('Tipo de Computador [S]ervidor [T]erminal:')
+                @ 11,52 GET mtip_t PICT '@!' VALID mtip_t $ 'S,T'
+                READ
+                BLOQREG()
+                m_cfg[2] := mtip_t
+                DBCOMMIT()
+                DBUNLOCK()
+                RESTSCREEN(00,00,24,79,mtela_term)
+                IF m_cfg[2] = 'T'
+                        saccfg()
+                ENDIF
+        ENDIF
+ENDIF
+*************************************************************************************
+/*
+op_tela(10,10,15,70)
+WHILE .T.
+prim := segu := 0
+DEVPOS(00,00);DEVOUT('Primeiro:')
+DEVPOS(01,00);DEVOUT('Segundo.:')
+DEVPOS(03,00);DEVOUT('Tempo...:')
+@ 0,10 get prim pict '9999.999'
+@ 1,10 get segu pict '9999.999'
+read
+IF LASTKEY() = 27
+EXIT
+ENDIF
+tim := time()
+INKEY(prim,segu)
+DEVPOS(03,00);DEVOUT('Tempo...:')
+DEVPOS(03,10);DEVOUT(ELAPTIME(tim,TIME()))
+ENDDO
+*/
+/*
+DLLsign_bema:=Loadlibrary("DarumaFrameWork.dll")
+
+marq:=dllcall(DLLsign_bema,32,"Daruma_Registry_Porta","COM3")
+IF marq # 1
+        atencao('COM3')
+        RETURN .F.
+ENDIF
+marq:=dllcall(DLLsign_bema,32,"Daruma_Registry_ZAutomatica","0")
+marq:=dllcall(DLLsign_bema,32,"Daruma_Registry_VendeItemUmaLinha","0")
+marq:=dllcall(DLLsign_bema,32,"Daruma_Registry_ModoGaveta","1")
+marq:=dllcall(DLLsign_bema,32,"Daruma_Registry_Log","1")
+marq:=dllcall(DLLsign_bema,32,"Daruma_Registry_AplMensagem1",padc("alaminojunior@gmail.com",42))
+marq:=dllcall(DLLsign_bema,32,"Daruma_Registry_AplMensagem2",padc("Caixa v3.0",42))
+marq:=dllcall(DLLsign_bema,32,"Daruma_Registry_StatusFuncao","1")
+marq:=dllcall(DLLsign_bema,32,"Daruma_Registry_AlteraRegistry","MFDTamMinDescProd","0")
+marq:=dllcall(DLLsign_bema,32,"Daruma_FI_LeituraX")
+IF marq # 1
+        atencao('LX')
+ENDIF
+dllcall(DLLsign_bema,32,"Daruma_FIMFD_GerarAtoCotepeData",DATE(),DATE())
+//marq:=DLLCALL(DLLsign_bema,32,"rGerarRelatorio_ECF_Daruma","MFD+[EAD]c:\acbrmonitor\priv_key.key", "DATAM", "01122012", "22122012")
+//marq:=DLLCALL(DLLsign_bema,32,"rGerarRelatorio_ECF_Daruma","MFD", "DATAM", "01122012", "22122012")
+IF marq # 1
+        atencao('COTEPE')
+ENDIF
+FreeLibrary(DLLsign_bema)
+*/
+//GERA_EAD()
+/*
+IF ! FILE('HTISISTEMAS.XML')
+        GeraXML()
+ENDIF
+*/
+wvw_lclosewindow()
+wvw_noclose()
+//atencao('CAMINHO DO ARQUIVO DE INICILALIZACAO PAF-ECF: '+CURDRIVE()+':\'+CURDIR()+'\N_ECFPAF.INI')
+mensagem('Verificando o Arquivo -> MENUFOTO.DBF')
+IF ! FILE('MENUFOTO.DBF')
+        matriz:={ }
+        AADD(matriz,{'smenu','C',40,0})
+        AADD(matriz,{'snome','C',40,0})
+        DBCREATE('menufoto',matriz,'DBFCDX')
+ENDIF
+MYRUN('MD C:\SIACCFG')
+arq_bat()
+tesc := CHR(27)
+memp_resa := SPACE(30)
+WHILE .T.
+        mtip_term := m_cfg[2]
+        //IF autorizacao(IF(EMPTY(m_set[1,123]),'',DCRIPTO(SUBSTR(m_set[1,123],1,14))+DCRIPTO(SUBSTR(m_set[1,123],15,6))))
+        IF autorizacao(IF(EMPTY(m_set[1,123]),'',SUBSTR(m_set[1,123],1,14)+SUBSTR(m_set[1,123],15,6)))
+                num := 80
+                mcodempresa := '001'
+                mcgc_aux := m_set[1,123]
+                mcgc_firm := SUBSTR(mcgc_aux,1,2)+'.'+SUBSTR(mcgc_aux,3,3)+'.'+SUBSTR(mcgc_aux,6,3)+'/'+SUBSTR(mcgc_aux,9,4)+'-'+SUBSTR(mcgc_aux,13,2)
+                minsc_firm := m_set[1,128]
+                mend_firm := m_set[1,132]
+                mcid_firm := RTRIM(m_set[1,134])+'-'+m_set[1,19]
+                mfone_firm := RTRIM(m_set[1,136])
+                sis_cidade := RTRIM(m_set[1,134])
+                IF m_set[1,131] = 'F'
+                        memp_resa := RTRIM(m_set[1,130])
+                ELSE
+                        memp_resa := RTRIM(m_set[1,129])
+                ENDIF
+                Wvw_SetTitle( ,memp_resa+SPACE(20)+mpaf_HTI+'-'+mversao+SPACE(10)+mrelease+" - .:HTI Sistemas - (81)"+mfone_HTI+":." )
+                *-----------------------------------------------------
+                CLOSE ALL
+                IF ! AbriArq('insopera','sen',,,,,,'N');RETURN NIL;ENDIF
+                *-----------------------------------------------------
+                setcor(1)
+                muf_firm := m_set[1,19]
+                //IF ! ini_ecf()
+                //        mecf_ligada := 0
+                //ENDIF
+                //IBR_COMANDO('ACBR.RUN("www.htisistemas.com")')
+                IF ! FILE('HTIAUX.INI')         //.OR. LEN(m_HTIaux) = 0
+                        atencao('O arquivo de Configuracao Inicial nao estar Presente.... Entrar em contato com a HTI Sistemas (81)'+mfone_HTI )
+                        //IF ! senha_ini()
+                        //        mecf_ligada := 0
+                        //ELSE
+                                MYRUN('DEL HTIAUX.INI')
+                                mGrandeTotal  := SPACE(18)
+                                mGrandeTotal  := SUBSTR(IBR_COMANDO( 'ECF.GrandeTotal',,,.T. ),5,17)
+                                m_numeroSerie := Space(21)
+                                m_numeroSerie := SUBSTR(IBR_COMANDO( 'ECF.NumSerie',,,.T. ),5)
+                                m_numeroSerie := ALLTRIM(m_numeroSerie)
+                                IF LEN(mGrandeTotal) <2
+                                        mGrandeTotal := STRZERO(VAL(mGrandeTotal),2)
+                                ENDIF
+                                mecf_ligada := 0
+                                mArq        := FCREATE('HTIAUX.INI')
+                                sLinhas     :=  criptografia(m_numeroSerie,'C')+m_qp
+                                sLinhas     :=  sLinhas + criptografia(mGrandeTotal,'C')+m_qp
+                                sLinhas     :=  sLinhas + criptografia(gerar_n_ecfpaf(),'C')+m_qp
+
+                                FWRITE( mArq, @sLinhas, LEN( sLinhas ) )
+                                FCLOSE(mArq)
+                                mecf_ligada := 1
+                        //ENDIF
+                ENDIF
+                mGrandeTotal := ver_gt()
+                lin := MEMOLINE(MEMOREAD('HTIAUX.INI'),110,1,,)
+                linhas := linha := 0
+                linhas := MLCOUNT(MEMOREAD('HTIAUX.INI'),110)
+                m_HTIaux := {}
+                FOR linha = 1 TO  linhas
+                        lin := MEMOLINE(MEMOREAD('HTIAUX.INI'),110,linha,,)
+                        AADD(m_HTIaux,ALLTRIM(lin))
+                NEXT
+                fclose('HTIAUX.INI')
+                IF LEN(m_HTIaux) = 0
+                        MYRUN('DEL HTIAUX.INI')
+                        LOOP
+                ENDIF
+                //atencao(criptografia(m_HTIaux[1],'D')+' - '+m_numeroSerie)
+                IF criptografia(m_HTIaux[1],'D') # m_numeroSerie
+                        atencao('Numero de SERIE nao confere.... Entrar em contato com a HTI Sistemas (81)'+mfone_HTI )
+                        //IF ! senha_ini()
+                        //        mecf_ligada := 0
+                        //ELSE
+                                MYRUN('DEL HTIAUX.INI')
+                                m_numeroSerie := Space(21)
+                                m_numeroSerie := SUBSTR(IBR_COMANDO( 'ECF.NumSerie',,,.T. ),5)
+                                m_numeroSerie := ALLTRIM(m_numeroSerie)
+                                mecf_ligada := 0
+                                mArq        := FCREATE('HTIAUX.INI')
+                                sLinhas     :=  criptografia(m_numeroSerie,'C')+m_qp
+                                sLinhas     :=  sLinhas + criptografia(mGrandeTotal,'C')+m_qp
+
+                                sLinhas     :=  sLinhas + criptografia(gerar_n_ecfpaf(),'C')+m_qp
+
+                                FWRITE( mArq, @sLinhas, LEN( sLinhas ) )
+                                FCLOSE(mArq)
+                                mecf_ligada := 1
+                        //ENDIF
+                ENDIF
+                /*
+                IF SUBSTR(criptografia(m_HTIaux[2],'D'),1,17) # mGrandeTotal
+                        atencao('Grande Total nao Confere.... Entrar em contato com a HTI Sistemas (81)'+mfone_HTI )
+                        //IF ! senha_ini()
+                        //        mecf_ligada := 0
+                        //ELSE
+                                atu_gt()
+                                //MYRUN('DEL HTIAUX.INI')
+                                mecf_ligada := 0
+                                mecf_ligada := 1
+
+                        //ENDIF
+                ENDIF
+                */
+                WVW_DrawImage( ,00,00,44,120,ALLTRIM(m_indiv[1,3])+'HTILOGO.JPG',.F.,.F.)
+                WVW_DrawImage( ,40,00,43,25,ALLTRIM(m_indiv[1,3])+'xharbour.JPG',.F.,.F.)
+                WVW_DrawImage( ,40,27,43,52,ALLTRIM(m_indiv[1,3])+'acbr.JPG',.F.,.F.)
+                WVW_DrawImage( ,40,54,43,79,ALLTRIM(m_indiv[1,3])+'firebird.JPG',.F.,.F.)
+                //WVW_DrawLabel( ,42,87,mfone_HTI,,,,1, 'Arial Black',25,20,,,,,)
+
+//                WVW_DrawImage( ,00,00,44,120,ALLTRIM(m_indiv[1,3])+'HTILOGO.JPG',.F.,.F.)
+                IF ! senha_ecf(,'*');fim(,'*');ENDIF    // Solicitar senha do sistema
+        ELSE
+                atencao('Numero de serie nao esta correto, procure a HTI Sistemas')
+                IF ! AbriArq('sacsetup','set',,,,,,'N');RETURN NIL;ENDIF
+                **************
+                SELE('set')
+                **************
+                BLOQREG()
+                set->serie := SPACE(19)
+                DBCOMMIT()
+                DBUNLOCK()
+                senha_ecf()
+                LOOP
+        ENDIF
+ENDDO
+CLOSE ALL
+wvw_lclosewindow()
+RETURN NIL
+************************** f i m ***************************
+FUNCTION ShowClue( ... )
+************************
+LOCAL xMessage
+STATIC lPostP, cMessage := ""
+IF ( lPostP = NIL )
+        cMessage := ""
+ENDIF
+FOR EACH xMessage IN HB_aParams()
+        lIsArray := .F.
+        SWITCH ValType( xMessage )
+        CASE "C"
+        CASE "M"
+                EXIT
+        CASE "N"
+                xMessage := LTrim( Str( xMessage ) )
+                EXIT
+        CASE "D"
+                xMessage := DToC( xMessage )
+                EXIT
+        CASE "L"
+                xMessage := IF( xMessage, ".T.", ".F." )
+                EXIT
+        CASE "O"
+                xMessage := xMessage:className + " Object"
+                EXIT
+        CASE "B"
+                xMessage := "{||...}"
+                EXIT
+        CASE "A"
+                lPostP := lIsArray := .T.
+                EXIT
+                DEFAULT
+                xMessage := "NIL"
+        END
+        cMessage += ( "/" + xMessage )
+NEXT
+WvW_SBsetText( 1, 0, "* " +  cMessage )
+lPostP := NIL
+RETURN (.T.)
+
+//****
+/*
+function DisplayTime
+  //if <alguma condi??o>
+    HB_BACKGROUNDACTIVE( nTask, .F. )  // desativar o timer
+    atencao('ok')
+    //<esperar>       '
+    HB_BACKGROUNDACTIVE( nTask, .T. )  // reativar o timer
+  //endif
+return .t.
+*/

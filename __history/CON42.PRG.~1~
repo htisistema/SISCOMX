@@ -1,0 +1,283 @@
+*** con42.PRG: Menu de Relatorios  (Receber)
+***********************************************
+FUNCTION con42(mtp_)
+***************
+LOCAL MPRG:='CON42',op42
+IF mtp_ = NIL
+        op_tela(04,20,24,58,' Relatorio Doc. A RECEBER ')
+ELSE
+        op_tela(04,20,24,58,' Relatorio CREDITO CLIENTE ')
+ENDIF
+WHILE .T.
+        exibi_prg(mprg)
+        setcor(1)
+        @ 00,00 PROMPT "  0-> Documentos Emitidas              "
+        @ 01,00 PROMPT IF(mtp_ = NIL,"  1-> Analitico de Cliente             ","      Desabilitado p/MODULO CREDITO     ")
+        @ 02,00 PROMPT "  2-> Documentos a Vencer/Vencidas     "  
+        @ 03,00 PROMPT "  3-> Documentos Pagas                 "
+        @ 04,00 PROMPT IF(mtp_ = NIL,"  4-> Emissao de Documento             ","      Desabilitado p/MODULO CREDITO     ")
+        @ 05,00 PROMPT IF(mtp_ = NIL,"  5-> Documento a Receber X a Pagar    ","      Desabilitado p/MODULO CREDITO     ")
+        @ 06,00 PROMPT "  6-> Emissao de Faturamento p/Cliente "
+        @ 07,00 PROMPT IF(mtp_ = NIL,"  7-> Carta de Cobranca p/Clientes     ","      Desabilitado p/MODULO CREDITO     ")
+        @ 08,00 PROMPT IF(mtp_ = NIL,"  8-> Demonstrativo de DEBITO          ","      Desabilitado p/MODULO CREDITO     ")
+        @ 09,00 PROMPT IF(mtp_ = NIL,"  9-> Documentos c/Baixa Parcial       ","      Desabilitado p/MODULO CREDITO     ")
+        @ 10,00 PROMPT IF(mtp_ = NIL,"  A-> Clientes sem DEBITOS             ","      Desabilitado p/MODULO CREDITO     ")
+        @ 11,00 PROMPT IF(mtp_ = NIL,"  B-> Clientes Pedidos x Doc. Quitados ","      Desabilitado p/MODULO CREDITO     ")
+        @ 12,00 PROMPT IF(mtp_ = NIL,"  C-> Documentos Transferidos          ","      Desabilitado p/MODULO CREDITO     ")
+        @ 13,00 PROMPT IF(mtp_ = NIL,"  D-> Controle de Recebimento          ","      Desabilitado p/MODULO CREDITO     ")
+        @ 14,00 PROMPT "  E-> Resumo Vendedor p/Cheqs.e Dup.   "  
+        @ 15,00 PROMPT IF(mtp_ = NIL,"  F-> Estatistica de Documentos        ","      Desabilitado p/MODULO CREDITO     ")
+        @ 16,00 PROMPT IF(mtp_ = NIL,"  G-> Emissao de Documentos Acordo     ","      Desabilitado p/MODULO CREDITO     ")
+        @ 17,00 PROMPT IF(mtp_ = NIL,"  H-> Documentos Pagos (DATA OPERACAO) ","      Desabilitado p/MODULO CREDITO     ")
+        @ 18,00 PROMPT IF(mtp_ = NIL,"  I-> Cliente Media de Dias em Atraso  ","      Desabilitado p/MODULO CREDITO     ")
+        @ 19,00 PROMPT IF(mtp_ = NIL,"  J-> Cliente com LIMITE ESTOURADO     ","      Desabilitado p/MODULO CREDITO     ")
+        @ 20,00 PROMPT IF(mtp_ = NIL,"  L-> Relatorio de Funcionarios        ","      Desabilitado p/MODULO CREDITO     ")
+        MENU TO op42
+        DO CASE
+                CASE op42=0
+                        wvw_lclosewindow()
+                        RETURN NIL
+                CASE op42=1
+                        * DOCUMENTOS EMITIDOS
+                        IF mtp_ = NIL
+                                con420()
+                        ELSE
+                                con420('C')
+                        ENDIF
+                CASE op42=2
+                        * ANALITICOS DE CLIENTES
+                        IF mtp_ = NIL;con421();ENDIF
+                CASE op42=3
+                        * DOCUMENTOS A VENCER/VENCIDAS
+                        IF mtp_ = NIL
+                                con423()
+                        ELSE
+                                con423('C')
+                        ENDIF
+                CASE op42=4
+                        * DOCUMENTOS PAGOS
+                        IF mtp_ = NIL
+                                con424()
+                        ELSE
+                                con424('C')
+                        ENDIF
+                CASE op42=5
+                        IF mtp_ = NIL;con428();ENDIF
+                CASE op42=6
+                        IF mtp_ = NIL;con419();ENDIF
+                CASE op42=7
+                        IF mtp_ = NIL
+                                con429()
+                        ELSE
+                                con429('C')
+                        ENDIF
+                CASE op42=8
+                        IF mtp_ = NIL;con425();ENDIF
+                CASE op42=9     // DEMONSTRATIVO DE DEBITO
+                        IF mtp_ = NIL;con252(,'*');ENDIF
+                CASE op42=10
+                        IF mtp_ = NIL;con422(,'*');ENDIF
+                CASE op42=11            // ARQUIVO REMESSA
+                        IF mtp_ = NIL;con4201();ENDIF
+                CASE op42=12            // ARQUIVO REMESSA
+                        IF mtp_ = NIL;con4202();ENDIF
+                CASE op42=13
+                        IF mtp_ = NIL;con426();ENDIF
+                CASE op42=14
+                        IF mtp_ = NIL;con4231();ENDIF
+                CASE op42=15
+                        cheq_res()      // SAC561.PRG
+                CASE op42=16
+                        IF mtp_ = NIL;con427();ENDIF
+                CASE op42=17
+                        IF mtp_ = NIL;con252(,'E');ENDIF
+                CASE op42=18
+                        IF mtp_ = NIL;con4203();ENDIF
+                CASE op42=19
+                        IF mtp_ = NIL;con4204();ENDIF
+                CASE op42=20
+                        IF mtp_ = NIL;con4205();ENDIF
+                CASE op42=21
+                        IF mtp_ = NIL;con4191();ENDIF
+        ENDCASE
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+************************** F I M ****************************************
+***********************************************
+* RELATORIO DE RESUMO DE CHEQUES S/FUNDOS
+***********************************************
+
+FUNCTION cheq_res
+*****************
+LOCAL MPRG:='CHEQ_RES'
+LOCAL tela,tela1,lci,cci,lba,cba,li,ci,lb,cb,opcao,mtraco,;
+      mcod_vend,mdata1,mdata2,m_matriz:={},m_vend:={},;
+      mvlr_ger,mtot_ger,mtot_dup:=0,mvlr_dup:=0,mtipo_doc:='  ',i,;
+      mpag,mtit,mtipo,cons_senha:={},mponto:=0,cons_cheq:={}
+
+PRIVATE mnome_ven,mcom_ven,mcliente,mcpf,mcgc
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mcodemp:=SPACE(3)
+
+IF ! ver_nivel(mprg,'CHEQUE SEM FUNDO (RESUMO POR VENDEDOR)','1456',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+mtraco := REPLI('=',132)
+
+lci := cci := 0
+lba := 05
+cba := 75
+op_tela(10,10,17,85,' Relatorio Comissao/Vendas ')
+WHILE .T.
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        mdata1 := mdata_sis - 31
+        mdata2 := mdata_sis
+        mcod_vend := mvlr_ger := mtot_ger := mvlr_dup := mtot_dup := 0
+        mimp_tipo := 1
+        m_matriz :={}
+        m_vend   :={}
+        mensagem('Preencha os Campos - <ESC>p/Abandonar')
+        DEVPOS(lci+1,cci+2);DEVOUT('Codigo da Empresa:')
+        DEVPOS(lci+2,cci+2);DEVOUT('Data Inicial.....:')
+        DEVPOS(lci+3,cci+2);DEVOUT('Data Final.......:')
+        DEVPOS(lci+4,cci+2);DEVOUT('Tipo de Documento:')
+
+        @ lci+1,cci+22 GET mcodemp PICT '999' VALID ver_emp(mcodemp,lci+1,cci+26,,'*') WHEN mmult_emp = 'S'
+        @ lci+2,cci+21 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ lci+3,cci+21 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+        @ lci+4,cci+21 GET mtipo_doc PICT '@!' VALID ver_tipdc(mtipo_doc,'*')
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        cons_senha := {}
+        sr_getconnection():exec("SELECT * FROM insopera ORDER BY snome",,.t.,@cons_senha)
+        IF LEN(cons_senha) = 0
+                atencao('Nao existe nenhum Vendedor !!!')
+        ENDIF
+        mensagem('Aguarde.. Gerando Consulta')
+        i := 0
+        FOR i = 1 TO LEN(cons_senha)
+                prog_imp(i)
+                cons_cheq := {}
+                cComm  := "SELECT COUNT(*),SUM(valor_cheq) FROM saccheq WHERE data_ok IS NULL AND ok IS NULL"
+                ccomm := ccomm + " AND data_fund >= "+sr_cdbvalue(mdata1)+" AND data_fund <= "+sr_cdbvalue(mdata2)
+                ccomm := ccomm + " AND cod_vend = "+sr_cdbvalue(cons_senha[i,1])
+                IF ! EMPTY(mcodemp)
+                        cComm  := ccomm + " AND empresa = "+sr_cdbvalue(mcodemp)
+                ENDIF
+                sr_getconnection():exec(ccomm,,.t.,@cons_cheq)
+                IF cons_cheq[1,1] = 0
+                        LOOP
+                ENDIF
+*                                   1                2               3               4       5 6
+                AADD(m_matriz,{cons_senha[i,1],cons_senha[i,2],cons_cheq[1,2],cons_cheq[1,1],0,0})
+                AADD(m_vend,cons_senha[i,1])
+                mtot_ger := mtot_ger + cons_cheq[1,1]
+                mvlr_ger := mvlr_ger + cons_cheq[1,2]
+        NEXT
+        i := 0
+        FOR i = 1 TO LEN(cons_senha)
+                prog_imp(i)
+                cons_cheq := {}
+                cComm  := "SELECT COUNT(*),SUM(valor) FROM sacdupr WHERE datpag IS NULL AND pago IS NULL"
+                ccomm := ccomm + " AND venc >= "+sr_cdbvalue(mdata1)+" AND venc <= "+sr_cdbvalue(mdata2)
+                ccomm := ccomm + " AND vendedor = "+sr_cdbvalue(cons_senha[i,1])
+                IF ! EMPTY(mcodemp)
+                        cComm  := ccomm + " AND empresa = "+sr_cdbvalue(mcodemp)
+                ENDIF
+                IF ! EMPTY(mtipo_doc)
+                        cComm  := ccomm + " AND tipo = "+sr_cdbvalue(mtipo_doc)
+                ENDIF
+                sr_getconnection():exec(ccomm,,.t.,@cons_cheq)
+                IF cons_cheq[1,1] = 0
+                        LOOP
+                ENDIF
+                mponto := ASCAN(m_vend,cons_senha[i,1])
+                IF mponto > 0
+                        m_matriz[mponto,5] := cons_cheq[1,2]
+                        m_matriz[mponto,6] := cons_cheq[1,1]
+                ELSE
+                        AADD(m_vend,cons_senha[i,1])
+                        AADD(m_matriz,{cons_senha[i,1],cons_senha[i,2],0,0,cons_cheq[1,2],cons_cheq[1,1]})
+                ENDIF
+                mtot_dup := mtot_dup + cons_cheq[1,1]
+                mvlr_dup := mvlr_dup + cons_cheq[1,2]
+        NEXT
+        ASORT(m_matriz,,,{|x,y| x[2] > y[2]})
+        mensagem('Espere o Final da Impressao OK !!!')
+        marq := 'RES_CHEQ.REL'
+        IF ! imp_arq('RES_CHEQ.REL','R')
+                LOOP
+        ENDIF
+        mpag := 1
+        mtit := 'Relatorio de Cheques s/fundos e Doc.a Receber (RESUMO GERAL)'
+        mtipo := 'periodo: '+DTOC(mdata1)+' a '+DTOC(mdata2)
+        cabecalho(mpag,mtit,mtipo,mprg,mcodemp)
+        imprt(mtipo_imp,'C')
+        DEVPOS(PROW()+1,47);DEVOUT('CHEQUES SEM FUNDO')
+        DEVPOS(PROW(),91);DEVOUT('DOUMENTOS EM ABERTO')
+        DEVPOS(PROW()+1,00);DEVOUT('Vendedor')
+        DEVPOS(PROW(),37);DEVOUT('Qtd.Cheq.')
+        DEVPOS(PROW(),47);DEVOUT('Tot. Cheques')
+        DEVPOS(PROW(),60);DEVOUT(' Med.Cheq.')
+        DEVPOS(PROW(),71);DEVOUT('(%)Geral')
+        DEVPOS(PROW(),81);DEVOUT('Qtd.Docs.')
+        DEVPOS(PROW(),91);DEVOUT('Tot.Document')
+        DEVPOS(PROW(),104);DEVOUT(' Med.Docs.')
+        DEVPOS(PROW(),115);DEVOUT('(%)Geral')
+        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        i := 0
+        FOR i = 1 TO LEN(m_matriz)
+                prog_imp(VAL(m_matriz[i,1]))
+                DEVPOS(PROW()+1,00);DEVOUT(m_matriz[i,1]+'-'+m_matriz[i,2])
+                DEVPOS(PROW(),37);DEVOUT(TRANSFORM(m_matriz[i,4],'999999.99'))
+                DEVPOS(PROW(),47);DEVOUT(TRANSFORM(m_matriz[i,3],'9,999,999.99'))
+                DEVPOS(PROW(),60);DEVOUT(TRANSFORM(m_matriz[i,3]/m_matriz[i,4],'999,999.99'))
+                DEVPOS(PROW(),71);DEVOUT(TRANSFORM((m_matriz[i,3]/mvlr_ger)*100,'99999.99'))
+                DEVPOS(PROW(),81);DEVOUT(TRANSFORM(m_matriz[i,6],'999999.99'))
+                DEVPOS(PROW(),91);DEVOUT(TRANSFORM(m_matriz[i,5],'9,999,999.99'))
+                DEVPOS(PROW(),104);DEVOUT(TRANSFORM(m_matriz[i,5]/m_matriz[i,6],'999,999.99'))
+                DEVPOS(PROW(),115);DEVOUT(TRANSFORM((m_matriz[i,5]/mvlr_dup)*100,'99999.99'))
+        NEXT
+        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        DEVPOS(PROW()+1,00);DEVOUT('T O T A L   G E R A L:')
+        DEVPOS(PROW(),37);DEVOUT(TRANSFORM(mtot_ger,'999999.99'))
+        DEVPOS(PROW(),47);DEVOUT(TRANSFORM(mvlr_ger,'9,999,999.99'))
+        DEVPOS(PROW(),60);DEVOUT(TRANSFORM(mvlr_ger/mtot_ger,'999,999.99'))
+        DEVPOS(PROW(),81);DEVOUT(TRANSFORM(mtot_dup,'999999.99'))
+        DEVPOS(PROW(),91);DEVOUT(TRANSFORM(mvlr_dup,'9,999,999.99'))
+        DEVPOS(PROW(),104);DEVOUT(TRANSFORM(mvlr_dup/mtot_dup,'999,999.99'))
+        DEVPOS(PROW()+2,00);DEVOUT(TIME())
+        EJECT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao(marq)
+        /*
+        IF mimp_tipo = 2
+                lertexto(marq)
+        ELSEIF mtipo_imp = 'D'
+                
+        ELSE
+                MYRUN('DOSPRINTER /RAW /DEL '+ALLTRIM(m_indiv[1,5])+'HTI.REL')
+        ENDIF
+        */
+        EXIT
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*************************** F I M **********************************************
+
+
+
+
+
+
+
+
+
+
+

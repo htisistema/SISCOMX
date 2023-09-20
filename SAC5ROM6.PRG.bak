@@ -1,0 +1,94 @@
+************************************
+* CONSULTA MOVIMENTO PELO ROMANEIO (RESUMO) p/CLIENTE
+************************************
+MEMVAR mdata_sis,nivel_acess,getlist
+
+FUNCTION sac5rom6()
+*******************
+LOCAL MPRG:='SAC5ROM6',;
+      opcao,mdata1,mdata2,mtot_geral,mopcao,mqtd_tot:=0,cons_rom:={},cons_ped:={}
+
+PRIVATE mtraco,mtit,mtipo,mpag,mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+IF ! ver_nivel(mprg,'RELATORIO DE PEDIDO P/CLIENTE','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+mtraco := REPLI('=',132)
+
+op_tela(0,0,4,75,' Relatorio Cliente/ROMANEIO ')
+WHILE .T.
+        exibi_prg(mprg)
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        opcao := mcod_prom := 0
+        mtipo_imp := m_indiv[1,18]
+        mdata1 := mdata_sis - 30
+        mdata2 := mdata_sis
+        mensagem('Preencha os Campos - <ESC>p/Abandonar')
+        DEVPOS(1,2);DEVOUT('Data Inicial...:')
+        DEVPOS(2,2);DEVOUT('Data Final.....:')
+        DEVPOS(3,2);DEVOUT('Codigo Promotor:')
+        @ 1,19 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ 2,19 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+        @ 3,19 GET mcod_prom PICT '999' VALID IF(EMPTY(mcod_prom),.F.,ven(mcod_prom,3,25))
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        cons_rom:={}
+        sr_getconnection():exec("SELECT num_ped,num_roma FROM sacroma WHERE dat_roma BETWEEN "+sr_cdbvalue(mdata1)+" AND "+sr_cdbvalue(mdata2)+" AND (cancel IS NULL OR cancel = '') ORDER BY dat_roma",,.t.,@cons_rom)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(cons_rom) = 0
+                atencao('Nao existe movimento de ROMANEIO...')
+                LOOP
+        ENDIF
+        IF ! imp_arq('ROM_PROM.REL','R')
+                LOOP
+        ENDIF
+        mpag := mtot_geral := mqtd_tot := i := 0
+        FOR i = 1 TO LEN(cons_rom)
+                mtit  :=  'Relatorio de ROMANEIO/PROMOTOR'
+                mtipo := 'Periodo de '+DTOC(mdata1)+' a '+DTOC(mdata2)
+                cons_ped := {}
+                sr_getconnection():exec('SELECT pnum_ped,pcod_vend,pdat_ped,sum(pquantd * pvlr_fat),pcod_cli,(select nome from saccli where cod_cli = pcod_cli),(select promotor from saccli where cod_cli = pcod_cli) FROM  sacped_s WHERE pnum_ped = '+sr_cdbvalue(cons_rom[i,1])+' AND pdat_ped  BETWEEN '+sr_cdbvalue(mdata1)+' AND '+sr_cdbvalue(mdata2)+' GROUP BY pnum_ped,pcod_vend,pdat_ped,pcod_cli',,.t.,@cons_ped)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(cons_ped) > 0
+                        IF ! cons_ped[1,7] = STRZERO(mcod_prom,3)
+                                LOOP
+                        ENDIF
+                        prog_imp(i)
+                        IF mpag == 0 .OR. PROW() >= 57
+                                mpag = mpag +1
+                                IF mpag > 1
+                                        EJECT
+                                ENDIF
+                                cabecalho(mpag,mtit,mtipo,mprg)
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,00);DEVOUT('Cliente')
+                                DEVPOS(PROW(),51);DEVOUT('  Data   ')
+                                DEVPOS(PROW(),62);DEVOUT('No.Pedido')
+                                DEVPOS(PROW(),74);DEVOUT('   Total Ped.')
+                                DEVPOS(PROW(),86);DEVOUT('  Vend.')
+                                DEVPOS(PROW(),PCOL()+3);DEVOUT('Promotor')
+                                DEVPOS(PROW(),PCOL()+3);DEVOUT('No.Roma.')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        ENDIF
+                        DEVPOS(PROW()+1,00);DEVOUT(STR(cons_ped[1,5],5)+' - '+cons_ped[1,6]+'   '+DTOC(cons_ped[1,3])+'   '+cons_ped[1,1]+'   '+TRANSFORM(cons_ped[1,4],'9,999,999.99')+'   '+cons_ped[1,2]+'     '+cons_ped[1,7]+'      '+cons_rom[i,2])
+                        mqtd_tot := mqtd_tot + 1
+                        mtot_geral := mtot_geral + cons_ped[1,4]
+                ENDIF
+        NEXT
+        DEVPOS(PROW()+1,00);DEVOUT(REPLI('=',130))
+        DEVPOS(PROW()+1,00);DEVOUT('Total de Pedidos....: '+TRANSFORM(mqtd_tot,'999,999,999'))
+        DEVPOS(PROW()+1,00);DEVOUT('Total dos Pedidos R$: '+TRANSFORM(mtot_geral,'999,999,999.99'))
+        DEVPOS(PROW()+1,00);DEVOUT(REPLI('=',130))
+        EJECT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('ROM_PROM.REL')
+
+ENDDO
+wvw_lclosewindow()
+RETURN NIL

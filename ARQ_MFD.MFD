@@ -1,0 +1,2391 @@
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 10:50:31                   COO:000690
+         REDUÇÃO Z        
+MOVIMENTO DO DIA: 22/11/2012
+------------------ CONTADORES ------------------
+Geral de Operação Não-Fiscal:             000140
+Contador de Reinício de Operação:            001
+Contador de Reduções Z:                     0074
+Contador de Cupom Fiscal:                 000357
+Contador de Fita-Detalhe:                 000000
+Comprovante de Crédito ou Débito:           0000
+Geral de Relatório Gerencial:             000118
+Geral Oper. Não-Fiscal Canc.:               0000
+Cupom Fiscal Cancelado:                     0003
+---------------- TOTALIZADORES -----------------
+TOTALIZADOR GERAL:                     711872,30
+VENDA BRUTA DIÁRIA:                       489,60
+CANCELAMENTO ICMS:                        489,60
+DESCONTO ICMS:                    ***********,**
+Total de ISSQN:                   ***********,**
+CANCELAMENTO ISSQN:               ***********,**
+DESCONTO ISSQN:                   ***********,**
+                                                
+VENDA LÍQUIDA:                   ************,**
+ACRÉSCIMO ICMS:                   ***********,**
+ACRÉSCIMO ISSQN:                  ***********,**
+--------------------- ICMS ---------------------
+Totalizador  Base Cálculo( R$)      Imposto( R$)
+T25,00%                0,00                 0,00
+T18,00%                0,00                 0,00
+T12,00%                0,00                 0,00
+T07,00%                0,00                 0,00
+T05,00%                0,00                 0,00
+T17,00%                0,00                 0,00
+T02,40%                0,00                 0,00
+Total ICMS:            0,00                 0,00
+
+Não Tributados              Valor Acumulado( R$)
+F1 =                                        0,00
+F2 =                                        0,00
+I1 =                                        0,00
+I2 =                                        0,00
+N1 =                                        0,00
+N2 =                                        0,00
+-------------------- ISSQN ---------------------
+Totalizador  Base Cálculo( R$)      Imposto( R$)
+Total ISSQN:           0,00                 0,00
+
+Não Tributados              Valor Acumulado( R$)
+FS1 =                                       0,00
+FS2 =                                       0,00
+IS1 =                                       0,00
+IS2 =                                       0,00
+NS1 =                                       0,00
+NS2 =                                       0,00
+---------- TOTALIZADORES NÃO FISCAIS -----------
+No Operação        CON      Valor Acumulado( R$)
+01 Sangria         0000                     0,00
+02 Suprimento      0000                     0,00
+03 Recebimento     0000                     0,00
+Total Oper Não-Fiscais        R$            0,00
+
+ACRE NÃO-FISC                               0,00
+DESC NÃO-FISC                               0,00
+CANC NÃO-FISC                               0,00
+------------- RELATÓRIO GERENCIAL --------------
+No Relatório                                 CER
+01 Gerencial X                              0000
+02 Relatório                                0000
+03 Bordero                                  0000
+04 Troca F Pagto                            0000
+05 Fechamento Dia                           0000
+06 Ident.PAF-ECF                            0000
+07 MEIOS DE PAGAME                          0000
+08 Meios Pagamento                          0000
+-------------- MEIOS DE PAGAMENTO --------------
+No. Meio Pagamento          Valor Acumulado( R$)
+01  Dinheiro                                0,00
+02v Cheque                                  0,00
+03v Cartão                                  0,00
+04v TEF                                     0,00
+05v DUPLICATA                               0,00
+06v CREDITO                                 0,00
+07v VISA                                    0,00
+08v MASTERCARD                              0,00
+09v VISAELETRON                             0,00
+10v HIPERCARD                               0,00
+11v CARTAO                                  0,00
+12v AMEX                                    0,00
+13v TEF VISA                                0,00
+14v TEF AMEX                                0,00
+15v Hiper                                   0,00
+16v teste                                   0,00
+TROCO                                       0,00
+Comprovante Não Emitido:                    0000
+Tempo Emitindo Doc.Fiscal:              00:02:03
+Tempo Operacional:                      17:34:26
+Qtd. Reduções Restantes:                    3277
+Número série MFD:           12025620110800229135
+128 BB4E2 13AB6 C4401C AC 106158 693DD 03018 FD0
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCJJFCAEH           26/11/2012 10:50:34 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 10:50:57        CCF:000358 COO:000691
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000008  VERGALHAO CA 60 4.2MM ROLO GERDAU
+   1     KG  X  16000,00  T17,00% T    16000,00€
+  TOTAL   R$     16000,00
+TEF VISA                                1333,34
+TEF VISA                                1333,33
+TEF VISA                                1333,33
+TEF VISA                                1333,33
+TEF VISA                                1333,33
+TEF VISA                                1333,33
+TEF VISA                                1333,33
+TEF VISA                                1333,33
+TEF VISA                                1333,33
+TEF VISA                                1333,33
+TEF VISA                                1333,33
+TEF VISA                                1333,33
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+0C9 5FAF2 1312D 628013 22 E780F9 0D9EC 035E8 0C8
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCACFCAEH           26/11/2012 10:56:25 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 10:56:39        CCF:000359 COO:000692
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000010  ESTOFADO MAROCOS (COURANO)
+   1     UN  X    874,75  T17,00% T      874,75€
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+00A A38F2 11E1A 928000 10 18203A 517EA 05FD9 5FC
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCAFCDCHG           26/11/2012 11:00:05 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:03:14        CCF:000360 COO:000693
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000001  RACK TATU CARV/PT (CAEMMUM)
+   1     UN  X    198,51  T17,00% T      198,51€
+  TOTAL   R$       198,51
+VISA                                      16,57
+VISA                                      16,54
+VISA                                      16,54
+VISA                                      16,54
+VISA                                      16,54
+VISA                                      16,54
+VISA                                      16,54
+VISA                                      16,54
+VISA                                      16,54
+VISA                                      16,54
+VISA                                      16,54
+VISA                                      16,54
+SOMA  R$                                 198,51
+------------------------------------------------
+MD-5:7d539b303a4e568e4877cda1e4feadf9           HRB SISTEMAS 81-3755.1489   Aplic.:SISPDV 2010.1
+ - Vend.:999
+   Programa Aplicativo DARUMA                
+06A 0B632 127A4 138009 9A 7AC099 B952B 067DF 902
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCAFIDGGB           26/11/2012 11:08:19 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:08:23        GNF:000141 COO:000694
+GRG:000119                 CER:0001
+    RELATÓRIO GERENCIAL   
+        Gerencial X       
+
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              10:55:40 
+    DOC:009768        AUTORIZ:008343 
+    REF.HOST:10554028233 
+     
+    DEMOCARD        ************9355 
+    VENDA CREDITO PARC.ADM. 
+    EM 12 PARCELAS 
+    VALOR FINAL: R$ 198,51 
+     
+     
+    ________________________________ 
+                     
+
+
+
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              10:55:40 
+    DOC:009768        AUTORIZ:008343 
+    REF.HOST:10554028233 
+     
+    DEMOCARD        ************9355 
+    VENDA CREDITO PARC.ADM. 
+    EM 12 PARCELAS 
+    VALOR FINAL: R$ 198,51 
+     
+     
+    ________________________________ 
+                     
+             NÃO É DOCUMENTO FISCAL             
+   Programa Aplicativo DARUMA                
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCAFIDGGB           26/11/2012 11:08:27 
+FAB:DR0511BR000000298977                   
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:09:04        CCF:000361 COO:000695
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000006  FLOR AMARILIS
+   1     UN  X  16000,00  T17,00% T    16000,00€
+002 0000000000007  ESTANTE ATLANTA PT/IMBUIA
+   1     UN  X    244,08  T17,00% T      244,08€
+  TOTAL   R$     16244,08
+VISA                                    1353,71
+VISA                                    1353,67
+VISA                                    1353,67
+VISA                                    1353,67
+VISA                                    1353,67
+VISA                                    1353,67
+VISA                                    1353,67
+VISA                                    1353,67
+VISA                                    1353,67
+VISA                                    1353,67
+VISA                                    1353,67
+VISA                                    1353,67
+SOMA  R$                               16244,08
+------------------------------------------------
+MD-5:7d539b303a4e568e4877cda1e4feadf9           HRB SISTEMAS 81-3755.1489   Aplic.:SISPDV 2010.1
+ - Vend.:999
+   Programa Aplicativo DARUMA                
+069 FCBD2 127A3 EE0009 99 050099 AAACB 06933 E89
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCDGJFIBD           26/11/2012 11:10:13 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:10:15        GNF:000142 COO:000696
+GRG:000120                 CER:0002
+    RELATÓRIO GERENCIAL   
+        Gerencial X       
+
+ 
+                    1a. Via
+COO do documento vinculado:              000695
+Valor da compra R$                    16,244.08
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              10:58:31 
+    DOC:012341        AUTORIZ:020267 
+    REF.HOST:10583100617 
+     
+    DEMOCARD        ************9355 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 12 PARCELAS 
+    VALOR FINAL: R$ 16.244,08 
+     
+     
+    ________________________________ 
+                     
+
+
+
+
+
+
+ 
+                    1a. Via
+COO do documento vinculado:              000695
+Valor da compra R$                    16,244.08
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              10:58:31 
+    DOC:012341        AUTORIZ:020267 
+    REF.HOST:10583100617 
+     
+    DEMOCARD        ************9355 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 12 PARCELAS 
+    VALOR FINAL: R$ 16.244,08 
+     
+     
+    ________________________________ 
+                     
+
+
+
+             NÃO É DOCUMENTO FISCAL             
+   Programa Aplicativo DARUMA                
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCDGJFIBD           26/11/2012 11:10:21 
+FAB:DR0511BR000000298977                   
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:10:59        CCF:000362 COO:000697
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000005  COZINHA IPARANA C/BALCAO BR/VH
+   1     UN  X  16000,00  T17,00% T    16000,00€
+  TOTAL   R$     16000,00
+VISA                                    1333,37
+VISA                                    1333,33
+VISA                                    1333,33
+VISA                                    1333,33
+VISA                                    1333,33
+VISA                                    1333,33
+VISA                                    1333,33
+VISA                                    1333,33
+VISA                                    1333,33
+VISA                                    1333,33
+VISA                                    1333,33
+VISA                                    1333,33
+SOMA  R$                               16000,00
+------------------------------------------------
+MD-5:7d539b303a4e568e4877cda1e4feadf9           HRB SISTEMAS 81-3755.1489   Aplic.:SISPDV 2010.1
+ - Vend.:999
+   Programa Aplicativo DARUMA                
+1E7 776E2 14DC9 94402F BE E4C217 255DF 06A4A 791
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCBJJFIBD           26/11/2012 11:11:54 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:11:56        GNF:000143 COO:000698
+GRG:000121                 CER:0003
+    RELATÓRIO GERENCIAL   
+        Gerencial X       
+
+ 
+                    1a. Via
+COO do documento vinculado:              000697
+Valor da compra R$                    16,000.00
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              11:00:13 
+    DOC:000462        AUTORIZ:000100 
+    REF.HOST:11001320083 
+     
+    DEMOCARD        ************9355 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 12 PARCELAS 
+    VALOR FINAL: R$ 16.000,00 
+     
+     
+    ________________________________ 
+                     
+
+
+
+
+
+
+ 
+                    1a. Via
+COO do documento vinculado:              000697
+Valor da compra R$                    16,000.00
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              11:00:13 
+    DOC:000462        AUTORIZ:000100 
+    REF.HOST:11001320083 
+     
+    DEMOCARD        ************9355 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 12 PARCELAS 
+    VALOR FINAL: R$ 16.000,00 
+     
+     
+    ________________________________ 
+                     
+
+
+
+             NÃO É DOCUMENTO FISCAL             
+   Programa Aplicativo DARUMA                
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCBJJFIBD           26/11/2012 11:12:01 
+FAB:DR0511BR000000298977                   
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:12:16        CCF:000363 COO:000699
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000003  VASO 55
+   1     UN  X     11,98  T17,00% T       11,98€
+002 0000000000007  ESTANTE ATLANTA PT/IMBUIA
+   1     UN  X    244,08  T17,00% T      244,08€
+003 0000000000006  FLOR AMARILIS
+   1     UN  X      9,60  T17,00% T        9,60€
+004 0000000000004  ESCRIVANINHA JUVENIL HAPPY BR/RS JW
+   1     UN  X    166,01  T17,00% T      166,01€
+  TOTAL   R$       431,67
+VISA                                      43,17
+VISA                                      43,17
+VISA                                      43,17
+VISA                                      43,17
+VISA                                      43,17
+VISA                                      43,17
+VISA                                      43,17
+VISA                                      43,17
+VISA                                      43,17
+VISA                                      43,17
+SOMA  R$                                 431,70
+TROCO  R$                                  0,03
+------------------------------------------------
+MD-5:7d539b303a4e568e4877cda1e4feadf9           HRB SISTEMAS 81-3755.1489   Aplic.:SISPDV 2010.1
+ - Vend.:999
+   Programa Aplicativo DARUMA                
+188 147C2 14440 1FC026 35 0101B7 C26BE 06BFE F90
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCBJBAJEJ           26/11/2012 11:13:42 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:13:44        GNF:000144 COO:000700
+GRG:000122                 CER:0004
+    RELATÓRIO GERENCIAL   
+        Gerencial X       
+
+ 
+                    1a. Via
+COO do documento vinculado:              000699
+Valor da compra R$                       431.67
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              11:02:04 
+    DOC:014349        AUTORIZ:025708 
+    REF.HOST:11020423116 
+     
+    DEMOCARD        ************9355 
+    VENDA CREDITO 
+
+
+ARC.LOJA 
+    EM 10 PARCELAS 
+    VALOR FINAL: R$ 431,67 
+     
+     
+    ________________________________ 
+                     
+
+
+
+
+
+
+ 
+                    1a. Via
+COO do documento vinculado:              000699
+Valor da compra R$                       431.67
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              11:02:04 
+    DOC:014349        AUTORIZ:025708 
+    REF.HOST:11020423116 
+     
+    DEMOCARD        ************9355 
+    VENDA CREDITO 
+
+
+ARC.LOJA 
+    EM 10 PARCELAS 
+    VALOR FINAL: R$ 431,67 
+     
+     
+    ________________________________ 
+                     
+
+
+
+             NÃO É DOCUMENTO FISCAL             
+   Programa Aplicativo DARUMA                
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCBJBAJEJ           26/11/2012 11:13:49 
+FAB:DR0511BR000000298977                   
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:14:13        CCF:000364 COO:000701
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000003  VASO 55
+   1     UN  X     11,98  T17,00% T       11,98€
+002 0000000000020  SANDUICHEIRA GRILL FAMA 3
+   1     UN  X     47,72  T17,00% T       47,72€
+003 0000000000050  COZINHA 2340 BC
+   1     UN  X    451,68  T17,00% T      451,68€
+  TOTAL   R$       511,38
+VISA                                      63,94
+VISA                                      63,92
+VISA                                      63,92
+VISA                                      63,92
+VISA                                      63,92
+VISA                                      63,92
+VISA                                      63,92
+VISA                                      63,92
+SOMA  R$                                 511,38
+------------------------------------------------
+MD-5:7d539b303a4e568e4877cda1e4feadf9           HRB SISTEMAS 81-3755.1489   Aplic.:SISPDV 2010.1
+ - Vend.:999
+   Programa Aplicativo DARUMA                
+0C9 537A2 1312D 434013 23 E7C0F9 0169C 06DB1 0FA
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCBAJEABI           26/11/2012 11:15:20 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:15:22        GNF:000145 COO:000702
+GRG:000123                 CER:0005
+    RELATÓRIO GERENCIAL   
+        Gerencial X       
+
+ 
+                    1a. Via
+COO do documento vinculado:              000701
+Valor da compra R$                       511.38
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              11:03:43 
+    DOC:000458        AUTORIZ:014624 
+    REF.HOST:11034302091 
+     
+    DEMOCARD         ***********1008 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 8 PARCELAS 
+    VALOR FINAL: R$ 511,38 
+     
+     
+    ________________________________ 
+                     
+
+
+
+
+
+
+ 
+                    1a. Via
+COO do documento vinculado:              000701
+Valor da compra R$                       511.38
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              11:03:43 
+    DOC:000458        AUTORIZ:014624 
+    REF.HOST:11034302091 
+     
+    DEMOCARD         ***********1008 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 8 PARCELAS 
+    VALOR FINAL: R$ 511,38 
+     
+     
+    ________________________________ 
+                     
+
+
+
+             NÃO É DOCUMENTO FISCAL             
+   Programa Aplicativo DARUMA                
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCBAJEABI           26/11/2012 11:15:27 
+FAB:DR0511BR000000298977                   
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:17:16                   COO:000703
+         LEITURA X        
+------------------ CONTADORES ------------------
+Geral de Operação Não-Fiscal:             000145
+Contador de Reinício de Operação:            001
+Contador de Reduções Z:                     0074
+Contador de Cupom Fiscal:                 000364
+Contador de Fita-Detalhe:                 000000
+Comprovante de Crédito ou Débito:           0000
+Geral de Relatório Gerencial:             000123
+Geral Oper. Não-Fiscal Canc.:               0000
+Cupom Fiscal Cancelado:                     0002
+---------------- TOTALIZADORES -----------------
+TOTALIZADOR GERAL:                     762132,69
+VENDA BRUTA DIÁRIA:                     50260,39
+CANCELAMENTO ICMS:                      16874,75
+DESCONTO ICMS:                              0,00
+Total de ISSQN:                             0,00
+CANCELAMENTO ISSQN:                         0,00
+DESCONTO ISSQN:                             0,00
+                                                
+VENDA LÍQUIDA:                          33385,64
+ACRÉSCIMO ICMS:                             0,00
+ACRÉSCIMO ISSQN:                            0,00
+--------------------- ICMS ---------------------
+Totalizador  Base Cálculo( R$)      Imposto( R$)
+T25,00%                0,00                 0,00
+T18,00%                0,00                 0,00
+T12,00%                0,00                 0,00
+T07,00%                0,00                 0,00
+T05,00%                0,00                 0,00
+T17,00%            33385,64              5675,55
+T02,40%                0,00                 0,00
+Total ICMS:        33385,64              5675,55
+
+Não Tributados              Valor Acumulado( R$)
+F1 =                                        0,00
+F2 =                                        0,00
+I1 =                                        0,00
+I2 =                                        0,00
+N1 =                                        0,00
+N2 =                                        0,00
+-------------------- ISSQN ---------------------
+Totalizador  Base Cálculo( R$)      Imposto( R$)
+Total ISSQN:           0,00                 0,00
+
+Não Tributados              Valor Acumulado( R$)
+FS1 =                                       0,00
+FS2 =                                       0,00
+IS1 =                                       0,00
+IS2 =                                       0,00
+NS1 =                                       0,00
+NS2 =                                       0,00
+---------- TOTALIZADORES NÃO FISCAIS -----------
+No Operação        CON      Valor Acumulado( R$)
+01 Sangria         0000                     0,00
+02 Suprimento      0000                     0,00
+03 Recebimento     0000                     0,00
+Total Oper Não-Fiscais        R$            0,00
+
+ACRE NÃO-FISC                               0,00
+DESC NÃO-FISC                               0,00
+CANC NÃO-FISC                               0,00
+------------- RELATÓRIO GERENCIAL --------------
+No Relatório                                 CER
+01 Gerencial X                              0005
+02 Relatório                                0000
+03 Bordero                                  0000
+04 Troca F Pagto                            0000
+05 Fechamento Dia                           0000
+06 Ident.PAF-ECF                            0000
+07 MEIOS DE PAGAME                          0000
+08 Meios Pagamento                          0000
+-------------- MEIOS DE PAGAMENTO --------------
+No. Meio Pagamento          Valor Acumulado( R$)
+01  Dinheiro                                0,00
+02v Cheque                                  0,00
+03v Cartão                                  0,00
+04v TEF                                     0,00
+05v DUPLICATA                               0,00
+06v CREDITO                                 0,00
+07v VISA                                33385,67
+08v MASTERCARD                              0,00
+09v VISAELETRON                             0,00
+10v HIPERCARD                               0,00
+11v CARTAO                                  0,00
+12v AMEX                                    0,00
+13v TEF VISA                                0,00
+14v TEF AMEX                                0,00
+15v Hiper                                   0,00
+16v teste                                   0,00
+17v SEMEAR                                  0,00
+18v MASTER                                  0,00
+TROCO                                       0,03
+Comprovante Não Emitido:                    0054
+Tempo Emitindo Doc.Fiscal:              00:18:38
+Tempo Operacional:                      00:26:35
+Qtd. Reduções Restantes:                    3277
+Número série MFD:           12025620110800229135
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCBAJEABI           26/11/2012 11:17:18 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:18:04        CCF:000365 COO:000704
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000005  COZINHA IPARANA C/BALCAO BR/VH
+   1     UN  X    842,10  T17,00% T      842,10€
+002 0000000000003  VASO 55
+   1     UN  X     11,98  T17,00% T       11,98€
+  TOTAL   R$       854,08
+VISA                                     100,00
+VISA                                     100,00
+VISA                                     100,00
+AMEX                                     110,82
+AMEX                                     110,82
+AMEX                                     110,82
+AMEX                                     110,82
+AMEX                                     110,82
+SOMA  R$                                 854,10
+TROCO  R$                                  0,02
+------------------------------------------------
+MD-5:7d539b303a4e568e4877cda1e4feadf9           HRB SISTEMAS 81-3755.1489   Aplic.:SISPDV 2010.1
+ - Vend.:999
+   Programa Aplicativo DARUMA                
+00A A6002 11E1A 98C000 12 90A03A 53EFA 07304 D74
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCBAIFBCC           26/11/2012 11:20:06 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:20:08        GNF:000146 COO:000705
+GRG:000124                 CER:0006
+    RELATÓRIO GERENCIAL   
+        Gerencial X       
+
+ 
+                    1a. Via
+COO do documento vinculado:              000704
+Valor da compra R$                       854.08
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              11:07:49 
+    DOC:032420        AUTORIZ:029651 
+    REF.HOST:11074921190 
+     
+    DEMOCARD        ************9355 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 3 PARCELAS 
+    VALOR FINAL: R$ 300,00 
+     
+     
+    ________________________________ 
+                     
+
+
+
+
+
+
+ 
+                    1a. Via
+COO do documento vinculado:              000704
+Valor da compra R$                       854.08
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              11:07:49 
+    DOC:032420        AUTORIZ:029651 
+    REF.HOST:11074921190 
+     
+    DEMOCARD        ************9355 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 3 PARCELAS 
+    VALOR FINAL: R$ 300,00 
+     
+     
+    ________________________________ 
+                     
+
+
+
+             NÃO É DOCUMENTO FISCAL             
+   Programa Aplicativo DARUMA                
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCBAIFBCC           26/11/2012 11:20:13 
+FAB:DR0511BR000000298977                   
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:20:15        GNF:000147 COO:000706
+GRG:000125                 CER:0007
+    RELATÓRIO GERENCIAL   
+        Gerencial X       
+
+ 
+                    1a. Via
+COO do documento vinculado:              000704
+Valor da compra R$                       854.08
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              11:08:28 
+    DOC:004211        AUTORIZ:024430 
+    REF.HOST:11082814102 
+     
+    DEMOCARD         ***********1008 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 5 PARCELAS 
+    VALOR FINAL: R$ 554,08 
+     
+     
+    ________________________________ 
+                     
+
+
+
+
+
+
+ 
+                    1a. Via
+COO do documento vinculado:              000704
+Valor da compra R$                       854.08
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              11:08:28 
+    DOC:004211        AUTORIZ:024430 
+    REF.HOST:11082814102 
+     
+    DEMOCARD         ***********1008 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 5 PARCELAS 
+    VALOR FINAL: R$ 554,08 
+     
+     
+    ________________________________ 
+                     
+
+
+
+             NÃO É DOCUMENTO FISCAL             
+   Programa Aplicativo DARUMA                
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCBAIFBCC           26/11/2012 11:20:21 
+FAB:DR0511BR000000298977                   
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:35:37        CCF:000366 COO:000707
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000125  HIDRACOR AMARELO FRD 10/2 12345678901234
+   1     FD  X    360,00    I1    T      360,00€
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+188 16ED2 14440 260026 37 7701B7 C4DCE 08112 BDC
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCBEEDBCC           26/11/2012 11:35:43 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:38:51        CCF:000367 COO:000708
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000006  VERGALHAO CA 50 1/2  GERDAU
+   1     UN  X   2142,82  T17,00% T     2142,82€
+002 0000000000007  CUMEEIRA NORMAL TOD  5 G 1.10M
+   1     UN  X     12,91  T17,00% T       12,91€
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+069 FA4C2 127A3 E7C009 9B 012099 A83BB 08B70 4E7
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCBGGHAGH           26/11/2012 11:46:12 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:46:26        CCF:000368 COO:000709
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000005  VERGALHAO CA 50 3/8  GERDAU
+   1     UN  X  15500,00  T17,00% T    15500,00€
+002 0000000000001  CIMENTO NASSAU 25KG
+   1     UN  X     26,50  T25,00% T       26,50€
+  TOTAL   R$     15526,50
+TEF VISA                                1940,81
+TEF VISA                                1940,81
+TEF VISA                                1940,81
+TEF VISA                                1940,81
+TEF VISA                                1940,81
+TEF VISA                                1940,81
+TEF VISA                                1940,81
+TEF VISA                                1940,81
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+00A A11E2 11E1A 8C4000 12 16C03A 4F0DA 08D87 767
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCFJHAIHH           26/11/2012 11:48:04 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:48:31        CCF:000369 COO:000710
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000005  VERGALHAO CA 50 3/8  GERDAU
+   1     UN  X  15500,00  T17,00% T    15500,00€
+002 0000000000001  CIMENTO NASSAU 25KG
+   1     UN  X     26,50  T25,00% T       26,50€
+  TOTAL   R$     15526,50
+TEF VISA                                7763,25
+TEF VISA                                7763,25
+SOMA  R$                               15526,50
+------------------------------------------------
+MD-5:7d539b303a4e568e4877cda1e4feadf9           HRB SISTEMAS 81-3755.1489   Aplic.:SISPDV 2010.1
+**** Agradecemos sua preferencia, Volte sempre ****         NAO ACEITAMOS DEVOLUCOES APOS 24 HS , DEVOLUCOES SO CO - Vend.:999
+   Programa Aplicativo DARUMA                
+CNPJ/CPF Consumidor: 344.190.394-34      
+NOME:     00025-ANTONIO DE PADUA
+ENDEREÇO: TRAV.JOSE VIEIRA DA SILVA ,19 CENTRO-NAZARE DA MATA - PE-55800000
+128 B66C2 13AB6 B7C01C AD D26158 645BD 08E51 9A7
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCIBGGGGH           26/11/2012 11:49:32 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:49:34        GNF:000148 COO:000711
+GRG:000126                 CER:0008
+    RELATÓRIO GERENCIAL   
+        Gerencial X       
+
+ 
+                    1a. Via
+COO do documento vinculado:              000710
+Valor da compra R$                    15,526.50
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              11:37:59 
+    DOC:014293        AUTORIZ:012039 
+    REF.HOST:11375907196 
+     
+    DEMOCARD        ************9355 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 2 PARCELAS 
+    VALOR FINAL: R$ 15.526,50 
+     
+     
+    ________________________________ 
+                     
+
+
+
+
+
+
+ 
+                    1a. Via
+COO do documento vinculado:              000710
+Valor da compra R$                    15,526.50
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              11:37:59 
+    DOC:014293        AUTORIZ:012039 
+    REF.HOST:11375907196 
+     
+    DEMOCARD        ************9355 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 2 PARCELAS 
+    VALOR FINAL: R$ 15.526,50 
+     
+     
+    ________________________________ 
+                     
+
+
+
+             NÃO É DOCUMENTO FISCAL             
+   Programa Aplicativo DARUMA                
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHCIBGGGGH           26/11/2012 11:49:40 
+FAB:DR0511BR000000298977                   
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:50:03        CCF:000370 COO:000712
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000005  VERGALHAO CA 50 3/8  GERDAU
+   1     UN  X  15500,00  T17,00% T    15500,00€
+002 0000000000001  CIMENTO NASSAU 25KG
+   1     UN  X     26,50  T25,00% T       26,50€
+  TOTAL   R$     15526,50
+TEF VISA                                1940,81
+TEF VISA                                1940,81
+TEF VISA                                1940,81
+TEF VISA                                1940,81
+TEF VISA                                1940,81
+TEF VISA                                1940,81
+TEF VISA                                1940,81
+TEF VISA                                1940,81
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+0C9 537A2 1312D 434013 23 EEA0F9 0169C 090FA 42D
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHFJAHFAHH           26/11/2012 11:52:20 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:52:31        CCF:000371 COO:000713
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000001  CIMENTO NASSAU 25KG
+   1     UN  X    800,00  T25,00% T      800,00€
+  TOTAL   R$       800,00
+TEF VISA                                 100,00
+TEF VISA                                 100,00
+TEF VISA                                 100,00
+TEF VISA                                 100,00
+TEF VISA                                 100,00
+TEF VISA                                 100,00
+TEF VISA                                 100,00
+TEF VISA                                 100,00
+SOMA  R$                                 800,00
+------------------------------------------------
+MD-5:7d539b303a4e568e4877cda1e4feadf9           HRB SISTEMAS 81-3755.1489   Aplic.:SISPDV 2010.1
+**** Agradecemos sua preferencia, Volte sempre ****         NAO ACEITAMOS DEVOLUCOES APOS 24 HS , DEVOLUCOES SO CO - Vend.:999
+   Programa Aplicativo DARUMA                
+CNPJ/CPF Consumidor: 344.190.394-34      
+NOME:     00025-ANTONIO DE PADUA
+ENDEREÇO: TRAV.JOSE VIEIRA DA SILVA ,19 CENTRO-NAZARE DA MATA - PE-55800000
+069 FA4C2 127A3 E7C009 9B 044099 A83BB 0921D 4A7
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHFJAFFAHH           26/11/2012 11:53:12 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 11:53:14        GNF:000149 COO:000714
+GRG:000127                 CER:0009
+    RELATÓRIO GERENCIAL   
+        Gerencial X       
+
+ 
+                    1a. Via
+COO do documento vinculado:              000713
+Valor da compra R$                       800.00
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              11:41:37 
+    DOC:011868        AUTORIZ:008433 
+    REF.HOST:11413727573 
+     
+    DEMOCARD        ************9355 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 8 PARCELAS 
+    VALOR FINAL: R$ 800,00 
+     
+     
+    ________________________________ 
+                     
+
+
+
+
+
+
+ 
+                    1a. Via
+COO do documento vinculado:              000713
+Valor da compra R$                       800.00
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              11:41:37 
+    DOC:011868        AUTORIZ:008433 
+    REF.HOST:11413727573 
+     
+    DEMOCARD        ************9355 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 8 PARCELAS 
+    VALOR FINAL: R$ 800,00 
+     
+     
+    ________________________________ 
+                     
+
+
+
+             NÃO É DOCUMENTO FISCAL             
+   Programa Aplicativo DARUMA                
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHFJAFFAHH           26/11/2012 11:53:19 
+FAB:DR0511BR000000298977                   
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 12:08:21        CCF:000372 COO:000715
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000124  PISO CER. 30X30 ASPEN SKY A 123456789012
+   1     MT  X  15526,50  T17,00% T    15526,50€
+  TOTAL   R$     15526,50
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+188 195E2 14440 2C4026 37 BA81B7 C74DE 0C7BD CD7
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHFAFDHFGH           26/11/2012 12:09:44 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 12:11:26        CCF:000373 COO:000716
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000124  PISO CER. 30X30 ASPEN SKY A 123456789012
+   1     MT  X  15526,50  T17,00% T    15526,50€
+  TOTAL   R$     15526,50
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+0C9 537A2 1312D 434013 23 F120F9 0169C 0CA32 B2D
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHFDEIEGHH           26/11/2012 12:12:20 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 12:13:57        CCF:000374 COO:000717
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000124  PISO CER. 30X30 ASPEN SKY A 123456789012
+   1     MT  X  15526,50  T17,00% T    15526,50€
+  TOTAL   R$     15526,50
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+128 B3FB2 13AB6 B1801C AD 984158 61EAD 0D006 A45
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHFGIDBJGH           26/11/2012 12:18:31 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 12:19:39        CCF:000375 COO:000718
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000124  PISO CER. 30X30 ASPEN SKY A 123456789012
+   1     MT  X  15526,50  T17,00% T    15526,50€
+  TOTAL   R$     15526,50
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+06A 019F2 127A3 FA8009 9B C2E099 AF8EB 0D711 605
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHFCDIFFHH           26/11/2012 12:25:15 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 12:25:29        CCF:000376 COO:000719
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000124  PISO CER. 30X30 ASPEN SKY A 123456789012
+   1     MT  X  15526,50  T17,00% T    15526,50€
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+128 C2A12 13AB6 D7001C AF 108158 7090D 0D92F DEC
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHFIHGJDGH           26/11/2012 12:27:37 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 12:28:58        CCF:000377 COO:000720
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000124  PISO CER. 30X30 ASPEN SKY A 123456789012
+   1     MT  X  15526,50  T17,00% T    15526,50€
+  TOTAL   R$     15526,50
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+1E7 776E2 14DC9 94402F C1 25A217 255DF 0DAD3 0E7
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHIHBHDJHH           26/11/2012 12:29:54 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 12:31:19        CCF:000378 COO:000721
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000124  PISO CER. 30X30 ASPEN SKY A 123456789012
+   1     MT  X  15526,50  T17,00% T    15526,50€
+  TOTAL   R$     15526,50
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+128 B18A2 13AB6 AB401C AD 5C4158 5F79D 0DD47 F3D
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHIAJGBCGH           26/11/2012 12:32:30 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 12:34:13        CCF:000379 COO:000722
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000124  PISO CER. 30X30 ASPEN SKY A 123456789012
+   1     MT  X  15526,50  T17,00% T    15526,50€
+  TOTAL   R$     15526,50
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+1E7 83A32 14DC9 B3802F C2 5F6217 3192F 0E107 2F2
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHIECHIDHH           26/11/2012 12:35:59 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 12:36:10        CCF:000380 COO:000723
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000124  PISO CER. 30X30 ASPEN SKY A 123456789012
+   1     MT  X  15526,50  T17,00% T    15526,50€
+  TOTAL   R$     15526,50
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+
+  CUPOM FISCAL CANCELADO 
+   Programa Aplicativo DARUMA                
+128 BB4E2 13AB6 C4401C AE 578158 693DD 0E54B B50
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHIGABAHGH           26/11/2012 12:40:34 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 12:40:50        CCF:000381 COO:000724
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000124  PISO CER. 30X30 ASPEN SKY A 123456789012
+   1     MT  X  15526,50  T17,00% T    15526,50€
+  TOTAL   R$     15526,50
+VISA                                    1940,83
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+VISA                                    1940,81
+SOMA  R$                               15526,50
+------------------------------------------------
+MD-5:7d539b303a4e568e4877cda1e4feadf9           HRB SISTEMAS 81-3755.1489   Aplic.:SISPDV 2010.1
+**** Agradecemos sua preferencia, Volte sempre ****         NAO ACEITAMOS DEVOLUCOES APOS 24 HS , DEVOLUCOES SO CO - Vend.:999
+   Programa Aplicativo DARUMA                
+0C9 55EB2 1312D 498013 24 34A0F9 03DAC 0E5F3 72C
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHIBFJDCHH           26/11/2012 12:41:21 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 26/11/2012 12:41:23        GNF:000150 COO:000725
+GRG:000128                 CER:0010
+    RELATÓRIO GERENCIAL   
+        Gerencial X       
+
+ 
+                    1a. Via
+COO do documento vinculado:              000724
+Valor da compra R$                    15,526.50
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              12:29:40 
+    DOC:018487        AUTORIZ:001167 
+    REF.HOST:12294008885 
+     
+    DEMOCARD        ************1111 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 8 PARCELAS 
+    VALOR FINAL: R$ 15.526,50 
+     
+     
+    ________________________________ 
+                     
+
+
+
+
+
+
+ 
+                    1a. Via
+COO do documento vinculado:              000724
+Valor da compra R$                    15,526.50
+Valor do pagamento R$                      0.00
+ 
+ 
+      *** DEMONSTRACAO  PAY&GO *** 
+           COMPROVANTE DE TEF 
+     
+    ESTABELECIMENTO DE TESTE 
+    823982346832235/03876463 
+     
+    26/11/2012              12:29:40 
+    DOC:018487        AUTORIZ:001167 
+    REF.HOST:12294008885 
+     
+    DEMOCARD        ************1111 
+    VENDA CREDITO 
+
+
+ARC.ADM. 
+    EM 8 PARCELAS 
+    VALOR FINAL: R$ 15.526,50 
+     
+     
+    ________________________________ 
+                     
+
+
+
+             NÃO É DOCUMENTO FISCAL             
+   Programa Aplicativo DARUMA                
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHIBFJDCHH           26/11/2012 12:41:27 
+FAB:DR0511BR000000298977                   
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 27/11/2012 11:41:44                   COO:000726
+         LEITURA X        
+------------------ CONTADORES ------------------
+Geral de Operação Não-Fiscal:             000150
+Contador de Reinício de Operação:            001
+Contador de Reduções Z:                     0074
+Contador de Cupom Fiscal:                 000381
+Contador de Fita-Detalhe:                 000000
+Comprovante de Crédito ou Débito:           0000
+Geral de Relatório Gerencial:             000128
+Geral Oper. Não-Fiscal Canc.:               0000
+Cupom Fiscal Cancelado:                     0015
+---------------- TOTALIZADORES -----------------
+TOTALIZADOR GERAL:                     968147,00
+VENDA BRUTA DIÁRIA:                    256274,70
+CANCELAMENTO ICMS:                     190181,98
+DESCONTO ICMS:                              0,00
+Total de ISSQN:                             0,00
+CANCELAMENTO ISSQN:                         0,00
+DESCONTO ISSQN:                             0,00
+                                                
+VENDA LÍQUIDA:                          66092,72
+ACRÉSCIMO ICMS:                             0,00
+ACRÉSCIMO ISSQN:                            0,00
+--------------------- ICMS ---------------------
+Totalizador  Base Cálculo( R$)      Imposto( R$)
+T25,00%              826,50               206,62
+T18,00%                0,00                 0,00
+T12,00%                0,00                 0,00
+T07,00%                0,00                 0,00
+T05,00%                0,00                 0,00
+T17,00%            65266,22             11095,25
+T02,40%                0,00                 0,00
+Total ICMS:        66092,72             11301,87
+
+Não Tributados              Valor Acumulado( R$)
+F1 =                                        0,00
+F2 =                                        0,00
+I1 =                                        0,00
+I2 =                                        0,00
+N1 =                                        0,00
+N2 =                                        0,00
+-------------------- ISSQN ---------------------
+Totalizador  Base Cálculo( R$)      Imposto( R$)
+Total ISSQN:           0,00                 0,00
+
+Não Tributados              Valor Acumulado( R$)
+FS1 =                                       0,00
+FS2 =                                       0,00
+IS1 =                                       0,00
+IS2 =                                       0,00
+NS1 =                                       0,00
+NS2 =                                       0,00
+---------- TOTALIZADORES NÃO FISCAIS -----------
+No Operação        CON      Valor Acumulado( R$)
+01 Sangria         0000                     0,00
+02 Suprimento      0000                     0,00
+03 Recebimento     0000                     0,00
+Total Oper Não-Fiscais        R$            0,00
+
+ACRE NÃO-FISC                               0,00
+DESC NÃO-FISC                               0,00
+CANC NÃO-FISC                               0,00
+------------- RELATÓRIO GERENCIAL --------------
+No Relatório                                 CER
+01 Gerencial X                              0010
+02 Relatório                                0000
+03 Bordero                                  0000
+04 Troca F Pagto                            0000
+05 Fechamento Dia                           0000
+06 Ident.PAF-ECF                            0000
+07 MEIOS DE PAGAME                          0000
+08 Meios Pagamento                          0000
+-------------- MEIOS DE PAGAMENTO --------------
+No. Meio Pagamento          Valor Acumulado( R$)
+01  Dinheiro                                0,00
+02v Cheque                                  0,00
+03v Cartão                                  0,00
+04v TEF                                     0,00
+05v DUPLICATA                               0,00
+06v CREDITO                                 0,00
+07v VISA                                49212,17
+08v MASTERCARD                              0,00
+09v VISAELETRON                             0,00
+10v HIPERCARD                               0,00
+11v CARTAO                                  0,00
+12v AMEX                                  554,10
+13v TEF VISA                            16326,50
+14v TEF AMEX                                0,00
+15v Hiper                                   0,00
+16v teste                                   0,00
+17v SEMEAR                                  0,00
+18v MASTER                                  0,00
+TROCO                                       0,05
+Comprovante Não Emitido:                    0080
+Tempo Emitindo Doc.Fiscal:              00:57:15
+Tempo Operacional:                      15:09:33
+Qtd. Reduções Restantes:                    3277
+Número série MFD:           12025620110800229135
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHIBFJDCHH           27/11/2012 11:41:45 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 27/11/2012 11:46:19                   COO:000727
+  LEITURA MEMÓRIA FISCAL 
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHIBFJDCHH           27/11/2012 11:46:22 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 27/11/2012 12:00:19                   COO:000728
+         REDUÇÃO Z        
+MOVIMENTO DO DIA: 26/11/2012
+------------------ CONTADORES ------------------
+Geral de Operação Não-Fiscal:             000150
+Contador de Reinício de Operação:            001
+Contador de Reduções Z:                     0075
+Contador de Cupom Fiscal:                 000381
+Contador de Fita-Detalhe:                 000000
+Comprovante de Crédito ou Débito:           0000
+Geral de Relatório Gerencial:             000128
+Geral Oper. Não-Fiscal Canc.:               0000
+Cupom Fiscal Cancelado:                     0015
+---------------- TOTALIZADORES -----------------
+TOTALIZADOR GERAL:                     968147,00
+VENDA BRUTA DIÁRIA:                    256274,70
+CANCELAMENTO ICMS:                     190181,98
+DESCONTO ICMS:                    ***********,**
+Total de ISSQN:                   ***********,**
+CANCELAMENTO ISSQN:               ***********,**
+DESCONTO ISSQN:                   ***********,**
+                                                
+VENDA LÍQUIDA:                          66092,72
+ACRÉSCIMO ICMS:                   ***********,**
+ACRÉSCIMO ISSQN:                  ***********,**
+--------------------- ICMS ---------------------
+Totalizador  Base Cálculo( R$)      Imposto( R$)
+T25,00%              826,50               206,62
+T18,00%                0,00                 0,00
+T12,00%                0,00                 0,00
+T07,00%                0,00                 0,00
+T05,00%                0,00                 0,00
+T17,00%            65266,22             11095,25
+T02,40%                0,00                 0,00
+Total ICMS:        66092,72             11301,87
+
+Não Tributados              Valor Acumulado( R$)
+F1 =                                        0,00
+F2 =                                        0,00
+I1 =                                        0,00
+I2 =                                        0,00
+N1 =                                        0,00
+N2 =                                        0,00
+-------------------- ISSQN ---------------------
+Totalizador  Base Cálculo( R$)      Imposto( R$)
+Total ISSQN:           0,00                 0,00
+
+Não Tributados              Valor Acumulado( R$)
+FS1 =                                       0,00
+FS2 =                                       0,00
+IS1 =                                       0,00
+IS2 =                                       0,00
+NS1 =                                       0,00
+NS2 =                                       0,00
+---------- TOTALIZADORES NÃO FISCAIS -----------
+No Operação        CON      Valor Acumulado( R$)
+01 Sangria         0000                     0,00
+02 Suprimento      0000                     0,00
+03 Recebimento     0000                     0,00
+Total Oper Não-Fiscais        R$            0,00
+
+ACRE NÃO-FISC                               0,00
+DESC NÃO-FISC                               0,00
+CANC NÃO-FISC                               0,00
+------------- RELATÓRIO GERENCIAL --------------
+No Relatório                                 CER
+01 Gerencial X                              0010
+02 Relatório                                0000
+03 Bordero                                  0000
+04 Troca F Pagto                            0000
+05 Fechamento Dia                           0000
+06 Ident.PAF-ECF                            0000
+07 MEIOS DE PAGAME                          0000
+08 Meios Pagamento                          0000
+-------------- MEIOS DE PAGAMENTO --------------
+No. Meio Pagamento          Valor Acumulado( R$)
+01  Dinheiro                                0,00
+02v Cheque                                  0,00
+03v Cartão                                  0,00
+04v TEF                                     0,00
+05v DUPLICATA                               0,00
+06v CREDITO                                 0,00
+07v VISA                                49212,17
+08v MASTERCARD                              0,00
+09v VISAELETRON                             0,00
+10v HIPERCARD                               0,00
+11v CARTAO                                  0,00
+12v AMEX                                  554,10
+13v TEF VISA                            16326,50
+14v TEF AMEX                                0,00
+15v Hiper                                   0,00
+16v teste                                   0,00
+17v SEMEAR                                  0,00
+18v MASTER                                  0,00
+TROCO                                       0,05
+Comprovante Não Emitido:                    0080
+Tempo Emitindo Doc.Fiscal:              00:57:16
+Tempo Operacional:                      15:09:33
+Qtd. Reduções Restantes:                    3276
+Número série MFD:           12025620110800229135
+128 B8DD2 13AB6 BE001C AE 1C2161 F034D 0BF0D 71C
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHIBFJDCHH           27/11/2012 12:00:33 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 27/11/2012 12:01:44        GNF:000151 COO:000729
+GRG:000129                 CER:0001
+    RELATÓRIO GERENCIAL   
+        Gerencial X       
+
+============================================
+      PARAMENTROS DE CONFIGURACAO           
+============================================
+CONFIGURACAO
+--------------------------------------------
+Funcionalidades
+---------------
+Nome Comercial                        SISPDV
+Versao                                2010.1
+Linguagem Programacao               XHarbour
+Sistema Operacional                  Windows
+Gerenciador de Banco de DAdos       Firebird
+Tipo de Funcionamento            Stand-Alone
+Tipo de Desenvolvimento      Comercializavel
+Integracao do PAF-ECF          Nao-Integrado
+Parametro para nao Concomitancia
+--------------------------------
+Pre-Venda                                SIM
+DAV - Impressao nao Fiscal               NAO
+DAV-OS                                   NAO
+Aplicacoes Especiais
+--------------------
+Requisito XXVII - Item 4
+Tab.Indice Tecnico Producao              NAO
+Requisito XXII a XXXVI
+Posto Revendedor de Combustiveis         NAO
+Requisito XXXVII a XXXIX                    
+Bar, Restaurante e Similar-ECF-Restaurante  
+e Controle de Conta Cliente              NAO
+Requisito XL
+Farmacia de Manipulacao                  NAO
+Requisito XLI
+DAV-OS - Oficina de Conserto             NAO
+Requisito XLIA
+SUBSTITUICAO DO TERMO DAV-OS                
+por conta cliente                        NAO
+Requisito XLII
+Tranporte de Passageiros                 NAO
+Requisito XLIV
+Posto de Pedagio                         NAO
+Criterio por Unidade Federada
+-----------------------------
+TODAS AS PARAMETRIZACOES RELACIONADAS NESTE 
+RELATORIO SAO DE CONFIGURACAO INACESSIVEL AO
+USUARIO DO PAF-ECF                          
+
+A ATIVACAO OU NAO DESTES PARAMETROS E DETER-
+MINADA PELA UNIDADE FEDERADA E SOMENTE PODE
+SER FEITA INTERVENCAO DA EMPRESA DESENVOLVE-
+DORA DO PAF-ECF.                            
+Requisito IV - Item 2
+Realizar Registro de Pre-Venda           SIM
+Requisito IV - Item 3
+Emitir DAV Impressao em Equipamento 
+nao Fiscal                               NAO
+Requisito IV - Item 4
+Emitir DAV Impresso em ECF como Relatorio   
+Gerencial                                NAO
+Requisito VIIIa - Item 2
+MINAS LEGAL                              SIM
+Requisito VIIIa - Item 3
+CUPOM MANIA                              SIM
+Requisito VIII - Item 1 Alinea A
+Tela Consulta de Preco TOTALIZANDO OS       
+VALORES DA LISTA                         NAO
+Requisito VIII - Item 1 Alinea B
+Tela Consulta de Preco transformando em     
+pre-venda                                SIM
+Requisito VIII - Item 1 Alinea C
+Tela Consulta de preco transformando     
+em DAV                                   NAO
+Requisito XXII - Item 7 Alinea B
+Nao coincidencia do GT no caso incremento do
+CRO                                         
+Recompoe o valor GT do Arq.Criptografado NAO
+Requisito XXVI-A - Item 1
+Impedir Registro de Venda quando detectar   
+estoque Zero ou Negativo                 NAO
+Requisito XXXIX - Item 1
+Bar Restaurante e Similar - Impressora nao  
+Fiscal Instalada em Amb. de producao     NAO
+
+MD5:7d539b303a4e568e4877cda1e4feadf9
+             NÃO É DOCUMENTO FISCAL             
+   Programa Aplicativo DARUMA                
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHIBFJDCHH           27/11/2012 12:01:48 
+FAB:DR0511BR000000298977                   
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 27/11/2012 12:36:31        CCF:000382 COO:000730
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000124  PISO CER. 30X30 ASPEN SKY A 123456789012
+   1     MT  X    120,00  T17,00% T      120,00€
+  TOTAL   R$       120,00
+Dinheiro                                 120,00
+------------------------------------------------
+MD-5:7d539b303a4e568e4877cda1e4feadf9           HRB SISTEMAS 81-3755.1489   Aplic.:SISPDV 2010.1
+**** Agradecemos sua preferencia, Volte sempre ****         NAO ACEITAMOS DEVOLUCOES APOS 24 HS , DEVOLUCOES SO CO - Vend.:999
+   Programa Aplicativo DARUMA                
+CNPJ/CPF Consumidor: 344.190.394-34      
+NOME:     00025-ANTONIO DE PADUA DA SANT
+ENDEREÇO: TRAVESSA JOSE VIEIRA DA SILVA CENTRO-NAZARE DA MATA - PE-55800000
+188 1E402 14440 38C026 38 40E1C1 5597E 0E1AE EC4
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHIBFABCHH           27/11/2012 12:36:46 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 27/11/2012 13:39:19                   COO:000731
+         LEITURA X        
+------------------ CONTADORES ------------------
+Geral de Operação Não-Fiscal:             000151
+Contador de Reinício de Operação:            001
+Contador de Reduções Z:                     0075
+Contador de Cupom Fiscal:                 000382
+Contador de Fita-Detalhe:                 000000
+Comprovante de Crédito ou Débito:           0000
+Geral de Relatório Gerencial:             000129
+Geral Oper. Não-Fiscal Canc.:               0000
+Cupom Fiscal Cancelado:                     0000
+---------------- TOTALIZADORES -----------------
+TOTALIZADOR GERAL:                     968267,00
+VENDA BRUTA DIÁRIA:                       120,00
+CANCELAMENTO ICMS:                          0,00
+DESCONTO ICMS:                              0,00
+Total de ISSQN:                             0,00
+CANCELAMENTO ISSQN:                         0,00
+DESCONTO ISSQN:                             0,00
+                                                
+VENDA LÍQUIDA:                            120,00
+ACRÉSCIMO ICMS:                             0,00
+ACRÉSCIMO ISSQN:                            0,00
+--------------------- ICMS ---------------------
+Totalizador  Base Cálculo( R$)      Imposto( R$)
+T25,00%                0,00                 0,00
+T18,00%                0,00                 0,00
+T12,00%                0,00                 0,00
+T07,00%                0,00                 0,00
+T05,00%                0,00                 0,00
+T17,00%              120,00                20,40
+T02,40%                0,00                 0,00
+Total ICMS:          120,00                20,40
+
+Não Tributados              Valor Acumulado( R$)
+F1 =                                        0,00
+F2 =                                        0,00
+I1 =                                        0,00
+I2 =                                        0,00
+N1 =                                        0,00
+N2 =                                        0,00
+-------------------- ISSQN ---------------------
+Totalizador  Base Cálculo( R$)      Imposto( R$)
+Total ISSQN:           0,00                 0,00
+
+Não Tributados              Valor Acumulado( R$)
+FS1 =                                       0,00
+FS2 =                                       0,00
+IS1 =                                       0,00
+IS2 =                                       0,00
+NS1 =                                       0,00
+NS2 =                                       0,00
+---------- TOTALIZADORES NÃO FISCAIS -----------
+No Operação        CON      Valor Acumulado( R$)
+01 Sangria         0000                     0,00
+02 Suprimento      0000                     0,00
+03 Recebimento     0000                     0,00
+Total Oper Não-Fiscais        R$            0,00
+
+ACRE NÃO-FISC                               0,00
+DESC NÃO-FISC                               0,00
+CANC NÃO-FISC                               0,00
+------------- RELATÓRIO GERENCIAL --------------
+No Relatório                                 CER
+01 Gerencial X                              0001
+02 Relatório                                0000
+03 Bordero                                  0000
+04 Troca F Pagto                            0000
+05 Fechamento Dia                           0000
+06 Ident.PAF-ECF                            0000
+07 MEIOS DE PAGAME                          0000
+08 Meios Pagamento                          0000
+-------------- MEIOS DE PAGAMENTO --------------
+No. Meio Pagamento          Valor Acumulado( R$)
+01  Dinheiro                              120,00
+02v Cheque                                  0,00
+03v Cartão                                  0,00
+04v TEF                                     0,00
+05v DUPLICATA                               0,00
+06v CREDITO                                 0,00
+07v VISA                                    0,00
+08v MASTERCARD                              0,00
+09v VISAELETRON                             0,00
+10v HIPERCARD                               0,00
+11v CARTAO                                  0,00
+12v AMEX                                    0,00
+13v TEF VISA                                0,00
+14v TEF AMEX                                0,00
+15v Hiper                                   0,00
+16v teste                                   0,00
+17v SEMEAR                                  0,00
+18v MASTER                                  0,00
+TROCO                                       0,00
+Comprovante Não Emitido:                    0000
+Tempo Emitindo Doc.Fiscal:              00:00:15
+Tempo Operacional:                      01:19:06
+Qtd. Reduções Restantes:                    3276
+Número série MFD:           12025620110800229135
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+HHHHHHHHHHIBFABCHH           27/11/2012 13:39:21 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 27/11/2012 13:46:15        CCF:000383 COO:000732
+       CUPOM FISCAL      
+ITEM CÓDIGO DESCRIÇÃO QTD.UN.VL UNIT R$ ST A/T VL ITEM R$
+001 0000000000124  PISO CER. 30X30 ASPEN SKY A 123456789012
+   1     MT  X    120,00  T17,00% T      120,00€
+  TOTAL   R$       120,00
+Dinheiro                                 120,00
+------------------------------------------------
+MD-5:7d539b303a4e568e4877cda1e4feadf9           HRB SISTEMAS 81-3755.1489   Aplic.:SISPDV 2010.1
+**** Agradecemos sua preferencia, Volte sempre ****         NAO ACEITAMOS DEVOLUCOES APOS 24 HS , DEVOLUCOES SO CO - Vend.:999
+   Programa Aplicativo DARUMA                
+128 B8DD2 13AB6 BE001C AE 1EA161 F034D 14A49 F48
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHIBFEFCHH           27/11/2012 13:46:33 
+FAB:DR0511BR000000298977                   BR
+
+
+
+G1J.H.BELTRÃO SERV.DE INF.LTDA MEG0
+Rua Silveira Lobo,32 CXPST 185
+Poco -Recife- PE
+Cep:52061-030 Tel:(81)3755-1489
+CNPJ: 11.156.983/0001-76       IE:   ISENTO              
+ 27/11/2012 13:46:49        GNF:000152 COO:000733
+GRG:000130                 CER:0001
+    RELATÓRIO GERENCIAL   
+       Ident.PAF-ECF      
+
+============================================
+      IDENTIFICACAO DO PAF-ECF              
+============================================
+Laudo No.      :POL4322011
+CNPJ           :11156983000176
+Razao Social   :J H BELTRAO SERVICOS INFORMATICA
+ LTDA.   
+Endereco       :RUA TEN. JOAO CICERO
+Numero         :415
+Bairro         :BOA VIAGEM
+Cidade         :RECIFE
+UF             :PE
+CEP            :51020190
+Fone           :3755.1489
+Contato        :JOSE HELIO DE ARAUJO BELTRAO JR
+Software       :SISPDV
+Versao         :2010.1
+Executavel     :SISPDV.EXE
+MD5            :ca0fc5576c600ae9d993169ea5415e3d
+BEMAFI32.DLL
+     6aaa1f1120c502e3f87f508dabc89cb7
+BEMAMFD2.DLL
+     8d9eaf6bdd4d671030f4232f0c5bca51
+BEMAMFD.DLL
+     89955e1fd1e4e8786871034fa80896a5
+BEMATECH.DLL
+     58e367661fb948dbaabca2b9ab831253
+DARUMAFRAMEWORK.DLL
+     a8d05abf13fd4ebc65f24047fbc287d3
+LEBIN.DLL
+     76657a43c35eef87abd670d81195bb0b
+LEITURAMFDBIN.DLL
+     ade59bcce6bc4b38b42a1d4b26f91036
+DAO350.DLL
+     8888bdbd4e118d915d40a11748282bca
+ACBRNFEMONITOR.EXE
+     4614a33839a2531d9cc7edd56cd316a4
+----------------------------------
+Nome do Arquivo Texto n_ecfpaf.txt
+MD5:7d539b303a4e568e4877cda1e4feadf9
+Versao: ER-PAFECF 01.09
+----------------------------------
+IMPRESSORA                        
+----------------------------------
+DR0511BR000000298977
+             NÃO É DOCUMENTO FISCAL             
+   Programa Aplicativo DARUMA                
+DARUMA AUTOMAÇÃO     FS700 H             
+ECF-IF    VERSÃO:01.01.00     ECF:001    Lj:A-01
+OPR:999                 
+HHHHHHHHHHIBFEFCHH           27/11/2012 13:46:52 
+FAB:DR0511BR000000298977                   
+
+
+
+
+EADC73E55F71004691BD46B2B29AFC898BD1CB844D076669DCB0BBA259E33EBDB42D452CC89D46A69BB4B4697992DB20AF807CE347D04330098E275D4803C8723F3AC7C830467F4F732249E2D5E9E12EF5B6FEE1ADE842BBC33C34CA552DA0D89B216ABD1F37E63ACF918B396452BF9172718BE2172246B640D2DD7BFF1BD2C0498

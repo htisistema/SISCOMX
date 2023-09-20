@@ -1,0 +1,233 @@
+************************************************
+* TABELA DE CODIGO PARA O TERMINAL
+************************************************
+MEMVAR getlist,nivel_acess,mcaminho
+
+FUNCTION sac510
+***************
+LOCAL MPRG:='SAC510',mtitulo:='RELATORIO DE TABELA PRECO P/TERMINAIS',;
+      tela,lci,cci,lba,cba,mgrupo1,opcao,;
+      msub_grupo,msele,morde,m_arq:={},m_arq1:={},y,i,x,mt_preco:='V',mcont:=0
+
+PRIVATE cComm,m_param:={},aret:={},;
+        mtraco,mtot_item,telaprint,mtit,mtipo,mpag,;
+        mtipo_tab,msaldo,mfornece,muf,mcod_forn,mcod_espe,mdesc_sub,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mcodemp:=SPACE(3)
+
+IF ! ver_nivel(mprg,mtitulo,'156',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+mtraco := REPLI('=',137)
+lci := cci := 00
+lba := 10
+cba := 79
+*--------------------------------------------------------------------------
+IF ! AbriArq('sacespe','espe');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('sacgrupo','grup');RETURN NIL;ENDIF
+*--------------------------------------------------------------------------
+op_tela(05,10,15,85,mtitulo)
+WHILE .T.
+        exibi_prg(mprg)
+        mt_preco := 'V'
+        mtipo_tab := 'G'
+        mgrupo1 = SPACE(3)
+        msub_grupo = SPACE(2)
+        mtot_item := mcod_forn := mcod_espe := 0
+        msaldo := 'S'
+        mfornece := SPACE(40)
+        mensagem('Preencha os Campos ou em Branco p/Imprimir todos - <ESC>p/Abandonar')
+        DEVPOS(lci+1,cci+2);DEVOUT('Codigo Empresa.:')
+        DEVPOS(lci+2,cci+2);DEVOUT('Cod.Grupo......:')
+        DEVPOS(lci+3,cci+2);DEVOUT('Cod.Sub-Grupo..:')
+        DEVPOS(lci+4,cci+2);DEVOUT('Tipo de Tabela.:')
+        setcor(3)
+        DEVPOS(lci+4,cci+21);DEVOUT('Ex.: Produtos: [S]em Saldo - [C]om Saldo - [G]eral')
+        @ lci+5,cci+1 TO lci+5,cba-1
+        setcor(1)
+        DEVPOS(lci+6,cci+2);DEVOUT('Imp.saldo [S/n]:')
+        DEVPOS(lci+7,cci+2);DEVOUT('Cod.Fornecedor.:')
+        DEVPOS(lci+8,cci+2);DEVOUT('Cod.Especie....:')
+        DEVPOS(lci+9,cci+2);DEVOUT('Tipo Preco [V]arejo [A]tacado:')
+
+        @ lci+1,cci+19 GET mcodemp PICT "999" VALID ver_emp(mcodemp,lci+1,cci+23,,'*') WHEN mmult_emp ='S'
+        @ lci+2,cci+19 GET mgrupo1 PICT '999' VALID IF(EMPTY(mgrupo1),.T.,v_gru_cod(mgrupo1,2,lci+2,cci+23))
+        @ lci+3,cci+19 GET msub_grupo PICT '99' WHEN ! EMPTY(mgrupo1) VALID ver_sgru(VAL(mgrupo1),VAL(msub_grupo),lci+3,cci+23)
+        READ
+        IF LASTKEY() = 27
+                RELEASE mprg
+                EXIT
+        ENDIF
+        IF ! EMPTY(msub_grupo)
+                mdesc_sub := grup->merc
+        ENDIF
+        @ lci+4,cci+19 GET mtipo_tab PICT '@!' VALID mtipo_tab $ 'S,C,G'
+        @ lci+6,cci+19 GET msaldo PICT '@!' VALID msaldo $ 'S,N'
+        @ lci+7,cci+19 GET mcod_forn PICT '9999' VALID v_fornece(mcod_forn,lci+07,cci+24)
+        @ lci+8,cci+19 GET mcod_espe PICT '9999' VALID ver_espe(mcod_espe,lci+08,cci+24,,0)
+        @ lci+9,cci+33 GET mt_preco PICT '@!' VALID mt_preco $ 'A,V'
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        mtipo_imp := m_indiv[1,18]
+        m_arq:={}
+        m_arq1:={}
+        i = 0
+        mensagem('Aguarde um momento coletando dados para o Relatorio....')
+        cComm  := "SELECT * FROM sacmerc WHERE cod_merc IS NOT NULL AND NOT merc = "+sr_cdbvalue('IMPOSTO')+" AND NOT disp = 'N' AND (descont = 'N' OR descont IS NULL OR descont = ' ')"
+        IF ! EMPTY(mcod_espe)
+                ccomm := ccomm + " AND especie = "+sr_cdbvalue(STRZERO(mcod_espe,4))
+        ENDIF
+        IF ! EMPTY(mcod_forn)
+                ccomm := ccomm + " AND cod_fab = "+sr_cdbvalue(STRZERO(mcod_forn,4))
+        ENDIF
+        IF mtipo_tab = 'S'
+                ccomm := ccomm + " AND saldo_mer <= "+sr_cdbvalue(0)
+        ENDIF
+        IF mtipo_tab = 'C'
+                ccomm := ccomm + " AND saldo_mer > "+sr_cdbvalue(0)
+        ENDIF
+        IF ! EMPTY(mcodemp)
+                ccomm := ccomm + " AND empresa = "+sr_cdbvalue(mcodemp)
+        ENDIF
+        IF ! EMPTY(mgrupo1)
+                ccomm := ccomm + " AND gru_sub LIKE "+sr_cdbvalue(STRZERO(VAL(mgrupo1),3)+'%')
+        ENDIF
+        IF ! EMPTY(msub_grupo)
+                ccomm := ccomm + " AND gru_sub LIKE "+sr_cdbvalue(ALLTRIM(mgrupo1)+ALLTRIM(msub_grupo))
+        ENDIF
+        ccomm := ccomm + " ORDER BY merc"
+        aret:={}
+        sr_getconnection():exec(ccomm,,.t.,@m_arq)
+        IF LEN(m_arq) = 0
+                atencao('Nao existe nenhuma Mercadoria....')
+                LOOP
+        ENDIF
+        mensagem('Espere o Final da Impressao OK - [ESC]Abandonar')
+        IF ! imp_arq('TAB_TERM.REL','R')
+                LOOP
+        ENDIF
+        mpag := 0
+        mtit := 'Tabela de Codigo das Mercadorias'
+        mtipo := 'p/ Terminais'
+        x := mcont := y := 0
+        aret:={}
+        FOR x = 1 TO LEN(m_arq)
+                prog_imp(x,m_arq[x,8])
+                AADD(aret,{m_arq[x,1],m_arq[x,2],m_arq[x,3],m_arq[x,4],m_arq[x,5],m_arq[x,6],m_arq[x,7],m_arq[x,8],m_arq[x,9],m_arq[x,10],;
+                           m_arq[x,11],m_arq[x,12],m_arq[x,13],m_arq[x,14],m_arq[x,15],m_arq[x,16],m_arq[x,17],m_arq[x,18],m_arq[x,19],m_arq[x,20],;
+                           m_arq[x,21],m_arq[x,22],m_arq[x,23],m_arq[x,24],m_arq[x,25],m_arq[x,26],m_arq[x,27],m_arq[x,28],m_arq[x,29],m_arq[x,30],;
+                           m_arq[x,31],m_arq[x,32],m_arq[x,33],m_arq[x,34],m_arq[x,35],m_arq[x,36],m_arq[x,37],m_arq[x,38],m_arq[x,39],m_arq[x,40],;
+                           m_arq[x,41],m_arq[x,42],m_arq[x,43],m_arq[x,44],m_arq[x,45],m_arq[x,46],m_arq[x,47],m_arq[x,48],m_arq[x,49],m_arq[x,50]})
+                           y++
+                IF y < 100
+                        LOOP
+                ENDIF
+                y:=0
+
+                mcont := 0
+                FOR mcont = 1 TO 50
+                        IF mpag = 0 .OR. PROW() >= 57
+                                IF mpag > 1
+                                        EJECT
+                                ENDIF
+                                mpag ++
+                                cabecalho(mpag,mtit,mtipo,mprg)
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,01);DEVOUT('Cod.')
+                                DEVPOS(PROW(),09);DEVOUT('Descricao')
+                                DEVPOS(PROW(),49);DEVOUT('UN')
+
+                                DEVPOS(PROW(),59);DEVOUT('Preco')
+                                DEVPOS(PROW(),68);DEVOUT('|')
+                                DEVPOS(PROW(),71);DEVOUT('Cod.')
+                                DEVPOS(PROW(),78);DEVOUT('Descricao')
+                                DEVPOS(PROW(),119);DEVOUT('UN')
+                                DEVPOS(PROW(),129);DEVOUT('Preco')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        ENDIF
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(aret[mcont,8])
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(aret[mcont,9])
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(aret[mcont,14])
+                        IF mt_preco = 'V'
+                                DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(aret[mcont,46],'9999999.99')
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(IF(! EMPTY(aret[mcont,47]),aret[mcont,47],aret[mcont,46] * (aret[mcont,50]/100+1)),'9999999.99')
+                        ENDIF
+                        DEVPOS(PROW(),68);DEVOUT('|')
+
+                        IF LEN(aret) >= (mcont + 50)
+                                DEVPOS(PROW(),70);DEVOUT(aret[mcont+50,8])
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(aret[mcont+50,9])
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(aret[mcont+50,14])
+                                IF mt_preco = 'V'
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(aret[mcont+50,46],'9999999.99')
+                                ELSE
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(IF(! EMPTY(aret[mcont+50,47]),aret[mcont+50,47],aret[mcont+50,46] * (aret[mcont+50,50]/100+1)),'9999999.99')
+                                ENDIF
+                        ENDIF
+                NEXT
+                aret:={}
+        NEXT
+
+        IF LEN(aret) > 0
+                mcont := 0
+                FOR mcont = 1 TO LEN(aret)
+                        IF mcont > 50
+                                EXIT
+                        ENDIF
+                        IF mpag = 0 .OR. PROW() >= 57
+                                IF mpag > 1
+                                        EJECT
+                                ENDIF
+                                mpag ++
+                                cabecalho(mpag,mtit,mtipo,mprg)
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,01);DEVOUT('Cod.')
+                                DEVPOS(PROW(),09);DEVOUT('Descricao')
+                                DEVPOS(PROW(),49);DEVOUT('UN')
+
+                                DEVPOS(PROW(),59);DEVOUT('Preco')
+                                DEVPOS(PROW(),68);DEVOUT('|')
+                                DEVPOS(PROW(),71);DEVOUT('Cod.')
+                                DEVPOS(PROW(),78);DEVOUT('Descricao')
+                                DEVPOS(PROW(),119);DEVOUT('UN')
+                                DEVPOS(PROW(),129);DEVOUT('Preco')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        ENDIF
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(aret[mcont,8])
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(aret[mcont,9])
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(aret[mcont,14])
+                        IF mt_preco = 'V'
+                                DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(aret[mcont,46],'9999999.99')
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(IF(! EMPTY(aret[mcont,47]),aret[mcont,47],aret[mcont,46] * (aret[mcont,50]/100+1)),'9999999.99')
+                        ENDIF
+                        DEVPOS(PROW(),68);DEVOUT('|')
+
+                        IF LEN(aret) >= (mcont + 50)
+                                DEVPOS(PROW(),70);DEVOUT(aret[mcont+50,8])
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(aret[mcont+50,9])
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(aret[mcont+50,14])
+                                IF mt_preco = 'V'
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(aret[mcont+50,46],'9999999.99')
+                                ELSE
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(IF(! EMPTY(aret[mcont+50,47]),aret[mcont+50,47],aret[mcont+50,46] * (aret[mcont+50,50]/100+1)),'9999999.99')
+                                ENDIF
+                        ENDIF
+                NEXT
+
+        ENDIF
+*/
+
+        EJECT
+        SETPRC(00,00)
+        mensagem('Fim da Impresao...')
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('TAB_TERM.REL')
+ENDDO
+wvw_lclosewindow()
+RETURN NIL

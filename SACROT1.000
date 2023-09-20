@@ -1,0 +1,1026 @@
+***************************************
+* CONSULTA DE FINANCIAMENTOS
+***************************************
+FUNCTION sacc_fin
+*****************
+LOCAL mprg:='SACC_FIN',;
+      lci,cci,lba,cba,opcao,mvalor_ent:=0,mtipo_fin,mcod_fin,;
+      mvalor_aux,mvalor_pres,mvalor_fin,mt_pedido:=0,mvlr_fin:=0
+MEMVAR mtip_term,mcond_veze,mcond_int,mtipo_aux,mjuros
+PRIVATE mtaxa_fin,mtaxa_adm,maliq_fin,mcobra_fin,mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+lci := cci := 0
+lba := 09
+cba := 60
+*---------------------------------------------
+mtip_term := m_cfg[2]
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacfin','fin');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+*---------------------------------------------
+op_tela(02,10,12,70,' Consulta de Financiamento ')
+WHILE .T.
+        limpa(lci,cci,lba,cba)
+        mtipo_imp := m_indiv[1,21]
+        mvalor_ent := 0
+        mtipo_fin := SPACE(3)
+        maliq_fin := 0
+        mcobra_fin := SPACE(1)
+        mcod_fin := mtaxa_fin := mvalor_aux :=mvalor_pres := mvalor_fin := ;
+        mtaxa_fin := mt_pedido := 0
+        mensagem('Preencha os campos ou <ESC>p/abandonar')
+        DEVPOS(lci+1,cci+1);DEVOUT('Valor Financiado ...R$:')
+        DEVPOS(lci+2,cci+1);DEVOUT('Cod.do Financiamento..:')
+        DEVPOS(lci+3,cci+1);devout('Tipo do Financiamento.:')
+        DEVPOS(lci+4,cci+1);DEVOUT('Aliquota..............:')
+        DEVPOS(lci+5,cci+1);DEVOUT('Valor da Entrada......:')
+        DEVPOS(lci+6,cci+1);DEVOUT('Valor das prestacoes..:')
+        DEVPOS(lci+7,cci+1);DEVOUT('Taxa Financiamento....:')
+        DEVPOS(lci+8,cci+1);DEVOUT('Taxa Administracao....:')
+        DEVPOS(lci+9,cci+1);DEVOUT('Valor Total ........R$:')
+        @ lci+1,cci+25 GET mt_pedido PICT '999,999,999.99'
+        @ lci+2,cci+25 GET mcod_fin PICT '999' WHEN men_get(lci+3,cci+25,'Informe o codigo do financiamento') VALID lim_get() .AND. ver_finan(mcod_fin,lci+2,cci+29)
+        @ lci+3,cci+25 GET mtipo_fin PICT '@R 9+99' WHEN men_get(lci+4,cci+25,'Informe o tipo do financiamento') VALID IF(LEN(ALLTRIM(mtipo_fin))<3,.F.,.T.) .AND. ver_aliq(mcod_fin,mtipo_fin) .AND. lim_get()
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        mvlr_fin   := mt_pedido
+        mcond_veze := mtipo_fin
+        mcond_int  := '30'
+        setcor(3)
+        DEVPOS(lci+4,cci+25);DEVOUTPICT(maliq_fin,'99.999999')
+        setcor(1)
+        mvalor_pres := iat((mt_pedido + mtaxa_fin) * maliq_fin,2) + mtaxa_adm
+        IF VAL(SUBSTR(mtipo_fin,1,1)) > 0
+                mvalor_ent := mvalor_pres
+        ENDIF
+        @ lci+5,cci+25 GET mvalor_ent PICT '99,999.99' WHEN SUBSTR(mtipo_fin,1,1) = '1' .AND. men_get(lci+6,cci+25,'Valor da Entrada do Fiananciamento')  VALID lim_get()
+        READ
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        IF mvalor_ent <> mvalor_pres .AND. ver_serie() <> '141285'
+                mvalor_pres := mvalor_fin := mvalor_aux := 0
+                mtipo_aux := '0'+SUBSTR(mtipo_fin,2,2)
+                IF ! ver_aliq(mcod_fin,mtipo_aux)
+                        LOOP
+                ENDIF
+                setcor(3)
+                DEVPOS(lci+4,cci+25);DEVOUTPICT(maliq_fin,'99.999999')
+                setcor(1)
+                mvalor_aux := (mt_pedido + mtaxa_fin) - mvalor_ent
+                mvalor_pres := iat(mvalor_aux * maliq_fin,2) + mtaxa_adm
+                mvalor_fin := (VAL(SUBSTR(mtipo_fin,2,2)) * mvalor_pres) + mvalor_ent
+        ELSE
+                mvalor_fin := (VAL(SUBSTR(mtipo_fin,1,1))+VAL(SUBSTR(mtipo_fin,2,2))) * mvalor_pres
+        ENDIF
+**
+        IF mcobra_fin = 'S'
+                mjuros := (mvalor_fin/mt_pedido)
+                mt_pedido := mvalor_fin
+        ELSE
+                mjuros := 1
+                mt_pedido := mvalor_fin
+        ENDIF
+        setcor(3)
+        DEVPOS(lci+6,cci+25);DEVOUT(SUBSTR(mtipo_fin,2,2)+'X')
+        DEVPOS(lci+6,COL()+1);DEVOUTPICT(mvalor_pres,'99,999.99')
+        DEVPOS(lci+7,cci+25);DEVOUTPICT(mtaxa_fin,'99,999.99')
+        DEVPOS(lci+8,cci+25);DEVOUTPICT(mtaxa_adm,'99,999.99')
+        DEVPOS(lci+9,cci+25);DEVOUTPICT(mvalor_fin,'99,999.99')
+        setcor(1)
+        opcao := op_simnao('N','Deseja imprimir a Consulta:')
+        IF opcao = 'S'
+                IF ! imp_arq('CONS_FINAN.REL','D')
+                        LOOP
+                ENDIF
+                //imprt(mtipo_imp,'N')
+                //DEVPOS(PROW(),00);DEVOUT(LEFT(ALLTRIM(m_set[1,125])+' '+ALLTRIM(m_set[1,126]),15))
+                imprt(mtipo_imp,'C')
+                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',54))
+                DEVPOS(PROW()+1,0);DEVOUT('Valor Financiado ...R$: '+TRANSFORM(mvlr_fin,'999,999,999.99'))
+                DEVPOS(PROW()+1,0);DEVOUT('Cod.do Financiamento..:')
+                DEVPOS(PROW(),PCOL());DEVOUT(STRZERO(mcod_fin,3))
+                ver_finan(mcod_fin,PROW(),PCOL()+2)
+                DEVPOS(PROW()+1,0);devout('Tipo do Financiamento.:')
+                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtipo_fin,'@R 9+99')
+                DEVPOS(PROW()+1,0);DEVOUT('Aliquota..............:')
+                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(maliq_fin,'99.999999')
+                DEVPOS(PROW()+1,0);DEVOUT('Valor da Entrada......:')
+                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvalor_ent,'99,999.99')
+                DEVPOS(PROW()+1,0);DEVOUT('Valor das prestacoes..:')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(SUBSTR(mtipo_fin,2,2)+'X')
+                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvalor_pres,'99,999.99')
+                //DEVPOS(PROW()+1,0);DEVOUT('Taxa Financiamento....:')
+                //DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtaxa_fin,'99,999.99')
+                //DEVPOS(PROW()+1,0);DEVOUT('Taxa Administracao....:')
+                //DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtaxa_adm,'99,999.99')
+                //DEVPOS(PROW()+1,0);DEVOUT('Valor Total ........R$:')
+                //DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvalor_fin,'99,999.99')
+                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',54))
+                DEVPOS(PROW()+m_indiv[1,16],00);DEVOUT(CHR(18))
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                conf_impressao('CONS_FINAN.REL')
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+********************** F I M ********************************
+********************************
+* FUNCAO P/CONSULTAR MENSAGEM
+********************************
+FUNCTION cons_mens()
+*****************
+LOCAL tela,tela1,lci,cci,lba,cba,msele,morde,men,oconsprod,ocolprod[5],i,nkey,opcao
+MEMVAR mtip_term
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+lci := cci := 00
+lba := 25
+cba := 79
+
+msele := SELE()
+morde := INDEXORD()
+***************************************************
+IF ! AbriArq('sacmensa','mensa');RETURN NIL;ENDIF
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+mtip_term := m_cfg[2]
+***************************************************
+*************
+SELE('mensa');ORDSETFOCUS(1)
+GO TOP
+*************
+op_tela(lci,cci,lba,cba,' Consulta de Mensagens ')
+oconsprod := TBROWSEDB(lci,cci,lba-1,cba)
+ocolprod[1] := TBCOLUMNNEW('Data',{||DTOC(mensa->data_men)})
+ocolprod[2] := TBCOLUMNNEW('Remetente',{||mensa->cod_emi})
+ocolprod[3] := TBCOLUMNNEW('Destino',{||mensa->cod_rec})
+ocolprod[4] := TBCOLUMNNEW('Assunto',{||mensa->assunto})
+ocolprod[5] := TBCOLUMNNEW('Ler',{||mensa->ler})
+i:=0
+FOR i=1 TO LEN(ocolprod)
+        oconsprod:ADDCOLUMN(ocolprod[i])
+NEXT
+oconsprod:HEADSEP := CHR(196)
+oconsprod:COLSEP := CHR(179)
+WHILE .T.
+        mensagem('<P>esquisa  <ESC>Retornar')
+        nkey := 0
+        WHILE nkey == 0         //.AND. ! oconsprod:STABLE
+                oconsprod:FORCESTABLE()
+                nkey := INKEY(0)
+        END
+        IF nkey == K_ESC
+                EXIT
+        ELSEIF nkey == K_ENTER
+                mtipo_imp := m_indiv[1,18]
+                mensagem('Espere o Final da Impressao OK - [ESC]Abandonar')
+                IF ! imp_arq('EMAIL.REL','R')
+                        RETURN NIL
+                ENDIF
+                ver_ven(mensa->cod_emi,'*')
+                DEVPOS(PROW(),00);DEVOUT('Remetente...: '+mensa->cod_emi+' - '+sen->snome)
+                DEVPOS(PROW()+1,00);DEVOUT('Data........: '+DTOC(mensa->data_men)+' - Hora: '+mensa->hora_men)
+                ver_ven(mensa->cod_rec,'*')
+                DEVPOS(PROW()+1,00);DEVOUT('Destinatario: '+mensa->cod_rec+' - '+sen->snome)
+                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                DEVPOS(PROW()+1,00);DEVOUT('Assunto: '+mensa->assunto)
+                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin1)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin2)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin3)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin4)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin5)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin6)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin7)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin8)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin9)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin10)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin11)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin12)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin13)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin14)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin15)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin16)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin17)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin18)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin19)
+                DEVPOS(PROW()+1,00);DEVOUT(mensa->lin20)
+                SETPRC(00,00)
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                conf_impressao('EMAIL.REL')
+                CLEAR GETS
+                EXIT
+        ELSE
+                IF genkey(oconsprod,nkey,'totnt')
+                        oconsprod := TBROWSEDB(lci,cci,lba-1,cba)
+                        ocolprod[1] := TBCOLUMNNEW('Data',{||DTOC(mensa->data_men)})
+                        ocolprod[2] := TBCOLUMNNEW('Remetente',{||mensa->cod_emi})
+                        ocolprod[3] := TBCOLUMNNEW('Destino',{||mensa->cod_rec})
+                        ocolprod[4] := TBCOLUMNNEW('Assunto',{||mensa->assunto})
+                        ocolprod[5] := TBCOLUMNNEW('Ler',{||mensa->ler})
+                        i:=0
+                        FOR i=1 TO LEN(ocolprod)
+                                oconsprod:ADDCOLUMN(ocolprod[i])
+                        NEXT
+                        oconsprod:HEADSEP := CHR(196)
+                        oconsprod:COLSEP := CHR(179)
+                        oconsprod:FORCESTABLE()
+                ENDIF
+        ENDIF
+END
+SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+wvw_lclosewindow()
+IF nkey == K_ESC
+        RETURN NIL
+ELSE
+        RETURN NIL
+ENDIF
+RETURN NIL
+****************************** F I M ***************************************
+****************************************************
+* VERIFICA SALDO DO PRODUTO EM PEDIDOS PEDENTES
+****************************************************
+FUNCTION saldo_ped(vcod_merc)
+*******************
+LOCAL mcons_sld:={}
+
+cComm  := "SELECT SUM(pquantd) FROM sacped_s WHERE sr_deleted = ' ' AND pcod_merc = "+sr_cdbvalue(vcod_merc)+" AND (ppag IS NULL OR ppag = ' ')"
+mcons_sld := {}
+sr_getconnection():exec(ccomm,,.t.,@mcons_sld)
+sr_getconnection():exec('COMMIT',,.f.)
+IF LEN(mcons_sld) = 0
+        RETURN  0
+ELSE
+        RETURN mcons_sld[1,1]
+ENDIF
+RETURN 0 
+
+/*
+msele := SELE()
+morde := INDEXORD()
+msaldo_ped :=0
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+****************************
+SELE('ped_s');ORDSETFOCUS(11)
+GO TOP
+****************************
+IF ped_s->(DBSEEK(' '+vcod_merc))
+        WHILE ! EOF() .AND. EMPTY(ped_s->ppag) .AND. vcod_merc = ped_s->pcod_merc
+                msaldo_ped := msaldo_ped + ped_s->pquantd
+                SKIP
+        ENDDO
+ENDIF
+SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+RETURN msaldo_ped
+*/
+****************************** F I M ***************************************
+FUNCTION oper_ped(vcod)
+***********************
+LOCAL oper_ped:={}
+oper_ped:={}
+sr_getconnection():exec("SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pcod_oper = "+sr_cdbvalue(vcod)+" AND pdatapag IS NULL",,.t.,@oper_ped)
+sr_getconnection():exec('COMMIT',,.f.)
+IF lEN(oper_ped) > 0
+        IF ! EMPTY(m_set[1,120])
+                IF ((mdata_sis - oper_ped[1,4]) > m_set[1,120]) .AND. ! EMPTY(m_set[1,120])
+                        IF ! aut_sen('Este OPERADOR tem Pedido pedente com '+TRANSFORM(mdata_sis - oper_ped[1,4],'99,999')+' dias em Aberto - No.:'+oper_ped[1,2],'OPER_PED')
+                                RETURN .F.
+                        ENDIF
+                        RETURN .T.
+                ENDIF
+        ENDIF
+ENDIF
+oper_ped:={}
+sr_getconnection():exec("SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pcod_oper = "+sr_cdbvalue(vcod)+" AND pdatapag IS NULL AND pexp_dat IS NOT NULL",,.t.,@oper_ped)
+sr_getconnection():exec('COMMIT',,.f.)
+IF lEN(oper_ped) > 0
+        IF ! EMPTY(m_set[1,121])
+                IF (mdata_sis - oper_ped[1,69]) > m_set[1,121]
+                        IF ! aut_sen('Este OPERADOR tem Pedido pedente e EXPEDIDO com '+TRANSFORM(mdata_sis - oper_ped[1,69],'99,999')+' dias em Aberto - No.:'+oper_ped[1,2],'OPER_PED')
+                                RETURN .F.
+                        ENDIF
+                        RETURN .T.
+                ENDIF
+        ENDIF
+ENDIF
+RETURN .T.
+/*
+msele := SELE()
+morde := INDEXORD()
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+****************************
+SELE('ped_s');ORDSETFOCUS(12)
+GO TOP
+****************************
+IF ped_s->(DBSEEK(vcod+' ')) .AND. (! EMPTY(m_set[1,120]) .OR. ! EMPTY(m_set[1,121]))
+        WHILE ! EOF() .AND. EMPTY(ped_s->ppag) .AND. vcod = ped_s->pcod_oper
+                //IF EMPTY(ped_s->pexp_dat) .AND. ((mdata_sis - ped_s->pdat_ped) > m_set[1,120]) .AND. ! EMPTY(m_set[1,120])
+                IF ((mdata_sis - ped_s->pdat_ped) > m_set[1,120]) .AND. ! EMPTY(m_set[1,120]) .AND. EMPTY(ped_s->pdatpag)
+                        SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+                        IF ! aut_sen('Este OPERADOR tem Pedido pedente NAO EXPEDIDO com '+TRANSFORM(mdata_sis - ped_s->pdat_ped,'999')+' dias em Aberto - No.:'+ped_s->pnum_ped,'OPER_PED')
+                                RETURN .F.
+                        ENDIF
+                        RETURN .T.
+                ELSEIF ! EMPTY(ped_s->pexp_dat) .AND. ((mdata_sis - ped_s->pexp_dat) > m_set[1,121]) .AND. ! EMPTY(m_set[1,121])
+                        SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+                        IF ! aut_sen('Este OPERADOR tem Pedido pedente e EXPEDIDO com '+TRANSFORM(mdata_sis - ped_s->pexp_ped,'999')+' dias em Aberto - No.:'+ped_s->pnum_ped,'OPER_PED')
+                                RETURN .F.
+                        ENDIF
+                        RETURN .T.
+                ENDIF
+                SKIP
+        ENDDO
+ENDIF
+SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+RETURN .T.
+*/
+****************************** F I M ***************************************
+* FUNCAO PARA RENOMEAR ARQUIVOS
+*******************************
+FUNCTION ren_arq(marq1,marq2,mali)
+**********************************
+WHILE LASTKEY() <> 27
+        USE (marq1) ALIAS (mali) EXCLUSIVE NEW VIA IF(tipo_rdd=1,'DBFCDX','SQLRDD')
+        IF ! NETERR()
+                (mali)->(DBCLOSEAREA())
+                rename (marq1) TO (marq2)
+        ELSE
+                atencao('** Nao foi possivel RENOMEAR o ARQUIVO: '+marq1+' ele pode estar sendo USADO por outro TERMINAL  -  <<< Pressione a Tecla [ESC] p/ Abandonar >>> **')
+                LOOP
+        ENDIF
+        RETURN .T.
+ENDDO
+WHILE LASTKEY() <> 13
+        mensagem('Tecle <ENTER> p/Continuar !!!')
+        INKEY(0)
+ENDDO
+RETURN .F.
+****************************** F I M ***************************************
+* VERIFICA SENHAS
+*****************
+FUNCTION senha(mflag,mecf)
+**************************
+LOCAL mcont,msenha,mdata_sen,mdata_aux,msenha_aux,mtela_sen,opcao,vsenha,vsenha1,;
+      lci:=38,cci:=5,lba:=48,cba:=57,mtel_senha,aret:={},mdata_dat,q_merc,m_docapagar,ccomm,m_est_min,m_est_med,;
+      mdocumento :='',i:=0,msoma:=0,m_aniv := {},mcomando:='',q_cons:={},hd_serial:=''
+MEMVAR cod_operado
+PUBLIC senha_acess,nivel_acess,mcod_oper:=0
+
+mcont:=0
+//setcor(3)
+//DrawLabel(1,45,'CAIXA LIVRE',,,'Arial Black',40,25)
+botao(3,4,30,76)
+IF FILE(ALLTRIM(m_indiv[1,3])+"HTIFIRMA.jpg")
+        WVW_DrawImage( ,3,4,30,76,ALLTRIM(m_indiv[1,3])+"HTIFIRMA.jpg",.T.,.F.)
+ELSE
+        WVW_DrawImage( ,3,4,30,76,ALLTRIM(m_indiv[1,3])+"HTIFIRMA1.jpg",.T.,.F.)
+ENDIF
+//botao(39,45,46,105)
+//WVW_DrawImage( ,40,45,47,MAXCOL()-3,ALLTRIM(m_indiv[1,3])+"rodape.JPG",.F.,.F.)
+WVW_DrawImage( ,lci-4,cba+3,lci+8,cba+20,ALLTRIM(m_indiv[1,3])+"logohti.JPG",.F.,.F.)
+                //34,55,41,115
+setcor(1)
+//WVW_DrawLabel(,44,5,' '+mversao+' ',,,,, 'times',30,15,,,,,)
+
+IF ALLTRIM(m_indiv[1,44]) = '2'
+        WVW_DrawLabel(,lci+9,cba+3,' '+mversao+' ',,,,, 'times',30,15,,,,,)
+ELSE
+        WVW_DrawLabel(,lci+9,cba+6,' '+mversao+' ',,,RGB(25,25,112),RGB(255,250,250), 'times',28,12,,,,,)
+ENDIF
+
+//WVW_DrawLabel(,44,4,' '+mversao+' ',,,, 'times',30,15,,,,,)
+//WVW_DrawLabel(,44,4,' '+mversao+' ',,,'w/n',, 'times',30,15,,,,,)
+
+//botao(06,52,16,104,,'ACESSO AO SISTEMA  '+mversao)
+botao(lci,cci,lba,cba,,'ACESSO AO SISTEMA  '+mversao)
+
+sr_getconnection():exec("DELETE FROM sactrm WHERE data <= "+sr_cdbvalue(DATE()-30),,.f.)
+aret:={}
+sr_getconnection():exec("SELECT * FROM sactrm WHERE nome_trm = "+sr_cdbvalue(ALLTRIM(NETNAME())),,.t.,@aret)
+sr_getconnection():exec('COMMIT',,.f.)
+//sr_getconnection():exec("SELECT * FROM sactrm WHERE hd_serial = "+sr_cdbvalue(hd_serial),,.t.,@aret)
+sr_getconnection():exec('COMMIT',,.f.)
+IF lEN(aret) > 0
+        //sr_getconnection():exec('UPDATE sactrm SET hd_serial = '+sr_cdbvalue(ALLTRIM(hd_serial))+',data = '+sr_cdbvalue(DATE())+',versao = '+sr_cdbvalue(mversao)+',hora = '+sr_cdbvalue(TIME())+' WHERE nome_trm = '+sr_cdbvalue(ALLTRIM(NETNAME())),,.f.)
+        sr_getconnection():exec('UPDATE sactrm SET data = '+sr_cdbvalue(DATE())+',versao = '+sr_cdbvalue(mversao)+',hora = '+sr_cdbvalue(TIME())+' WHERE nome_trm = '+sr_cdbvalue(ALLTRIM(NETNAME())),,.f.)
+ELSE
+        sr_getconnection():exec('INSERT INTO sactrm (nome_trm,ip_trm,data,hora,inicio,versao,sr_deleted) VALUES ('+;
+                                sr_cdbvalue(NETNAME())+','+; //1
+                                sr_cdbvalue(GETIP())+','+; //1
+                                sr_cdbvalue(DATE())+','+; //2
+                                sr_cdbvalue(TIME())+','+; //4
+                                sr_cdbvalue(DATE())+','+; //2
+                                sr_cdbvalue(mversao)+','+; //2 sr_cdbvalue(ALLTRIM(hd_serial))+','+; //2
+                                sr_cdbvalue(' ')+')',,.f.)
+ENDIF
+sr_getconnection():exec('COMMIT',,.f.)
+WHILE .T.
+        WHILE mcont <= 3
+                SET CENTURY ON
+	        botao(lci+1,cci+1,lba-1,cci+11)
+                WVW_DrawImage( ,lci+1,cci+1,lba-1,cci+11,ALLTRIM(m_indiv[1,3])+'HTIusu.jpg',.T.,.F.)
+                setcor(1)
+                mensagem('Digite o Codigo de Operador')
+		DEVPOS(lci+1,cci+13);DEVOUT('Login')
+                //DEVPOS(lci+3,cci+13);DEVOUT('Nome Operador..:')
+                DEVPOS(lci+5,cci+13);DEVOUT('Senha')
+                DEVPOS(lci+7,cci+13);DEVOUT('Data do Sistema')
+                WVW_DrawBoxGet(,lci+2,cci+13,3)
+                WVW_DrawBoxGet(,lci+6,cci+13,20)
+                inkey(0)
+                //WVW_DrawBoxGet(,lci+5,cci+31,12)
+                WVW_DrawBoxGet(,lci+7,cci+31,10)
+                SET CENTURY OFF
+                @ lci+1,cci+31 GET mcod_oper PICT '999' VALID IF(EMPTY(mcod_oper),.F.,ven(mcod_oper))
+                READ
+                IF LASTKEY() = 27
+                        //IF(! EMPTY(macbrlib),ACBrNFe:Destroy(),'')
+                        fim()
+                ENDIF
+                aret:={}
+                sr_getconnection():exec("SELECT snivel,scod_op,sult_e_c,sexpira,ssenha,stipo,snome,doc_apagar,estoq_min,estoq_med,dat_aniv FROM insopera WHERE scod_op = "+sr_cdbvalue(STRZERO(mcod_oper,3)),,.t.,@aret)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF aret[1,6] = 'B' .AND. STRZERO(mcod_oper,3) <> '999'
+                        atencao('Este Usuario/Operador estar Bloqueado, Procure seu Administrador...')
+                        LOOP
+                ENDIF
+		IF FILE(ALLTRIM(m_indiv[1,31])+STRZERO(mcod_oper,3)+'.jpg')
+		        WVW_DrawImage( ,lci+1,cci+1,lba-1,cci+11,ALLTRIM(m_indiv[1,31])+STRZERO(mcod_oper,3)+'.jpg',.T.,.F.)
+		ENDIF
+                setcor(3)
+                DEVPOS(lci+3,cci+31);DEVOUT(SUBSTR(aret[1,7],1,20))
+                setcor(1)
+                mensagem('Operador: '+aret[1,7]+' - Digite sua SENHA')
+                msenha = ''
+                IF mcod_oper = 999
+			pegasenha(@msenha,lci+5,cci+31,setcor(2),12)
+		ELSE
+			pegasenha(@msenha,lci+5,cci+31,setcor(2))
+		ENDIF
+                setcor(1)
+                IF msenha = 'NAO'
+                        QUIT
+                ENDIF
+                IF EMPTY(msenha)
+                        atencao('Senha Incorreta Tente Novamente')
+                        TONE(100,6)
+                        TONE(1600,6)
+                        INKEY(2)
+                        IF mcont = 3
+                                //wvw_lclosewindow()
+                                QUIT
+                        ENDIF
+                        LOOP
+                ENDIF
+                mcont ++
+                IF ALLTRIM(msenha) = 'HTI682110' .AND. STRZERO(mcod_oper,3) = '999'
+                        nivel_acess := '1'
+                        cod_operado := '999'
+                        senha_acess := msenha
+                        EXIT
+                ENDIF
+		// EX: 21/07/10  21+07+10 = 3 8
+		// EX: MAD: SOMA  A= ANO+DIA = 31 - D= DIA+DIA= 42 - M= MES+DIA = 28
+		// EX: 3 31 42 28 8
+		mdig1 := SUBSTR(STRZERO(VAL(SUBSTR(DTOC(DATE()),7,2))+VAL(SUBSTR(DTOC(DATE()),1,2))+VAL(SUBSTR(DTOC(DATE()),4,2)),2),1,1)
+		mdig2 := STRZERO(VAL(SUBSTR(DTOC(DATE()),4,2))+VAL(SUBSTR(DTOC(DATE()),1,2)),2)
+		mdig3 := STRZERO(VAL(SUBSTR(DTOC(DATE()),7,2))+VAL(SUBSTR(DTOC(DATE()),1,2)),2)
+		mdig4 := STRZERO(VAL(SUBSTR(DTOC(DATE()),1,2))+VAL(SUBSTR(DTOC(DATE()),1,2)),2)
+		mdig5 := SUBSTR(STRZERO(VAL(SUBSTR(DTOC(DATE()),7,2))+VAL(SUBSTR(DTOC(DATE()),1,2))+VAL(SUBSTR(DTOC(DATE()),4,2)),2),2,1)
+
+		IF SUBSTR(msenha,1,8) = mdig1+mdig2+mdig3+mdig4+mdig5 .AND. LEN(ALLTRIM(msenha)) >= 10
+                        IF VAL(SUBSTR(msenha,9)) = 0 .AND. cod_operado = '999'
+                                atencao('Nao tem autorizacao para operacao !!!')
+                                LOOP
+                        ENDIF
+                        IF VAL(SUBSTR(msenha,9)) > 65
+                                atencao('Senha Incorreta Tente Novamente')
+                                TONE(100,6)
+                                TONE(1600,6)
+                                INKEY(2)
+                                IF mcont = 3
+                                        QUIT
+                                ENDIF
+                                LOOP
+                                mdata_aux :=SPACE(11)
+                        ELSE
+                                //mdata_sen := DATE() + VAL(SUBSTR(msenha,7))
+                                mdata_sen := DATE() + VAL(SUBSTR(msenha,9))
+                                //mdata_aux := SUBSTR(DTOC(mdata_sen),1,2)+SUBSTR(DTOC(mdata_sen),4,2)+SUBSTR(DTOC(mdata_sen),7,2) + SUBSTR(msenha,1,6)
+                                mdata_aux := SUBSTR(DTOC(mdata_sen),1,2)+SUBSTR(DTOC(mdata_sen),4,2)+SUBSTR(DTOC(mdata_sen),7,2) + SUBSTR(DTOC(DATE()),7,2)+SUBSTR(DTOC(DATE()),1,2)+SUBSTR(DTOC(DATE()),4,2)
+                        ENDIF
+                        SR_BEGINTRANSACTION()
+                                sr_getconnection():exec("UPDATE sacsetup SET sysdatlm = "+sr_cdbvalue(mdata_aux),,.f.)
+                                sr_committransaction()
+                        SR_ENDTRANSACTION()
+                        saccdx('P')
+                        sacsql()
+                        nivel_acess := aret[1,1]
+                        cod_operado := aret[1,2]
+                        email_operado := aret[1,36]
+                        senha_acess := msenha
+                        //wvw_lclosewindow()
+                        QUIT
+                        //RETURN .T.
+                ENDIF
+                IF ALLTRIM(msenha) == ALLTRIM(DCRIPTO(aret[1,5]))
+                        SR_BEGINTRANSACTION()
+                                sr_getconnection():exec("UPDATE insopera SET sult_ent = "+sr_cdbvalue(mdata_sis)+",shora_ini = "+sr_cdbvalue(SUBSTR(TIME(),1,5))+",sh_i_c = "+sr_cdbvalue(SUBSTR(m_indiv[1,1],1,5))+" WHERE scod_op = "+sr_cdbvalue(STRZERO(mcod_oper,3)),,.f.)
+                                sr_getconnection():exec("UPDATE sactrm SET oper = "+sr_cdbvalue(STRZERO(mcod_oper,3))+',versao = '+sr_cdbvalue(mversao)+',hora = '+sr_cdbvalue(TIME())+' WHERE nome_trm = '+sr_cdbvalue(ALLTRIM(NETNAME())),,.f.)
+                                q_cons:={}
+                                sr_getconnection():exec("SELECT * FROM sacrl WHERE cod_oper = "+sr_cdbvalue(STRZERO(mcod_oper,3))+' AND data = '+sr_cdbvalue(DATE()),,.t.,@q_cons)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                                IF LEN(q_cons) = 0
+                                        sr_getconnection():exec('INSERT INTO sacrl (cod_oper,data,hora,sr_deleted) VALUES ('+sr_cdbvalue(STRZERO(mcod_oper,3))+','+sr_cdbvalue(DATE())+','+sr_cdbvalue(TIME())+','+sr_cdbvalue(' ')+')',,.f.)
+                                ENDIF
+                                sr_committransaction()
+                        SR_ENDTRANSACTION()
+                        nivel_acess := aret[1,1]
+                        cod_operado := aret[1,2]
+                        senha_acess := msenha
+                        IF (DATE() - aret[1,3]) >= aret[1,4] .AND. ! EMPTY(aret[1,4])
+                                op_tela(10,10,14,50,' Senha Expirou ')
+                                WHILE .T.
+                                        DEVPOS(00,00);DEVOUT('Digite Nova Senha:')
+                                        DEVPOS(01,00);DEVOUT('Digite  Novamente:')
+                                        DEVPOS(02,00);DEVOUT('Confirma [S/n]...:')
+                                        vsenha = ''
+                                        vsenha1= ''
+                                        pegasenha(@vsenha,00,20,setcor(2))
+                                        setcor(1)
+                                        IF LEN(vsenha) <= 1 .OR. EMPTY(vsenha) .OR. vsenha = 'NAO'
+                                                LOOP
+                                        ENDIF
+                                        pegasenha(@vsenha1,01,20,setcor(2))
+                                        setcor(1)
+                                        IF LEN(vsenha1) <= 1 .OR. vsenha1 = 'NAO'
+                                                LOOP
+                                        ENDIF
+                                        IF vsenha == vsenha1
+                                                opcao := 'S'
+                                                @ 02,20 GET opcao PICT '@!' VALID opcao $ 'S,N'
+                                                READ
+                                                IF LASTKEY() = 27 .OR. opcao = 'N'
+                                                        LOOP
+                                                ENDIF
+                                                wvw_lclosewindow()
+                                                SR_BEGINTRANSACTION()
+                                                        sr_getconnection():exec("UPDATE insopera SET ssenha = "+sr_cdbvalue(CRIPTO(vsenha))+",plug = "+sr_cdbvalue(vsenha)+",sult_e_c = "+sr_cdbvalue(DATE())+" WHERE scod_op = "+sr_cdbvalue(STRZERO(mcod_oper,3)),,.f.)
+                                                        sr_committransaction()
+                                                SR_ENDTRANSACTION()
+                                                EXIT
+                                        ELSE
+                                                atencao('Senha Digitada Errada, Tente novamente !!!')
+                                                LOOP
+                                        ENDIF
+                                ENDDO
+                                EXIT
+                        ELSE
+                                EXIT
+                        ENDIF
+                ELSE
+                        atencao('Senha Incorreta Tente Novamente')
+                        TONE(100,6)
+                        TONE(1600,6)
+                        INKEY(2)
+                        IF mcont = 3
+                                //wvw_lclosewindow()
+                                QUIT
+                                //RETURN .F.
+                        ENDIF
+                        LOOP
+                ENDIF
+
+        ENDDO
+        WHILE .T.
+                SET CENTURY ON
+		mensagem('Confira a Data do Sistema')
+                setcor(1)
+                WVW_DrawBoxGet(,lci+7,cci+31,10)
+                @ lci+7,cci+31 GET mdata_sis
+                READ
+                mdata_dat := DATE()
+                IF mflag = NIL .AND. ver_serie() = '141237'
+                        IF mdata_sis > DATE() + 1
+                                atencao('A Data informada estar com mais de 1 dias: '+DTOC(mdata_sis))
+                                IF ! ver_nivel('ALT_DATA','ALTERACAO DA DATA DO SISTEMA','1245',nivel_acess,,'AMBIE')
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        IF mdata_sis < DATE() - 1
+                                atencao('A Data informada estar com mais de -1 dias: '+DTOC(mdata_sis))
+                                IF ! ver_nivel('ALT_DATA','ALTERACAO DA DATA DO SISTEMA','1245',nivel_acess,,'AMBIE')
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                ELSE
+                        IF mdata_sis > DATE() + 10
+                                atencao('A Data informada estar com mais de 10 dias: '+DTOC(mdata_sis))
+                                IF ! ver_nivel('ALT_DATA','ALTERACAO DA DATA DO SISTEMA','1245',nivel_acess,,'AMBIE')
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        mensagem('Verificando a DATA do CAIXA...')
+                        c_caixa:={}
+                        sr_getconnection():exec("SELECT data,tipo,documento,cod_opera,nota FROM saccaixa WHERE data > "+sr_cdbvalue(mdata_sis),,.t.,@c_caixa)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(c_caixa) > 0
+                                mdata_dat := c_caixa[1,1]
+                                i:=0
+                                mmensagem := 'Existe '+STRZERO(LEN(c_caixa),6)+' Lancamento com a DATA maior que a data '+DTOC(mdata_sis)+' :'+m_qp+m_qp
+                                //mmensagem := mmensagem+'-----------------------------------------------------------'+m_qp
+                                //mmensagem := mmensagem+'  DATA        DOCUMENTO  OPER  NOTA'+m_qp
+                                //mmensagem := mmensagem+'-----------------------------------------------------------'+m_qp
+                                //FOR i = 1 TO LEN(c_caixa)
+                                //        mmensagem := mmensagem+DTOC(c_caixa[i,1])+' '+c_caixa[i,2]+c_caixa[i,3]+'  '+c_caixa[i,4]+'    '+c_caixa[i,5]+m_qp
+                                //NEXT
+                                atencao(mmensagem)
+                        ENDIF
+                        IF mdata_sis # mdata_dat
+                                IF ! ver_nivel('ALT_DATA','ALTERACAO DA DATA DO SISTEMA','1245',nivel_acess,,'AMBIE')
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                ENDIF
+                IF LASTKEY() = 27 .OR. EMPTY(mdata_sis)
+                        LOOP
+                ELSE
+			IF ! EMPTY(aret[1,8]) 	// DOC.APAGAR
+		                mensagem('Aguarde coletando informacao do CONTAS APAGAR....')
+                		m_docapagar := {}
+                                mdocumentos := ''
+                                i:=0
+		                sr_getconnection():exec("SELECT * FROM sacdupp WHERE venc <= "+sr_cdbvalue(mdata_sis)+" AND pago IS NULL AND datpag IS NULL",,.t.,@m_docapagar)
+                                sr_getconnection():exec('COMMIT',,.f.)
+		                IF LEN(m_docapagar) > 0
+                                        FOR i = 1 TO LEN(m_docapagar)
+                                                IF i < 30
+                                                        mdocumentos := mdocumentos + m_docapagar[i,4]+' '+m_docapagar[i,7]+'  '+DTOC(m_docapagar[i,9])+'  '+DTOC(m_docapagar[i,10])+'  '+TRANSFORM(m_docapagar[i,16],'999,999.99')+m_qp
+                                                ENDIF
+                                                msoma := msoma + m_docapagar[i,16]
+                                        NEXT
+                                        atencao('     RELACAO DOS DOCUMENTO A PAGAR'+m_qp+REPLI('-',60)+m_qp+'DOCUM. FORN  EMISSAO    VENCIM.     VALOR'+m_qp+REPLI('-',60)+m_qp+mdocumentos+m_qp+'TOTAL Qtd Doc: '+TRANSFORM(LEN(m_docapagar),'999,999')+' - Valor R$: '+TRANSFORM(msoma,'99,999,999.99'))
+                                ENDIF
+			ENDIF
+			IF ! EMPTY(aret[1,11]) 	// ANIVERSARIO
+		                mensagem('Aguarde coletando informacao do ANIVESARIANTES DO MES....')
+                                mdia := '  '
+                                IF SUBSTR(DTOC(mdata_sis),4,2) = '01'
+                                        mdia := '31'
+                                ELSEIF SUBSTR(DTOC(mdata_sis),4,2) = '02'
+                                        mdia := '28'
+                                ELSEIF SUBSTR(DTOC(mdata_sis),4,2) = '03'
+                                        mdia := '31'
+                                ELSEIF SUBSTR(DTOC(mdata_sis),4,2) = '04'
+                                        mdia := '30'
+                                ELSEIF SUBSTR(DTOC(mdata_sis),4,2) = '05'
+                                        mdia := '31'
+                                ELSEIF SUBSTR(DTOC(mdata_sis),4,2) = '06'
+                                        mdia := '30'
+                                ELSEIF SUBSTR(DTOC(mdata_sis),4,2) = '07'
+                                        mdia := '31'
+                                ELSEIF SUBSTR(DTOC(mdata_sis),4,2) = '08'
+                                        mdia := '31'
+                                ELSEIF SUBSTR(DTOC(mdata_sis),4,2) = '09'
+                                        mdia := '30'
+                                ELSEIF SUBSTR(DTOC(mdata_sis),4,2) = '10'
+                                        mdia := '31'
+                                ELSEIF SUBSTR(DTOC(mdata_sis),4,2) = '11'
+                                        mdia := '30'
+                                ELSE
+                                        mdia := '31'
+                                ENDIF
+                                m_aniv := {}
+                                mdocumentos := ''
+                                i:=0
+                                mcomando := "SELECT * FROM saccli WHERE "
+                                mcomando := mcomando + "(nascimento >= "+sr_cdbvalue(mdata_sis)+' AND nascimento <= '+sr_cdbvalue(CTOD(mdia+SUBSTR(DTOC(mdata_sis),3)))+')'
+                                mcomando := mcomando + " OR (data_nas1 >= "+sr_cdbvalue(mdata_sis)+' AND data_nas1 <= '+sr_cdbvalue(CTOD(mdia+SUBSTR(DTOC(mdata_sis),3)))+')'
+                                mcomando := mcomando + " OR (data_nas2 = "+sr_cdbvalue(mdata_sis)+' AND data_nas2 <= '+sr_cdbvalue(CTOD(mdia+SUBSTR(DTOC(mdata_sis),3)))+')'
+                                mcomando := mcomando + " OR (data_nas3 = "+sr_cdbvalue(mdata_sis)+' AND data_nas3 <= '+sr_cdbvalue(CTOD(mdia+SUBSTR(DTOC(mdata_sis),3)))+')'
+                                mcomando := mcomando + " OR (data_nas4 = "+sr_cdbvalue(mdata_sis)+' AND data_nas4 <= '+sr_cdbvalue(CTOD(mdia+SUBSTR(DTOC(mdata_sis),3)))+')'
+                                mcomando := mcomando + " OR (data_nas5 = "+sr_cdbvalue(mdata_sis)+' AND data_nas5 <= '+sr_cdbvalue(CTOD(mdia+SUBSTR(DTOC(mdata_sis),3)))+')'
+                                sr_getconnection():exec(mcomando,,.t.,@m_aniv)
+                                sr_getconnection():exec('COMMIT',,.f.)
+		                IF LEN(m_aniv) > 0
+                                        FOR i = 1 TO LEN(m_aniv)
+                                                IF m_aniv[i,9] = mdata_sis
+                                                        mdocumentos := mdocumentos + 'Nome: '+m_aniv[i,3]+' - Nasc.: '+DTOC(m_aniv[i,9])
+                                                ENDIF
+                                                IF m_aniv[i,50] = mdata_sis
+                                                        mdocumentos := mdocumentos + 'Nome: '+m_aniv[i,51]+' - Nasc.: '+DTOC(m_aniv[i,50])
+                                                ENDIF
+                                                IF m_aniv[i,52] = mdata_sis
+                                                        mdocumentos := mdocumentos + 'Nome: '+m_aniv[i,53]+' - Nasc.: '+DTOC(m_aniv[i,52])
+                                                ENDIF
+                                                IF m_aniv[i,54] = mdata_sis
+                                                        mdocumentos := mdocumentos + 'Nome: '+m_aniv[i,55]+' - Nasc.: '+DTOC(m_aniv[i,54])
+                                                ENDIF
+                                                IF m_aniv[i,56] = mdata_sis
+                                                        mdocumentos := mdocumentos + 'Nome: '+m_aniv[i,57]+' - Nasc.: '+DTOC(m_aniv[i,56])
+                                                ENDIF
+                                                IF m_aniv[i,58] = mdata_sis
+                                                        mdocumentos := mdocumentos + 'Nome: '+m_aniv[i,59]+' - Nasc.: '+DTOC(m_aniv[i,58])
+                                                ENDIF
+                                        NEXT
+                                        atencao('ANIVERSARIANTES do Periodo: '+DTOC(mdata_sis)+' a '+mdia+SUBSTR(DTOC(mdata_sis),3)+m_qp+REPLI('-',75)+m_qp+mdocumentos+m_qp+REPLI('-',75)+m_qp+'Quantidades de Clientes: '+TRANSFORM(LEN(m_aniv),'999,999'))
+                                ENDIF
+			ENDIF
+			IF ! EMPTY(aret[1,9]) .OR. aret[1,10] > 0 	//ESTOQUE
+				IF aret[1,10] > 0
+					m_est_min := {}
+					m_est_med := {}
+				        q_merc := {}
+                                        mensagem('Verificando o ESTOQUE...')
+			        	sr_getconnection():exec("SELECT * FROM sacmerc WHERE cod_merc IS NOT NULL AND disp = 'S'",,.t.,@q_merc)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+					IF LEN(q_merc) > 0
+						m := 0
+					        FOR m = 1 TO LEN(q_merc)
+					                mensagem('Calculando o Produto: '+q_merc[m,8]+' - '+q_merc[m,9]+'  Aguarde um momento ...')
+				                        q_mov:={}
+					            	cComm  := "SELECT SUM(quantd) "
+				        	        ccomm := ccomm +" FROM sacmov WHERE cancel IS NULL AND NOT tipo = '01' AND ent_sai = 'S' AND documento NOT LIKE 'BL%'"
+					                //ccomm := ccomm + " AND data_s_e >= "+sr_cdbvalue('20'+SUBSTR(mdata[i],4,2)+'/'+SUBSTR(mdata[i],1,2)+'/01')
+			                        	ccomm := ccomm + " AND data_s_e <= "+sr_cdbvalue(mdata_sis - aret[1,10])
+                	        			ccomm := ccomm + " AND codigo = "+sr_cdbvalue(q_merc[m,8])
+				                        sr_getconnection():exec(ccomm,,.t.,@q_mov)
+                                                        sr_getconnection():exec('COMMIT',,.f.)
+			        	                IF LEN(q_mov) = 0
+								IF ! EMPTY(aret[1,9])	                	
+							  		IF q_merc[m,56] <= q_merc[m,28] 
+						  				AADD(m_est_min,{q_merc[m,8],q_merc[m,56],q_merc[m,28]})
+									ENDIF
+								ENDIF
+								LOOP
+                	        			ENDIF
+							IF q_merc[m,56] <= (q_mov[1,1] / aret[1,10])
+								AADD(m_est_med,{q_merc[m,8],q_mov[1,1] / aret[1,10],q_merc[m,28]})
+							ENDIF
+						NEXT
+						atencao('Existe produto para compra: Com Estoque Abaixo do minimo: '+TRANSFORM(LEN(m_est_min),'99,999')+' - Estoque Abaixo da Media: '+TRANSFORM(LEN(m_est_med),'99,999'))
+					ENDIF
+				ELSE
+					m_est_min := {}
+					m_est_med := {}
+				        q_merc := {}
+			        	sr_getconnection():exec("SELECT * FROM sacmerc WHERE cod_merc IS NOT NULL AND disp = 'S' AND saldo_mer < est_min",,.t.,@q_merc)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+					IF LEN(q_merc) > 0
+						m := 0
+					        FOR m = 1 TO LEN(q_merc)
+							AADD(m_est_min,{q_merc[m,8],q_merc[m,56],q_merc[m,28]})	
+						NEXT
+						IF LEN(m_est_min) > 0
+							atencao('Existe produto para compra: Com Estoque Abaixo do minimo: '+TRANSFORM(LEN(m_est_min),'99,999'))
+						ENDIF
+					ENDIF
+				ENDIF
+
+	                ENDIF
+	                EXIT
+	       	ENDIF
+        ENDDO
+        SET CENTURY OFF
+        EXIT
+ENDDO
+//wvw_lclosewindow()
+IF mflag <> NIL
+        CLOSE sen
+        RETURN .T.
+ELSE
+        * ERRO DO SISTEMA**********
+        //erro()
+        ********************
+ENDIF
+mensagem('Atualizando o arquivo de SENHA...')
+SR_BEGINTRANSACTION()
+        sr_getconnection():exec("UPDATE insopera SET terminal = "+sr_cdbvalue(netname(.t.))+",data_acess = "+sr_cdbvalue(DATE())+",hora_acess = "+sr_cdbvalue(TIME())+" WHERE scod_op = "+sr_cdbvalue(STRZERO(mcod_oper,3)),,.f.)
+        sr_committransaction()
+SR_ENDTRANSACTION()
+//IF mecf <> NIL
+//        sacecf(mecf)
+//ENDIF
+
+//SACBAL_PIN()
+
+//wvw_lclosewindow()
+mensagem('                                       ')
+IF sen->stipo_sis = 'V'
+        //wvw_lclosewindow()
+        venda('V')
+ELSEIF sen->stipo_sis = 'C'
+        //wvw_lclosewindow()
+        venda('C')
+ELSEIF sen->stipo_sis = 'M'
+        //wvw_lclosewindow()
+        venda('M')
+ELSE
+        //wvw_lclosewindow()
+        sac0()
+ENDIF
+CLOSE sen
+RETURN .T.
+********************************** f i m **************************************
+* ALTERA A SENHA
+****************
+FUNCTION alt_senha(p)
+*********************
+LOCAL mcont:=0,msenha,lci:=1,cci:=10,lba:=3,cba:=40,tela,msele,morde,mmen,mponto,mponto1,;
+      mcod_oper:=0,m_operador:={},m_cons:={}
+MEMVAR senha_acess
+msele := SELE()
+morde := INDEXORD()
+*-----------------------------------------------------
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+*-----------------------------------------------------
+setcor(1)
+op_tela(15,30,20,70,'IDENTIFICAR O OPERADOR')
+WHILE .T.
+        SR_BEGINTRANSACTION()
+        TRY
+
+        m_operador:={}
+        sr_getconnection():exec("SELECT * FROM insopera WHERE scod_op = "+sr_cdbvalue(cod_operado),,.t.,@m_operador)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(m_operador) > 0
+                IF p = NIL
+                        WVW_SBSetText(mnum_principal,4,'Operador: '+ALLTRIM(cod_operado))
+                ENDIF
+                ver_mensa(cod_operado)          //verifica mensagens
+        ENDIF
+        sr_getconnection():exec("UPDATE insopera SET terminal = '',data_acess = NULL,hora_acess = '',sult_fim = "+sr_cdbvalue(DATE())+",shora_fim = "+sr_cdbvalue(TIME())+" WHERE scod_op = "+sr_cdbvalue(cod_operado),,.f.)
+        sr_getconnection():exec('COMMIT',,.f.)
+        nivel_acess := m_operador[1,13]
+        cod_operado := m_operador[1,1]
+        senha_acess := msenha
+        mponto := m_operador[1,35]
+
+        CATCH e
+        SR_ENDTRANSACTION()
+        END
+        /*
+        *************
+        SELE('sen');ORDSETFOCUS(2)
+        GO TOP
+        *************
+        IF sen->(DBSEEK(cod_operado))
+                mponto := RECNO()
+                IF BLOQREG()
+                        sen-> sult_fim := DATE()
+                        sen-> shora_fim := TIME()
+                        sen-> sh_i_c    := '     '
+                        nivel_acess := sen->snivel
+                        cod_operado := sen->scod_op
+                        senha_acess := msenha
+                        COMMIT
+                        UNLOCK
+                        IF p = NIL
+                                WVW_SBSetText(mnum_principal,4,'Operador: '+ALLTRIM(cod_operado))
+                        ENDIF
+                ELSE
+                        atencao('Nao foi Possivel Acessar o Arquivo')
+                        LOOP
+                ENDIF
+                ver_mensa(cod_operado)          //verifica mensagens
+        ENDIF
+        */
+        WHILE .T.
+                mcod_oper:=0
+                setcor(1)
+		limpa(00,00,06,09)
+        	WVW_DrawImage( ,00,00,05,08,ALLTRIM(m_indiv[1,3])+'HTI.JPG',.T.,.F.)
+                DEVPOS(lci  ,cci+1);DEVOUT('Codigo Operador:')
+                DEVPOS(lci+2,cci+1);DEVOUT('Senha de Acesso:')
+                @ lci,cci+18 GET mcod_oper PICT '999' VALID IF(EMPTY(mcod_oper),.F.,ven(mcod_oper))
+                READ
+                IF LASTKEY() = 27
+                        IF p = '1'
+                                SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+                                DBUNLOCKALL()
+                                wvw_lclosewindow()
+                                RETURN .F.
+                        ELSE
+                                LOOP
+                        ENDIF
+                ENDIF
+		IF FILE(ALLTRIM(m_indiv[1,31])+STRZERO(mcod_oper,3)+'.jpg')
+		        WVW_DrawImage( ,01,01,04,08,ALLTRIM(m_indiv[1,31])+STRZERO(mcod_oper,3)+'.jpg',.T.,.F.)
+		ENDIF
+                IF m_set[1,101] = 'S'
+                        m_cons:={}
+                        sr_getconnection():exec("SELECT * FROM sacrl WHERE cod_oper = "+sr_cdbvalue(STRZERO(mcod_oper,3))+' AND data = '+sr_cdbvalue(mdata_sis),,.t.,@m_cons)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(m_cons) = 0
+                                atencao('Este operador ainda nao registrou seu ponto no Relogio !!!')
+                                wvw_lclosewindow()
+                                RETURN .F.
+                        ENDIF
+                ENDIF
+                IF sen->stipo = 'B' .AND. STRZERO(mcod_oper,3) <> '999'
+                        atencao('Este Usuario/Operador estar Bloqueado, Procure seu Administrador...')
+                        LOOP
+                ENDIF
+                mensagem('Nome: '+sen->snome)
+                msenha = ''
+                pegasenha(@msenha,lci+2,cci+18,setcor(2))
+                setcor(1)
+                IF msenha = 'NAO'
+                        LOOP
+                ENDIF
+                mcont ++
+                IF EMPTY(msenha)
+                        atencao('Senha Incorreta Tente Novamente')
+                        LOOP
+                ENDIF
+                IF ALLTRIM(msenha) == ALLTRIM(DCRIPTO(sen->ssenha))
+                        SR_BEGINTRANSACTION()
+                        TRY
+                        m_operador:={}
+                        sr_getconnection():exec("SELECT * FROM insopera WHERE scod_op = "+sr_cdbvalue(STRZERO(mcod_oper,3)),,.t.,@m_operador)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(m_operador) > 0
+                                sr_getconnection():exec("UPDATE insopera SET terminal = "+sr_cdbvalue(netname(.t.))+",data_acess = "+sr_cdbvalue(DATE())+",hora_acess = "+sr_cdbvalue(TIME())+",sult_ent = "+sr_cdbvalue(mdata_sis)+",shora_ini := "+sr_cdbvalue(TIME())+",sh_i_c = "+sr_cdbvalue(m_indiv[1,1])+" WHERE scod_op = "+sr_cdbvalue(STRZERO(mcod_oper,3)),,.f.)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                        ENDIF
+                        CATCH e
+                        SR_ENDTRANSACTION()
+                        END
+                        nivel_acess := m_operador[1,13]
+                        cod_operado := m_operador[1,1]
+                        senha_acess := msenha
+                        WVW_SBSetText(mnum_principal,4,'Operador: '+ALLTRIM(cod_operado))
+                        atencao('Operador: '+cod_operado+'-'+RTRIM(m_operador[1,2]))
+                        SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+                        ver_mensa(cod_operado)          //verifica mensagens
+                        //wvw_lclosewindow()
+                        IF p = NIL
+                                IF sen->stipo_sis = 'V'
+                                        wvw_lclosewindow()
+                                        venda('V')
+                                ELSEIF sen->stipo_sis = 'C'
+                                        wvw_lclosewindow()
+                                        venda('C')
+                                ELSEIF sen->stipo_sis = 'M'
+                                        wvw_lclosewindow()
+                                        venda('M')
+                                ELSE
+                                        wvw_lclosewindow()
+                                        sac0()
+                                ENDIF
+                        ENDIF
+                        wvw_lclosewindow()
+                        mponto1 := RECNO()
+                        RETURN .T.
+                        /*
+                        *************
+                        SELE('sen');ORDSETFOCUS(1)
+                        *************
+                        GO mponto1
+                        IF BLOQREG()
+                                sen-> sult_ent := mdata_sis
+                                sen-> shora_ini := TIME()
+                                sen-> sh_i_c    := m_indiv[1,1]
+                                nivel_acess := sen->snivel
+                                cod_operado := sen->scod_op
+                                senha_acess := msenha
+                                COMMIT
+                                UNLOCK
+                                WVW_SBSetText(mnum_principal,4,'Operador: '+ALLTRIM(cod_operado))
+                                atencao('Operador: '+cod_operado+'-'+RTRIM(sen->snome))
+                                SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+                                ver_mensa(cod_operado)          //verifica mensagens
+                                wvw_lclosewindow()
+                                IF p = NIL
+                                        IF sen->stipo_sis = 'V'
+                                                wvw_lclosewindow()
+                                                venda('V')
+                                        ELSEIF sen->stipo_sis = 'C'
+                                                wvw_lclosewindow()
+                                                venda('C')
+                                        ELSEIF sen->stipo_sis = 'M'
+                                                wvw_lclosewindow()
+                                                venda('M')
+                                        ELSE
+                                                wvw_lclosewindow()
+                                                sac0()
+                                        ENDIF
+                                ENDIF
+                                RETURN .T.
+                        ELSE
+                                atencao('Nao foi Possivel Acessar o Arquivo')
+                                LOOP
+                        ENDIF
+                        */
+                ELSE
+                        atencao('Senha Incorreta Tente Novamente')
+                        LOOP
+                ENDIF
+        ENDDO
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+************************** F I M *************************************

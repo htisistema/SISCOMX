@@ -1,0 +1,601 @@
+*********************************
+* LISTAGEM MOVIMENTO GERAL RESUMO SAIDAS/LUCROS
+*********************************
+FUNCTION sac5231
+**************
+LOCAL MPRG:='SAC5231',;
+      lba,cba,opcao,i,mtecla,mdata1,mdata2,mcod_op,;
+      mtot_sai,mvlr_sai,mcus_sai,mcod_aux,mcodigo,point,msaldo,;
+      mtotg_sai,mvlrg_sai,mcusg_sai,mproduto:={},mbalanco,;
+      m_saldo:={},mcod_ven,mcod_forn,mcod_cli,mtipo_cons,muf,;
+      mass,mcod_ope,mcod_espe:=0,msele,morde,mresumo:=' ',mcusto:=' ',mcod_mont,;
+      mtipo_rel:='R',mtip_cod,mlucro:='S',mcodemp:=SPACE(3),cons_mov:={},;
+      cons_merc:={},mvlr_zero:='C',mperc,mperc_aux,m_prod_nao:={},m_prod:={},mponto:=0,mop_cab:='S',mlist_pre,;
+      mtipo_ordem:='1',msint_mes:='N',mtipo_doc:='  '
+
+PRIVATE mtraco,mtit:='',mtipo,mpag,mposicao,mcod_merc:=0,mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mgrupo,msub_grupo,cons_cli:={}
+
+IF ! ver_nivel(mprg,'RELATORIO DE MOVIMENTO PRODUTO RESUMO GERAL (SAIDAS/LUCROS)','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+mtraco := REPLI('=',137)
+
+lba := 21
+cba := 70
+*----------------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacespe','espe');RETURN NIL;ENDIF
+IF ! AbriArq('SACMOVNT','MOVNT');RETURN NIL;ENDIF
+IF ! AbriArq('SACCLI','CLI');RETURN NIL;ENDIF
+IF ! AbriArq('sacmov','mov');RETURN NIL;ENDIF
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+IF ! AbriArq('sacgrupo','grup');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*----------------------------------------------------------------------------
+mtipo_imp := m_indiv[1,18]
+op_tela(04,10,30,80,'RELATORIO DE MOVIMENTO PRODUTO RESUMO GERAL (SAIDAS/LUCROS)')
+WHILE .T.
+        limpa(00,00,30,80)
+        mdata1 := mdata_sis - 30
+        mdata2 := mdata_sis
+        mcod_aux := '4'
+        mcod_op := SPACE(2)
+        mgrupo := mcod_ven := mcod_ope := mcod_mont:= mcod_forn := mcod_cli := ;
+        msub_grupo := mcod_merc := mperc := mperc_aux := mponto := mcod_espe := 0
+        mtipo_cons := 'V'
+        muf := SPACE(2)
+        mass := ' '
+        mbalanco := mlucro := mop_cab := 'S'
+        mresumo := mlist_pre := 'N'
+        mcusto := mtipo_rel := 'R'
+        mtip_cod := mvlr_zero := 'C'
+        mcodemp:=SPACE(3)
+	m_prod_nao:={}
+	m_prod:={}
+        mtipo_ordem:='1'
+        mtipo_doc:='  '
+        mensagem('Preencha os Campos - <ESC>p/Abandonar')
+        DEVPOS(0 ,2);DEVOUT('Codigo da Empresa:')
+        DEVPOS(0,26);DEVOUT('Imprimir o Cabecalho:')
+        DEVPOS(1,2);DEVOUT('Data Inicial.....:')
+        DEVPOS(2,2);DEVOUT('Data Final.......:')
+        DEVPOS(3,2);DEVOUT('Codigo PRODUTO...:')
+        DEVPOS(4,2);DEVOUT('Codigo GRUPO.....:')
+        DEVPOS(5,2);DEVOUT('Codigo SUB-GRUPO.:')
+        DEVPOS(6,2);DEVOUT('Codigo VENDEDOR..:')
+        DEVPOS(7,2);DEVOUT('Codigo MONTADOR..:')
+        DEVPOS(8,2);DEVOUT('Codigo OPERADOR..:')
+        DEVPOS(9,2);DEVOUT('Codigo FORNECEDOR:')
+        DEVPOS(10,2);DEVOUT('Codigo CLIENTE...:')
+        DEVPOS(11,2);DEVOUT('Sigla do Estado desejado..........:')
+        DEVPOS(12,2);DEVOUT('Soma Movimento pelo Balanco.......:')
+        DEVPOS(13,2);DEVOUT('Cod.da Especie Produto............:')
+        DEVPOS(14,2);DEVOUT('Imprimir so RESUMO TOTAL..........:')
+        DEVPOS(15,2);DEVOUT('Lucro s/Custo:[R]eal [M]erc.......:')
+        DEVPOS(16,2);DEVOUT('Tipo Rel.[R]esumo [E]xtrato.......:')
+        DEVPOS(17,2);DEVOUT('Tipo Cod.[C]odigo ou [B] Cod.Barra:')
+        DEVPOS(18,2);DEVOUT('Imprimir Lucros...................:')
+        DEVPOS(19,2);DEVOUT('Imprimir Valor Zerado [S/C/N].....:')
+        DEVPOS(20,2);DEVOUT('Produto c/(%) Lucro menor que.....:')
+        DEVPOS(21,2);DEVOUT('Tipo de Operacao..................:')
+        DEVPOS(22,2);DEVOUT('So Produto na LIsta de Presente...:')
+        DEVPOS(23,2);DEVOUT('Tipo de Ordem [1]Codigo [2]Alfa...:')
+        DEVPOS(24,2);DEVOUT('So Sintetico do MESES [S/N].......:')
+        DEVPOS(25,2);DEVOUT('Tipo de Documentos ou em branco TD:')
+        IF ver_serie() = '141287'
+                DEVPOS(26,2);DEVOUT('Assistencia Tecnica [S/N].:')
+        ENDIF
+        @ 0,21 GET mcodemp PICT "999" VALID ver_emp(mcodemp,0,25,,'*') WHEN mmult_emp ='S'
+        @ 0,48 GET mop_cab PICT "@!" VALID mop_cab $ 'S,N'
+        @ 1,21 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ 2,21 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+        @ 3,21 GET mcod_merc PICT '99999' VALID ver_cod(mcod_merc,3,27,,0)
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        ver_cod(mcod_merc,3,27,,0)
+        @ 4,21 GET mgrupo PICT '999' WHEN EMPTY(mcod_merc) VALID IF(EMPTY(mgrupo),.T.,ver_gru(@mgrupo,4,26,.F.))
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        ver_gru(@mgrupo,4,26,.F.)
+        @ 5,21 GET msub_grupo PICT '99' WHEN ! EMPTY(mgrupo) .AND. EMPTY(mcod_merc) VALID ver_sgru(mgrupo,msub_grupo,5,26)
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        ver_sgru(mgrupo,msub_grupo,5,26)
+        @ 6,21 GET mcod_ven PICT '999' VALID IF(EMPTY(mcod_ven),.T.,ven(mcod_ven,6,26))
+        @ 7,21 GET mcod_mont PICT '999' VALID IF(EMPTY(mcod_mont),.T.,ven(mcod_mont,7,26))
+        @ 8,21 GET mcod_ope PICT '999' VALID IF(EMPTY(mcod_ope),.T.,ven(mcod_ope,8,26))
+        @ 9,21 GET mcod_forn PICT '9999' VALID IF(EMPTY(mcod_forn),.T.,v_fornece(mcod_forn,9,26))
+        @ 10,21 GET mcod_cli PICT '99999' VALID ver_cli(mcod_cli,10,27)
+        @ 11,38 GET muf PICT '@!' VALID v_uf(muf)
+        @ 12,38 GET mbalanco PICT '@!' VALID mbalanco $ 'S,N'
+        @ 13,38 GET mcod_espe PICT '9999' VALID ver_espe(mcod_espe,13,40,,0)
+        @ 14,38 GET mresumo PICT '@!' VALID mresumo $ 'S,N'
+        @ 15,38 GET mcusto PICT '@!' VALID mcusto $ 'R,M'
+        @ 16,38 GET mtipo_rel PICT '@!' VALID mtipo_rel $ 'E,R'
+        @ 17,38 GET mtip_cod PICT '@!' VALID mtip_cod $ 'C,B'
+        @ 18,38 GET mlucro PICT '@!' VALID mlucro $ 'S,N'
+        @ 19,38 GET mvlr_zero PICT '@!' VALID mvlr_zero $ 'S,N,C' WHEN men_get(9,30,'Digite: [S]o com Valor Zero - [C]om Valor zero - [N]ao imprimir Valor Zero')
+        @ 20,38 GET mperc PICT '999.99'
+        @ 21,38 GET mcod_aux PICT '9' VALID mcod_aux $ '1,2,3,4' WHEN men_get(9,30,'Tipos: [1] [2] [3] [4]')
+        @ 22,38 GET mlist_pre PICT '@!' VALID mlist_pre $ 'S,N'
+        @ 23,38 GET mtipo_ordem PICT '9' VALID mtipo_ordem $ '1,2'
+        @ 24,38 GET msint_mes PICT '@!' VALID msint_mes $ 'S,N'
+        @ 25,38 GET mtipo_doc PICT '@!'
+        @ 26,38 GET mass PICT '@!' VALID mass $ 'S,N' WHEN ver_serie() = '141287'
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        mensagem('Aguarde um momento coletando dados p/o relatorio')
+        mtit = 'Listagem de Movimento (RESUMO SAIDAS/LUCROS)'
+        IF msint_mes = 'N'
+                mcod_op = STRZERO(VAL(mcod_aux),2)
+                cons_mov := {}
+                cComm  := "SELECT * FROM sacmov WHERE data_s_e >= "+sr_cdbvalue(mdata1)+" AND data_s_e <= "+sr_cdbvalue(mdata2)
+                cComm  := ccomm + " AND tipo = '02' AND cancel IS NULL AND ent_sai = 'S' AND devolucao IS NULL"
+                cComm  	:= ccomm +" AND NOT num_ped = 'CUPOME' AND ( documento like 'PD%' OR  documento like 'CP%')"
+                cComm  := ccomm +" AND cod_vend IS NOT NULL AND documento NOT LIKE 'TR%'"
+		//cComm	  := ccomm +" AND vl_vend > 0 AND NOT num_ped = 'CUPOME' AND ( documento like 'PD%' OR  documento like 'CP%')"
+
+                IF mbalanco = 'N'
+                        cComm  := ccomm + " AND documento NOT LIKE 'BL%'"
+                ENDIF
+                IF mvlr_zero = 'S' .OR. mass = 'S'
+                        cComm  := ccomm + " AND (vl_vend = "+sr_cdbvalue(0)+" OR vl_vend IS NULL)"
+                ELSE
+                        cComm  := ccomm + " AND vl_vend > "+sr_cdbvalue(0)
+                ENDIF
+                IF mvlr_zero = 'N'
+                        cComm  := ccomm + " AND vl_vend > "+sr_cdbvalue(0)
+                ENDIF
+                IF ! EMPTY(mgrupo)
+                        cComm  := ccomm + " AND gru_sub LIKE "+sr_cdbvalue(STRZERO(mgrupo,3)+'%')
+                ENDIF
+                IF ! EMPTY(msub_grupo)
+                        cComm  := ccomm + " AND gru_sub = "+sr_cdbvalue(STRZERO(mgrupo,3)+STRZERO(msub_grupo,2))
+                ENDIF
+                IF ! EMPTY(mcod_merc)
+                        cComm  := ccomm + " AND codigo = "+sr_cdbvalue(mcod_merc)
+                ENDIF
+                IF ! EMPTY(mcod_forn)
+                        cComm  := ccomm + " AND cod_fab = "+sr_cdbvalue(STRZERO(mcod_forn,4))
+                ENDIF
+                IF ! EMPTY(mcod_cli)
+                        cComm  := ccomm + " AND cod_cli = "+sr_cdbvalue(mcod_cli)
+                ENDIF
+                IF ! EMPTY(mcod_ope)
+                        mtit = mtit+' - Operador:'+STRZERO(mcod_ope,3)
+                        cComm  := ccomm + " AND cod_oper = "+sr_cdbvalue(STRZERO(mcod_ope,3))
+                ENDIF
+                IF ! EMPTY(mcod_mont)
+                        mtit = mtit+' - Montador:'+STRZERO(mcod_mont,3)
+                        cComm  := ccomm + " AND montador = "+sr_cdbvalue(STRZERO(mcod_mont,3))+" OR montador1 = "+sr_cdbvalue(STRZERO(mcod_mont,3))
+                ENDIF
+                IF ! EMPTY(mcod_ven)
+                        mtit = mtit+' - Vendedor:'+STRZERO(mcod_ven,3)
+                        cComm  := ccomm + " AND cod_vend = "+sr_cdbvalue(STRZERO(mcod_ven,3))
+                ENDIF
+                IF ! EMPTY(mcod_espe)
+                        cComm  := ccomm + " AND especie = "+sr_cdbvalue(STRZERO(mcod_espe,4))
+                ENDIF
+                IF ! EMPTY(mcodemp)
+                        cComm  := ccomm + " AND empresa = "+sr_cdbvalue(mcodemp)
+                ENDIF
+                IF ! EMPTY(mtipo_doc)
+                        cComm  := ccomm + " AND documento LIKE "+sr_cdbvalue(mtipo_doc+'%')
+                        mtit = mtit + ' - Tipo de Doc.: '+mtipo_doc
+                ENDIF
+                IF mlist_pre = 'S'
+                        cComm  := ccomm + " AND cod_presente IS NOT NULL AND NOT cod_presente = '00000'"
+                        mtit = mtit + ' - Produto na Lista Presente'
+                ENDIF
+                IF mtipo_ordem = '2'
+                        ccomm := ccomm + " ORDER BY produto,codigo"
+                ELSE
+                        ccomm := ccomm + " ORDER BY codigo"
+                ENDIF
+                sr_getconnection():exec(ccomm,,.t.,@cons_mov)
+                IF LEN(cons_mov) = 0
+                        atencao('Nao existe movimento neste Periodo')
+                ENDIF
+                mpag := mtot_sai := mtotg_sai := mvlr_sai := mvlrg_sai := mcus_sai := ;
+                mcusg_sai := 0
+                IF ! EMPTY(muf)
+                        mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)+' do Estado: '+muf
+                ELSE
+                        mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)
+                ENDIF
+                IF mcusto = 'R'
+                        mtipo := mtipo + ' - CUSTO REAL'
+                ELSE
+                        mtipo := mtipo + ' - CUSTO MERC.'
+                ENDIF
+                marq := 'RES_MOV.REL'
+                IF ! imp_arq('RES_MOV.REL','R')
+                        LOOP
+                ENDIF
+                i := i_aux := 0
+                FOR i = 1 TO LEN(cons_mov)
+                        prog_imp(i,DTOC(cons_mov[i,16]))
+                        cons_merc:={}
+                        sr_getconnection():exec("SELECT empresa,especie,cod_barr,ref FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(cons_mov[i,10]),,.t.,@cons_merc)
+                        IF LEN(cons_merc) = 0
+		                mponto := ASCAN(m_prod,cons_mov[i,10])
+				IF mponto > 0
+					m_prod_nao[mponto,3] := m_prod_nao[mponto,3] + cons_mov[i,19]
+					m_prod_nao[mponto,4] := m_prod_nao[mponto,4] + (cons_mov[i,19] * cons_mov[i,23])
+				ELSE
+					AADD(m_prod,cons_mov[i,10])
+					AADD(m_prod_nao,{cons_mov[i,10],cons_mov[i,11],cons_mov[i,19],cons_mov[i,19] * cons_mov[i,23]})
+				ENDIF
+                                LOOP
+                        ENDIF
+
+                        IF ! EMPTY(muf)
+                                cons_cli:={}
+                                sr_getconnection():exec("SELECT uf FROM saccli WHERE cod_cli = "+sr_cdbvalue(cons_mov[i,36]),,.t.,@cons_cli)
+                                IF cons_cli[1,1] <> muf
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        IF mpag = 0 .OR. PROW() >= 59
+                        	IF (mop_cab = 'N' .AND. mpag = 0) .OR. mop_cab = 'S'
+                                mpag ++
+                                IF mpag > 1
+                                        EJECT
+                                ENDIF
+                                cabecalho(mpag,mtit,mtipo,mprg)
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,00);DEVOUT('Codigo')
+                                DEVPOS(PROW(),49);DEVOUT('Qtd.Saidas')
+                                IF mlucro = 'S'
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUT('  Vlr.Custos')
+                                ENDIF
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('  Vlr.Vendas')
+                                IF mlucro = 'S'
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUT('    Lucro R$')
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUT('Lucro %')
+                                ENDIF
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('Referencia')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                                IF ! EMPTY(mcod_forn)
+                                        DEVPOS(PROW()+1,00);DEVOUT('FORNECEDOR: '+STRZERO(mcod_forn,4)+' - ')
+                                        v_fornece(mcod_forn,PROW(),PCOL()+1)
+                                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                                ENDIF
+                                ENDIF
+                        ENDIF
+
+                        mcodigo := cons_mov[i,10]
+
+			i_aux := i
+			IF ! EMPTY(mperc)
+		                WHILE mcodigo = cons_mov[i,10]
+
+                	                        IF SUBSTR(cons_mov[i,2],1,2) = 'TR'
+                        	                        //mtot_sai = mtot_sai + cons_mov[i,19]
+		                                        //mtotg_sai = mtotg_sai + cons_mov[i,19]
+                                        	ELSE
+
+		                                        mvlr_sai = mvlr_sai + (cons_mov[i,23] * cons_mov[i,19])
+                	                                mvlrg_sai = mvlrg_sai + (cons_mov[i,23] * cons_mov[i,19])
+                        	                        mcus_sai = mcus_sai + IF(mcusto='R',cons_mov[i,25] * cons_mov[i,19],cons_mov[i,26] * cons_mov[i,19])
+                                	                mcusg_sai = mcusg_sai + IF(mcusto='R',cons_mov[i,25] * cons_mov[i,19],cons_mov[i,26] * cons_mov[i,19])
+                                        	        mtot_sai = mtot_sai + cons_mov[i,19]
+                                                	mtotg_sai = mtotg_sai + cons_mov[i,19]
+                	                        ENDIF
+                        	        i++
+                                	IF i > LEN(cons_mov)
+		                               EXIT
+                	                ENDIF
+                        	ENDDO
+				mperc_aux := ((mvlr_sai-mcus_sai)/mvlr_sai)*100
+				IF mperc_aux > mperc
+		                	mtot_sai := mvlr_sai := mcus_sai := 0
+			                i := i - 1
+                      			LOOP
+				ELSE
+		                	mtot_sai := mvlr_sai := mcus_sai := 0
+					i := i_aux
+				ENDIF
+			ENDIF
+                        mcodigo := cons_mov[i,10]
+                        IF mtip_cod = 'C'
+                                DEVPOS(PROW()+1,00);DEVOUT(cons_mov[i,10])
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(cons_mov[i,11])
+                        ELSE
+                                DEVPOS(PROW()+1,00);DEVOUT(IF(EMPTY(cons_merc[1,3]),cons_mov[i,10],cons_merc[1,3]))
+                                DEVPOS(PROW(),16);DEVOUT(LEFT(cons_mov[i,11],31))
+                        ENDIF
+                        WHILE mcodigo = cons_mov[i,10]
+                                        IF mtipo_rel = 'E'
+                                                DEVPOS(PROW(),49);DEVOUTPICT(cons_mov[i,19],'999,999.99')
+                                                IF mlucro = 'S'
+                                                        DEVPOS(PROW(),PCOL()+2);DEVOUTPICT((IF(mcusto='R',cons_mov[i,25] * cons_mov[i,19],cons_mov[i,26]) * cons_mov[i,19]),'9,999,999.99')
+                                                ENDIF
+                                                DEVPOS(PROW(),PCOL()+2);DEVOUTPICT((cons_mov[i,23] * cons_mov[i,19]),'9,999,999.99')
+                                                IF mlucro = 'S'
+                                                        DEVPOS(PROW(),PCOL()+2);DEVOUTPICT((cons_mov[i,23] * cons_mov[i,19])-(IF(mcusto='R',cons_mov[i,25] * cons_mov[i,19],cons_mov[i,26]) * cons_mov[i,19]),'9,999,999.99')
+                                                        DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(mperc_aux,'9999.99')+' KL')
+                                                ENDIF
+                                                IF ! EMPTY(cons_mov[i,32]) .AND. ! EMPTY(cons_mov[i,34])
+                                                        DEVPOS(PROW(),PCOL()+2);DEVOUT('montadores: '+cons_mov[i,32]+' - '+cons_mov[i,34])
+                                                ENDIF
+
+                                                DEVPOS(PROW()+1,00);DEVOUT('')
+                                        ENDIF
+                                        mvlr_sai = mvlr_sai + (cons_mov[i,23] * cons_mov[i,19])
+                                        mvlrg_sai = mvlrg_sai + (cons_mov[i,23] * cons_mov[i,19])
+                                        mcus_sai = mcus_sai + IF(mcusto='R',cons_mov[i,25] * cons_mov[i,19],cons_mov[i,26] * cons_mov[i,19])
+                                        mcusg_sai = mcusg_sai + IF(mcusto='R',cons_mov[i,25] * cons_mov[i,19],cons_mov[i,26] * cons_mov[i,19])
+                                        mtot_sai = mtot_sai + cons_mov[i,19]
+                                        mtotg_sai = mtotg_sai + cons_mov[i,19]
+                        i++
+                        IF i > LEN(cons_mov)
+                               EXIT
+                        ENDIF
+                ENDDO
+                i := i - 1
+                IF mtipo_rel = 'E'
+                        DEVPOS(PROW(),49);DEVOUT('----------')
+                        IF mlucro = 'S'
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('------------')
+                        ENDIF
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('------------')
+                        IF mlucro = 'S'
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('------------')
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('------')
+                        ENDIF
+                        DEVPOS(PROW()+1,00);DEVOUT('T O T A L   D O   P R O D U T O :')
+                ENDIF
+                DEVPOS(PROW(),49);DEVOUTPICT(mtot_sai,'999,999.99')
+                IF mlucro = 'S'
+                        DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(mcus_sai,'9,999,999.99')
+                ENDIF
+                DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(mvlr_sai,'9,999,999.99')
+
+                IF mlucro = 'S'
+                        DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(mvlr_sai-mcus_sai,'9,999,999.99')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(((mvlr_sai-mcus_sai)/mvlr_sai)*100,'9999.99')
+                ENDIF
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(cons_merc[1,4])
+                mtot_sai := mvlr_sai := mcus_sai := 0
+                NEXT
+                IF PROW() > 53
+                        mpag ++
+                        EJECT
+                        cabecalho(mpag,mtit,mtipo,mprg)
+                ENDIF
+                imprt(mtipo_imp,'C')
+                DEVPOS(PROW()+1,49);DEVOUT('----------')
+                IF mlucro = 'S'
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('------------')
+                ENDIF
+                DEVPOS(PROW(),PCOL()+2);DEVOUT('------------')
+                IF mlucro = 'S'
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('------------')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('------')
+                ENDIF
+                DEVPOS(PROW()+1,00);DEVOUT('R E S U M O   G E R A L:')
+                DEVPOS(PROW(),47);DEVOUT(TRANSFORM(mtotg_sai,'9,999,999.99'))
+                IF mlucro = 'S'
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(mcusg_sai,'99,999,999.99'))
+                ENDIF
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(mvlrg_sai,'99,999,999.99'))
+                IF mlucro = 'S'
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(mvlrg_sai - mcusg_sai,'99,999,999.99'))
+                *       DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(((mvlrg_sai-mcusg_sai)/mcusg_sai)*100,'999.99'))
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(((mvlrg_sai-mcusg_sai)/mvlrg_sai)*100,'999.99'))
+                ENDIF
+                DEVPOS(PROW(),00);DEVOUT(TIME())
+                EJECT
+                IF LEN(	m_prod_nao) > 0
+                	cabecalho(mpag,mtit,mtipo,mprg)
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+1,10);DEVOUT('***  P R O D U T O S   N A O   E N C O N T R A D O S    (E X C L U I D O S)')
+                        DEVPOS(PROW()+1,00);DEVOUT('Codigo')
+                	DEVPOS(PROW(),49);DEVOUT('Qtd.Saidas')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('  Vlr.Vendas')
+                        DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                        i := 0
+                	FOR i = 1 TO LEN(m_prod_nao)
+                        	prog_imp(i,m_prod[i,1])
+                                IF mpag = 0 .OR. PROW() >= 59
+                	                mpag ++
+                        	        IF mpag > 1
+                                	        EJECT
+	       	                 ENDIF
+                	                cabecalho(mpag,mtit,mtipo,mprg)
+                        	        imprt(mtipo_imp,'N')
+                                        DEVPOS(PROW()+1,10);DEVOUT('***  P R O D U T O S   N A O   E N C O N T R A D O S    (E X C L U I D O S)')
+                                        DEVPOS(PROW()+1,00);DEVOUT('Codigo')
+                	                DEVPOS(PROW(),49);DEVOUT('Qtd.Saidas')
+                        	        DEVPOS(PROW(),PCOL()+2);DEVOUT('  Vlr.Vendas')
+                                	DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                                ENDIF
+                	        DEVPOS(PROW()+1,00);DEVOUT(m_prod_nao[i,1])
+                        	DEVPOS(PROW(),PCOL()+2);DEVOUT(m_prod_nao[i,2])
+                                DEVPOS(PROW(),49);DEVOUTPICT(m_prod_nao[i,3],'999,999.99')
+                	        DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(m_prod_nao[i,4],'9,999,999.99')
+                	NEXT
+                	IF PROW() > 53
+                        	mpag ++
+                                EJECT
+                	        cabecalho(mpag,mtit,mtipo,mprg)
+                        	imprt(mtipo_imp,'N')
+                                DEVPOS(PROW()+1,10);DEVOUT('***  P R O D U T O S   N A O   E N C O N T R A D O S    (E X C L U I D O S)')
+                                DEVPOS(PROW()+1,00);DEVOUT('Codigo')
+                	        DEVPOS(PROW(),49);DEVOUT('Qtd.Saidas')
+                        	DEVPOS(PROW(),PCOL()+2);DEVOUT('  Vlr.Vendas')
+                                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+	              	ENDIF
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,49);DEVOUT('----------')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('------------')
+                        DEVPOS(PROW(),00);DEVOUT(TIME())
+                        EJECT
+	       ENDIF
+        ELSE
+                IF ! imp_arq('RES_MOV.REL','R')
+                        LOOP
+                ENDIF
+                IF ! EMPTY(muf)
+                        mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)+' do Estado: '+muf
+                ELSE
+                        mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)
+                ENDIF
+                IF mcusto = 'R'
+                        mtipo := mtipo + ' - CUSTO REAL'
+                ELSE
+                        mtipo := mtipo + ' - CUSTO MERC.'
+                ENDIF
+                mpag := mvlrg_sai := mcusg_sai := mtotg_sai := i := 0
+                FOR i = 1 TO 12
+                        cons_mov := {}
+                        cComm  := "SELECT SUM(quantd),SUM(vl_vend*quantd),"
+                        cComm  := ccomm + IF(mcusto='R',"SUM(pr_unit*quantd)","SUM(cust_mer*quantd)")
+                        cComm  := ccomm + " FROM sacmov WHERE tipo = '02' AND cancel IS NULL AND ent_sai = 'S' AND devolucao IS NULL"
+                        cComm  	:= ccomm +" AND NOT num_ped = 'CUPOME' AND ( documento like 'PD%' OR  documento like 'CP%')"
+                        cComm  := ccomm +" AND cod_vend IS NOT NULL AND documento NOT LIKE 'TR%'"
+        		//cComm	  := ccomm +" AND vl_vend > 0 AND NOT num_ped = 'CUPOME' AND ( documento like 'PD%' OR  documento like 'CP%')"
+
+                        IF mbalanco = 'N'
+                                cComm  := ccomm + " AND documento NOT LIKE 'BL%'"
+                        ENDIF
+                        IF mvlr_zero = 'S' .OR. mass = 'S'
+                                cComm  := ccomm + " AND (vl_vend = "+sr_cdbvalue(0)+" OR vl_vend IS NULL)"
+                        ELSE
+                                cComm  := ccomm + " AND vl_vend > "+sr_cdbvalue(0)
+                        ENDIF
+                        IF mvlr_zero = 'N'
+                                cComm  := ccomm + " AND vl_vend > "+sr_cdbvalue(0)
+                        ENDIF
+                        IF ! EMPTY(mgrupo)
+                                cComm  := ccomm + " AND gru_sub LIKE "+sr_cdbvalue(STRZERO(mgrupo,3)+'%')
+                        ENDIF
+                        IF ! EMPTY(msub_grupo)
+                                cComm  := ccomm + " AND gru_sub = "+sr_cdbvalue(STRZERO(mgrupo,3)+STRZERO(msub_grupo,2))
+                        ENDIF
+                        IF ! EMPTY(mcod_merc)
+                                cComm  := ccomm + " AND codigo = "+sr_cdbvalue(mcod_merc)
+                        ENDIF
+                        IF ! EMPTY(mcod_forn)
+                                cComm  := ccomm + " AND cod_fab = "+sr_cdbvalue(STRZERO(mcod_forn,4))
+                        ENDIF
+                        IF ! EMPTY(mcod_cli)
+                                cComm  := ccomm + " AND cod_cli = "+sr_cdbvalue(mcod_cli)
+                        ENDIF
+                        IF ! EMPTY(mcod_ope)
+                                cComm  := ccomm + " AND cod_oper = "+sr_cdbvalue(STRZERO(mcod_ope,3))
+                        ENDIF
+                        IF ! EMPTY(mcod_mont)
+                                cComm  := ccomm + " AND montador = "+sr_cdbvalue(STRZERO(mcod_mont,3))+" OR montador1 = "+sr_cdbvalue(STRZERO(mcod_mont,3))
+                        ENDIF
+                        IF ! EMPTY(mcod_ven)
+                                cComm  := ccomm + " AND cod_vend = "+sr_cdbvalue(STRZERO(mcod_ven,3))
+                        ENDIF
+                        IF ! EMPTY(mcod_espe)
+                                cComm  := ccomm + " AND especie = "+sr_cdbvalue(STRZERO(mcod_espe,4))
+                        ENDIF
+                        IF ! EMPTY(mcodemp)
+                                cComm  := ccomm + " AND empresa = "+sr_cdbvalue(mcodemp)
+                        ENDIF
+                        IF ! EMPTY(mtipo_doc)
+                                cComm  := ccomm + " AND documento LIKE "+sr_cdbvalue(mtipo_doc+'%')
+                                mtit = mtit + ' - Tipo de Doc.: '+mtipo_doc
+                        ENDIF
+                        mano := SUBSTR(DTOC(mdata1),7)
+                        mmes := STRZERO(i,2)
+                        IF i = 1 .OR. i = 3 .OR. i = 5 .OR. i = 7 .OR. i = 8 .OR. i = 10 .OR. i = 12
+                                mdia := '31'
+                        ELSEIF i = 2
+                                mdia := '28'
+                        ELSE
+                                mdia := '30'
+                        ENDIF
+                        mdata1 := CTOD('01/'+mmes+'/'+mano)
+                        mdata2 := CTOD(mdia+'/'+mmes+'/'+mano)
+
+                        ccomm := ccomm + " AND data_s_e >= "+sr_cdbvalue(mdata1)+" AND data_s_e <= "+sr_cdbvalue(mdata2)
+                        sr_getconnection():exec(ccomm,,.t.,@cons_mov)
+                        IF mpag = 0 .OR. PROW() >= 59
+                        	//IF (mop_cab = 'N' .AND. mpag = 0) .OR. mop_cab = 'S'
+                                        mpag ++
+                                        IF mpag > 1
+                                                EJECT
+                                        ENDIF
+                                        cabecalho(mpag,mtit,mtipo,mprg)
+                                        imprt(mtipo_imp,'C')
+                                        DEVPOS(PROW()+1,00);DEVOUT('   Mes   ')
+                                        DEVPOS(PROW(),44);DEVOUT('     Qtd.Saidas')
+                                        IF mlucro = 'S'
+                                                DEVPOS(PROW(),PCOL()+2);DEVOUT('    Vlr.Custos')
+
+                                        ENDIF
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUT('    Vlr.Vendas')
+
+                                        IF mlucro = 'S'
+                                                DEVPOS(PROW(),PCOL()+2);DEVOUT('       Lucro R$')
+                                                DEVPOS(PROW(),PCOL()+2);DEVOUT('  Lucro %')
+                                        ENDIF
+                                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                                        IF ! EMPTY(mcod_forn)
+                                                DEVPOS(PROW()+1,00);DEVOUT('FORNECEDOR: '+STRZERO(mcod_forn,4)+' - ')
+                                                v_fornece(mcod_forn,PROW(),PCOL()+1)
+                                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                                        ENDIF
+                                //ENDIF
+                        ENDIF
+                        IF LEN(cons_mov) > 0
+                                DEVPOS(PROW()+1,00);DEVOUT(Mes(i)+'/20'+mano)
+                                DEVPOS(PROW(),44);DEVOUT(TRANSFORM(cons_mov[1,1],'999,999,999.999'))
+                                IF mlucro = 'S'
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(cons_mov[1,3],'999,999,999.99'))
+                                ENDIF
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(cons_mov[1,2],'999,999,999.99'))
+                                IF mlucro = 'S'
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(cons_mov[1,2]-cons_mov[1,3],'999,999,999.999'))
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(((cons_mov[1,2]-cons_mov[1,3])/cons_mov[1,2])*100,'9,999.999'))
+                                ENDIF
+                                mvlrg_sai = mvlrg_sai + cons_mov[1,2]
+                                mcusg_sai = mcusg_sai + cons_mov[1,3]
+                                mtotg_sai = mtotg_sai + cons_mov[1,1]
+
+                        ENDIF
+
+                NEXT
+                DEVPOS(PROW()+1,44);DEVOUT('---------------')
+                IF mlucro = 'S'
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('--------------')
+                ENDIF
+                DEVPOS(PROW(),PCOL()+2);DEVOUT('--------------')
+                IF mlucro = 'S'
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('---------------')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('---------')
+                ENDIF
+
+                DEVPOS(PROW()+1,44);DEVOUT(TRANSFORM(mtotg_sai,'999,999,999.999'))
+                IF mlucro = 'S'
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(mcusg_sai,'999,999,999.99'))
+                ENDIF
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(mvlrg_sai,'999,999,999.99'))
+                IF mlucro = 'S'
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(mvlrg_sai-mcusg_sai,'999,999,999.999'))
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(((mvlrg_sai-mcusg_sai)/mvlrg_sai)*100,'9,999.999'))
+                ENDIF
+        ENDIF
+	SETPRC(00,00)
+	SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao(marq)
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*************************** F I M ************************
+

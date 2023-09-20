@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NFeConsultaProtocolo4"><retConsSitNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_0.226.0</verAplic>
+<cStat>217</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: NF-e n&#xE3;o consta na base de dados da Secretaria de Fazenda Estadual</xMotivo>
+<cUF>26</cUF>
+<dhRecbto>2020-08-18T10:17:49-03:00</dhRecbto>
+<chNFe>26200524494200000106550010000010271698668288</chNFe></retConsSitNFe></nfeResultMsg></soapenv:Body></soapenv:Envelope>

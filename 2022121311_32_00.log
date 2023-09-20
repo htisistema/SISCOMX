@@ -1,0 +1,29 @@
+Error SR_FIREBIRD/0  SQLExecDirect Error
+Dynamic SQL Error - Native error code 335544569
+Command sent to database : 
+UPDATE sacdupr SET datpag = '2022/12/13',tip_pg = '',vlpago = 2.00,pago   = 'B',juros  = 0,operador = '999',mov_cx   = 'C',hora_bx  = '11:32:00',obs1 = 'FGDFG',banco_bx   = '001',hora_bx    = '11:32:00' WHERE sr_recno = 8911
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+ - RollBack executed.
+Funcoes: ->THROW(0)
+Funcoes: sqlconnection.prg->SR_FIREBIRD:RUNTIMEERR(728)
+Funcoes: sqlconnection.prg->SR_FIREBIRD:EXEC(299)
+Funcoes: CON252.000->CON252(668)
+Funcoes: SAC00.PRG->AFTERINKEY(2116)
+Funcoes: SAC00.PRG->(b)SAC0(1404)
+Funcoes: ->INKEY(0)
+Funcoes: SAC00.PRG->SAC0(1434)
+Funcoes: SACROT1.PRG->SENHA(824)
+Funcoes: SISCOM.PRG->MAIN(1129)
+************************************************************************************************************************
+Data e Hora........: 13/12/22 - 11:32:00
+Empresa............: DOCE GOSTO MAIS
+Sistema/Atualizacao: .: SISCOM :. Sistema Automacao Comercial - v22.12.12
+Usuario do Sistema.: 999
+Nome do Executavel.: C:\HELIO\SIACHB\SISCOM.EXE
+Nome do Micro......: HELIO1 - Nome Terminal: helio
+Memoria Disponivel.: 2097151 - Espaço em Disco....: 123581276160
+Pasta de Diretorio.: HELIO\SIACHB
+Sistema Operacional: Windows NT Professional 6.02.9200
+Caminho do Banco...: localhost:C:\HELIO\SIACHB\SISCOM.GDB

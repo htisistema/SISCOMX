@@ -1,0 +1,175 @@
+****************************************************
+* LISTAGEM RESUMO DE MOVIMENTO PELO PEDIDO (RESUMO)
+****************************************************
+MEMVAR getlist,mdata_sis,nivel_acess
+
+FUNCTION sac5ped9(mcaixa)
+**************
+LOCAL MPRG:='SAC5PED9',;
+      lci,cci,lba,cba,opcao,mtot_vol,mcli,;
+      mdata1,mdata2,mcancel,mtp,mcod_cli,mnum_ped,mtot_ped,msit
+
+
+PRIVATE mtraco,mtit,mtipo,mpag,mcliente,mcgc,mcpf,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),cons_cli:={}
+
+IF mcaixa = NIL
+        IF ! ver_nivel(mprg,'RELATORIO MOVIMENTO DE PEDIDO P/ENVELOPE','1456',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+        *----------------------------------------------------------------------------
+        CLOSE ALL
+        IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+        //
+        IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+        IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+        *----------------------------------------------------------------------------
+ENDIF
+
+mtraco := REPLI('=',80)
+
+lci := cci := 0
+lba := 04
+cba := 75
+IF mcaixa = NIL
+        op_tela(10,0,15,75,'RELATORIO MOVIMENTO DE PEDIDO P/ENVELOPE')
+ENDIF
+WHILE .T.
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        opcao := 0
+        ****************
+        SELE('ped_s');ORDSETFOCUS(5)
+        GO TOP
+        ****************
+        IF mcaixa = NIL
+                mdata1 := mdata_sis
+                mdata2 := mdata_sis
+                mcli := 0
+                mensagem('Preencha os Campos - <ESC>p/Abandonar')
+                DEVPOS(lci+1,cci+2);DEVOUT('Cod. Cliente...:')
+                DEVPOS(lci+2,cci+2);DEVOUT('Data Inicial...:')
+                DEVPOS(lci+3,cci+2);DEVOUT('Data Final.....:')
+                setcor(1)
+                @ lci+1,cci+19 GET mcli pict "9999" VALID lim_get() .AND. ver_cli(mcli,lci+1,cci+23) WHEN men_get(lci+2,cci+23,'Informe o cliente que deseja ou nao informe p/imprimir todos')
+                @ lci+2,cci+19 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+                @ lci+3,cci+19 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+                READ
+                IF LASTKEY() = 27
+                        CLOSE ALL
+                        wvw_lclosewindow()
+                        RETURN NIL
+                ENDIF
+                ped_s->(DBSEEK(DTOS(mdata1),.T.))
+                IF EOF()
+                        atencao('Nao existe movimento neste periodo !!!')
+                        LOOP
+                ENDIF
+                IF ! imp_arq('PED_ENVE.REL','R')
+                        LOOP
+                ENDIF
+        ELSE
+                mdata1 := mcaixa
+                mdata2 := mcaixa
+                IF ! ped_s->(DBSEEK(DTOS(mdata1)))
+                        RETURN NIL
+                ENDIF
+        ENDIF
+        mtit = 'Movimento de Pedido (P/ENVELOPE)'
+        mtot_vol := 0
+        mpag := 1
+        mtipo = 'Perido de '+DTOC(mdata1)+' a '+DTOC(mdata2)
+        cabecalho(mpag,mtit,mtipo,mprg)
+        imprt(mtipo_imp,'N')
+        DEVPOS(PROW()+1,02);DEVOUT('Data')
+        DEVPOS(PROW(),09);DEVOUT('Pedido')
+        DEVPOS(PROW(),16);DEVOUT('Cliente')
+        DEVPOS(PROW(),61);DEVOUT('  Envelope')
+        DEVPOS(PROW(),74);DEVOUT('Sit.')
+        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        WHILE ! EOF() .AND. ped_s->pdatapag <= mdata2
+                mcod_cli := ped_s->pcod_cli
+                mnum_ped := ped_s->pnum_ped
+                mtot_ped := 0
+                IF ! EMPTY(mcli)
+                        IF STRZERO(mcli,5) <> ped_s->pcod_cli
+                                SKIP
+                                LOOP
+                        ENDIF
+                ENDIF
+                IF ped_s->ppag = '*'
+                        msit := 'pago'
+                ELSEIF ped_s->ppag = 'C'
+                        msit := 'cancel'
+                ELSE
+                        msit := 'aberto'
+                ENDIF
+                WHILE mnum_ped = ped_s->pnum_ped .AND. ! EOF()
+                        IF ! EMPTY(ped_s->penvelope)
+                                DEVPOS(PROW()+1,00);DEVOUT(ped_s->pdatapag)
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(mnum_ped)
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(mcod_cli+' ')
+                                ver_cli(mcod_cli,PROW(),PCOL())
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(ped_s->penvelope)
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(msit)
+                                mtot_vol ++
+                                SKIP
+                                EXIT
+                        ENDIF
+                        SKIP
+                ENDDO
+                WHILE mnum_ped = ped_s->pnum_ped .AND. ! EOF()
+                        IF ! EMPTY(ped_s->penvelope)
+                                DEVPOS(PROW()+1,00);DEVOUT(SPACE(LEN(DTOC(mdata1))))
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(SPACE(LEN(mnum_ped)))
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(SPACE(LEN(mcod_cli+' ')))
+                                DEVPOS(PROW(),PCOL());DEVOUT(SPACE(40))
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(ped_s->penvelope)
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(msit)
+                                mtot_vol ++
+                        ENDIF
+                        SKIP
+                ENDDO
+                IF PROW() >= 59
+                        mpag ++
+                        EJECT
+                        cabecalho(mpag,mtit,mtipo)
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+1,02);DEVOUT('Data')
+                        DEVPOS(PROW(),09);DEVOUT('Pedido')
+                        DEVPOS(PROW(),16);DEVOUT('Cliente')
+                        DEVPOS(PROW(),61);DEVOUT('  Envelope')
+                        DEVPOS(PROW(),74);DEVOUT('Sit.')
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        LOOP
+                ENDIF
+        ENDDO
+        IF PROW() >= 55
+                mpag ++
+                EJECT
+                cabecalho(mpag,mtit,mtipo)
+                imprt(mtipo_imp,'N')
+                DEVPOS(PROW()+1,02);DEVOUT('Data')
+                DEVPOS(PROW(),09);DEVOUT('Pedido')
+                DEVPOS(PROW(),16);DEVOUT('Cliente')
+                DEVPOS(PROW(),61);DEVOUT('  Envelope')
+                DEVPOS(PROW(),74);DEVOUT('Sit.')
+                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        ENDIF
+        DEVPOS(PROW()+2,00);DEVOUT('Total de ENVELOPE:')
+        DEVPOS(PROW(),PCOL()+2);DEVOUT(LTRIM(TRANSFORM(mtot_vol,'999,999')))
+        DEVPOS(PROW()+2,00);DEVOUT(TIME())
+        imprt(mtipo_imp,'N',1)
+        EJECT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('PED_ENVE.REL')
+        IF mcaixa <> NIL
+                RETURN NIL
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+************************
+

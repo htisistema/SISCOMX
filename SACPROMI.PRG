@@ -1,0 +1,253 @@
+MEMVAR getlist,mdata_sis
+*************************
+* EMISSAO DE PROMISSORIA
+*************************
+FUNCTION sacpromi(mtp_form)
+*******************
+LOCAL mprg:='SACPROMI',mtraco:=REPLI(CHR(238),80),mextenso :='',mvlr_total:=0,cons_cli:={}
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+cons_dupr := {}
+sr_getconnection():exec("SELECT SUM(valor) FROM sacdupr WHERE num_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6)),,.t.,@cons_dupr)
+sr_getconnection():exec('COMMIT',,.f.)
+IF LEN(cons_dupr) = 0
+        atencao('Nao foi possivel encontrar este PEDIDO')
+        RETURN NIL
+ENDIF
+mvlr_total:=cons_dupr[1,1]
+cons_dupr := {}
+sr_getconnection():exec("SELECT * FROM sacdupr WHERE num_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6)),,.t.,@cons_dupr)
+sr_getconnection():exec('COMMIT',,.f.)
+cons_cli := {}
+sr_getconnection():exec("SELECT * FROM saccli WHERE cod_cli = "+sr_cdbvalue(cons_dupr[1,7]),,.t.,@cons_cli)
+sr_getconnection():exec('COMMIT',,.f.)
+IF LEN(cons_cli) = 0
+        atencao('Nao foi possivel encontrar este CLIENTE')
+        RETURN NIL
+ENDIF
+IF mtp_form = 'F'
+        mtipo_imp := m_indiv[1,21]
+        mtraco:=REPLI(CHR(238),80)
+        imprt(mtipo_imp,'N')
+        IF m_set[1,22] = 'S'
+                //imprt(mtipo_imp,'N')
+                //imprt(mtipo_imp,'N+')
+                //imprt(mtipo_imp,'E')
+                */IF mmult_emp = 'N'
+                        DEVPOS(PROW(),00);DEVOUT(memp_resa)
+                        //imprt(mtipo_imp,'N-')
+                        //imprt(mtipo_imp,'N')
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(m_set[1,129])
+                        DEVPOS(PROW()+1,00);DEVOUT(RTRIM(mend_firm)+' - '+RTRIM(mcid_firm)+' - FONE: '+mfone_firm)
+                        DEVPOS(PROW()+1,00);DEVOUT('CACEPE: '+minsc_firm+'  CNPJ/MF :'+mcgc_firm)
+                /*
+                ELSE
+                        DEVPOS(PROW(),00);DEVOUT(ALLTRIM(IF(emp->nome_cab = 'F',emp->fantasia,emp->razao)))
+                        imprt(mtipo_imp,'N-')
+                        imprt(mtipo_imp,'N')
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(RTRIM(emp->endereco)+' - '+RTRIM(emp->cidade)+' - FONE: '+emp->fone+' - CACEPE:'+emp->insc+' - CNPJ:'+emp->cnpj)
+                ENDIF
+                */
+                imprt(mtipo_imp,'N')
+        ENDIF
+        @ PROW()+1,00 SAY mtraco
+        @ PROW()+1,52 SAY 'Data da Emissao: '+DTOC(mdata_sis)
+        @ PROW()+1,00 SAY mtraco
+        //imprt(mtipo_imp,'N')
+        //imprt(mtipo_imp,'N+')
+        @ PROW()+1,00 SAY '              FATURA                                   DUPLICATA(S)'
+        //imprt(mtipo_imp,'N-')
+        //imprt(mtipo_imp,'N')
+        @ PROW()+1,00 SAY mtraco
+        @ PROW()+1,00 SAY '    VALOR R$         NUMERO              VALOR R$     No.Ordem    Vencimento'
+                         //012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+        @ PROW()+1,00 SAY mtraco
+        //imprt(mtipo_imp,'N')
+        //imprt(mtipo_imp,'N+')
+        @ PROW()+1,1 SAY TRANSFORM(iat(mvlr_total,2),'99,999,999.99')
+        @ PROW(),20 SAY cons_dupr[1,31]
+        //imprt(mtipo_imp,'N-')
+        //imprt(mtipo_imp,'N')
+        i:=Y:=0
+        FOR i = 1 TO LEN(cons_dupr)
+                //IF i = 1
+                        @ PROW(),38 SAY TRANSFORM(cons_dupr[i,19],'9,999,999.99')
+                        @ PROW(),58 SAY STRZERO(i,3)
+                        @ PROW(),69 SAY DTOC(cons_dupr[i,11])
+                /*
+                ELSE
+                        @ PROW(),37 SAY TRANSFORM(cons_dupr[i,19],'9,999,999.99')
+                        @ PROW(),57 SAY STRZERO(i,3)
+                        @ PROW(),68 SAY DTOC(cons_dupr[i,11])
+                ENDIF
+                */
+                DEVPOS(PROW()+1,0)
+        NEXT
+        @ PROW()+1,00 SAY mtraco
+        @ PROW()+1,00 SAY 'Sacado: '+STR(cons_cli[1,2],5)+'-'+cons_cli[1,3]
+        imprt(mtipo_imp,'C')
+        IF m_set[1,40] = 'S' .AND. ! EMPTY(cons_cli[1,4])
+                @ PROW()+1,00 SAY 'Nome Fantasia: '+cons_cli[1,4]
+        ENDIF
+        @ PROW()+1,00 SAY 'End.: '+cons_cli[1,21]
+        @ PROW()+1,00 SAY 'Bairro: '+RTRIM(cons_cli[1,22])+' - Cidade: '+RTRIM(cons_cli[1,24])+' - '+cons_cli[1,25]+' - CEP:'+cons_cli[1,26]+' - Fone:'+cons_cli[1,29]
+        IF cons_cli[1,32] <> SPACE(14)
+                @ PROW(),PCOL()+3 SAY 'CNPJ:'
+                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_cli[1,32],'@@R 99.999.999/9999-99')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(' - CACEPE: '+cons_cli[1,33])
+        ELSEIF cons_cli[1,34] <> SPACE(11)
+                @ PROW(),PCOL()+3 SAY 'CPF:'
+                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_cli[1,34],'@@R 999.999.999-99')
+        ENDIF
+        IF ! EMPTY(cons_cli[1,100])
+                @ PROW()+1,00 SAY 'End. COBRANCA: '+cons_cli[1,100]
+                @ PROW()+1,00 SAY 'Bairro: '+RTRIM(cons_cli[1,101])+' - Cidade: '+RTRIM(cons_cli[1,102])+' - '+cons_cli[1,103]+' - CEP:'+cons_cli[1,104]+' - Fone:'+cons_cli[1,105]
+        ENDIF
+        imprt(mtipo_imp,'N')
+        @ PROW()+1,00 SAY mtraco
+        imprt(mtipo_imp,'C')
+        mextenso := 'Reconheco(emos) a exatidao desta DUPLICATA DE VENDA MERCANTIL com pagamento na importancia de R$: '+LTRIM(TRANSFORM(iat(mvlr_total,2),'99,999,999.99'))+' '
+        mextenso:= mextenso + '('+RTRIM(EXT(iat(mvlr_total,2),10))+') que pagarei(emos) a '+memp_resa+', ou a sua ordem, na praca e vencimentos acima indicados.'
+        mlinha := MLCOUNT(mextenso,132)
+        FOR lin = 1 TO mlinha
+                mlin := MEMOLINE(mextenso,132,lin,,10)
+                DEVPOS(PROW()+1,0);DEVOUT(PADR(RTRIM(mlin),132))
+        NEXT
+
+        imprt(mtipo_imp,'N')
+        @ PROW()+1,00 SAY mtraco
+        imprt(mtipo_imp,'C')
+        @ PROW()+1,00 SAY 'OBSERVACAO:'
+        mextenso := 'O Cliente declara que todas as informacoes constantes em sua FICHA CADASTRAL sao veridicas, assim como declara ter pleno conhecimento '
+        mextenso:= mextenso + 'de abertura de seu cadastro  neste  estabelecimento comercial, bem como esta ciente de que, em caso de inadiplencia total ou parcial, tera o seu nome INCLUSO junto '
+        mextenso:= mextenso + 'ao banco de dados do sistema de Servico de Protecao ao Credito - SPC - Art.43, Lei No. 8078/90.'
+        mlinha := MLCOUNT(mextenso,135)
+        FOR lin = 1 TO mlinha
+                mlin := MEMOLINE(mextenso,135,lin,,10)
+                DEVPOS(PROW()+1,0);DEVOUT(PADR(RTRIM(mlin),135))
+        NEXT
+        imprt(mtipo_imp,'N')
+        @ PROW()+1,00 SAY mtraco
+        imprt(mtipo_imp,'C')
+        DEVPOS(PROW()+2,00);DEVOUT(PADC(RTRIM(mcid_firm)+', Data do Aceite:_______/________/_________   ',132))
+        DEVPOS(PROW()+3,00);DEVOUT('Ass.Avalista:________________________________________________   Ass.Sacado:_____________________________________________________________')
+        SETPRC(00,00)
+        EJECT
+ELSE
+        mtipo_imp := m_indiv[1,21]
+        mtraco:=REPLI(CHR(238),50)
+        imprt(mtipo_imp,'N')
+        IF m_set[1,22] = 'S'
+                imprt(mtipo_imp,'N')
+                //imprt(mtipo_imp,'N+')
+                //imprt(mtipo_imp,'E')
+                IF mmult_emp = 'N'
+                        DEVPOS(PROW(),00);DEVOUT(memp_resa)
+                        //imprt(mtipo_imp,'N-')
+                        //imprt(mtipo_imp,'N')
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(m_set[1,129])
+                        DEVPOS(PROW()+1,00);DEVOUT(RTRIM(mend_firm))
+                        DEVPOS(PROW()+1,00);DEVOUT(RTRIM(mcid_firm)+' - FONE: '+mfone_firm)
+                        DEVPOS(PROW()+1,00);DEVOUT('CACEPE:'+minsc_firm+'  CNPJ/MF:'+mcgc_firm)
+                ELSE
+                        DEVPOS(PROW(),00);DEVOUT(ALLTRIM(IF(emp->nome_cab = 'F',emp->fantasia,emp->razao)))
+                        imprt(mtipo_imp,'N-')
+                        imprt(mtipo_imp,'N')
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(RTRIM(emp->endereco)+' - '+RTRIM(emp->cidade)+' - FONE: '+emp->fone+' - CACEPE:'+emp->insc+' - CNPJ:'+emp->cnpj)
+                ENDIF
+                imprt(mtipo_imp,'C')
+        ENDIF
+        @ PROW()+1,00 SAY mtraco
+        @ PROW()+1,00 SAY 'Data da Emissao: '+DTOC(mdata_sis)
+        @ PROW()+1,00 SAY mtraco
+        imprt(mtipo_imp,'N')
+        //imprt(mtipo_imp,'N+')
+        @ PROW()+1,00 SAY '           FATURA  '
+        //imprt(mtipo_imp,'N-')
+        //imprt(mtipo_imp,'N')
+        imprt(mtipo_imp,'C')
+        @ PROW()+1,00 SAY mtraco
+        imprt(mtipo_imp,'N')
+        //imprt(mtipo_imp,'N+')
+        @ PROW()+1,00 SAY '    VALOR R$         NUMERO '
+        //imprt(mtipo_imp,'N-')
+        //imprt(mtipo_imp,'N')
+        imprt(mtipo_imp,'C')
+        @ PROW()+1,00 SAY mtraco
+        imprt(mtipo_imp,'N')
+        //imprt(mtipo_imp,'N+')
+        @ PROW()+1,1 SAY TRANSFORM(iat(mvlr_total,2),'99,999,999.99')
+        @ PROW(),20 SAY cons_dupr[1,31]
+        //imprt(mtipo_imp,'N-')
+        //imprt(mtipo_imp,'N')
+                         //012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+
+        imprt(mtipo_imp,'N')
+        //imprt(mtipo_imp,'N+')
+        @ PROW()+2,00 SAY '        DUPLICATA(S)'
+        //imprt(mtipo_imp,'N-')
+        //imprt(mtipo_imp,'N')
+        imprt(mtipo_imp,'C')
+        @ PROW()+1,00 SAY mtraco
+        @ PROW()+1,00 SAY '       VALOR R$     No.Ordem    Vencimento'
+        @ PROW()+1,00 SAY mtraco
+        i:=0
+        FOR i = 1 TO LEN(cons_dupr)
+                @ PROW()+1,00 SAY TRANSFORM(cons_dupr[i,19],'9,999,999.99')
+                @ PROW(),20 SAY STRZERO(i,3)
+                @ PROW(),31 SAY DTOC(cons_dupr[i,11])
+        NEXT
+        @ PROW()+1,00 SAY mtraco
+        @ PROW()+1,00 SAY 'Sacado:'
+        @ PROW(),PCOL()+1 SAY cons_cli[1,2]
+        @ PROW(),PCOL()+1 SAY cons_cli[1,3]
+        IF m_set[1,40] = 'S' .AND. ! EMPTY(cons_cli[1,4])
+                @ PROW()+1,00 SAY 'Nome Fantasia: '+cons_cli[1,4]
+        ENDIF
+        @ PROW()+1,00 SAY 'End.: '+cons_cli[1,21]
+        @ PROW()+1,00 SAY 'Bairro: '+RTRIM(cons_cli[1,22])+' - Cidade: '+RTRIM(cons_cli[1,24])+' - '+cons_cli[1,25]
+        @ PROW()+1,00 SAY 'CEP:'+cons_cli[1,26]+' - Fone:'+cons_cli[1,29]
+        IF cons_cli[1,32] <> SPACE(14)
+                @ PROW()+1,00 SAY 'CNPJ:'
+                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_cli[1,32],'@@R 99.999.999/9999-99')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(' - CACEPE: '+cons_cli[1,33])
+        ELSEIF cons_cli[1,34] <> SPACE(11)
+                @ PROW()+1,00 SAY 'CPF: '+TRANSFORM(cons_cli[1,34],'@@R 999.999.999-99')
+        ENDIF
+        IF ! EMPTY(cons_cli[1,100])
+                @ PROW()+1,00 SAY 'End. COBRANCA: '+cons_cli[1,100]
+                @ PROW()+1,00 SAY 'Bairro: '+RTRIM(cons_cli[1,101])+' - Cidade: '+RTRIM(cons_cli[1,102])+' - '+cons_cli[1,103]
+                @ PROW()+1,00 SAY 'CEP:'+cons_cli[1,104]+' - Fone:'+cons_cli[1,105]
+        ENDIF
+        @ PROW()+1,00 SAY mtraco
+        mextenso := 'Reconheco(emos) a exatidao desta DUPLICATA DE VENDA MERCANTIL com pagamento na importancia de R$: '+LTRIM(TRANSFORM(iat(mvlr_total,2),'99,999,999.99'))+' '
+        mextenso:= mextenso + '('+RTRIM(EXT(iat(mvlr_total,2),10))+') que pagarei(emos) a '+memp_resa+', ou a sua ordem, na praca e vencimentos acima indicados.'
+        mlinha := MLCOUNT(mextenso,50)
+        FOR lin = 1 TO mlinha
+                mlin := MEMOLINE(mextenso,50,lin,,10)
+                DEVPOS(PROW()+1,0);DEVOUT(PADR(RTRIM(mlin),50))
+        NEXT
+        @ PROW()+1,00 SAY mtraco
+        @ PROW()+1,00 SAY 'OBSERVACAO:'
+        mextenso := 'O Cliente declara que todas as informacoes constantes em sua FICHA CADASTRAL sao veridicas, assim como declara ter pleno conhecimento '
+        mextenso:= mextenso + 'de abertura de seu cadastro  neste  estabelecimento comercial, bem como esta ciente de que, em caso de inadiplencia total ou parcial, tera o seu nome INCLUSO junto '
+        mextenso:= mextenso + 'ao banco de dados do sistema de Servico de Protecao ao Credito - SPC - Art.43, Lei No. 8078/90.'
+        mlinha := MLCOUNT(mextenso,50)
+        FOR lin = 1 TO mlinha
+                mlin := MEMOLINE(mextenso,50,lin,,10)
+                DEVPOS(PROW()+1,0);DEVOUT(PADR(RTRIM(mlin),50))
+        NEXT
+        @ PROW()+1,00 SAY mtraco
+        DEVPOS(PROW()+2,00);DEVOUT(RTRIM(mcid_firm)+', Data do Aceite:____/____/_____')
+        DEVPOS(PROW()+3,00);DEVOUT('Assinatura Avalista:_______________________________')
+        DEVPOS(PROW()+3,00);DEVOUT('Assinatura Sacado..:_______________________________')
+        SETPRC(00,00)
+        EJECT
+ENDIF
+RETURN NIL
+

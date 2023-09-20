@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NFeConsultaProtocolo4"><retConsSitNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_0.226.0</verAplic>
+<cStat>613</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: Chave de Acesso difere da existente em BD 26200324494200000106550010000010231976250360</xMotivo>
+<cUF>26</cUF>
+<dhRecbto>2020-08-18T09:44:40-03:00</dhRecbto>
+<chNFe>26200524494200000106550010000010231214959166</chNFe></retConsSitNFe></nfeResultMsg></soapenv:Body></soapenv:Envelope>

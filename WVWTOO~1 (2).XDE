@@ -1,0 +1,52 @@
+<!--
+################################################
+# xDevStudio Project - xdev@kssoftware.com.br  #
+# Created @ 15/10/2007 21:16:18                #
+#                                              #
+### Standard xDev Config - Layout v1.5 #########
+-->
+<project>
+   <option compiler="14484">
+   <option outputname="wvwtools">
+   <option targettype="LIB">
+   <option outputpath="">
+   <option root="($)">
+   <option runpath="">
+   <option runparams="">
+   <option pathch="C:\helio\xHarbour1\wvwtools\wvwtools082\include;ch">
+   <option pathlib="c:\helio\xharbour1\wvwtools\wvwtools082\lib;lib">
+   <option pathobj="c:\helio\xharbour1\wvwtools\wvwtools082\obj">
+   <option pathtooutput="C:\helio\xharbour1\wvwtools\wvwtools082\obj">
+   <option defines="">
+   <option documentroot="">
+
+   <compilerparam name="Harbour.xCompiler">
+      <option presetsname="14484">
+   </compilerparam>
+
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\gchckbox.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\getlist.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\getsys.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\glistbox.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\gpushbtn.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\gradibtn.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\gradigrp.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\gtwvw.c" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\hbgtwvw.h" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\middlwvw.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\tappl.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\tget.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\tgetlist.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\tprogbar.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\tscrolbr.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\ttabpage.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\twbcolumn.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\twbrowse.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\twindows.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\winapi.c" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\source\wvwmisc.prg" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\include\getexit.ch" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\include\temp.ch" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\include\wvwdefs.ch" compile="Sim">
+   <unit filename="C:\helio\xharbour1\wvwtools\wvwtools082\include\wvwtools.ch" compile="Sim">
+</project>

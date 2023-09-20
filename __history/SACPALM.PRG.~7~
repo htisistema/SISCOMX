@@ -1,0 +1,528 @@
+* GERAR ARQUIVOS P/(APP... PC)
+*******************************************
+FUNCTION sacpalm(mtipo_op,mAPP...)
+**********************************
+LOCAL mprg:='SACPALM',;
+      opcao,i:=0,mcont_reg:=0,mtel1,mtel2,mfax,;
+      mop_cid,mop_cli,mop_vend,mop_tran,mop_tabpre,mop_forn,mop_grupo,mop_prod,;
+      mop_estoque,mop_preco,cpath,mcampo:='',mdata_arq,m_arquivo:={},m_aux:={},;
+      cont_ven:=0,cont_merc:=0,cont_cli:=0,mcli_vend:=' ',linha:=0,mdat_dup1,mdat_dup2,mdat_pag1,mdat_pag2,;
+      cons_dup:={},cont_dup := 0,cons_dupv:={},sLinhas := '',mArq := ''
+
+PRIVATE mcod_vend,mdata,mcodconta,cons_ven:={},cons_merc:={},cons_cli:={},cons_cid:={}
+*-----------------------------------------------------
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+IF ! AbriArq('sactabpg','tabpg');RETURN NIL;ENDIF
+IF ! AbriArq('sacgrupo','grup');RETURN NIL;ENDIF
+IF ! AbriArq('sactran','tran');RETURN NIL;ENDIF
+IF ! AbriArq('saccid','cid');RETURN NIL;ENDIF
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+*-----------------------------------------------------
+SET CENTURY ON
+op_tela(10,10,22,80,' GERAR ARQUIVO EXPORTACAO P/APP... PC ')
+WHILE .T.
+        limpa(0,0,10+2,70)
+        setcor(1)
+        mop_tran := mop_tabpre := 'X'
+        mop_cid := mop_cli := mop_forn := mop_grupo := mop_prod := ;
+        mop_estoque := mop_preco := cpath := mopcao := ' '
+        exibi_prg(mprg)
+        mcod_vend := cont_dup := 0
+        mcodconta := SPACE(4)
+        mdat_dup1:=mdat_dup2:=mdat_pag1:=mdat_pag2 := CTOD('  /  /  ')
+        mdata_arq := mdata_sis - m_set[1,172]
+        mdata := mdata_sis
+        mcli_vend := 'N'
+        IF mpocket = '*'
+                mcodconta := '1.01'
+                mop_tran := mop_tabpre := ;
+                mop_cid := mop_cli := mop_forn := mop_grupo := mop_prod := ;
+                mop_estoque := mop_preco := 'X'
+                mextensao := 'tot'
+        ENDIF
+        DEVPOS(1,1);DEVOUT('Caminho Arquivos..:')
+        DEVPOS(2,1);DEVOUT('Cod. Vendedor.....:')
+        DEVPOS(3,1);DEVOUT('Cidades...........:')
+        DEVPOS(4,1);DEVOUT('Clientes..........:')
+        DEVPOS(5,1);DEVOUT('Fornecedores......:           Tipo de Conta:')
+        DEVPOS(6,1);DEVOUT('Grupos............:')
+        DEVPOS(7,1);DEVOUT('Produtos..........:')
+        DEVPOS(8,1);DEVOUT('Estoques..........:')
+        DEVPOS(9,1);DEVOUT('Precos............:')
+        DEVPOS(9,1);DEVOUT('Precos............:')
+        DEVPOS(10,1);DEVOUT('Titulos a Receber.:            a')
+        DEVPOS(11,1);DEVOUT('Titulos Pagos.....:            a')
+        setcor(3)
+        DEVPOS(1,21);DEVOUT(ALLTRIM(m_indiv[1,4])+'exportar')
+        setcor(1)
+        @ 2,21 GET mcod_vend PICT '999' VALID ven(mcod_vend,2,23)
+        @ 3,21 GET mop_cid PICT '@!' VALID mop_cid $ 'X, ' WHEN mtipo_op = NIL
+        @ 4,21 GET mop_cli PICT '@!' VALID mop_cli $ 'X, ' WHEN mtipo_op = NIL
+        @ 5,21 GET mop_forn PICT '@!' VALID mop_forn $ 'X, ' WHEN mtipo_op = NIL
+        @ 5,46 GET mcodconta PICT '@! X.XX' WHEN mop_forn = 'X' VALID verdesp(mcodconta,5,51)
+        @ 6,21 GET mop_grupo PICT '@!' VALID mop_grupo $ 'X, ' WHEN mtipo_op = NIL
+        @ 7,21 GET mop_prod PICT '@!' VALID mop_prod $ 'X, ' WHEN mtipo_op = NIL
+        @ 8,21 GET mop_estoque PICT '@!' VALID mop_estoque $ 'X, ' WHEN mtipo_op = NIL
+        @ 9,21 GET mop_preco PICT '@!' VALID mop_preco $ 'X, ' WHEN mtipo_op = NIL
+        @ 10,21 GET mdat_dup1 WHEN mtipo_op = NIL
+        @ 10,34 GET mdat_dup2 WHEN mtipo_op = NIL .AND. ! EMPTY(mdat_dup1)
+        @ 11,21 GET mdat_pag1 WHEN mtipo_op = NIL
+        @ 11,34 GET mdat_pag2 WHEN mtipo_op = NIL .AND. ! EMPTY(mdat_pag1)
+        IF mpocket = NIL
+                READ
+                IF LASTKEY() = 27
+                        RELEASE ALL
+                        SET CENTURY OFF
+                        wvw_lclosewindow()
+                        RETURN NIL
+                ENDIF
+                IF mtipo_op = NIL
+                        opcao := op_simnao('S','Confirma a Operacao:')
+                ELSE
+                        opcao := op_simnao('N','Confirma a Limpeza dos Arquivos:')
+                ENDIF
+                IF opcao = 'N' .OR. LASTKEY() = 27
+                        LOOP
+                ENDIF
+                mextensao := 'atu'
+/*
+                ELSE
+                        mextensao := 'tot'
+                ENDIF
+*/
+        ENDIF
+        cons_ven:={}
+        ccomm := "SELECT * FROM insopera WHERE (stipo = 'V' OR stipo = 'R')"
+        IF ! EMPTY(mcod_vend)
+                ccomm := ccomm + " AND scod_op = "+sr_cdbvalue(STRZERO(mcod_vend,3))
+        ENDIF
+        sr_getconnection():exec(ccomm,,.t.,@cons_ven)
+        IF LEN(cons_ven) = 0
+                atencao('Nao existe nenhum Operador como VENDEDOR ou REPRESENTANTE !!!!')
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        IF mtipo_op = NIL
+                cons_merc:={}
+                sr_getconnection():exec("SELECT * FROM sacmerc WHERE cod_merc IS NOT NULL AND disp = 'S' AND NOT pocket = 'N'AND NOT descont = 'S' ORDER BY merc",,.t.,@cons_merc)
+                setcor(3)
+                limpa(3,21,10-1,26)
+                cpath := ALLTRIM(m_indiv[1,4])+'exportar'
+                MYRUN('MD '+cpath)
+                cpath := ALLTRIM(m_indiv[1,4])+'importar'
+                MYRUN('MD '+cpath)
+                //ARQUIVO VENDEDOR
+                SET DEVI TO PRINT
+                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'vendedor.'+mextensao)
+                //mcampo := ''
+                cont_ven:=0
+                FOR cont_ven = 1 TO LEN(cons_ven)
+                        mcampo := ''
+                        i := 0
+                        FOR i = 1 TO LEN(cons_ven[cont_ven,2])
+                                IF SUBSTR(cons_ven[cont_ven,2],i,1) = ' '
+                                        EXIT
+                                ENDIF
+                                mcampo := mcampo + SUBSTR(cons_ven[cont_ven,2],i,1)
+                        NEXT
+                        DEVPOS(PROW(),00);DEVOUT('VND|I|'+cons_ven[cont_ven,1]+'|'+ALLTRIM(mcampo)+'|A|'+ALLTRIM(DCRIPTO(cons_ven[cont_ven,5]))+'|100')
+                        DEVPOS(PROW()+1,00)
+                NEXT
+                SETPRC(00,00)
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                // ARQUIVO REGIAO
+                SET DEVI TO PRINT
+                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'regiao.'+mextensao)
+                DEVPOS(PROW(),00);DEVOUT('REG|I|1|REGIAO GERAL')
+                SETPRC(00,00)
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                // ARQUIVO FORNECEDOR
+                cons_forn:={}
+                sr_getconnection():exec("SELECT * FROM sacforn",,.t.,@cons_forn)
+                SET DEVI TO PRINT
+                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'fornece.'+mextensao)
+                IF LEN(cons_forn) > 0
+                        i:=mlinha:=0
+                        FOR i = 1 TO LEN(cons_forn)
+                                DEVPOS(PROW()+mlinha,00);DEVOUT('FOR|I|'+cons_forn[i,1]+'|'+ALLTRIM(cons_forn[i,2])+'|A')
+                                mlinha := 1
+                        NEXT
+                ELSE
+                        DEVPOS(PROW(),00);DEVOUT('FOR|I|0|SEM FORNECEDOR|A')
+                ENDIF
+                SETPRC(00,00)
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                // ARQUIVO TRANSPORTADORAS
+                **************************
+                SELE('tran');ORDSETFOCUS(1)
+                GO TOP
+                **************************
+                SET DEVI TO PRINT
+                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'transp.'+mextensao)
+                linha := 0
+                WHILE ! EOF()
+                        DEVPOS(PROW()+linha,00);DEVOUT('TPR|I|'+ALLTRIM(STR(VAL(tran->cod_tran)))+'|'+ALLTRIM(tran->razao))
+                        SKIP
+                        linha:=1
+                ENDDO
+                SETPRC(00,00)
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                // ARQUIVO FORMA PAGAMENTO
+                **************************
+                SELE('tabpg');ORDSETFOCUS(1)
+                GO TOP
+                **************************
+                SET DEVI TO PRINT
+                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'condpag.'+mextensao)
+                linha := 0
+                WHILE ! EOF()
+                        IF tabpg->pocket = 'N'
+                                SKIP;LOOP
+                        ENDIF
+                        DEVPOS(PROW()+linha,00);DEVOUT('CDP|I|'+ALLTRIM(STR(VAL(tabpg->codigo)))+'|'+ALLTRIM(tabpg->descri)+'|'+ALLTRIM(TRANSFORM((tabpg->percent/100)+1,'@E 999999.99'))+'|1')
+                        SKIP
+                        linha:=1
+                ENDDO
+                SETPRC(00,00)
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                // ARQUIVO RAMO ATIVIDADE
+                SET DEVI TO PRINT
+                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'ramoativ.'+mextensao)
+                DEVPOS(PROW(),00);DEVOUT('RAM|I|1|RAMO DIVERSOS')
+                SETPRC(00,00)
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                // ARQUIVO UNIDADES
+                SET DEVI TO PRINT
+                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'unidade.'+mextensao)
+                DEVPOS(PROW(),00);DEVOUT('UNT|I|1|UN|1')
+                DEVPOS(PROW()+1,00);DEVOUT('UNT|I|2|MT|1')
+                DEVPOS(PROW()+1,00);DEVOUT('UNT|I|3|PC|1')
+                DEVPOS(PROW()+1,00);DEVOUT('UNT|I|4|CX|1')
+                DEVPOS(PROW()+1,00);DEVOUT('UNT|I|5|KG|1')
+                DEVPOS(PROW()+1,00);DEVOUT('UNT|I|6|FD|1')
+                SETPRC(00,00)
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                // ARQUIVO CIDADE
+                mcont_reg := 0
+                IF mop_cid = 'X'
+		        cons_cid:={}
+                        sr_getconnection():exec("SELECT * FROM saccid",,.t.,@cons_cid)
+                        SET DEVI TO PRINT
+                        SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'cidade.'+mextensao)
+                        linha := 0
+                        IF LEN(cons_cid) > 0
+				i:=0
+                        	FOR i = 1 TO LEN(cons_cid)
+	                                DEVPOS(PROW()+linha,00);DEVOUT('CID|I|'+ALLTRIM(STR(VAL(cons_cid[i,1])))+'|'+ALLTRIM(cons_cid[i,2])+'|'+cons_cid[i,4]+'|1')
+        	                        SETPOS(3,21);DISPOUT(TRANSFORM(mcont_reg ++,'999999'))
+                	                linha := 1
+                        	NEXT
+				ENDIF
+                        SETPRC(00,00)
+                        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                ENDIF
+                IF mop_cli = 'X'
+                        // ARQUIVO CLIENTES
+
+                        mcont_reg := 0
+                        cons_cli:={}
+                        sr_getconnection():exec("SELECT * FROM saccli WHERE (bloqueio = 'N' OR  bloqueio IS NULL OR bloqueio = ' ') AND NOT pocket = 'N'",,.t.,@cons_cli)
+                        IF LEN(cons_cli) > 0
+                                SET DEVI TO PRINT
+                                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'cliente.'+mextensao)
+                                cont_cli := linha := 0
+                                FOR cont_cli = 1 TO LEN(cons_cli)
+                                        mtel1 := STRTRAN(cons_cli[cont_cli,29],'-')
+                                        mtel1 := STRTRAN(mtel1,'(')
+                                        mtel1 := STRTRAN(mtel1,')')
+                                        mtel1 := STRTRAN(mtel1,'.')
+                                        mtel1 := STRTRAN(mtel1,'=')
+                                        mtel2 := STRTRAN(cons_cli[cont_cli,30],'-')
+                                        mtel2 := STRTRAN(mtel2,'(')
+                                        mtel2 := STRTRAN(mtel2,')')
+                                        mtel2 := STRTRAN(mtel2,'.')
+                                        mtel2 := STRTRAN(mtel2,'=')
+                                        mfax := STRTRAN(cons_cli[cont_cli,31],'-')
+                                        mfax := STRTRAN(mfax,'(')
+                                        mfax := STRTRAN(mfax,')')
+                                        mfax := STRTRAN(mfax,'.')
+                                        mfax := STRTRAN(mfax,'=')
+
+                                        DEVPOS(PROW()+linha,00);DEVOUT('CLI|I|'+ALLTRIM(STR(VAL(cons_cli[cont_cli,2])))+'|'+ALLTRIM(STR(VAL(cons_cli[cont_cli,2])))+'|'+ALLTRIM(cons_cli[cont_cli,3])+'|'+IF(! EMPTY(ALLTRIM(cons_cli[cont_cli,4])),ALLTRIM(cons_cli[cont_cli,4]),ALLTRIM(cons_cli[cont_cli,3]))+'|'+ALLTRIM(cons_cli[cont_cli,32])+'|'+ALLTRIM(cons_cli[cont_cli,33])+'|'+ALLTRIM(cons_cli[cont_cli,26])+'|'+IF(! EMPTY(ALLTRIM(cons_cli[cont_cli,21])),ALLTRIM(cons_cli[cont_cli,21]),'RUA')+'||'+ALLTRIM(cons_cli[cont_cli,22])+'|'+STR(VAL(cons_cli[cont_cli,23]))+'|';
+                                                                  +ALLTRIM(cons_cli[cont_cli,28])+'||'+;
+                                                                  ALLTRIM(mtel1)+'|'+ALLTRIM(mtel2)+'|'+ALLTRIM(mfax)+'|'+ALLTRIM(cons_cli[cont_cli,27])+'||1|A|1|'+ALLTRIM(TRANSFORM(cons_cli[cont_cli,44],'@E 999999.99'))+'|0,00|'+ALLTRIM(DTOC(cons_cli[cont_cli,5]))+'|'+IF(! EMPTY(cons_cli[cont_cli,11]),DTOC(cons_cli[cont_cli,11]),DTOC(cons_cli[cont_cli,5]))+'|'+cons_cli[cont_cli,106])
+                                        linha := 1
+                                        SETPOS(4,21);DISPOUT(TRANSFORM(mcont_reg ++,'999999'))
+                                        //IF EMPTY(cons_cli[cont_cli,6]) .AND. ! EMPTY(mdata_arq)
+/*
+                                        IF ! EMPTY(mdata_arq)
+                                                sr_getconnection():exec("UPDATE saccli SET data_atu = "+sr_cdbvalue(mdata_arq)+" WHERE cod_cli = "+sr_cdbvalue(cons_cli[cont_cli,2])+" AND data_atu IS NULL",,.f.)
+                                                sr_getconnection():exec('COMMIT',,.f.)
+                                        ENDIF
+*/
+                                NEXT
+                                SETPRC(00,00)
+                                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                                mcont_reg := 0
+                        ELSE
+                                SET DEVI TO PRINT
+                                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'cliente.'+mextensao)
+                                SETPRC(00,00)
+                                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                        ENDIF
+                ENDIF
+                IF mop_grupo = 'X'
+                        mcont_reg := 0
+
+                        // ARQUIVO FORMA PAGAMENTO
+
+                        **************************
+                        SELE('grup');ORDSETFOCUS(1)
+                        GO TOP
+                        **************************
+                        SET DEVI TO PRINT
+                        SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'gruprod.'+mextensao)
+                        linha := 0
+                        WHILE ! EOF()
+                                IF LEN(ALLTRIM(grup->gru_sub)) = 3
+                                        SKIP
+                                        LOOP
+                                ENDIF
+                                DEVPOS(PROW()+linha,00);DEVOUT('GRP|I|'+grup->gru_sub+'|'+ALLTRIM(grup->merc))
+                                SETPOS(6,21);DISPOUT(TRANSFORM(mcont_reg ++,'999999'))
+                                SKIP
+                                linha := 1
+                        ENDDO
+                        SETPRC(00,00)
+                        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                ENDIF
+
+                IF mop_prod = 'X'
+                        mcont_reg := 0
+                        // ARQUIVO PRODUTOS
+                        IF LEN(cons_merc) > 0
+                                SET DEVI TO PRINT
+                                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'produto.'+mextensao)
+                                cont_merc := linha := 0
+                                FOR cont_merc = 1 TO LEN(cons_merc)
+                                        IF VAL(cons_merc[cont_merc,30]) = 0
+                                                //DEVPOS(PROW()+linha,00);DEVOUT('PROD|I|'+ALLTRIM(STR(VAL(cons_merc[cont_merc,8])))+'|0|'+IF(! EMPTY(ALLTRIM(cons_merc[cont_merc,2])),ALLTRIM(cons_merc[cont_merc,2]),ALLTRIM(STR(VAL(cons_merc[cont_merc,8]))))+'|'+ALLTRIM(cons_merc[cont_merc,9])+'|'+unidade1(cons_merc[cont_merc,14])+'|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,17],'@E 999999.99'))+'|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,16],'@E 999999.99'))+'|'+ALLTRIM(SUBSTR(cons_merc[cont_merc,7],1,3))+'||0|0|'+;
+                                                DEVPOS(PROW()+linha,00);DEVOUT('PROD|I|'+ALLTRIM(STR(VAL(cons_merc[cont_merc,8])))+'|0|'+ALLTRIM(STR(VAL(cons_merc[cont_merc,8])))+'|'+ALLTRIM(cons_merc[cont_merc,9])+'|'+unidade1(cons_merc[cont_merc,14])+'|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,17],'@E 999999.99'))+'|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,16],'@E 999999.99'))+'|'+cons_merc[cont_merc,7]+'||0|0|'+;
+                                                                         ALLTRIM(TRANSFORM(cons_merc[cont_merc,65],'@E 999999.99'))+'||||0|A|'+ALLTRIM(cons_merc[cont_merc,85])+ALLTRIM(cons_merc[cont_merc,86])+ALLTRIM(cons_merc[cont_merc,87])+ALLTRIM(cons_merc[cont_merc,88])+ALLTRIM(cons_merc[cont_merc,89]))
+                                        ELSE
+                                                cons_fab:={}
+                                                sr_getconnection():exec("SELECT * FROM sacforn WHERE cod_forn = "+sr_cdbvalue(cons_merc[cont_merc,30]),,.t.,@cons_fab)
+                                                IF LEN(cons_fab) > 0
+                                                //IF ver_fab(VAL(cons_merc[cont_merc,30]),,,'*')
+                                                        //DEVPOS(PROW()+linha,00);DEVOUT('PROD|I|'+ALLTRIM(STR(VAL(cons_merc[cont_merc,8])))+'|'+ALLTRIM(STR(VAL(cons_merc[cont_merc,30])))+'|'+IF(! EMPTY(ALLTRIM(cons_merc[cont_merc,2])),ALLTRIM(cons_merc[cont_merc,2]),ALLTRIM(STR(VAL(cons_merc[cont_merc,8]))))+'|'+ALLTRIM(cons_merc[cont_merc,9])+'|'+unidade1(cons_merc[cont_merc,14])+'|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,17],'@E 999999.99'))+'|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,16],'@E 999999.99'))+'|'+;
+                                                        DEVPOS(PROW()+linha,00);DEVOUT('PROD|I|'+ALLTRIM(STR(VAL(cons_merc[cont_merc,8])))+'|'+ALLTRIM(STR(VAL(cons_merc[cont_merc,30])))+'|'+ALLTRIM(STR(VAL(cons_merc[cont_merc,8])))+'|'+ALLTRIM(cons_merc[cont_merc,9])+'|'+unidade1(cons_merc[cont_merc,14])+'|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,17],'@E 999999.99'))+'|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,16],'@E 999999.99'))+'|'+;
+                                                                                 cons_merc[cont_merc,7]+'||0|0|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,65],'@E 999999.99'))+;
+                                                                               '||||0|A|'+ALLTRIM(cons_merc[cont_merc,85])+ALLTRIM(cons_merc[cont_merc,86])+ALLTRIM(cons_merc[cont_merc,87])+ALLTRIM(cons_merc[cont_merc,88])+ALLTRIM(cons_merc[cont_merc,89]))
+                                                ELSE
+                                                        //DEVPOS(PROW()+linha,00);DEVOUT('PROD|I|'+ALLTRIM(STR(VAL(cons_merc[cont_merc,8])))+'|0|'+IF(! EMPTY(ALLTRIM(cons_merc[cont_merc,2])),ALLTRIM(cons_merc[cont_merc,2]),ALLTRIM(STR(VAL(cons_merc[cont_merc,8]))))+'|'+ALLTRIM(cons_merc[cont_merc,9])+'|'+unidade1(cons_merc[cont_merc,14])+'|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,17],'@E 999999.99'))+'|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,16],'@E 999999.99'))+'|'+ALLTRIM(SUBSTR(cons_merc[cont_merc,7],1,3))+;
+                                                        DEVPOS(PROW()+linha,00);DEVOUT('PROD|I|'+ALLTRIM(STR(VAL(cons_merc[cont_merc,8])))+'|0|'+ALLTRIM(STR(VAL(cons_merc[cont_merc,8])))+'|'+ALLTRIM(cons_merc[cont_merc,9])+'|'+unidade1(cons_merc[cont_merc,14])+'|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,17],'@E 999999.99'))+'|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,16],'@E 999999.99'))+'|'+cons_merc[cont_merc,7]+;
+                                                                                 '||0|0|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,65],'@E 999999.99'))+'||||0|A|'+ALLTRIM(cons_merc[cont_merc,85])+ALLTRIM(cons_merc[cont_merc,86])+ALLTRIM(cons_merc[cont_merc,87])+ALLTRIM(cons_merc[cont_merc,88])+ALLTRIM(cons_merc[cont_merc,89]))
+                                                ENDIF
+                                        ENDIF
+                                        linha := 1
+                                        SETPOS(7,21);DISPOUT(TRANSFORM(mcont_reg ++,'999999'))
+                                NEXT
+                                sr_getconnection():exec('COMMIT',,.f.)
+                                SETPRC(00,00)
+                                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                        ELSE
+                                SET DEVI TO PRINT
+                                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'produto.'+mextensao)
+                                SETPRC(00,00)
+                                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                        ENDIF
+                ENDIF
+                IF mop_estoque = 'X'
+                        mcont_reg := linha := 0
+                        // ARQUIVO ESTOQUE
+                        IF LEN(cons_merc) > 0
+                                SET DEVI TO PRINT
+                                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'estoque.'+mextensao)
+                                cont_merc := linha := 0
+                                FOR cont_merc = 1 TO LEN(cons_merc)
+                                        DEVPOS(PROW()+linha,00);DEVOUT('PRD|I|'+ALLTRIM(STR(VAL(cons_merc[cont_merc,8])))+'|1|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,56],'@E 999999.99')))
+                                        linha := 1
+                                        SETPOS(8,21);DISPOUT(TRANSFORM(mcont_reg ++,'999999'))
+                                NEXT
+                                SETPRC(00,00)
+                                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                        ELSE
+                                SET DEVI TO PRINT
+                                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'estoque.'+mextensao)
+                                SETPRC(00,00)
+                                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                        ENDIF
+                ENDIF
+                IF mop_preco = 'X'
+                        mcont_reg := 0
+                        // ARQUIVO PRECOS
+                        IF LEN(cons_merc) > 0
+                                SET DEVI TO PRINT
+                                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'preco.'+mextensao)
+                                cont_merc := linha := 0
+                                FOR cont_merc = 1 TO LEN(cons_merc)
+                                        DEVPOS(PROW()+linha,00);DEVOUT('PRC|I|1'+ALLTRIM(STR(VAL(cons_merc[cont_merc,8])))+'|'+ALLTRIM(STR(VAL(cons_merc[cont_merc,8])))+'|1|1|1|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,46],'@E 9999999.99'))+'|'+ALLTRIM(TRANSFORM(cons_merc[cont_merc,46],'@E 9999999.99'))+'|0,00')
+                                        SETPOS(9,21);DISPOUT(TRANSFORM(cont_merc,'999999'))
+                                        linha := 1
+                                NEXT
+                                SETPRC(00,00)
+                                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                        ELSE
+                                SET DEVI TO PRINT
+                                SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'preco.'+mextensao)
+                                SETPRC(00,00)
+                                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                        ENDIF
+                ENDIF
+                sLinhas := ''
+                mArq        := fcreate((ALLTRIM(m_indiv[1,4])+'exportar\'+'duplicatas.'+mextensao))
+                IF ! EMPTY(mdat_dup1)
+                        cons_dupv:={}
+                        sr_getconnection():exec("SELECT * FROM sacdupr WHERE venc >= "+sr_cdbvalue(mdat_dup1)+" AND venc <= "+sr_cdbvalue(mdat_dup2)+" AND datpag IS NULL AND valor > 0",,.t.,@cons_dupv)
+                        IF LEN(cons_dupv) > 0
+                                cont_dup := linha :=0
+                                FOR cont_dup = 1 TO LEN(cons_dupv)
+                                        SETPOS(10,45);DISPOUT(TRANSFORM(cont_dup,'999999'))
+                                        sLinhas := sLinhas + 'DUP|I|'+ALLTRIM(cons_dupv[cont_dup,4])+'|'+cons_dupv[cont_dup,7]+'||'+DTOC(cons_dupv[cont_dup,10])+'||'+ALLTRIM(cons_dupv[cont_dup,37])+'|'+DTOC(cons_dupv[cont_dup,11])+'|'+ALLTRIM(TRANSFORM(cons_dupv[cont_dup,19],'@E 9999999.99'))+'||||0|0|0||A|'+ALLTRIM(cons_dupv[cont_dup,2])+'|'+ALLTRIM(cons_dupv[cont_dup,16])+m_qp
+                                        linha := 1
+                                NEXT
+                        ENDIF
+                ENDIF
+                IF ! EMPTY(mdat_pag1)
+                        cons_dup:={}
+                        sr_getconnection():exec("SELECT * FROM sacdupr WHERE datpag >= "+sr_cdbvalue(mdat_pag1)+" AND datpag <= "+sr_cdbvalue(mdat_pag2)+" AND datpag IS NOT NULL",,.t.,@cons_dup)
+                        IF LEN(cons_dup) > 0
+                                cont_dup := linha :=0
+                                FOR cont_dup = 1 TO LEN(cons_dup)
+                                        SETPOS(10,45);DISPOUT(TRANSFORM(cont_dup,'999999'))
+                                        sLinhas := sLinhas + 'DUP|I|'+ALLTRIM(cons_dup[cont_dup,4])+'|'+cons_dup[cont_dup,7]+'||'+DTOC(cons_dup[cont_dup,10])+'||'+ALLTRIM(cons_dup[cont_dup,37])+'|'+DTOC(cons_dup[cont_dup,11])+'|'+ALLTRIM(TRANSFORM(cons_dup[cont_dup,19],'@E 9999999.99'))+'||||0|0|0|'+DTOC(cons_dup[cont_dup,13])+'|Q|'+ALLTRIM(cons_dup[cont_dup,2])+'|'+ALLTRIM(cons_dup[cont_dup,16])+m_qp
+                                        linha := 1
+                                NEXT
+                        ENDIF
+                ENDIF
+                IF LEN(cons_dup) > 0 .OR. LEN(cons_dupv) > 0
+                        fwrite( mArq, @sLinhas, len( sLinhas ) )
+                        FCLOSE(mArq)
+                ENDIF
+                IF mpocket = '*'
+                        wvw_lclosewindow()
+                        RETURN NIL
+                ENDIF
+        ELSE
+                m_arquivo := {}
+                cont_ven:=0
+                FOR cont_ven = 1 TO LEN(cons_ven)
+                        m_aux := DIRECTORY((ALLTRIM(m_indiv[1,4])+'exportar\'+'*.*'),'D')
+                        i := 0
+                        FOR i = 1 TO LEN(m_aux)
+                                AADD(m_arquivo,{m_aux[i,1],m_aux[i,3],ALLTRIM(STR(VAL(cons_ven[cont_ven,1])))})
+                        NEXT
+                NEXT
+                i := 0
+                FOR i = 1 TO LEN(m_arquivo)
+                        m_aux := ALLTRIM(m_indiv[1,4])+m_arquivo[i,3]+'exportar\'
+                        ERASE (m_aux+m_arquivo[i,1])
+                NEXT
+                cont_ven:=0
+                FOR cont_ven = 1 TO LEN(cons_ven)
+                        setcor(3)
+                        DEVPOS(2,18);DEVOUT(cons_ven[cont_ven,1]+'-'+cons_ven[cont_ven,2])
+                        limpa(3,21,10-1,26)
+                        cpath := ALLTRIM(m_indiv[1,4])+ALLTRIM(STR(VAL(cons_ven[cont_ven,1])))
+/*
+                        IF ! ExistFPath(cPath)
+                                MakeFPath(cPath)
+                                cpath := ALLTRIM(m_indiv[1,4])+'\exportar'
+                                MakeFPath(cPath)
+                                cpath := ALLTRIM(m_indiv[1,4])+'\importar'
+                                MakeFPath(cPath)
+                        ENDIF
+*/
+                        // ARQUIVO CLIENTES
+
+                        SET DEVI TO PRINT
+                        SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'cliente.'+mextensao)
+                        DEVPOS(PROW(),00);DEVOUT('CLI|Z|')
+                        SETPRC(00,00)
+                        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                        SET DEVI TO PRINT
+                        SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'contato.'+mextensao)
+                        DEVPOS(PROW(),00);DEVOUT('CON|Z|')
+                        SETPRC(00,00)
+                        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                        SET DEVI TO PRINT
+                        SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'pedido.'+mextensao)
+                        DEVPOS(PROW(),00);DEVOUT('PED|Z|')
+                        SETPRC(00,00)
+                        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                        SET DEVI TO PRINT
+                        SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'itemped.'+mextensao)
+                        DEVPOS(PROW(),00);DEVOUT('ITM|Z|')
+                        SETPRC(00,00)
+                        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                        SET DEVI TO PRINT
+                        SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'duplic.'+mextensao)
+                        DEVPOS(PROW(),00);DEVOUT('DPC|Z|')
+                        SETPRC(00,00)
+                        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                        SET DEVI TO PRINT
+                        SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'faturam.'+mextensao)
+                        DEVPOS(PROW(),00);DEVOUT('FAT|Z|')
+                        SETPRC(00,00)
+                        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                        SET DEVI TO PRINT
+                        SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'hiscompr.'+mextensao)
+                        DEVPOS(PROW(),00);DEVOUT('HCO|Z|')
+                        SETPRC(00,00)
+                        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                        SET DEVI TO PRINT
+                        SET PRINT TO (ALLTRIM(m_indiv[1,4])+'exportar\'+'duplicatas.'+mextensao)
+                        DEVPOS(PROW(),00);DEVOUT('DUP|Z|')
+                        SETPRC(00,00)
+                        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                NEXT
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+/*
+Duplicatas			N?o	Palmtop s? Importa	DUPLICATAS.TOT/ATU
+Identificador do Registro       varchar	3	Sim	Fixo: "DUP"
+Flag de Sincroniza??o	        varchar	1	Sim	I=Insere, A=Altera, E=Exclui
+CodDuplicata	                Integer		Sim	C?digo deste registro
+CodCliente                      Integer		Sim
+CodPedido                       Integer		N?o	C?digo do pedido do APP..., ou vazio caso o pedido n?o possua o c?digo do pedido do APP...
+Emissao                         Date		Sim	Data de emiss?o (dd/MM/aaaa)
+NotaFiscal                      Integer		Sim	N?mero da nota fiscal
+NumDuplicata                    varchar	14	Sim	N?mero da duplicata
+Vencimento                      Date		Sim	Data do vencimento (dd/MM/aaaa)
+Valor                           Decimal		Sim
+CodBanco                        Integer		Sim	Se o arquivo de banco n?o for gerado, colocar "1"
+Parcela                         Integer		Sim	N?mero da parcela que esta duplicata representa
+Prorrogacao                     Date		N?o	Data prorrogada, caso esta duplicata tenha sido prorrogada (dd/MM/aaaa)
+VlrJuros                        Double 	        Sim	 Valor de juros, se houver. Se n?o, deixar ?0?
+VlrDesconto                     Double 		Sim	  Valor de desconto, se houver. Se n?o, deixar ?0?
+Pago_Comissao                   Integer		Sim	0 - Comiss?o n?o paga, 1- Comiss?o Paga
+Data_Pgto                       Date		N?o	Data de Pagamento (dd/MM/aaaa)
+Status                          varchar	1	Sim	A - Aberto, C - Cancelado, Q - Quitado
+*/

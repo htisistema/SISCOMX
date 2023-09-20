@@ -1,0 +1,148 @@
+***********************************
+* MENU DE CONSULTA DE CHEQUES
+***********************************
+MEMVAR getlist,nivel_acess
+
+FUNCTION sac45
+****************
+LOCAL MPRG:='SAC45'
+
+LOCAL opcao,lci,cci,lba,cba,tela
+
+lci := 08
+cci := 06
+lba := 11
+cba := 27
+
+tela := SAVESCREEN(01,00,24,79)
+
+WHILE .T.
+        botao(lci,cci,lba,cba,,' Pedidos ')
+        setcor(9)
+        @ lci+1,cci+1 PROMPT ' Cheque/ Responsavel ' MESSAGE '*** Consulta o Responsavel do CHEQUE - <ESC> p/abandonar ***'
+        @ lci+2,cci+1 PROMPT ' Cheques s/ Fundos   ' MESSAGE '*** Consulta os CHEQUES SEM FUNDOS - <ESC> p/abandonar ***'
+        MENU TO opcao
+        IF LASTKEY() = 27
+                RESTSCREEN(01,00,24,79,tela)
+                EXIT
+        ENDIF
+        DO CASE
+                CASE opcao = 1
+                        sac451()
+                CASE opcao = 2
+                        sac561()
+        ENDCASE
+ENDDO
+RETURN NIL
+*********************************** F I M ************************************
+**************************************
+* CONSULTAR CHEQUES
+**************************************
+
+FUNCTION sac451
+**************
+LOCAL mprg := 'SAC451'
+LOCAL tela,li,ci,lb,cb,lci,cci,lba,cba,opcao,mnum_ban,mnum_cheq,mvalor,mcod_cli,;
+      mcod_ven,mmotivo,mdata_che,mcod_opera,pesq,mnota
+
+PRIVATE mnome_ven,mcliente,point
+
+IF ! ver_nivel(mprg,'CONSULTA DE CHEQUES P/RESPONSAVEL','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+lci := 09
+cci := 49
+lba := 13
+cba := 79
+
+li := 14
+ci := 08
+lb := 19
+cb := 78
+
+tela := SAVESCREEN(01,00,24,79)
+*--------------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacsetup','set');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('saccaixa','caix');RETURN NIL;ENDIF
+IF ! AbriArq('saccheq','cheq');RETURN NIL;ENDIF
+*--------------------------------------------------------------------------
+WHILE .T.
+        mnome_ven := SPACE(30)
+        mensagem('Preencha os Campos - <ESC> p/Retornar')
+        botao(lci,cci,lba,cba,,' Consulta de Cheques ')
+        DEVPOS(lci+1,cci+2);DEVOUT('No.do Banco.:')
+        DEVPOS(lci+2,cci+2);DEVOUT('No.do Cheque:')
+        DEVPOS(lci+3,cci+2);DEVOUT('Valor Cheque:')
+        mnum_ban := SPACE(3)
+        mnum_cheq := SPACE(10)
+        mvalor := 0
+        mmotivo := SPACE(30)
+        @ lci+1,cci+16 GET mnum_ban PICT '999' VALID IF(EMPTY(mnum_ban),.F.,.T.)
+        @ lci+2,cci+16 GET mnum_cheq PICT '9999999999' VALID IF(EMPTY(mnum_cheq),.F.,.T.)
+        @ lci+3,cci+16 GET mvalor PICT '99,999,999.99' VALID IF(EMPTY(mvalor),.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                RESTSCREEN(01,00,24,79,tela)
+                CLOSE ALL
+                RETURN NIL
+        ENDIF
+        pesq := mnum_ban + mnum_cheq + STR(mvalor,10,2)
+        ****************
+        SELE('caix');ORDSETFOCUS(5)
+        GO TOP
+        ****************
+
+        IF ! caix->(DBSEEK(pesq))
+                atencao('Este cheque nao consta nos nosso Arquivos !!!')
+                mensagem('Pressione qualquer tecla p/continuar')
+                INKEY(0)
+                LOOP
+        ENDIF
+        point = RECNO()
+        mcod_cli := caix->cod_cli
+        mcod_ven := caix->cod_vend
+        mdata_che := caix->data
+        mcod_opera := caix->cod_opera
+        mnota := caix->nota
+        ver_ven(mcod_ven)
+        mnome_ven := sen->snome
+        ver_cli(mcod_cli,,)
+        setcor(3)
+        botao(li,ci,lb,cb)
+        setcor(1)
+        DEVPOS(li+1,ci+2);DEVOUT('Cliente Responsavel.:')
+        DEVPOS(li+2,ci+2);DEVOUT('Vendedor Responsavel:')
+        DEVPOS(li+3,ci+2);DEVOUT('Numero do Documento.:')
+        DEVPOS(li+4,ci+2);DEVOUT('Motivo do Cheque....:')
+        setcor(3)
+        DEVPOS(li+1,ci+24);DEVOUT(mcod_cli +'-'+mcliente)
+        DEVPOS(li+2,ci+24);DEVOUT(mcod_ven +'-'+mnome_ven)
+        DEVPOS(li+3,ci+24);DEVOUT(mnota)
+        setcor(1)
+
+        ****************
+        SELE('cheq');ORDSETFOCUS(2)
+        ****************
+
+        IF ! cheq->(DBSEEK(pesq))
+                DEVPOS(li+4,ci+24);DEVOUT('Sem nenhum Problema !!!')
+                mensagem('Pressione qualquer tecla p/continuar')
+                INKEY(0)
+                LOOP
+        ENDIF
+
+        DEVPOS(li+4,ci+24);DEVOUT(cheq->motivo)
+
+        IF cheq->ok = '*'
+                Atencao('Este Cheque ja esta OK')
+        ENDIF
+        mensagem('Pressione qualquer tecla p/continuar')
+        INKEY(0)
+ENDDO
+RETURN NIL
+*********************************** F I M ************************************
+

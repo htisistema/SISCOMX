@@ -1,0 +1,12 @@
+<retConsReciNFe versao="2.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_09.05.11.062</verAplic>
+<nRec>261150000171578</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF> <protNFe versao="2.00"><infProt Id="NFe1"><tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_09.05.11.062</verAplic>
+<chNFe>26150111156983000176550010001198301001198300</chNFe>
+<dhRecbto>2015-01-28T07:03:47</dhRecbto><cStat>533</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: Total da BC ICMS-ST difere do somat&#xF3;rio dos itens</xMotivo>
+</infProt></protNFe></retConsReciNFe>

@@ -1,0 +1,155 @@
+********************
+* LISTAGEM MOVIMENTO ESTOQUE HAVER
+********************
+MEMVAR getlist,nivel_acess,mdata_sis
+
+FUNCTION sac533(mcod)
+**************
+LOCAL MPRG:='SAC533',mtitulo:='RELATORIO MOVIMENTO ESTOQUE HAVER',;
+      lci,cci,lba,cba,opcao,mquantd,mdata1,mdata2,mtot_geral,mtot_vend,mtot_avend,;
+      mqtd_geral,mqtd_vend,mqtd_avend,mtot_lucro,mop
+
+PRIVATE mtraco,mtit,mtipo,mpag,mcod_merc,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),cons_cli:={}
+
+IF ! ver_nivel(mprg,mtitulo,'156',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+mtraco := REPLI('=',132)
+
+lci := cci := 00
+lba := 05
+cba := 70
+*----------------------------------------------------------------------------
+//
+IF ! AbriArq('merc_det','deta');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('sacav','av');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*----------------------------------------------------------------------------
+op_tela(lci,cci,lba+2,cba,mtitulo)
+WHILE .T.
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        IF mcod <> NIL
+                mcod_merc := mcod
+        ELSE
+                mcod_merc := 0
+        ENDIF
+        mdata1 := CTOD('  /  /  ')
+        mdata2 := mdata_sis
+        mop := 'G'
+        mensagem('Preencha os Campos - <ESC>p/Sair')
+        DEVPOS(lci+1,cci+2);DEVOUT('Codigo Merc....:')
+        DEVPOS(lci+2,cci+2);DEVOUT('Tipo [E]ntrege [N]ao Entregue [G]eral:')
+        DEVPOS(lci+3,cci+2);DEVOUT('Data Inicial.........................:')
+        DEVPOS(lci+4,cci+2);DEVOUT('Data Final...........................:')
+        @ lci+1,cci+19 GET mcod_merc PICT '99999' VALID ver_cod(mcod_merc,lci+1,cci+25,,0)
+        @ lci+2,cci+41 GET mop PICT '@!' VALID mop $ 'E,N,G'
+        @ lci+3,cci+41 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ lci+4,cci+41 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                fimset()
+                EXIT
+        ENDIF
+        ************************
+        SELE('av');ORDSETFOCUS(3)
+        GO TOP
+        ************************
+        av->(DBSEEK(DTOS(mdata1),.T.))
+        IF EOF()
+                atencao('Nao existe movimento deste Produto')
+                LOOP
+        ENDIF
+        IF ! imp_arq('MOV_AV.REL','R')
+                LOOP
+        ENDIF
+        mpag = 1
+        IF ! EMPTY(mcod_merc)
+                mtit = 'Movimento Produto p/Haver:'+STRZERO(mcod_merc)+'-'+merc->merc
+        ELSE
+                mtit = 'Movimento Produto p/Haver'
+        ENDIF
+        mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)
+        cabecalho(mpag,mtit,mtipo,mprg)
+        imprt(mtipo_imp,'C')
+        DEVPOS(PROW()+1,02);DEVOUT('Data')
+        DEVPOS(PROW(),10);DEVOUT('Numero')
+        DEVPOS(PROW(),18);DEVOUT('Cod.')
+        DEVPOS(PROW(),25);DEVOUT('Descricao')
+*       DEVPOS(PROW(),66);DEVOUT('Cod.Cli')
+        DEVPOS(PROW(),66);DEVOUT('   Quantd.')
+        DEVPOS(PROW(),77);DEVOUT('      Preco')
+        DEVPOS(PROW(),90);DEVOUT('No.Pedido')
+        DEVPOS(PROW(),102);DEVOUT('Data Baixa')
+        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        mtot_geral := mtot_vend  := mtot_avend := mqtd_geral := mqtd_vend  := mqtd_avend := ;
+        mtot_lucro := 0
+        WHILE av->data <= mdata2 .AND. ! EOF()
+                IF mop = 'E' .AND. EMPTY(av->data_bai)
+                        SKIP
+                        LOOP
+                ELSEIF mop = 'N' .AND. ! EMPTY(av->data_bai)
+                        SKIP
+                        LOOP
+                ENDIF
+                DEVPOS(PROW()+1,00);DEVOUT(av->data)
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(av->numero)
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(av->cod_merc)
+                ver_cod(VAL(av->cod_merc),PROW(),PCOL()+2,,,'*')
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(av->quantd,'999,999.99'))
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(av->preco,'999,999.99'))
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(av->num_ped)
+                DEVPOS(PROW(),PCOL()+6);DEVOUT(av->data_bai)
+
+                DEVPOS(PROW()+1,00);DEVOUT('Cliente:')
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(av->cod_cli)
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(' - ')
+                ver_cli(VAL(av->cod_cli),PROW(),PCOL()+1)
+                mtot_geral := mtot_geral + av->preco
+                mqtd_geral := mqtd_geral + 1
+                SKIP
+                IF PROW() >= 59
+                        mpag ++
+                        EJECT
+                        cabecalho(mpag,mtit,mtipo,mprg)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,02);DEVOUT('Data')
+                        DEVPOS(PROW(),10);DEVOUT('Numero')
+                        DEVPOS(PROW(),18);DEVOUT('Cod.')
+                        DEVPOS(PROW(),25);DEVOUT('Descricao')
+                *       DEVPOS(PROW(),66);DEVOUT('Cod.Cli')
+                        DEVPOS(PROW(),66);DEVOUT('   Quantd.')
+                        DEVPOS(PROW(),77);DEVOUT('      Preco')
+                        DEVPOS(PROW(),90);DEVOUT('No.Pedido')
+                        DEVPOS(PROW(),102);DEVOUT('Data Baixa')
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        LOOP
+                ENDIF
+        ENDDO
+        DEVPOS(PROW()+2,00);DEVOUT('Quantidade Total..:')
+        DEVPOS(PROW(),21);DEVOUT('('+LTRIM(TRANSFORM(mqtd_geral,'9,999,999.99'))+')')
+        DEVPOS(PROW(),PCOL());DEVOUT(' - R$:')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtot_geral,'999,999,999.99')
+        DEVPOS(PROW()+2,00);DEVOUT(TIME())
+        imprt(mtipo_imp,'N')
+        EJECT
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        SETPRC(00,00)
+        conf_impressao('MOV_AV.REL')
+        /*
+        IF mimp_tipo = 2
+                lertexto('MOV_AV.REL')
+        ELSEIF mtipo_imp = 'D'
+                
+        ELSE
+                MYRUN('DOSPRINTER /RAW /DEL '+ALLTRIM(m_indiv[1,5])+'HTI.REL')
+        ENDIF
+        */
+        EXIT
+ENDDO
+wvw_lclosewindow()
+RETURN NIL

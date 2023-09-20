@@ -1,0 +1,21 @@
+Error BASE/1066  Error de argumento: conditional
+Funcoes: tgetlist.prg->HBGETLIST:READER(216)
+Funcoes: getsys.prg->READMODAL(141)
+Funcoes: CON221.000->CON221(220)
+Funcoes: SAC00.PRG->AFTERINKEY(2025)
+Funcoes: SAC00.PRG->(b)SAC0(1403)
+Funcoes: ->INKEY(0)
+Funcoes: SAC00.PRG->SAC0(1433)
+Funcoes: SACROT1.PRG->SENHA(824)
+Funcoes: SISCOM.PRG->MAIN(1129)
+************************************************************************************************************************
+Data e Hora........: 08/12/22 - 09:15:37
+Empresa............: DOCE GOSTO MAIS
+Sistema/Atualizacao: .: SISCOM :. Sistema Automacao Comercial - v22.12.07a
+Usuario do Sistema.: 999
+Nome do Executavel.: C:\HELIO\siachb\SISCOM.EXE
+Nome do Micro......: HELIO1 - Nome Terminal: helio
+Memoria Disponivel.: 2097151 - Espaço em Disco....: 125571244032
+Pasta de Diretorio.: HELIO\siachb
+Sistema Operacional: Windows NT Professional 6.02.9200
+Caminho do Banco...: localhost:C:\HELIO\SIACHB\SISCOM.GDB

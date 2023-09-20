@@ -1,0 +1,183 @@
+*****************************************
+* AJUSTE COMISSAO NO PEDIDO
+******************************************
+MEMVAR getlist,nivel_acess,mdata_sis,cod_operado
+
+FUNCTION sac5pe11()
+***************
+LOCAL MPRG:='SAC5PE11',;
+      lci,cci,lba,cba,opcao,m_pedido:={},m_pos:={},mnum_aux,mcli,mtot_p:=0,;
+      mcod_vend,mcod_oper,point,mtot_comiss:=0,mcomissao:=0,;
+      mponto:=0,mcom_dupr:=0,mcomi_dupr:=0,mtot_quantd:=0
+
+PRIVATE mt_pedido,mtot_quant,mpoint:=0,menvelope,mnum_ped,cons_cli:={}
+
+IF ! ver_nivel(mprg,'AJUSTE DA COMISSAO NO PEDIDO','1',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+lci := cci := 0
+lba := 18
+cba := 76
+
+SET KEY 294 TO cons_luc()               // Consulta Lucro  <ALT+L)
+op_tela(09,02,18,80,' Ajuste Comissao no PEDIDO ')
+*---------------------------------------------------------------------------
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+IF ! AbriArq('sacmov','mov');RETURN NIL;ENDIF
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+*---------------------------------------------------------------------------
+
+DO WHILE .T.
+        limpa(00,00,30,100)
+        mt_pedido := mtot_quant := mtot_comiss := mcomissao := mnum_ped := ;
+        mcomi_dupr := mcom_dupr := 0
+        SET DELETED ON
+        @ lci+1,cci+2 SAY 'No. Pedido........:'
+        @ lci+2,cci+2 SAY 'No.Envelope/Placa.:'
+        @ lci+3,cci+2 SAY 'Codigo Cliente....:'
+        @ lci+4,cci+2 SAY 'Codigo Vendedor...:'
+        @ lci+5,cci+2 SAY 'Codigo Operador...:'
+        @ lci+6,cci+2 SAY 'Total Pedido R$...:'
+        @ lci+7,cci+2 SAY 'Comissao Media (%):          Ajustar PEDIDO    :'
+        @ lci+8,cci+2 SAY 'Comissao Media (%):          Ajustar DUPLICATA :'
+        menvelope := SPACE(10)
+        mensagem('Digite o No.do pedido que deseja 2a.Via.')
+        @ lci+1,cci+22 GET mnum_ped PICT '999999'
+        @ lci+2,cci+22 GET menvelope PICT '@!' WHEN EMPTY(mnum_ped)
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        *************
+        SELE('ped_s')
+        *************
+        IF ! EMPTY(menvelope)
+                ****************
+                ORDSETFOCUS(10)
+                GO TOP
+                ****************
+                IF ! ped_s->(DBSEEK(menvelope))
+                        atencao('Nao Existe este No.ENVELOPE em nosso Arquivo !!!')
+                        LOOP
+                ENDIF
+                mnum_ped := VAL(ped_s->pnum_ped)
+        ENDIF
+        ****************
+        ORDSETFOCUS(6)
+        GO TOP
+        ****************
+        IF ! ped_s->(DBSEEK(STRZERO(mnum_ped,6)))
+                atencao('Nao Existe este No.pedido em nosso Arquivo !!!')
+                LOOP
+        ENDIF
+        mpoint := RECNO()
+        IF ped_s->ppag = 'C'
+                atencao('Este pedido foi CANCELADO do dia: '+DTOC(ped_s->pdatapag)+' Hrs.: '+ped_s->phora_pg+' Por: '+pautoriz+' Motivo:'+pmotivo)
+                LOOP
+        ENDIF
+        mtot_quantd:=0
+        IF ped_s->ppag = '*'
+                atencao('Este pedido ja foi PAGO !!!')
+                ****************
+                SELE('mov');ORDSETFOCUS(5)
+                GO TOP
+                ****************
+                IF ! mov->(DBSEEK(STRZERO(mnum_ped,6)))
+                        atencao('Nao Existe este No.pedido em nosso Arquivo !!!')
+                        LOOP
+                ENDIF
+                mponto := RECNO()
+                WHILE STRZERO(mnum_ped,6) = mov->num_ped .AND. ! EOF()
+                        mt_pedido = mt_pedido + (mov->vl_vend * mov->quantd)
+                        mtot_quantd ++
+                        mtot_comiss := mtot_comiss + mov->comissao
+                        SKIP
+                ENDDO
+                ****************
+                SELE('dupr');ORDSETFOCUS(7)
+                GO TOP
+                ****************
+                IF dupr->(DBSEEK(STRZERO(mnum_ped,6)))
+                        mcomi_dupr := dupr->comissao
+                ENDIF
+        ELSE
+                WHILE STRZERO(mnum_ped,6) = ped_s->pnum_ped .AND. ! EOF()
+                        mt_pedido = mt_pedido + (ped_s->pvlr_fat * ped_s->pquantd)
+                        mtot_quantd ++
+                        mtot_comiss := mtot_comiss + pcomissao
+                        SKIP
+                ENDDO
+        ENDIF
+        *************
+        SELE('ped_s');ORDSETFOCUS(6)
+        GO mpoint
+        *************
+        ver_cli(VAL(ped_s->pcod_cli))
+        mnome_cli := cons_cli[1,3]
+        setcor(3)
+        DEVPOS(lci+1,cci+22);DEVOUT(STRZERO(mnum_ped,6))
+        DEVPOS(lci+3,cci+22);DEVOUT(ped_s->pcod_cli+'-'+mnome_cli)
+        DEVPOS(lci+4,cci+22);DEVOUT(ped_s->pcod_vend)
+        DEVPOS(lci+5,cci+22);DEVOUT(ped_s->pcod_oper)
+        DEVPOS(lci+6,cci+22);DEVOUT(TRANSFORM(mt_pedido,'9,999,999.99'))
+        DEVPOS(lci+7,cci+22);DEVOUT(TRANSFORM(mtot_comiss/mtot_quantd,'999.99'))
+        DEVPOS(lci+8,cci+22);DEVOUT(TRANSFORM(mcomi_dupr,'999.99'))
+        SETCOR(1)
+        @ lci+7,cci+52 GET mcomissao PICT '9999.99'
+        @ lci+8,cci+52 GET mcom_dupr PICT '9999.99'
+        READ
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        opcao := op_simnao('N','Confirma o Ajuste da Comissao:')
+        IF LASTKEY() = 27 .OR. opcao = 'N'
+                LOOP
+        ENDIF
+        ****************
+        SELE('ped_s');ORDSETFOCUS(6)
+        GO mpoint
+        ****************
+        WHILE STRZERO(mnum_ped,6) = ped_s->pnum_ped .AND. ! EOF()
+                IF BLOQREG()
+                        ped_s->pcomissao := ped_s->pcomissao + mcomissao
+                ENDIF
+                SKIP
+        ENDDO
+        DBCOMMITALL()
+        DBUNLOCKALL()
+        GO mpoint
+        IF ped_s->ppag = '*'
+                ****************
+                SELE('mov');ORDSETFOCUS(5)
+                ****************
+                GO mponto
+                WHILE STRZERO(mnum_ped,6) = mov->num_ped .AND. ! EOF()
+                        IF BLOQREG()
+                                mov->comissao := mov->comissao + mcomissao
+                        ENDIF
+                        SKIP
+                ENDDO
+                IF ! EMPTY(mcom_dupr)
+                        ****************
+                        SELE('dupr');ORDSETFOCUS(7)
+                        GO TOP
+                        ****************
+                        IF dupr->(DBSEEK(STRZERO(mnum_ped,6)))
+                                WHILE STRZERO(mnum_ped,6) = dupr->num_ped .AND. ! EOF()
+                                        IF BLOQREG()
+                                                dupr->comissao := mcom_dupr
+                                        ENDIF
+                                        SKIP
+                                ENDDO
+                        ENDIF
+                        DBCOMMITALL()
+                        DBUNLOCKALL()
+                ENDIF
+        ENDIF
+ENDDO
+RETURN NIL
+

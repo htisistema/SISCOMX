@@ -1,0 +1,1078 @@
+<!--
+################################################
+# xDevStudio Project - xdev@kssoftware.com.br  #
+# Created @ 3/11/2011 17:04:41                 #
+#                                              #
+### Standard xDev TagList - Layout v1.5 ########
+-->
+<taglist>
+   <tag filename="C:\helio\siachb\SAC.PRG" name="TESTA2" args=" " scope="PUBLIC" type="ptFunction" line="846">
+   <tag filename="C:\helio\siachb\SAC.PRG" name="TESTA1" args=" " scope="PUBLIC" type="ptFunction" line="837">
+   <tag filename="C:\helio\siachb\SAC.PRG" name="DisplayTime" args=" " scope="PUBLIC" type="ptFunction" line="825">
+   <tag filename="C:\helio\siachb\SAC.PRG" name="ShowClue" args="<.><.><.> " scope="PUBLIC" type="ptFunction" line="783">
+   <tag filename="C:\helio\siachb\SAC.PRG" name="main" args="<mtc>, <mecf>, <mtipo_tela> " scope="PUBLIC" type="ptFunction" line="31">
+   <tag filename="C:\helio\siachb\SAC3.PRG" name="sac3" args=" " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="AfterInkey" args="<nkey> " scope="PUBLIC" type="ptFunction" line="1202">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="sac0" args=" " scope="PUBLIC" type="ptFunction" line="429">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUEMP_1" args=" " scope="STATIC" type="ptConstant" line="425">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUSAI_3" args=" " scope="STATIC" type="ptConstant" line="423">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUSAI_2" args=" " scope="STATIC" type="ptConstant" line="422">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUSAI_1" args=" " scope="STATIC" type="ptConstant" line="421">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_58" args=" " scope="STATIC" type="ptConstant" line="419">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_57" args=" " scope="STATIC" type="ptConstant" line="418">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_56" args=" " scope="STATIC" type="ptConstant" line="417">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_55" args=" " scope="STATIC" type="ptConstant" line="416">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_54" args=" " scope="STATIC" type="ptConstant" line="415">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_53" args=" " scope="STATIC" type="ptConstant" line="414">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_52" args=" " scope="STATIC" type="ptConstant" line="413">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_51" args=" " scope="STATIC" type="ptConstant" line="412">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_50" args=" " scope="STATIC" type="ptConstant" line="411">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_49" args=" " scope="STATIC" type="ptConstant" line="410">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_48" args=" " scope="STATIC" type="ptConstant" line="409">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_47" args=" " scope="STATIC" type="ptConstant" line="408">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_46" args=" " scope="STATIC" type="ptConstant" line="407">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_45" args=" " scope="STATIC" type="ptConstant" line="406">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_44" args=" " scope="STATIC" type="ptConstant" line="405">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_43" args=" " scope="STATIC" type="ptConstant" line="404">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_42" args=" " scope="STATIC" type="ptConstant" line="403">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_41" args=" " scope="STATIC" type="ptConstant" line="402">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_40" args=" " scope="STATIC" type="ptConstant" line="401">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_39" args=" " scope="STATIC" type="ptConstant" line="400">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_38" args=" " scope="STATIC" type="ptConstant" line="399">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_37" args=" " scope="STATIC" type="ptConstant" line="398">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_36" args=" " scope="STATIC" type="ptConstant" line="397">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_35" args=" " scope="STATIC" type="ptConstant" line="396">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_34" args=" " scope="STATIC" type="ptConstant" line="395">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_33" args=" " scope="STATIC" type="ptConstant" line="394">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_32" args=" " scope="STATIC" type="ptConstant" line="393">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_30" args=" " scope="STATIC" type="ptConstant" line="391">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_29" args=" " scope="STATIC" type="ptConstant" line="390">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_28" args=" " scope="STATIC" type="ptConstant" line="389">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_27" args=" " scope="STATIC" type="ptConstant" line="388">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_26" args=" " scope="STATIC" type="ptConstant" line="387">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_25" args=" " scope="STATIC" type="ptConstant" line="386">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_24" args=" " scope="STATIC" type="ptConstant" line="385">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_23" args=" " scope="STATIC" type="ptConstant" line="384">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_22" args=" " scope="STATIC" type="ptConstant" line="383">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_21" args=" " scope="STATIC" type="ptConstant" line="382">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_20" args=" " scope="STATIC" type="ptConstant" line="381">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_18" args=" " scope="STATIC" type="ptConstant" line="380">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_17" args=" " scope="STATIC" type="ptConstant" line="379">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_16" args=" " scope="STATIC" type="ptConstant" line="378">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_15" args=" " scope="STATIC" type="ptConstant" line="377">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_14" args=" " scope="STATIC" type="ptConstant" line="376">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_13" args=" " scope="STATIC" type="ptConstant" line="375">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_12" args=" " scope="STATIC" type="ptConstant" line="374">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_11" args=" " scope="STATIC" type="ptConstant" line="373">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_10" args=" " scope="STATIC" type="ptConstant" line="372">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_9" args=" " scope="STATIC" type="ptConstant" line="371">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_8" args=" " scope="STATIC" type="ptConstant" line="370">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_7" args=" " scope="STATIC" type="ptConstant" line="369">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_6" args=" " scope="STATIC" type="ptConstant" line="368">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_5" args=" " scope="STATIC" type="ptConstant" line="367">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_4" args=" " scope="STATIC" type="ptConstant" line="366">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_3" args=" " scope="STATIC" type="ptConstant" line="365">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_2" args=" " scope="STATIC" type="ptConstant" line="364">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUUTIL_1" args=" " scope="STATIC" type="ptConstant" line="363">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_67" args=" " scope="STATIC" type="ptConstant" line="361">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_66" args=" " scope="STATIC" type="ptConstant" line="360">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_65" args=" " scope="STATIC" type="ptConstant" line="359">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_64" args=" " scope="STATIC" type="ptConstant" line="358">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_63" args=" " scope="STATIC" type="ptConstant" line="357">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_62" args=" " scope="STATIC" type="ptConstant" line="356">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_61" args=" " scope="STATIC" type="ptConstant" line="355">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_60" args=" " scope="STATIC" type="ptConstant" line="354">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_59" args=" " scope="STATIC" type="ptConstant" line="353">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_58" args=" " scope="STATIC" type="ptConstant" line="352">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_57" args=" " scope="STATIC" type="ptConstant" line="351">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_56" args=" " scope="STATIC" type="ptConstant" line="350">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_55" args=" " scope="STATIC" type="ptConstant" line="349">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_54" args=" " scope="STATIC" type="ptConstant" line="348">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_53" args=" " scope="STATIC" type="ptConstant" line="347">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_52" args=" " scope="STATIC" type="ptConstant" line="346">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_51" args=" " scope="STATIC" type="ptConstant" line="345">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_50" args=" " scope="STATIC" type="ptConstant" line="344">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_49" args=" " scope="STATIC" type="ptConstant" line="343">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_48" args=" " scope="STATIC" type="ptConstant" line="342">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_47" args=" " scope="STATIC" type="ptConstant" line="341">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_46" args=" " scope="STATIC" type="ptConstant" line="340">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_45" args=" " scope="STATIC" type="ptConstant" line="339">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_44" args=" " scope="STATIC" type="ptConstant" line="338">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_43" args=" " scope="STATIC" type="ptConstant" line="337">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_42" args=" " scope="STATIC" type="ptConstant" line="336">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_41" args=" " scope="STATIC" type="ptConstant" line="335">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_40" args=" " scope="STATIC" type="ptConstant" line="334">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_39" args=" " scope="STATIC" type="ptConstant" line="333">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_38" args=" " scope="STATIC" type="ptConstant" line="332">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_37" args=" " scope="STATIC" type="ptConstant" line="331">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_36" args=" " scope="STATIC" type="ptConstant" line="330">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_35" args=" " scope="STATIC" type="ptConstant" line="329">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_34" args=" " scope="STATIC" type="ptConstant" line="328">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_33" args=" " scope="STATIC" type="ptConstant" line="327">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_32" args=" " scope="STATIC" type="ptConstant" line="326">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_31" args=" " scope="STATIC" type="ptConstant" line="325">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_30" args=" " scope="STATIC" type="ptConstant" line="324">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_29" args=" " scope="STATIC" type="ptConstant" line="323">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_28" args=" " scope="STATIC" type="ptConstant" line="322">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_27" args=" " scope="STATIC" type="ptConstant" line="321">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_26" args=" " scope="STATIC" type="ptConstant" line="320">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_25" args=" " scope="STATIC" type="ptConstant" line="319">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_24" args=" " scope="STATIC" type="ptConstant" line="318">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_23" args=" " scope="STATIC" type="ptConstant" line="317">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_22" args=" " scope="STATIC" type="ptConstant" line="316">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_21" args=" " scope="STATIC" type="ptConstant" line="315">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_20" args=" " scope="STATIC" type="ptConstant" line="314">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_19" args=" " scope="STATIC" type="ptConstant" line="313">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_18" args=" " scope="STATIC" type="ptConstant" line="312">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_17" args=" " scope="STATIC" type="ptConstant" line="311">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_16" args=" " scope="STATIC" type="ptConstant" line="310">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_15" args=" " scope="STATIC" type="ptConstant" line="309">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_14" args=" " scope="STATIC" type="ptConstant" line="308">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_13" args=" " scope="STATIC" type="ptConstant" line="307">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_12" args=" " scope="STATIC" type="ptConstant" line="306">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_10" args=" " scope="STATIC" type="ptConstant" line="304">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_9" args=" " scope="STATIC" type="ptConstant" line="303">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_8" args=" " scope="STATIC" type="ptConstant" line="302">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_7" args=" " scope="STATIC" type="ptConstant" line="301">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_6" args=" " scope="STATIC" type="ptConstant" line="300">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_5" args=" " scope="STATIC" type="ptConstant" line="299">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_4" args=" " scope="STATIC" type="ptConstant" line="298">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_3" args=" " scope="STATIC" type="ptConstant" line="297">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_2" args=" " scope="STATIC" type="ptConstant" line="296">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUREL_1" args=" " scope="STATIC" type="ptConstant" line="295">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_29" args=" " scope="STATIC" type="ptConstant" line="293">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_28" args=" " scope="STATIC" type="ptConstant" line="292">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_27" args=" " scope="STATIC" type="ptConstant" line="291">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_26" args=" " scope="STATIC" type="ptConstant" line="290">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_25" args=" " scope="STATIC" type="ptConstant" line="289">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_24" args=" " scope="STATIC" type="ptConstant" line="288">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_23" args=" " scope="STATIC" type="ptConstant" line="287">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_22" args=" " scope="STATIC" type="ptConstant" line="286">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_21" args=" " scope="STATIC" type="ptConstant" line="285">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_20" args=" " scope="STATIC" type="ptConstant" line="284">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_19" args=" " scope="STATIC" type="ptConstant" line="283">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_18" args=" " scope="STATIC" type="ptConstant" line="282">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_17" args=" " scope="STATIC" type="ptConstant" line="281">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_16" args=" " scope="STATIC" type="ptConstant" line="280">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_15" args=" " scope="STATIC" type="ptConstant" line="279">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_14" args=" " scope="STATIC" type="ptConstant" line="278">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_13" args=" " scope="STATIC" type="ptConstant" line="277">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_12" args=" " scope="STATIC" type="ptConstant" line="276">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_11" args=" " scope="STATIC" type="ptConstant" line="275">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_10" args=" " scope="STATIC" type="ptConstant" line="274">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_9" args=" " scope="STATIC" type="ptConstant" line="273">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_8" args=" " scope="STATIC" type="ptConstant" line="272">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_7" args=" " scope="STATIC" type="ptConstant" line="271">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_6" args=" " scope="STATIC" type="ptConstant" line="270">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_5" args=" " scope="STATIC" type="ptConstant" line="269">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_4" args=" " scope="STATIC" type="ptConstant" line="268">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_3" args=" " scope="STATIC" type="ptConstant" line="267">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCONS_1" args=" " scope="STATIC" type="ptConstant" line="265">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_31" args=" " scope="STATIC" type="ptConstant" line="263">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_30" args=" " scope="STATIC" type="ptConstant" line="262">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_29" args=" " scope="STATIC" type="ptConstant" line="261">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_28" args=" " scope="STATIC" type="ptConstant" line="260">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_27" args=" " scope="STATIC" type="ptConstant" line="259">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_26" args=" " scope="STATIC" type="ptConstant" line="258">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_25" args=" " scope="STATIC" type="ptConstant" line="257">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_24" args=" " scope="STATIC" type="ptConstant" line="256">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_23" args=" " scope="STATIC" type="ptConstant" line="255">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_22" args=" " scope="STATIC" type="ptConstant" line="254">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_21" args=" " scope="STATIC" type="ptConstant" line="253">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_20" args=" " scope="STATIC" type="ptConstant" line="252">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_19" args=" " scope="STATIC" type="ptConstant" line="251">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_18" args=" " scope="STATIC" type="ptConstant" line="250">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_17" args=" " scope="STATIC" type="ptConstant" line="249">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_16" args=" " scope="STATIC" type="ptConstant" line="248">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_15" args=" " scope="STATIC" type="ptConstant" line="247">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_14" args=" " scope="STATIC" type="ptConstant" line="246">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_13" args=" " scope="STATIC" type="ptConstant" line="245">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_12" args=" " scope="STATIC" type="ptConstant" line="244">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_10" args=" " scope="STATIC" type="ptConstant" line="242">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_9" args=" " scope="STATIC" type="ptConstant" line="241">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_8" args=" " scope="STATIC" type="ptConstant" line="240">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_7" args=" " scope="STATIC" type="ptConstant" line="239">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_5" args=" " scope="STATIC" type="ptConstant" line="237">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_4" args=" " scope="STATIC" type="ptConstant" line="236">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_3" args=" " scope="STATIC" type="ptConstant" line="235">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_2" args=" " scope="STATIC" type="ptConstant" line="234">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUCX_1" args=" " scope="STATIC" type="ptConstant" line="233">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUTROC_3" args=" " scope="STATIC" type="ptConstant" line="231">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUTROC_2" args=" " scope="STATIC" type="ptConstant" line="230">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUTROC_1" args=" " scope="STATIC" type="ptConstant" line="229">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_38" args=" " scope="STATIC" type="ptConstant" line="227">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_37" args=" " scope="STATIC" type="ptConstant" line="226">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_36" args=" " scope="STATIC" type="ptConstant" line="225">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_35" args=" " scope="STATIC" type="ptConstant" line="224">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_34" args=" " scope="STATIC" type="ptConstant" line="223">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_33" args=" " scope="STATIC" type="ptConstant" line="222">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_32" args=" " scope="STATIC" type="ptConstant" line="221">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_31" args=" " scope="STATIC" type="ptConstant" line="220">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_30" args=" " scope="STATIC" type="ptConstant" line="219">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_29" args=" " scope="STATIC" type="ptConstant" line="218">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_28" args=" " scope="STATIC" type="ptConstant" line="217">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_27" args=" " scope="STATIC" type="ptConstant" line="216">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_26" args=" " scope="STATIC" type="ptConstant" line="215">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_25" args=" " scope="STATIC" type="ptConstant" line="213">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_24" args=" " scope="STATIC" type="ptConstant" line="212">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_23" args=" " scope="STATIC" type="ptConstant" line="211">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_22" args=" " scope="STATIC" type="ptConstant" line="210">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_21" args=" " scope="STATIC" type="ptConstant" line="209">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_20" args=" " scope="STATIC" type="ptConstant" line="208">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_13" args=" " scope="STATIC" type="ptConstant" line="206">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_12" args=" " scope="STATIC" type="ptConstant" line="205">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_11" args=" " scope="STATIC" type="ptConstant" line="204">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_10" args=" " scope="STATIC" type="ptConstant" line="203">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_9" args=" " scope="STATIC" type="ptConstant" line="202">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_8" args=" " scope="STATIC" type="ptConstant" line="201">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_7" args=" " scope="STATIC" type="ptConstant" line="200">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_6" args=" " scope="STATIC" type="ptConstant" line="199">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_5" args=" " scope="STATIC" type="ptConstant" line="198">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_4" args=" " scope="STATIC" type="ptConstant" line="197">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_3" args=" " scope="STATIC" type="ptConstant" line="196">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_2" args=" " scope="STATIC" type="ptConstant" line="195">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPR_1" args=" " scope="STATIC" type="ptConstant" line="194">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPP_13" args=" " scope="STATIC" type="ptConstant" line="192">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPP_12" args=" " scope="STATIC" type="ptConstant" line="191">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPP_11" args=" " scope="STATIC" type="ptConstant" line="190">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPP_10" args=" " scope="STATIC" type="ptConstant" line="189">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPP_9" args=" " scope="STATIC" type="ptConstant" line="188">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPP_8" args=" " scope="STATIC" type="ptConstant" line="187">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPP_7" args=" " scope="STATIC" type="ptConstant" line="186">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPP_6" args=" " scope="STATIC" type="ptConstant" line="185">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPP_5" args=" " scope="STATIC" type="ptConstant" line="184">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPP_4" args=" " scope="STATIC" type="ptConstant" line="183">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPP_3" args=" " scope="STATIC" type="ptConstant" line="182">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPP_2" args=" " scope="STATIC" type="ptConstant" line="181">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUDUPP_1" args=" " scope="STATIC" type="ptConstant" line="180">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUHV_4" args=" " scope="STATIC" type="ptConstant" line="178">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUHV_3" args=" " scope="STATIC" type="ptConstant" line="177">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUHV_2" args=" " scope="STATIC" type="ptConstant" line="176">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUHV_1" args=" " scope="STATIC" type="ptConstant" line="175">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUORC_11" args=" " scope="STATIC" type="ptConstant" line="173">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUORC_10" args=" " scope="STATIC" type="ptConstant" line="172">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUORC_9" args=" " scope="STATIC" type="ptConstant" line="171">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUORC_8" args=" " scope="STATIC" type="ptConstant" line="170">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUORC_7" args=" " scope="STATIC" type="ptConstant" line="169">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUORC_6" args=" " scope="STATIC" type="ptConstant" line="168">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUORC_5" args=" " scope="STATIC" type="ptConstant" line="167">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUORC_4" args=" " scope="STATIC" type="ptConstant" line="166">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUORC_3" args=" " scope="STATIC" type="ptConstant" line="165">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUORC_2" args=" " scope="STATIC" type="ptConstant" line="164">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUORC_1" args=" " scope="STATIC" type="ptConstant" line="163">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUNF_13" args=" " scope="STATIC" type="ptConstant" line="161">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUNF_12" args=" " scope="STATIC" type="ptConstant" line="160">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUNF_11" args=" " scope="STATIC" type="ptConstant" line="159">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUNF_10" args=" " scope="STATIC" type="ptConstant" line="158">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUNF_9" args=" " scope="STATIC" type="ptConstant" line="157">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUNF_8" args=" " scope="STATIC" type="ptConstant" line="156">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUNF_7" args=" " scope="STATIC" type="ptConstant" line="155">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUNF_6" args=" " scope="STATIC" type="ptConstant" line="154">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUNF_5" args=" " scope="STATIC" type="ptConstant" line="153">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUNF_4" args=" " scope="STATIC" type="ptConstant" line="152">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUNF_3" args=" " scope="STATIC" type="ptConstant" line="151">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUNF_2" args=" " scope="STATIC" type="ptConstant" line="150">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUNF_1" args=" " scope="STATIC" type="ptConstant" line="149">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPEDC_4" args=" " scope="STATIC" type="ptConstant" line="147">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPEDC_3" args=" " scope="STATIC" type="ptConstant" line="146">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPEDC_2" args=" " scope="STATIC" type="ptConstant" line="145">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPEDC_1" args=" " scope="STATIC" type="ptConstant" line="144">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPED_12" args=" " scope="STATIC" type="ptConstant" line="142">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPED_11" args=" " scope="STATIC" type="ptConstant" line="141">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPED_10" args=" " scope="STATIC" type="ptConstant" line="140">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPED_9" args=" " scope="STATIC" type="ptConstant" line="139">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPED_8" args=" " scope="STATIC" type="ptConstant" line="138">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPED_7" args=" " scope="STATIC" type="ptConstant" line="137">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPED_6" args=" " scope="STATIC" type="ptConstant" line="136">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPED_5" args=" " scope="STATIC" type="ptConstant" line="135">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPED_3" args=" " scope="STATIC" type="ptConstant" line="133">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPED_2" args=" " scope="STATIC" type="ptConstant" line="132">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUPED_1" args=" " scope="STATIC" type="ptConstant" line="131">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_91" args=" " scope="STATIC" type="ptConstant" line="129">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_90" args=" " scope="STATIC" type="ptConstant" line="128">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_89" args=" " scope="STATIC" type="ptConstant" line="127">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_88" args=" " scope="STATIC" type="ptConstant" line="126">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_87" args=" " scope="STATIC" type="ptConstant" line="125">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_86" args=" " scope="STATIC" type="ptConstant" line="123">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_85" args=" " scope="STATIC" type="ptConstant" line="122">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_84" args=" " scope="STATIC" type="ptConstant" line="121">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_83" args=" " scope="STATIC" type="ptConstant" line="120">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_82" args=" " scope="STATIC" type="ptConstant" line="119">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_6" args=" " scope="STATIC" type="ptConstant" line="117">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_12" args=" " scope="STATIC" type="ptConstant" line="116">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_9" args=" " scope="STATIC" type="ptConstant" line="115">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_8" args=" " scope="STATIC" type="ptConstant" line="114">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_81" args=" " scope="STATIC" type="ptConstant" line="113">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_80" args=" " scope="STATIC" type="ptConstant" line="112">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_79" args=" " scope="STATIC" type="ptConstant" line="111">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_78" args=" " scope="STATIC" type="ptConstant" line="110">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_77" args=" " scope="STATIC" type="ptConstant" line="109">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_76" args=" " scope="STATIC" type="ptConstant" line="108">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_75" args=" " scope="STATIC" type="ptConstant" line="107">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_74" args=" " scope="STATIC" type="ptConstant" line="106">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_73" args=" " scope="STATIC" type="ptConstant" line="105">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_72" args=" " scope="STATIC" type="ptConstant" line="104">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_71" args=" " scope="STATIC" type="ptConstant" line="103">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_70" args=" " scope="STATIC" type="ptConstant" line="102">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_69" args=" " scope="STATIC" type="ptConstant" line="101">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_68" args=" " scope="STATIC" type="ptConstant" line="100">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_67" args=" " scope="STATIC" type="ptConstant" line="99">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_66" args=" " scope="STATIC" type="ptConstant" line="98">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_65" args=" " scope="STATIC" type="ptConstant" line="97">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_64" args=" " scope="STATIC" type="ptConstant" line="96">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_63" args=" " scope="STATIC" type="ptConstant" line="95">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_62" args=" " scope="STATIC" type="ptConstant" line="94">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_61" args=" " scope="STATIC" type="ptConstant" line="93">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_60" args=" " scope="STATIC" type="ptConstant" line="92">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_59" args=" " scope="STATIC" type="ptConstant" line="91">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_58" args=" " scope="STATIC" type="ptConstant" line="90">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_57" args=" " scope="STATIC" type="ptConstant" line="89">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_56" args=" " scope="STATIC" type="ptConstant" line="88">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_55" args=" " scope="STATIC" type="ptConstant" line="87">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_54" args=" " scope="STATIC" type="ptConstant" line="86">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_53" args=" " scope="STATIC" type="ptConstant" line="85">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_52" args=" " scope="STATIC" type="ptConstant" line="84">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_51" args=" " scope="STATIC" type="ptConstant" line="83">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_50" args=" " scope="STATIC" type="ptConstant" line="82">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_49" args=" " scope="STATIC" type="ptConstant" line="81">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_48" args=" " scope="STATIC" type="ptConstant" line="80">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_47" args=" " scope="STATIC" type="ptConstant" line="79">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_46" args=" " scope="STATIC" type="ptConstant" line="78">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_45" args=" " scope="STATIC" type="ptConstant" line="77">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_44" args=" " scope="STATIC" type="ptConstant" line="76">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_43" args=" " scope="STATIC" type="ptConstant" line="75">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_42" args=" " scope="STATIC" type="ptConstant" line="74">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_41" args=" " scope="STATIC" type="ptConstant" line="73">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_40" args=" " scope="STATIC" type="ptConstant" line="72">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_39" args=" " scope="STATIC" type="ptConstant" line="71">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_38" args=" " scope="STATIC" type="ptConstant" line="70">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_37" args=" " scope="STATIC" type="ptConstant" line="69">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_36" args=" " scope="STATIC" type="ptConstant" line="68">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_35" args=" " scope="STATIC" type="ptConstant" line="67">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_34" args=" " scope="STATIC" type="ptConstant" line="66">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_33" args=" " scope="STATIC" type="ptConstant" line="65">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_32" args=" " scope="STATIC" type="ptConstant" line="64">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_31" args=" " scope="STATIC" type="ptConstant" line="63">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_30" args=" " scope="STATIC" type="ptConstant" line="62">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_29" args=" " scope="STATIC" type="ptConstant" line="61">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_28" args=" " scope="STATIC" type="ptConstant" line="60">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_27" args=" " scope="STATIC" type="ptConstant" line="59">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_26" args=" " scope="STATIC" type="ptConstant" line="58">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_25" args=" " scope="STATIC" type="ptConstant" line="57">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_24" args=" " scope="STATIC" type="ptConstant" line="56">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_23" args=" " scope="STATIC" type="ptConstant" line="55">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_22" args=" " scope="STATIC" type="ptConstant" line="54">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_21" args=" " scope="STATIC" type="ptConstant" line="53">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_20" args=" " scope="STATIC" type="ptConstant" line="52">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_18" args=" " scope="STATIC" type="ptConstant" line="51">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_15" args=" " scope="STATIC" type="ptConstant" line="50">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_14" args=" " scope="STATIC" type="ptConstant" line="49">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_13" args=" " scope="STATIC" type="ptConstant" line="48">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_11" args=" " scope="STATIC" type="ptConstant" line="47">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_10" args=" " scope="STATIC" type="ptConstant" line="46">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_7" args=" " scope="STATIC" type="ptConstant" line="45">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_5" args=" " scope="STATIC" type="ptConstant" line="44">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_4" args=" " scope="STATIC" type="ptConstant" line="43">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_3" args=" " scope="STATIC" type="ptConstant" line="42">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_2" args=" " scope="STATIC" type="ptConstant" line="41">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUMOV_1" args=" " scope="STATIC" type="ptConstant" line="40">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_25" args=" " scope="STATIC" type="ptConstant" line="38">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_24" args=" " scope="STATIC" type="ptConstant" line="37">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_23" args=" " scope="STATIC" type="ptConstant" line="36">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_22" args=" " scope="STATIC" type="ptConstant" line="35">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_21" args=" " scope="STATIC" type="ptConstant" line="34">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_20" args=" " scope="STATIC" type="ptConstant" line="33">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_19" args=" " scope="STATIC" type="ptConstant" line="32">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_18" args=" " scope="STATIC" type="ptConstant" line="31">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_16" args=" " scope="STATIC" type="ptConstant" line="30">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_15" args=" " scope="STATIC" type="ptConstant" line="29">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_14" args=" " scope="STATIC" type="ptConstant" line="28">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_13" args=" " scope="STATIC" type="ptConstant" line="27">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_12" args=" " scope="STATIC" type="ptConstant" line="26">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_11" args=" " scope="STATIC" type="ptConstant" line="25">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_10" args=" " scope="STATIC" type="ptConstant" line="24">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_9" args=" " scope="STATIC" type="ptConstant" line="23">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_8" args=" " scope="STATIC" type="ptConstant" line="22">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_7" args=" " scope="STATIC" type="ptConstant" line="21">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_6" args=" " scope="STATIC" type="ptConstant" line="20">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_5" args=" " scope="STATIC" type="ptConstant" line="19">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_4" args=" " scope="STATIC" type="ptConstant" line="18">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_3" args=" " scope="STATIC" type="ptConstant" line="17">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_2" args=" " scope="STATIC" type="ptConstant" line="16">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="MENUARQ_1" args=" " scope="STATIC" type="ptConstant" line="15">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="NBotao9" args=" " scope="STATIC" type="ptConstant" line="13">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="NBotao8" args=" " scope="STATIC" type="ptConstant" line="12">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="NBotao7" args=" " scope="STATIC" type="ptConstant" line="11">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="NBotao6" args=" " scope="STATIC" type="ptConstant" line="10">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="NBotao5" args=" " scope="STATIC" type="ptConstant" line="9">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="NBotao4" args=" " scope="STATIC" type="ptConstant" line="8">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="NBotao3" args=" " scope="STATIC" type="ptConstant" line="7">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="NBotao2" args=" " scope="STATIC" type="ptConstant" line="6">
+   <tag filename="C:\helio\siachb\SAC00.PRG" name="NBotao1" args=" " scope="STATIC" type="ptConstant" line="5">
+   <tag filename="C:\helio\siachb\SAC42.PRG" name="sac42" args="<mtipo_con> " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\helio\siachb\SAC42.PRG" name="clicheq" args=" " scope="PUBLIC" type="ptFunction" line="665">
+   <tag filename="C:\helio\siachb\SAC58.PRG" name="sac58" args=" " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\helio\siachb\SAC58.PRG" name="imp_g" args="<vgrupo1>, <vgrupo2> " scope="PUBLIC" type="ptFunction" line="366">
+   <tag filename="C:\helio\siachb\SAC58.PRG" name="imp_sg" args="<vgrupo>, <vsgru>, <vdesc> " scope="PUBLIC" type="ptFunction" line="749">
+   <tag filename="C:\helio\siachb\CON22.PRG" name="con22" args="<mtip>, <mcx> " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\helio\siachb\CON42.PRG" name="cheq_res" args=" " scope="PUBLIC" type="ptFunction" line="116">
+   <tag filename="C:\helio\siachb\CON42.PRG" name="con42" args="<mtp_> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VendaInkey" args="<nkey> " scope="PUBLIC" type="ptFunction" line="295">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="venda" args="<mtipo_mod> " scope="PUBLIC" type="ptFunction" line="69">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA28" args=" " scope="PUBLIC" type="ptConstant" line="64">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA27" args=" " scope="PUBLIC" type="ptConstant" line="63">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA26" args=" " scope="PUBLIC" type="ptConstant" line="62">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA25" args=" " scope="PUBLIC" type="ptConstant" line="61">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA24" args=" " scope="PUBLIC" type="ptConstant" line="60">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA23" args=" " scope="PUBLIC" type="ptConstant" line="59">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA22" args=" " scope="PUBLIC" type="ptConstant" line="58">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA21" args=" " scope="PUBLIC" type="ptConstant" line="57">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA20" args=" " scope="PUBLIC" type="ptConstant" line="56">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA19" args=" " scope="PUBLIC" type="ptConstant" line="55">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA18" args=" " scope="PUBLIC" type="ptConstant" line="54">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA17" args=" " scope="PUBLIC" type="ptConstant" line="53">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA16" args=" " scope="PUBLIC" type="ptConstant" line="52">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA15" args=" " scope="PUBLIC" type="ptConstant" line="51">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA14" args=" " scope="PUBLIC" type="ptConstant" line="50">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA13" args=" " scope="PUBLIC" type="ptConstant" line="49">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA12" args=" " scope="PUBLIC" type="ptConstant" line="48">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA11" args=" " scope="PUBLIC" type="ptConstant" line="47">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA10" args=" " scope="PUBLIC" type="ptConstant" line="46">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA9" args=" " scope="PUBLIC" type="ptConstant" line="45">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA8" args=" " scope="PUBLIC" type="ptConstant" line="44">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA7" args=" " scope="PUBLIC" type="ptConstant" line="43">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA6" args=" " scope="PUBLIC" type="ptConstant" line="42">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA5" args=" " scope="PUBLIC" type="ptConstant" line="41">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA4" args=" " scope="PUBLIC" type="ptConstant" line="40">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA3" args=" " scope="PUBLIC" type="ptConstant" line="39">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA2" args=" " scope="PUBLIC" type="ptConstant" line="38">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="CAIXA1" args=" " scope="PUBLIC" type="ptConstant" line="37">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA22" args=" " scope="PUBLIC" type="ptConstant" line="35">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA21" args=" " scope="PUBLIC" type="ptConstant" line="34">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA20" args=" " scope="PUBLIC" type="ptConstant" line="33">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA19" args=" " scope="PUBLIC" type="ptConstant" line="32">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA18" args=" " scope="PUBLIC" type="ptConstant" line="31">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA17" args=" " scope="PUBLIC" type="ptConstant" line="30">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA16" args=" " scope="PUBLIC" type="ptConstant" line="29">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA15" args=" " scope="PUBLIC" type="ptConstant" line="28">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA14" args=" " scope="PUBLIC" type="ptConstant" line="27">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA13" args=" " scope="PUBLIC" type="ptConstant" line="26">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA12" args=" " scope="PUBLIC" type="ptConstant" line="25">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA11" args=" " scope="PUBLIC" type="ptConstant" line="24">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA10" args=" " scope="PUBLIC" type="ptConstant" line="23">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA9" args=" " scope="PUBLIC" type="ptConstant" line="22">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA8" args=" " scope="PUBLIC" type="ptConstant" line="21">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA7" args=" " scope="PUBLIC" type="ptConstant" line="20">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA6" args=" " scope="PUBLIC" type="ptConstant" line="19">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA5" args=" " scope="PUBLIC" type="ptConstant" line="18">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA4" args=" " scope="PUBLIC" type="ptConstant" line="17">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA3" args=" " scope="PUBLIC" type="ptConstant" line="16">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA2" args=" " scope="PUBLIC" type="ptConstant" line="15">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VENDA1" args=" " scope="PUBLIC" type="ptConstant" line="14">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VBotao9" args=" " scope="PUBLIC" type="ptConstant" line="12">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VBotao8" args=" " scope="PUBLIC" type="ptConstant" line="11">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VBotao7" args=" " scope="PUBLIC" type="ptConstant" line="10">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VBotao6" args=" " scope="PUBLIC" type="ptConstant" line="9">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VBotao5" args=" " scope="PUBLIC" type="ptConstant" line="8">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VBotao4" args=" " scope="PUBLIC" type="ptConstant" line="7">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VBotao3" args=" " scope="PUBLIC" type="ptConstant" line="6">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VBotao2" args=" " scope="PUBLIC" type="ptConstant" line="5">
+   <tag filename="C:\helio\siachb\VENDA.PRG" name="VBotao1" args=" " scope="PUBLIC" type="ptConstant" line="4">
+   <tag filename="C:\helio\siachb\SAC110.PRG" name="verclf" args="<vcodi>, <li>, <ci>, <t>, <mzero> " scope="PUBLIC" type="ptFunction" line="893">
+   <tag filename="C:\helio\siachb\SAC110.PRG" name="sac110" args="<op>, <comp>, <mcodbarr>, <mdesc_prod>, <mcodforn> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\SACTP.PRG" name="fecha_tp" args="<mtip>, <magrupar>, <orc_tp> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\SAC210.PRG" name="sac210" args=" " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\SAC111.PRG" name="sac111" args="<mcodigo>, <op> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\SAC111.PRG" name="fato_desc" args="<mcons> " scope="PUBLIC" type="ptFunction" line="503">
+   <tag filename="C:\helio\siachb\SAC130.PRG" name="sac211" args="<no_ped>, <mcorrecao>, <mno_ped>, <mel>, <mpeds>, <mnf1> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\SAC131.PRG" name="sac212" args="<mtp_nota> " scope="PUBLIC" type="ptFunction" line="3">
+   <tag filename="C:\helio\siachb\SAC131.PRG" name="ver_dup" args="<mnum> " scope="PUBLIC" type="ptFunction" line="330">
+   <tag filename="C:\helio\siachb\SAC523.PRG" name="sac523" args=" " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\CON221.PRG" name="con221" args="<cx>, <mtp> " scope="PUBLIC" type="ptFunction" line="8">
+   <tag filename="C:\helio\siachb\CON423.PRG" name="con423" args="<mtp_423> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\CON253.PRG" name="con253" args="<cx>, <mconsulta> " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\helio\siachb\CON244.PRG" name="c_con244" args=" " scope="PUBLIC" type="ptFunction" line="101">
+   <tag filename="C:\helio\siachb\CON244.PRG" name="con244" args="<mcli>, <mtp_> " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\helio\siachb\con254.prg" name="con254" args=" " scope="PUBLIC" type="ptFunction" line="6">
+   <tag filename="C:\helio\siachb\VENDA1.PRG" name="venda" args="<mdir> " scope="PUBLIC" type="ptFunction" line="7">
+   <tag filename="C:\helio\siachb\SACDBF.PRG" name="sacdbf" args="<mop>, <marquivo> " scope="PUBLIC" type="ptFunction" line="1">
+   <tag filename="C:\helio\siachb\SACCFG.PRG" name="saccfg" args="<mnao> " scope="PUBLIC" type="ptFunction" line="7">
+   <tag filename="C:\helio\siachb\SACCFG.PRG" name="sacdirf" args=" " scope="PUBLIC" type="ptFunction" line="530">
+   <tag filename="C:\helio\siachb\SACCFG.PRG" name="sacbkp" args="<mnao> " scope="PUBLIC" type="ptFunction" line="598">
+   <tag filename="C:\helio\siachb\SACCDX.PRG" name="saccdx" args="<indexar>, <mfile> " scope="PUBLIC" type="ptFunction" line="6">
+   <tag filename="C:\helio\siachb\CON2511.PRG" name="con2511" args=" " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="tira_acento" args="<mpalavra> " scope="PUBLIC" type="ptFunction" line="10609">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="alt_prod2" args="<vcd_prod> " scope="PUBLIC" type="ptFunction" line="10229">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_banco" args="<mnum_banco>, <mret> " scope="PUBLIC" type="ptFunction" line="10204">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="f8_prod" args="<mc_prod>, <mki> " scope="PUBLIC" type="ptFunction" line="10088">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="Cont_users" args=" " scope="PUBLIC" type="ptFunction" line="10057">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="fecha_tela" args=" " scope="PUBLIC" type="ptFunction" line="10052">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="dig_11" args="<mnumero> " scope="PUBLIC" type="ptFunction" line="9896">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="inventario" args=" " scope="PUBLIC" type="ptFunction" line="9751">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="apaga_hrb" args=" " scope="PUBLIC" type="ptFunction" line="9738">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="icm_merc" args="<cod> " scope="PUBLIC" type="ptFunction" line="9715">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_nat" args="<cod>, <mt_p>, <li>, <co> " scope="PUBLIC" type="ptFunction" line="9680">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="f5_trans" args="<mnome>, <mcgc>, <mend>, <mmun>, <muf>, <minsc>, <mplaca>, <mcod> " scope="PUBLIC" type="ptFunction" line="9592">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="emi_carne" args="<mn> " scope="PUBLIC" type="ptFunction" line="9396">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="c_credito" args=" " scope="PUBLIC" type="ptFunction" line="9354">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="cli_dup" args="<mcod>, <mcred>, <mdocu> " scope="PUBLIC" type="ptFunction" line="9310">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_aliq" args="<mcod>, <mtip> " scope="PUBLIC" type="ptFunction" line="9283">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_envelope" args="<menv>, <t>, <ali> " scope="PUBLIC" type="ptFunction" line="9246">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="limite" args="<mcod>, <mvalor>, <mtipo>, <mped> " scope="PUBLIC" type="ptFunction" line="9179">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_regi" args="<vreg>, <li>, <ci>, <t>, <mzero> " scope="PUBLIC" type="ptFunction" line="9125">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_cond" args="<mcod>, <ld>, <cd>, <p>, <valerta> " scope="PUBLIC" type="ptFunction" line="9084">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="pesq_cpf" args="<ncpf>, <narq>, <condicao> " scope="PUBLIC" type="ptFunction" line="9057">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_dia" args="<mv> " scope="PUBLIC" type="ptFunction" line="9033">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ped_rom" args="<mnum>, <tip> " scope="PUBLIC" type="ptFunction" line="9007">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="cons_luc" args=" " scope="PUBLIC" type="ptFunction" line="8980">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="unidade1" args="<munid> " scope="PUBLIC" type="ptFunction" line="8961">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="unidade" args="<munid>, <vimp> " scope="PUBLIC" type="ptFunction" line="8940">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="v_ped_nt" args="<num_pedido>, <p>, <mum> " scope="PUBLIC" type="ptFunction" line="8856">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="tabcliprod" args=" " scope="PUBLIC" type="ptFunction" line="8614">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="vercodbarra" args="<vgru>, <li>, <ci>, <t> " scope="PUBLIC" type="ptFunction" line="8574">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_gru" args="<vgru>, <ld>, <cd>, <t> " scope="PUBLIC" type="ptFunction" line="8541">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="cons_ref" args="<mref>, <mfab> " scope="PUBLIC" type="ptFunction" line="8357">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_dolar" args="<mdata>, <mtipo> " scope="PUBLIC" type="ptFunction" line="8255">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="f4_merc1" args="<cons>, <mfab>, <mvar_atac>, <mpercentual> " scope="PUBLIC" type="ptFunction" line="7920">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="f4_merc" args="<cons>, <mdcri>, <mvar_atac>, <mpercentual>, <prod> " scope="PUBLIC" type="ptFunction" line="7727">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_sgru" args="<vgru>, <vsgru>, <ld>, <cd>, <t> " scope="PUBLIC" type="ptFunction" line="7694">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_profi" args="<mcod_p>, <li>, <ci> " scope="PUBLIC" type="ptFunction" line="7658">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="cliprod" args=" " scope="PUBLIC" type="ptFunction" line="7599">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="f7_cli" args="<mop> " scope="PUBLIC" type="ptFunction" line="7192">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_ped" args="<mnum>, <mcodprod>, <mmen>, <mtpo>, <mver> " scope="PUBLIC" type="ptFunction" line="7142">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_compras" args="<mcod> " scope="PUBLIC" type="ptFunction" line="7130">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="juros_ped" args="<mnum> " scope="PUBLIC" type="ptFunction" line="7103">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="fimset" args=" " scope="PUBLIC" type="ptFunction" line="7088">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="cons_apag" args="<mop> " scope="PUBLIC" type="ptFunction" line="6923">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_cod" args="<vgru>, <li>, <ci>, <t>, <mzero>, <p> " scope="PUBLIC" type="ptFunction" line="6861">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="f9_conta" args="<mop> " scope="PUBLIC" type="ptFunction" line="6670">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="rec_dupr" args="<m_d>, <m_p>, <mqtd>, <mtot_m>, <mtot>, <mdat>, <mtipo_rel>, <mvlr_parc> " scope="PUBLIC" type="ptFunction" line="6308">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="dup_sis" args="<mcod>, <mnome>, <mend>, <mbairro>, <mcidade>, <muf>, <mcep>, <mtel>, <mcgc>, <minsc>, <mcpf>, <mend_cob>, <mbairro_cob>, <mcidade_cob>, <muf_cob>, <mcep_cob>, <mfone_cob>, <mtipo>, <mduplicata>, <memi_dup>, <mvenc_dup>, <mcod_ven>, <mvlr_dup>, <mfantasia>, <mn_fat>, <mv_fat>, <mdup_prom> " scope="PUBLIC" type="ptFunction" line="6091">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_aniv" args="<vcod>, <mpt> " scope="PUBLIC" type="ptFunction" line="6003">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="v_cnpjcpf" args="<ncgc> " scope="PUBLIC" type="ptFunction" line="5935">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="cons_che" args="<mop> " scope="PUBLIC" type="ptFunction" line="5841">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="cx_fechado" args=" " scope="PUBLIC" type="ptFunction" line="5819">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_mensa" args="<mcod>, <tp>, <rapida> " scope="PUBLIC" type="ptFunction" line="5748">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="smedalbum" args="<mletra>, <mcodfoto>, <mnomefoto>, <mcam>, <mcam1> " scope="PUBLIC" type="ptFunction" line="5630">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="verif_ean13" args="<mcodigo> " scope="PUBLIC" type="ptFunction" line="5589">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="expor_arq" args=" " scope="PUBLIC" type="ptFunction" line="5542">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="dbf_sql" args=" " scope="PUBLIC" type="ptFunction" line="5476">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="upload" args="<cBaseDir>, <cPrefix>, <cDriver> " scope="PUBLIC" type="ptFunction" line="4062">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="dbf2sql" args=" " scope="PUBLIC" type="ptFunction" line="4045">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="HDGETSERIAL" args=" " scope="PUBLIC" type="ptFunction" line="4023">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="hdserial" args="<p_hddrive> " scope="PUBLIC" type="ptFunction" line="4005">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="GetIp" args=" " scope="PUBLIC" type="ptFunction" line="3990">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="venda_av" args="<vnum_ped> " scope="PUBLIC" type="ptFunction" line="3965">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="MyRun2" args="<cRun> " scope="PUBLIC" type="ptFunction" line="3937">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="MYRUN" args="<cComando> " scope="PUBLIC" type="ptFunction" line="3927">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="op_tela" args="<op_l>, <op_c>, <op_lb>, <op_cb>, <op_mensagem>, <mli>, <mcent>, <mclose> " scope="PUBLIC" type="ptFunction" line="3905">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="op_simnaocan" args="<mtipo_op>, <mensagem>, <mtitulo> " scope="PUBLIC" type="ptFunction" line="3888">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="op_simnao" args="<mtipo_op>, <mensagem>, <mtitulo> " scope="PUBLIC" type="ptFunction" line="3874">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_ini" args=" " scope="PUBLIC" type="ptFunction" line="3838">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_acess" args="<vcd>, <li>, <ci>, <t>, <mzero>, <p> " scope="PUBLIC" type="ptFunction" line="3787">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="sacos2" args="<mop> " scope="PUBLIC" type="ptFunction" line="3559">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="sacler" args="<mrel> " scope="PUBLIC" type="ptFunction" line="3515">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="alt_data" args=" " scope="PUBLIC" type="ptFunction" line="3482">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="sacsenha" args="<mop> " scope="PUBLIC" type="ptFunction" line="2831">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="TestaIe" args="<cIe1>, <cUF> " scope="PUBLIC" type="ptFunction" line="2507">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="incl_firma" args="<t> " scope="PUBLIC" type="ptFunction" line="2166">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="prog_imp" args="<no>, <mcampo> " scope="PUBLIC" type="ptFunction" line="2152">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="lim_get" args=" " scope="PUBLIC" type="ptFunction" line="2145">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="men_get" args="<men_li>, <men_ci>, <mensagem>, <mcol> " scope="PUBLIC" type="ptFunction" line="2138">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="JANEL" args="<nCoord1>, <nCoord2>, <nCoord3>, <nCoord4>, <cTexto> " scope="STATIC" type="ptFunction" line="2116">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="BOTCALC" args="<nBotX>, <nBotY>, <cBotN>, <cBotC> " scope="STATIC" type="ptFunction" line="2047">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="CALCU" args=" " scope="PUBLIC" type="ptFunction" line="1866">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="exibi_prg" args="<vprg> " scope="PUBLIC" type="ptFunction" line="1839">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="datseman" args="<dds> " scope="PUBLIC" type="ptFunction" line="1807">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="botao1" args="<l>, <c>, <ll>, <cc>, <t>, <titulo>, <lado>, <cor_tit>, <mtamanho> " scope="PUBLIC" type="ptFunction" line="1785">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="botao" args="<l>, <c>, <ll>, <cc>, <t>, <titulo>, <lado>, <cor_tit>, <mtamanho> " scope="PUBLIC" type="ptFunction" line="1754">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="imp_data" args="<mdata> " scope="PUBLIC" type="ptFunction" line="1745">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="SUB_BANNER" args="<LIN>, <COL>, <STRING>, <VCOR> " scope="PUBLIC" type="ptFunction" line="1729">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="erro" args=" " scope="PUBLIC" type="ptFunction" line="1702">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="CALE" args=" " scope="PUBLIC" type="ptFunction" line="1617">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="pitalico" args="<P> " scope="PUBLIC" type="ptFunction" line="1607">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ctrl_w" args=" " scope="PUBLIC" type="ptFunction" line="1599">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_texto" args=" " scope="PUBLIC" type="ptFunction" line="1526">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="form_calc" args=" " scope="PUBLIC" type="ptFunction" line="1462">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="texto" args=" " scope="PUBLIC" type="ptFunction" line="1316">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="PegaSenha" args="<Senha>, <LinSenha>, <ColSenha>, <cor>, <mtamanho> " scope="PUBLIC" type="ptProcedure" line="1273">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="PegaChar" args=" " scope="PUBLIC" type="ptFunction" line="1263">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="dcripto" args="<mexp> " scope="PUBLIC" type="ptFunction" line="1085">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="cripto" args="<mexp>, <q> " scope="PUBLIC" type="ptFunction" line="905">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="fim" args="<msist>, <mtti> " scope="PUBLIC" type="ptFunction" line="783">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="inicializa" args=" " scope="PUBLIC" type="ptFunction" line="685">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_modulo" args="<mmodulo> " scope="PUBLIC" type="ptFunction" line="668">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="ver_nivel" args="<mmodulo>, <mdescri>, <mnivel>, <mconf_nivel>, <mamb>, <mopera> " scope="PUBLIC" type="ptFunction" line="615">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="AbriArq" args="<arq>, <al>, <tp>, <sit>, <vlocal>, <vext>, <vcamin>, <vmens> " scope="PUBLIC" type="ptFunction" line="543">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="adireg" args=" " scope="PUBLIC" type="ptFunction" line="525">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="bloqreg" args=" " scope="PUBLIC" type="ptFunction" line="500">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="bloqarq" args=" " scope="PUBLIC" type="ptFunction" line="476">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="cabecalho" args="<pag>, <tit>, <tipo>, <vprg>, <memp>, <vgru>, <vsubg>, <vforn>, <vcli>, <vven>, <vope> " scope="PUBLIC" type="ptFunction" line="382">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="janela" args="<li>, <cb>, <cab>, <p>, <lado> " scope="PUBLIC" type="ptFunction" line="359">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="limpa" args="<li>, <ci>, <lb>, <cb> " scope="PUBLIC" type="ptFunction" line="348">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="mensagem" args="<men> " scope="PUBLIC" type="ptFunction" line="339">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="mensagem2" args="<men>, <mvar>, <masc>, <mcond>, <mtp_var>, <linha> " scope="PUBLIC" type="ptFunction" line="294">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="mensagem1" args="<men>, <mop>, <mcond>, <linha>, <mop_linha>, <mesc>, <mmensagem> " scope="PUBLIC" type="ptFunction" line="216">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="atencao" args="<men>, <tipo> " scope="PUBLIC" type="ptFunction" line="203">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="imprt" args="<imp>, <tipo>, <linha>, <col> " scope="PUBLIC" type="ptFunction" line="105">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="tela" args="<mtitulo>, <tip> " scope="PUBLIC" type="ptFunction" line="60">
+   <tag filename="C:\helio\siachb\HRBFUN.PRG" name="setcor" args="<nTipCor>, <mtipo> " scope="PUBLIC" type="ptFunction" line="22">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="demo_orc" args=" " scope="PUBLIC" type="ptFunction" line="7279">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="LPAD" args="<xArg1>, <xArg2>, <xArg3> " scope="PUBLIC" type="ptFunction" line="7258">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="EXT" args="<xArg1>, <xArg2>, <xArg3>, <xArg4>, <xArg5> " scope="PUBLIC" type="ptFunction" line="7068">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="NMES" args="<xArg1> " scope="PUBLIC" type="ptFunction" line="7061">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="VCGC" args="<xArg1> " scope="PUBLIC" type="ptFunction" line="7027">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="GDV1" args="<xArg1> " scope="PUBLIC" type="ptFunction" line="7010">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="GDV2" args="<xArg1> " scope="PUBLIC" type="ptFunction" line="7001">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="DbStabilize" args="<oTbr> " scope="PUBLIC" type="ptProcedure" line="6989">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="MemoBlock" args="<nFieldNum> " scope="PUBLIC" type="ptFunction" line="6984">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="StdMeth" args="<oTbr>, <nKey> " scope="PUBLIC" type="ptFunction" line="6963">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="FReadLn" args="<fHandle>, <cBuffer>, <nMaxLine> " scope="PUBLIC" type="ptFunction" line="6948">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="bkwdSrch" args="<oTbr>, <cString> " scope="PUBLIC" type="ptFunction" line="6932">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="FrwdSrch" args="<oTbr>, <cString> " scope="PUBLIC" type="ptFunction" line="6915">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="GoPrevLn" args="<oTbr> " scope="PUBLIC" type="ptFunction" line="6880">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="GoNextLn" args="<oTbr> " scope="PUBLIC" type="ptFunction" line="6862">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="FileSkip" args="<n>, <oTbr> " scope="STATIC" type="ptFunction" line="6848">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="FileGoLast" args="<oTbr> " scope="STATIC" type="ptProcedure" line="6843">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="FileGoFirst" args="<oTbr> " scope="STATIC" type="ptProcedure" line="6831">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="FileBrowseClose" args="<oTbr> " scope="PUBLIC" type="ptProcedure" line="6825">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="FBrowseOpen" args="<oTbr>, <cFileName> " scope="PUBLIC" type="ptFunction" line="6815">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="FBrowseNew" args=" " scope="PUBLIC" type="ptFunction" line="6804">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="FilePos" args="<oTbr> " scope="PUBLIC" type="ptFunction" line="6801">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="TAB_SIZE" args=" " scope="STATIC" type="ptConstant" line="6700">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="lertexto" args="<cFname> " scope="PUBLIC" type="ptFunction" line="6642">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_cidade" args="<mcid>, <t> " scope="PUBLIC" type="ptFunction" line="6608">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="arq_bat" args=" " scope="PUBLIC" type="ptFunction" line="6515">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="cria_tmp" args=" " scope="PUBLIC" type="ptFunction" line="6482">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="cons_pre1" args=" " scope="PUBLIC" type="ptFunction" line="6397">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="cons_pre" args=" " scope="PUBLIC" type="ptFunction" line="6120">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="f_compra" args=" " scope="PUBLIC" type="ptFunction" line="5763">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="genkey" args="<mconsulta>, <nkey>, <narq> " scope="PUBLIC" type="ptFunction" line="5221">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="demo_ped" args=" " scope="PUBLIC" type="ptFunction" line="5140">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="c_nota" args=" " scope="PUBLIC" type="ptFunction" line="4952">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="cons_serial" args="<mcodmerc>, <mserial> " scope="PUBLIC" type="ptFunction" line="4898">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="cons_chass" args="<achar>, <mtipo_c> " scope="PUBLIC" type="ptFunction" line="4794">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="v_gru_cod" args="<vcodigo>, <orde>, <l>, <c> " scope="PUBLIC" type="ptFunction" line="4752">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="alt_caixa" args=" " scope="PUBLIC" type="ptFunction" line="4690">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_tipdc" args="<menv>, <t>, <tc> " scope="PUBLIC" type="ptFunction" line="4651">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="menu_cons" args=" " scope="PUBLIC" type="ptFunction" line="4582">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ExtCentena" args="<nBase>, <nGenero> " scope="STATIC" type="ptFunction" line="4560">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="Extenso" args="<nBase>, <lVMonet>, <cStrSingul>, <cStrPlural>, <nGenero> " scope="PUBLIC" type="ptFunction" line="4522">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="SET_IVAR" args="<iVar>, <p> " scope="STATIC" type="ptPseudoFUNC" line="4514">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="CRLF" args=" " scope="STATIC" type="ptConstant" line="4513">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="LF" args=" " scope="STATIC" type="ptConstant" line="4512">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="CR" args=" " scope="STATIC" type="ptConstant" line="4511">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="MAX_LINE_LEN" args=" " scope="STATIC" type="ptConstant" line="4510">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="FILE_BRWS_NUM_IVARS" args=" " scope="STATIC" type="ptConstant" line="4509">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="FTell" args="<fHandle> " scope="PUBLIC" type="ptPseudoFUNC" line="4507">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name=":" args="<lineOffset> " scope="PUBLIC" type="ptPseudoFUNC" line="4506">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name=":" args="<fileLine> " scope="PUBLIC" type="ptPseudoFUNC" line="4505">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name=":" args="<fileHandle> " scope="PUBLIC" type="ptPseudoFUNC" line="4504">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ExtPorGen" args="<nGenero>, <xStr> " scope="STATIC" type="ptFunction" line="4500">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="alt_sen" args="<p> " scope="PUBLIC" type="ptFunction" line="4365">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ped_prod" args="<mnum_p>, <mcod> " scope="PUBLIC" type="ptFunction" line="4338">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="gera_num" args=" " scope="PUBLIC" type="ptFunction" line="4327">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="chq_corre" args="<vcpfcnpj> " scope="PUBLIC" type="ptFunction" line="4291">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="alt_emp" args="<mtp> " scope="PUBLIC" type="ptFunction" line="4237">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_emp" args="<vreg>, <li>, <ci>, <t>, <mzero> " scope="PUBLIC" type="ptFunction" line="4184">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="VerDupPed" args="<mnumped> " scope="PUBLIC" type="ptFunction" line="4151">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="cons_log" args="<mop> " scope="PUBLIC" type="ptFunction" line="4051">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="v_uf" args="<ve_uf> " scope="PUBLIC" type="ptFunction" line="4038">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="f5_qtd" args=" " scope="PUBLIC" type="ptFunction" line="4020">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="VerDesp" args="<mcoddesp>, <l>, <c>, <p>, <retu> " scope="PUBLIC" type="ptFunction" line="3951">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="valor_ped" args="<mnum> " scope="PUBLIC" type="ptFunction" line="3913">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="dias_atras" args="<mfor>, <p> " scope="PUBLIC" type="ptFunction" line="3801">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_descon" args="<vcli>, <vcod>, <vgru> " scope="PUBLIC" type="ptFunction" line="3768">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="dup_pre2" args="<memissao>, <moperador>, <mvlr>, <mdocumento>, <mvenc>, <mnome>, <mcod>, <mendereco>, <mbairro>, <mcidade>, <muf>, <mcep>, <mcgc>, <minsc>, <mcpf>, <mban>, <mn_fat>, <mv_fat> " scope="PUBLIC" type="ptFunction" line="3722">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="dup_jw" args="<memissao>, <moperador>, <mvlr>, <mdocumento>, <mvenc>, <mnome>, <mcod>, <mendereco>, <mbairro>, <mcidade>, <muf>, <mcep>, <mcgc>, <minsc>, <mcpf>, <mban> " scope="PUBLIC" type="ptFunction" line="3669">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="dup_sot" args="<memissao>, <moperador>, <mvalor>, <mdocumento>, <mvenc>, <mnome>, <mcod>, <mendereco>, <mbairro>, <mcidade>, <muf>, <mcep>, <mcgc>, <minsc>, <mcpf>, <mban> " scope="PUBLIC" type="ptFunction" line="3618">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="mcli" args="<f>, <l>, <c> " scope="PUBLIC" type="ptFunction" line="3574">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="serie_prod" args="<vcod>, <p> " scope="PUBLIC" type="ptFunction" line="3551">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_serie" args=" " scope="PUBLIC" type="ptFunction" line="3546">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="aredonda" args="<vlr>, <qtd> " scope="PUBLIC" type="ptFunction" line="3535">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_finan" args="<mcod>, <li>, <ci> " scope="PUBLIC" type="ptFunction" line="3488">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="qtd_chq" args="<mcod>, <mnum>, <mag>, <mc_c> " scope="PUBLIC" type="ptFunction" line="3457">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_debito" args="<mcod> " scope="PUBLIC" type="ptFunction" line="3414">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="spc" args="<mcod>, <mvalor>, <mtipo>, <mped>, <mlib>, <mcons> " scope="PUBLIC" type="ptFunction" line="3249">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="prog" args="<l>, <c>, <q>, <marq>, <t> " scope="PUBLIC" type="ptFunction" line="3215">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="fim_prg" args=" " scope="PUBLIC" type="ptFunction" line="3186">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="imp_arq" args="<imp_arq>, <mporta>, <op>, <linha>, <comp>, <mens>, <msenha_lib>, <mexcel> " scope="PUBLIC" type="ptFunction" line="2990">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="incl_tab" args=" " scope="PUBLIC" type="ptFunction" line="2922">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="set_key" args="<s1>, <s2>, <s3>, <s4>, <t> " scope="PUBLIC" type="ptFunction" line="2905">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="vencim" args="<mv>, <t>, <dup>, <memi>, <prz_dia>, <m_doc> " scope="PUBLIC" type="ptFunction" line="2866">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="soli_aut" args="<sope>, <scli>, <sprod>, <smen>, <samb> " scope="PUBLIC" type="ptFunction" line="2808">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="aut_sen" args="<men>, <mdl>, <mlin>, <mnum_cli>, <mnum_prod>, <mamb>, <mnum_pedido> " scope="PUBLIC" type="ptFunction" line="2437">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="pesq_cgc" args="<ncgc>, <narq>, <condicao>, <pesq_ali> " scope="PUBLIC" type="ptFunction" line="2405">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_cartao" args="<mcod>, <li>, <ci>, <t> " scope="PUBLIC" type="ptFunction" line="2364">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="v_merc" args="<mcod>, <li>, <ci> " scope="PUBLIC" type="ptFunction" line="2350">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_desp" args="<mcod_des>, <li>, <ci> " scope="PUBLIC" type="ptFunction" line="2314">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ven" args="<mcod_ven>, <li>, <ci>, <p> " scope="PUBLIC" type="ptFunction" line="2274">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_ven" args="<mcod_ven>, <p>, <tip> " scope="PUBLIC" type="ptFunction" line="2247">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_cgc" args="<ncgc> " scope="PUBLIC" type="ptFunction" line="2203">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_cpf" args="<ncpf> " scope="PUBLIC" type="ptFunction" line="2157">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_uf" args="<nuf>, <mt> " scope="PUBLIC" type="ptFunction" line="2108">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ocorre" args=" " scope="PUBLIC" type="ptFunction" line="2028">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="f8_cep" args=" " scope="PUBLIC" type="ptFunction" line="1957">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="f3_nivel" args="<mop> " scope="PUBLIC" type="ptFunction" line="1780">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="cons_doc" args="<mcons>, <mtp_c> " scope="PUBLIC" type="ptFunction" line="1342">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="cons_roma" args=" " scope="PUBLIC" type="ptFunction" line="1264">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="cons_desp" args=" " scope="PUBLIC" type="ptFunction" line="1196">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="cons_grup" args=" " scope="PUBLIC" type="ptFunction" line="1129">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="cons_espe" args=" " scope="PUBLIC" type="ptFunction" line="1061">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="f6_forn" args="<mop> " scope="PUBLIC" type="ptFunction" line="777">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_cli" args="<vcod>, <li>, <ci>, <p> " scope="PUBLIC" type="ptFunction" line="719">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ent_forn" args="<vcod>, <li>, <ci> " scope="PUBLIC" type="ptFunction" line="685">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="v_fornece" args="<vcod>, <li>, <ci>, <p>, <loc> " scope="PUBLIC" type="ptFunction" line="639">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_merc" args=" " scope="PUBLIC" type="ptFunction" line="568">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_espe" args="<vespe>, <li>, <ci>, <t>, <mzero> " scope="PUBLIC" type="ptFunction" line="502">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="prt_sgru" args="<vgru>, <vsgru> " scope="PUBLIC" type="ptFunction" line="473">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="prt_gru" args="<vgru> " scope="PUBLIC" type="ptFunction" line="443">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_trans" args="<mcod>, <ld>, <cd>, <p> " scope="PUBLIC" type="ptFunction" line="402">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_fab" args="<mcod>, <ld>, <cd>, <p> " scope="PUBLIC" type="ptFunction" line="356">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="ver_entrada" args="<mcod>, <mdoc> " scope="PUBLIC" type="ptFunction" line="331">
+   <tag filename="C:\helio\siachb\SACROT.PRG" name="calc_cus" args="<consulta> " scope="PUBLIC" type="ptFunction" line="20">
+   <tag filename="C:\helio\siachb\SISPDV.PRG" name="DisplayTime" args=" " scope="PUBLIC" type="ptFunction" line="1001">
+   <tag filename="C:\helio\siachb\SISPDV.PRG" name="ShowClue" args="<.><.><.> " scope="PUBLIC" type="ptFunction" line="959">
+   <tag filename="C:\helio\siachb\SISPDV.PRG" name="main" args="<mtc>, <mecf>, <mtipo_tela> " scope="PUBLIC" type="ptFunction" line="33">
+   <tag filename="C:\helio\siachb\sac_pv.prg" name="alt_pv" args="<vcd_prod> " scope="PUBLIC" type="ptFunction" line="3890">
+   <tag filename="C:\helio\siachb\sac_pv.prg" name="fecha_pv" args="<mtip>, <magrupar>, <orc_tp> " scope="PUBLIC" type="ptFunction" line="2776">
+   <tag filename="C:\helio\siachb\sac_pv.prg" name="sac_pv" args="<orc>, <venda>, <m2ped> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\SAC2PED.PRG" name="fecha" args=" " scope="PUBLIC" type="ptFunction" line="259">
+   <tag filename="C:\helio\siachb\SAC2PED.PRG" name="sac2ped" args="<tp>, <melet> " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="cancelar_pv" args="<mvetor> " scope="PUBLIC" type="ptFunction" line="1189">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="senha_ecf" args="<mflag>, <mecf> " scope="PUBLIC" type="ptFunction" line="859">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="can_item" args="<mflag> " scope="PUBLIC" type="ptFunction" line="794">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="AfterInkey1" args="<nkey_ecf> " scope="PUBLIC" type="ptFunction" line="351">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="sacecf" args="<mflag> " scope="PUBLIC" type="ptFunction" line="77">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NFE_9" args=" " scope="STATIC" type="ptConstant" line="72">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NFE_8" args=" " scope="STATIC" type="ptConstant" line="71">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NFE_7" args=" " scope="STATIC" type="ptConstant" line="70">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NFE_6" args=" " scope="STATIC" type="ptConstant" line="69">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NFE_5" args=" " scope="STATIC" type="ptConstant" line="68">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NFE_4" args=" " scope="STATIC" type="ptConstant" line="67">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NFE_3" args=" " scope="STATIC" type="ptConstant" line="66">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NFE_2" args=" " scope="STATIC" type="ptConstant" line="65">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NFE_1" args=" " scope="STATIC" type="ptConstant" line="64">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENUECFSAI_1" args=" " scope="STATIC" type="ptConstant" line="62">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENUPROD" args=" " scope="STATIC" type="ptConstant" line="60">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F18" args=" " scope="STATIC" type="ptConstant" line="58">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F17" args=" " scope="STATIC" type="ptConstant" line="57">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F16" args=" " scope="STATIC" type="ptConstant" line="56">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F14" args=" " scope="STATIC" type="ptConstant" line="54">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F13" args=" " scope="STATIC" type="ptConstant" line="53">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F12" args=" " scope="STATIC" type="ptConstant" line="52">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F11" args=" " scope="STATIC" type="ptConstant" line="51">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F10" args=" " scope="STATIC" type="ptConstant" line="50">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F9" args=" " scope="STATIC" type="ptConstant" line="49">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F8" args=" " scope="STATIC" type="ptConstant" line="48">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F7" args=" " scope="STATIC" type="ptConstant" line="47">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F6" args=" " scope="STATIC" type="ptConstant" line="46">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F5" args=" " scope="STATIC" type="ptConstant" line="45">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F4" args=" " scope="STATIC" type="ptConstant" line="44">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F3" args=" " scope="STATIC" type="ptConstant" line="43">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU_F2" args=" " scope="STATIC" type="ptConstant" line="42">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU3_4" args=" " scope="STATIC" type="ptConstant" line="39">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU3_3" args=" " scope="STATIC" type="ptConstant" line="38">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU3_2" args=" " scope="STATIC" type="ptConstant" line="37">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU3_1" args=" " scope="STATIC" type="ptConstant" line="36">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU2_9" args=" " scope="STATIC" type="ptConstant" line="34">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU2_8" args=" " scope="STATIC" type="ptConstant" line="33">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU2_1_1" args=" " scope="STATIC" type="ptConstant" line="32">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU2_7" args=" " scope="STATIC" type="ptConstant" line="31">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU2_6" args=" " scope="STATIC" type="ptConstant" line="30">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU2_5" args=" " scope="STATIC" type="ptConstant" line="29">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU2_3" args=" " scope="STATIC" type="ptConstant" line="27">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU2_2" args=" " scope="STATIC" type="ptConstant" line="26">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU2_1" args=" " scope="STATIC" type="ptConstant" line="25">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU1_9" args=" " scope="STATIC" type="ptConstant" line="23">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU1_8" args=" " scope="STATIC" type="ptConstant" line="22">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU1_7" args=" " scope="STATIC" type="ptConstant" line="21">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU1_6" args=" " scope="STATIC" type="ptConstant" line="20">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU1_5" args=" " scope="STATIC" type="ptConstant" line="19">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU1_4" args=" " scope="STATIC" type="ptConstant" line="18">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU1_3" args=" " scope="STATIC" type="ptConstant" line="17">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU1_2" args=" " scope="STATIC" type="ptConstant" line="16">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="MENU1_1" args=" " scope="STATIC" type="ptConstant" line="15">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NBotaoEcf8" args=" " scope="STATIC" type="ptConstant" line="13">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NBotaoEcf7" args=" " scope="STATIC" type="ptConstant" line="12">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NBotaoEcf6" args=" " scope="STATIC" type="ptConstant" line="11">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NBotaoEcf5" args=" " scope="STATIC" type="ptConstant" line="10">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NBotaoEcf4" args=" " scope="STATIC" type="ptConstant" line="9">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NBotaoEcf3" args=" " scope="STATIC" type="ptConstant" line="8">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NBotaoEcf2" args=" " scope="STATIC" type="ptConstant" line="7">
+   <tag filename="C:\helio\siachb\SIACECF.PRG" name="NBotaoEcf1" args=" " scope="STATIC" type="ptConstant" line="6">
+   <tag filename="C:\helio\siachb\SACVEN1.PRG" name="sacven1" args=" " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\BEMAPED.PRG" name="bemaped" args="<mnum> " scope="PUBLIC" type="ptFunction" line="9">
+   <tag filename="C:\helio\siachb\SACROT1.PRG" name="saldo_ped" args="<vcod_merc> " scope="PUBLIC" type="ptFunction" line="256">
+   <tag filename="C:\helio\siachb\SACROT1.PRG" name="oper_ped" args="<vcod> " scope="PUBLIC" type="ptFunction" line="290">
+   <tag filename="C:\helio\siachb\SACROT1.PRG" name="sacc_fin" args=" " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\SACROT1.PRG" name="cons_mens" args=" " scope="PUBLIC" type="ptFunction" line="140">
+   <tag filename="C:\helio\siachb\SACROT1.PRG" name="senha_cesso" args=" " scope="PUBLIC" type="ptFunction" line="660">
+   <tag filename="C:\helio\siachb\SACROT1.PRG" name="alt_senha" args="<p> " scope="PUBLIC" type="ptFunction" line="678">
+   <tag filename="C:\helio\siachb\SACROT1.PRG" name="ren_arq" args="<marq1>, <marq2>, <mali> " scope="PUBLIC" type="ptFunction" line="325">
+   <tag filename="C:\helio\siachb\SACROT1.PRG" name="senha" args="<mflag>, <mecf> " scope="PUBLIC" type="ptFunction" line="346">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_ESTADO" args=" " scope="PUBLIC" type="ptFunction" line="180">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_DATA" args=" " scope="PUBLIC" type="ptFunction" line="197">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_HORA" args=" " scope="PUBLIC" type="ptFunction" line="213">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_MEMORIA" args="<TIPO>, <dat1>, <dat2> " scope="PUBLIC" type="ptFunction" line="169">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_TEF_INIT" args=" " scope="PUBLIC" type="ptFunction" line="152">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_LEITURAX" args=" " scope="PUBLIC" type="ptFunction" line="159">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_REDUCAOZ" args=" " scope="PUBLIC" type="ptFunction" line="164">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_NUM_CAIXA" args=" " scope="PUBLIC" type="ptFunction" line="264">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_NUM_SERIE" args=" " scope="PUBLIC" type="ptFunction" line="275">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_VERSAO" args=" " scope="PUBLIC" type="ptFunction" line="284">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_TOTALPAG" args=" " scope="PUBLIC" type="ptFunction" line="257">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_VERAO" args=" " scope="PUBLIC" type="ptFunction" line="229">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_NUM_CUPOM" args=" " scope="PUBLIC" type="ptFunction" line="234">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_SUBTOTAL" args=" " scope="PUBLIC" type="ptFunction" line="250">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_ZERA" args=" " scope="PUBLIC" type="ptFunction" line="147">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="SAI_TXT" args=" " scope="PUBLIC" type="ptConstant" line="20">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="TMP_TXT" args=" " scope="PUBLIC" type="ptConstant" line="21">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_INIT" args="<ENDERECO> " scope="PUBLIC" type="ptFunction" line="37">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="ENT_TXT" args=" " scope="PUBLIC" type="ptConstant" line="19">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="ETX" args=" " scope="PUBLIC" type="ptConstant" line="16">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="CR" args=" " scope="PUBLIC" type="ptConstant" line="17">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="LF" args=" " scope="PUBLIC" type="ptConstant" line="18">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_ABERTA" args=" " scope="PUBLIC" type="ptFunction" line="129">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_OK" args="<RESP> " scope="PUBLIC" type="ptFunction" line="134">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_MODELO" args=" " scope="PUBLIC" type="ptFunction" line="139">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_END" args=" " scope="PUBLIC" type="ptFunction" line="108">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_ATIVO" args=" " scope="PUBLIC" type="ptFunction" line="93">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_ATIVA" args=" " scope="PUBLIC" type="ptFunction" line="98">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_DESATIVA" args=" " scope="PUBLIC" type="ptFunction" line="103">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_RELATORIO" args="<WTXT>, <WVIAS>, <WCOLUNAS> " scope="PUBLIC" type="ptFunction" line="568">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_VINCULADO" args="<WCOO>, <WCODFPG>, <WVALOR>, <WTXT>, <WVIAS>, <WCOLUNAS> " scope="PUBLIC" type="ptFunction" line="606">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_FIM_REL" args=" " scope="PUBLIC" type="ptFunction" line="646">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_CAN_ITEM" args="<WITEM> " scope="PUBLIC" type="ptFunction" line="561">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_ACHA_ALIQ" args="<WALIQ> " scope="PUBLIC" type="ptFunction" line="519">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_ALIQ" args=" " scope="PUBLIC" type="ptFunction" line="535">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_CAN_CUPOM" args=" " scope="PUBLIC" type="ptFunction" line="556">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_COMANDO" args="<CMD>, <VET_PARAM>, <ESPERA>, <TENTA> " scope="PUBLIC" type="ptFunction" line="686">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="Grava_ARQ" args="<WARQ>, <WTXT> " scope="PUBLIC" type="ptFunction" line="900">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_TotFormaPagamento" args=" " scope="PUBLIC" type="ptFunction" line="912">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_CONF_BOLETO" args=" " scope="PUBLIC" type="ptFunction" line="676">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_NAOFISCAL" args="<WCODCNF>, <WVALOR>, <WCODFPG>, <WOBS> " scope="PUBLIC" type="ptFunction" line="655">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_ABRE_GAVETA" args=" " scope="PUBLIC" type="ptFunction" line="665">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_GAVETA_ABERTA" args=" " scope="PUBLIC" type="ptFunction" line="671">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_ITEM" args="<WCODIGO>, <WDESCRICAO>, <WALIQ>, <WQTD>, <WVALOR_UNIT>, <WDESCONTO>, <WUN> " scope="PUBLIC" type="ptFunction" line="500">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_COM_CHEQUE" args=" " scope="PUBLIC" type="ptFunction" line="316">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_CAN_CHEQUE" args=" " scope="PUBLIC" type="ptFunction" line="321">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_ABRE_CUPOM" args="<WCGC> " scope="PUBLIC" type="ptFunction" line="326">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_CHEQUE" args="<WBANCO>, <WVALOR>, <WFAVORECIDO>, <WCIDADE>, <WDATA>, <WOBS> " scope="PUBLIC" type="ptFunction" line="308">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_POUCO_PAPEL" args=" " scope="PUBLIC" type="ptFunction" line="293">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_CUPOM_ABERTO" args=" " scope="PUBLIC" type="ptFunction" line="298">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_PODE_ABRIR" args=" " scope="PUBLIC" type="ptFunction" line="303">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_INI_FECHA" args="<WDESC_ACRES> " scope="PUBLIC" type="ptFunction" line="454">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_PAGTO" args="<WVALOR>, <WCODFPG>, <WOBS>, <WVINC> " scope="PUBLIC" type="ptFunction" line="478">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_FIM_FECHA" args="<WMSG>, <WCOLUNAS> " scope="PUBLIC" type="ptFunction" line="490">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_FECHANDO" args=" " scope="PUBLIC" type="ptFunction" line="447">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_ACHA_PG" args="<WPAGAMENTO>, <WVINC> " scope="PUBLIC" type="ptFunction" line="333">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_ACHA_CNF" args="<WDESCRICAO>, <WVINC> " scope="PUBLIC" type="ptFunction" line="355">
+   <tag filename="C:\helio\siachb\impacbr.prg" name="IBR_FECHA_CUPOM" args="<WVAL_VISTA>, <WVAL_DESC>, <WMSG>, <WDESC_PLA>, <WA_D>, <WCOLUNAS>, <WAVISTA> " scope="PUBLIC" type="ptFunction" line="391">
+   <tag filename="C:\helio\siachb\SAC_DBF.PRG" name="sac_dbf" args="<mtp> " scope="PUBLIC" type="ptFunction" line="3">
+   <tag filename="C:\helio\siachb\SACNOTA.PRG" name="nota" args="<mv> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\sac_pv1.prg" name="sac_pv1" args=" " scope="PUBLIC" type="ptFunction" line="3">
+   <tag filename="C:\helio\siachb\sac_pv2.prg" name="sac_pv2" args=" " scope="PUBLIC" type="ptFunction" line="3">
+   <tag filename="C:\helio\siachb\SACSINT.PRG" name="sacsint" args=" " scope="PUBLIC" type="ptFunction" line="3">
+   <tag filename="C:\helio\siachb\sac23pd1.prg" name="sac23pd1" args="<orc>, <venda>, <m2ped> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\sac23pd1.prg" name="tab_formula" args="<mcod_m> " scope="PUBLIC" type="ptFunction" line="2870">
+   <tag filename="C:\helio\siachb\sac23pd1.prg" name="fecha_pd" args="<mtip>, <magrupar>, <orc_tp> " scope="PUBLIC" type="ptFunction" line="2985">
+   <tag filename="C:\helio\siachb\SAC5CAD1.PRG" name="iclimov" args=" " scope="PUBLIC" type="ptFunction" line="590">
+   <tag filename="C:\helio\siachb\SAC5CAD1.PRG" name="iclicheq" args=" " scope="PUBLIC" type="ptFunction" line="469">
+   <tag filename="C:\helio\siachb\SAC5CAD1.PRG" name="iclicad" args=" " scope="PUBLIC" type="ptFunction" line="456">
+   <tag filename="C:\helio\siachb\SAC5CAD1.PRG" name="sac5cad1" args="<mcod> " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\helio\siachb\mov_ecf.prg" name="mov_ecf" args=" " scope="PUBLIC" type="ptFunction" line="0">
+   <tag filename="C:\helio\siachb\ini_xml.prg" name="CHAR_REMOVE" args=" " scope="PUBLIC" type="ptConstant" line="6">
+   <tag filename="C:\helio\siachb\sac23off.prg" name="fecha_off" args=" " scope="PUBLIC" type="ptFunction" line="635">
+   <tag filename="C:\helio\siachb\sac23off.prg" name="sac23off" args="<msld> " scope="PUBLIC" type="ptFunction" line="10">
+   <tag filename="C:\helio\siachb\sac23orc.prg" name="sac23orc" args="<orc>, <venda>, <m2ped> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\sac23orc.prg" name="alt_orcam" args=" " scope="PUBLIC" type="ptFunction" line="1116">
+   <tag filename="C:\helio\siachb\sac23orc.prg" name="fecha_orcam" args="<mtip>, <magrupar>, <orc_tp> " scope="PUBLIC" type="ptFunction" line="1360">
+   <tag filename="C:\helio\siachb\SAC5ENV1.PRG" name="sac5env1" args=" " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\helio\siachb\SACBOLE1.PRG" name="bol_rural" args=" " scope="PUBLIC" type="ptFunction" line="594">
+   <tag filename="C:\helio\siachb\SACBOLE1.PRG" name="bol_brades" args=" " scope="PUBLIC" type="ptFunction" line="550">
+   <tag filename="C:\helio\siachb\SACBOLE1.PRG" name="bol_bandep" args=" " scope="PUBLIC" type="ptFunction" line="500">
+   <tag filename="C:\helio\siachb\SACBOLE1.PRG" name="bol_real" args=" " scope="PUBLIC" type="ptFunction" line="447">
+   <tag filename="C:\helio\siachb\SACBOLE1.PRG" name="bol_unib" args=" " scope="PUBLIC" type="ptFunction" line="407">
+   <tag filename="C:\helio\siachb\SACBOLE1.PRG" name="bol_itau" args=" " scope="PUBLIC" type="ptFunction" line="360">
+   <tag filename="C:\helio\siachb\SACBOLE1.PRG" name="sacbole1" args="<mcli>, <mdoc>, <mvlr>, <mtp>, <mt> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="SHELLEXECUTE" args=" " scope="PUBLIC" type="ptFunction" line="4708">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="xhbrun" args="<cCommand>, <lWait>, <lBackG> " scope="PUBLIC" type="ptFunction" line="4686">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="OcorrenciaExt" args=" " scope="PUBLIC" type="ptMethod" line="4609">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="Readln" args="<nBytes> " scope="PUBLIC" type="ptMethod" line="4602">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="Close" args=" " scope="PUBLIC" type="ptMethod" line="4597">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="eof" args=" " scope="PUBLIC" type="ptMethod" line="4593">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="Next" args=" " scope="PUBLIC" type="ptMethod" line="4412">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="new" args="<cBco>, <cArq> " scope="PUBLIC" type="ptMethod" line="4360">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="main" args=" " scope="PUBLIC" type="ptFunction" line="4285">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="Line" args=" " scope="PUBLIC" type="ptMethod" line="4209">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="CLOSE" args=" " scope="PUBLIC" type="ptMethod" line="4117">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="Add" args="<oBol> " scope="PUBLIC" type="ptMethod" line="3452">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="OPEN" args="<oBol>, <cArq>, <cPasta> " scope="PUBLIC" type="ptMethod" line="3168">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="new" args="<cBco>, <nNumRemessa> " scope="PUBLIC" type="ptMethod" line="3122">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="DC_ModEsp" args="<cCodBco>, <mNMOG> " scope="PUBLIC" type="ptFunction" line="2984">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="DC_Mod11" args="<mCDBC>, <mBSDG>, <mFGCB>, <mNMOG>, <lMult10> " scope="PUBLIC" type="ptFunction" line="2932">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="DC_Mod10" args="<cCodBco>, <mNMOG> " scope="PUBLIC" type="ptFunction" line="2903">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="SetNomeRem" args="<cArq>, <cPasta> " scope="PUBLIC" type="ptMethod" line="2883">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="isRegistrada" args=" " scope="PUBLIC" type="ptMethod" line="2856">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="EJECT" args=" " scope="PUBLIC" type="ptMethod" line="2836">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="ERASE" args=" " scope="PUBLIC" type="ptMethod" line="2825">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="PRINT" args="<lPreview>, <lPromptPrint>, <cPrinter> " scope="PUBLIC" type="ptMethod" line="2779">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="Remessa" args="<lAdd>, <cArqRem>, <cPastaRem>, <nNumRemessa>, <CNAB400> " scope="PUBLIC" type="ptMethod" line="2738">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="Execute" args=" " scope="PUBLIC" type="ptMethod" line="2357">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="Merge" args="<cCampo>, <cConteudo>, <lTudo> " scope="PUBLIC" type="ptMethod" line="2342">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="CLOSE" args=" " scope="PUBLIC" type="ptMethod" line="2328">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="OPEN" args="<cArq>, <cPasta>, <cArqRem>, <cPastaRem>, <nNumRemessa>, <CNAB400> " scope="PUBLIC" type="ptMethod" line="2173">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="new" args="<cBco>, <cLocalPg> " scope="PUBLIC" type="ptMethod" line="2101">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="dDataBase" args=" " scope="PUBLIC" type="ptConstant" line="1996">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="UpdateFile" args=" " scope="PUBLIC" type="ptProcedure" line="1958">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="ReadSections" args=" " scope="PUBLIC" type="ptFunction" line="1946">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="ReadSection" args="<cSection> " scope="PUBLIC" type="ptFunction" line="1921">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="EraseSection" args="<cSection> " scope="PUBLIC" type="ptProcedure" line="1902">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="DeleteKey" args="<cSection>, <cIdent> " scope="PUBLIC" type="ptProcedure" line="1886">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="WriteBool" args="<cSection>, <cIdent>, <lBool> " scope="PUBLIC" type="ptProcedure" line="1880">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="ReadBool" args="<cSection>, <cIdent>, <lDefault> " scope="PUBLIC" type="ptFunction" line="1874">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="WriteDate" args="<cSection>, <cIdent>, <dDate> " scope="PUBLIC" type="ptProcedure" line="1868">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="ReadDate" args="<cSection>, <cIdent>, <dDefault> " scope="PUBLIC" type="ptFunction" line="1864">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="WriteNumber" args="<cSection>, <cIdent>, <nNumber> " scope="PUBLIC" type="ptProcedure" line="1858">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="ReadNumber" args="<cSection>, <cIdent>, <nDefault> " scope="PUBLIC" type="ptFunction" line="1854">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="WriteString" args="<cSection>, <cIdent>, <cString> " scope="PUBLIC" type="ptProcedure" line="1815">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="ReadString" args="<cSection>, <cIdent>, <cDefault> " scope="PUBLIC" type="ptFunction" line="1787">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="New" args="<cFileName> " scope="PUBLIC" type="ptFunction" line="1710">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="TIniFile" args=" " scope="PUBLIC" type="ptFunction" line="1682">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="CRLF" args=" " scope="PUBLIC" type="ptConstant" line="1680">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="HtmlPrintVersion" args=" " scope="PUBLIC" type="ptFunction" line="1673">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="getWB" args=" " scope="PUBLIC" type="ptFunction" line="1669">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="getHP" args=" " scope="PUBLIC" type="ptFunction" line="1665">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="TWEB" args=" " scope="PUBLIC" type="ptFunction" line="1654">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="startObjectPR" args=" " scope="PUBLIC" type="ptFunction" line="1634">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="startObjectWS" args=" " scope="PUBLIC" type="ptFunction" line="1619">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="close" args=" " scope="PUBLIC" type="ptMethod" line="1606">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="restorePrintSetup" args=" " scope="PUBLIC" type="ptMethod" line="1586">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="changePrintSetup" args=" " scope="PUBLIC" type="ptMethod" line="1574">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="savePrintSetup" args=" " scope="PUBLIC" type="ptMethod" line="1561">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="Print" args=" " scope="PUBLIC" type="ptMethod" line="1500">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="New" args=" " scope="PUBLIC" type="ptMethod" line="1490">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="PrintHTML" args="<cURL>, <cPrinter>, <lPrevIew>, <lPromptPrint>, <lPrintHtml>, <cHeader>, <cFooter> " scope="PUBLIC" type="ptFunction" line="1429">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="VERSION" args=" " scope="PUBLIC" type="ptConstant" line="1413">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="HKEY_USERS" args=" " scope="PUBLIC" type="ptConstant" line="1411">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="HKEY_LOCAL_MACHINE" args=" " scope="PUBLIC" type="ptConstant" line="1410">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="HKEY_CURRENT_CONFIG" args=" " scope="PUBLIC" type="ptConstant" line="1409">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="HKEY_CURRENT_USER" args=" " scope="PUBLIC" type="ptConstant" line="1408">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="HKEY_CLASSES_ROOT" args=" " scope="PUBLIC" type="ptConstant" line="1407">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="HKEY_LOCAL_MACHINE" args=" " scope="PUBLIC" type="ptConstant" line="1406">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="MAX_TIME" args=" " scope="PUBLIC" type="ptConstant" line="1404">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="READYSTATE_COMPLETE" args=" " scope="PUBLIC" type="ptConstant" line="1403">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="OLECMDF_ENABLED" args=" " scope="PUBLIC" type="ptConstant" line="1401">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="OLECMDF_SUPPORTED" args=" " scope="PUBLIC" type="ptConstant" line="1400">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="LECMDEXECOPT_DONTPROMPTUSER" args=" " scope="PUBLIC" type="ptConstant" line="1398">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="OLECMDEXECOPT_PROMPTUSER" args=" " scope="PUBLIC" type="ptConstant" line="1397">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="OLECMDID_PRINT" args=" " scope="PUBLIC" type="ptConstant" line="1396">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="RetiraAcento" args="<cStr>, <lAll>, <lAnsi> " scope="PUBLIC" type="ptFunction" line="1281">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="AcentoHTML" args="<cStr>, <lAnsi>, <lTudo> " scope="PUBLIC" type="ptFunction" line="1255">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="CriaIni" args="<cFileName> " scope="PUBLIC" type="ptFunction" line="1189">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="hboleto" args="<cFileName> " scope="PUBLIC" type="ptFunction" line="1108">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="Default" args="<x>, <y> " scope="PUBLIC" type="ptPseudoFUNC" line="1099">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="CRLF" args=" " scope="PUBLIC" type="ptConstant" line="1098">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="sacbole2" args="<mcli>, <mdoc>, <mvlr>, <mtp>, <mnum_p> " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\helio\siachb\sacbole2.prg" name="Default" args="<x>, <y> " scope="PUBLIC" type="ptPseudoFUNC" line="1">
+   <tag filename="C:\helio\siachb\SAC5ETQ3.PRG" name="sac5etq3" args=" " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\helio\siachb\SACCAIXA.PRG" name="saccaixa" args=" " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\gera_ead.prg" name="GERA_MD5" args="<cNomeArquivo> " scope="PUBLIC" type="ptFunction" line="45">
+   <tag filename="C:\helio\siachb\gera_ead.prg" name="GERA_EAD" args="<cFile>, <chv_public> " scope="PUBLIC" type="ptFunction" line="1">
+   <tag filename="C:\helio\siachb\sac23ecf1.prg" name="Apaga_IntPos" args="<mtp_gerenc> " scope="PUBLIC" type="ptFunction" line="3861">
+   <tag filename="C:\helio\siachb\sac23ecf1.prg" name="imp_comprovante" args="<ccoo>, <cCodFormaPagto>, <nValor>, <mtexto_aux> " scope="PUBLIC" type="ptFunction" line="3661">
+   <tag filename="C:\helio\siachb\sac23ecf1.prg" name="c_prod" args=" " scope="PUBLIC" type="ptFunction" line="3577">
+   <tag filename="C:\helio\siachb\sac23ecf1.prg" name="fecha_ecf1" args=" " scope="PUBLIC" type="ptFunction" line="2380">
+   <tag filename="C:\helio\siachb\sac23ecf1.prg" name="sac23ecf1" args="<msld> " scope="PUBLIC" type="ptFunction" line="10">
+   <tag filename="C:\helio\siachb\sac23ecf2.prg" name="alt_fecf1" args=" " scope="PUBLIC" type="ptFunction" line="1445">
+   <tag filename="C:\helio\siachb\sac23ecf2.prg" name="sac23ecf2" args="<msld> " scope="PUBLIC" type="ptFunction" line="10">
+   <tag filename="C:\helio\siachb\SACETQCP.PRG" name="sacetqcp" args=" " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\helio\siachb\SACPROMI.PRG" name="sacpromi" args="<mcli>, <mdoc>, <mvlr>, <mv> " scope="PUBLIC" type="ptFunction" line="6">
+   <tag filename="C:\helio\siachb\SACETQ_C.PRG" name="sacetq_c" args=" " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="GeraXML" args="<cIdNota> " scope="PUBLIC" type="ptFunction" line="38">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="P_VALOR" args=" " scope="PUBLIC" type="ptConstant" line="30">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="P_VCTO" args=" " scope="PUBLIC" type="ptConstant" line="29">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="P_DUPL" args=" " scope="PUBLIC" type="ptConstant" line="28">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="MAXLEN_DA" args=" " scope="PUBLIC" type="ptConstant" line="27">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="ITENS_DA" args=" " scope="PUBLIC" type="ptConstant" line="26">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="MAXDUP" args=" " scope="PUBLIC" type="ptConstant" line="25">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="TAM_DESCRICAO" args=" " scope="PUBLIC" type="ptConstant" line="24">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="MAXITENS" args=" " scope="PUBLIC" type="ptConstant" line="23">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_ID" args=" " scope="PUBLIC" type="ptConstant" line="20">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_ARTIGO" args=" " scope="PUBLIC" type="ptConstant" line="19">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_BASEICM" args=" " scope="PUBLIC" type="ptConstant" line="18">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_DESCONTO" args=" " scope="PUBLIC" type="ptConstant" line="17">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_CFO" args=" " scope="PUBLIC" type="ptConstant" line="16">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_VRIPI" args=" " scope="PUBLIC" type="ptConstant" line="15">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_VRICM" args=" " scope="PUBLIC" type="ptConstant" line="14">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_ALIQIPI" args=" " scope="PUBLIC" type="ptConstant" line="13">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_ALIQICM" args=" " scope="PUBLIC" type="ptConstant" line="12">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_PCTOTAL" args=" " scope="PUBLIC" type="ptConstant" line="11">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_PCUNIT" args=" " scope="PUBLIC" type="ptConstant" line="10">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_QUANTIDADE" args=" " scope="PUBLIC" type="ptConstant" line="9">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_UNIDADE" args=" " scope="PUBLIC" type="ptConstant" line="8">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_CT" args=" " scope="PUBLIC" type="ptConstant" line="7">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_CLFISCAL" args=" " scope="PUBLIC" type="ptConstant" line="6">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_DESCRICAO" args=" " scope="PUBLIC" type="ptConstant" line="5">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="IT_PRODUTO" args=" " scope="PUBLIC" type="ptConstant" line="4">
+   <tag filename="C:\helio\siachb\gera_xml.prg" name="CHAR_REMOVE" args=" " scope="PUBLIC" type="ptConstant" line="2">
+   <tag filename="C:\helio\siachb\errorsys.prg" name="ENVIA_ERRO" args="<aARQUI> " scope="PUBLIC" type="ptFunction" line="173">
+   <tag filename="C:\helio\siachb\errorsys.prg" name="ErrorPreview" args="<cMess>, <cArq> " scope="PUBLIC" type="ptFunction" line="131">
+   <tag filename="C:\helio\siachb\errorsys.prg" name="ErrorMessage" args="<oError> " scope="PUBLIC" type="ptFunction" line="91">
+   <tag filename="C:\helio\siachb\errorsys.prg" name="DefError" args="<oError> " scope="PUBLIC" type="ptFunction" line="23">
+   <tag filename="C:\helio\siachb\errorsys.prg" name="ErrorSys" args=" " scope="PUBLIC" type="ptProcedure" line="17">
+   <tag filename="C:\helio\siachb\SAUTORIZA.PRG" name="autorizacao" args="<mserie> " scope="PUBLIC" type="ptFunction" line="0">
+   <tag filename="C:\helio\siachb\cons_prod.prg" name="cons_prod" args=" " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\helio\siachb\MENUFISCAL.PRG" name="menu_fiscal" args=" " scope="PUBLIC" type="ptFunction" line="1">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="id_paf" args=" " scope="PUBLIC" type="ptFunction" line="2789">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="para_conf" args=" " scope="PUBLIC" type="ptFunction" line="2535">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="v_reducao_z" args=" " scope="PUBLIC" type="ptFunction" line="2483">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="LinhaArq" args="<nHandle>, <nBuffSize> " scope="STATIC" type="ptFunction" line="2464">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="EXTRAI" args="<cArquivo> " scope="PUBLIC" type="ptFunction" line="2449">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="CRLF" args=" " scope="STATIC" type="ptConstant" line="2447">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="LINEBUFF" args=" " scope="STATIC" type="ptConstant" line="2446">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="tab_produto" args=" " scope="PUBLIC" type="ptFunction" line="2322">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="estoque_f" args="<mtipo> " scope="PUBLIC" type="ptFunction" line="2183">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="ver_DataEcf" args=" " scope="PUBLIC" type="ptFunction" line="2165">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="ver_retornoEcf" args="<carquivo> " scope="PUBLIC" type="ptFunction" line="2119">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="CRLF" args=" " scope="STATIC" type="ptConstant" line="2117">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="LINEBUFF" args=" " scope="STATIC" type="ptConstant" line="2116">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="admecf" args="<mtipo> " scope="PUBLIC" type="ptFunction" line="2096">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="cupom_aberto" args=" " scope="PUBLIC" type="ptFunction" line="2048">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="ExcluirTemporarios" args="<ARQ> " scope="PUBLIC" type="ptFunction" line="2016">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="NUMRANDOM" args="<nTam> " scope="PUBLIC" type="ptFunction" line="1995">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="PNConf" args="<Tempo> " scope="PUBLIC" type="ptFunction" line="1903">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="LimpaTeclado" args=" " scope="PUBLIC" type="ptFunction" line="1896">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="FimPapel_ou_Erro" args=" " scope="PUBLIC" type="ptFunction" line="1865">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="Trocar_Papel" args=" " scope="PUBLIC" type="ptFunction" line="1848">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="Estado_Papel" args="<lPoucoPapel> " scope="PUBLIC" type="ptFunction" line="1828">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="fRetornoImpressora" args="<lTef> " scope="PUBLIC" type="ptFunction" line="1720">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="RGerencial" args="<Texto>, <Status> " scope="PUBLIC" type="ptFunction" line="1689">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="Fecha_CNFisc" args=" " scope="PUBLIC" type="ptFunction" line="1678">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="Usa_CNFisc" args="<cTextoEcf> " scope="PUBLIC" type="ptFunction" line="1661">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="Abre_CNFisc" args="<cForma_pagto>, <Valor>, <CCO> " scope="PUBLIC" type="ptFunction" line="1645">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="VER_ECFError" args="<nError> " scope="PUBLIC" type="ptFunction" line="1610">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="Fecha_RGeren" args=" " scope="PUBLIC" type="ptFunction" line="1593">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="cod_st3" args=" " scope="PUBLIC" type="ptFunction" line="1342">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="Cod_ST2" args="<st2> " scope="PUBLIC" type="ptFunction" line="1302">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="Cod_ST1" args="<st1>, <c_aberto> " scope="PUBLIC" type="ptFunction" line="1255">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="fim_fecha" args="<vmensagem> " scope="PUBLIC" type="ptFunction" line="1239">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="forma_pag" args="<vtipo>, <vvlr> " scope="PUBLIC" type="ptFunction" line="1194">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="ini_fechamento" args=" " scope="PUBLIC" type="ptFunction" line="1176">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="sub_total" args=" " scope="PUBLIC" type="ptFunction" line="1157">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="vende_prod" args="<vcod>, <vmerc>, <valiq>, <vtipo_qtd>, <vqtd>, <vcasa_dec>, <vvlr>, <vtipo_desc>, <vvlr_desc>, <vunidade> " scope="PUBLIC" type="ptFunction" line="1135">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="num_caixa" args=" " scope="PUBLIC" type="ptFunction" line="1123">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="num_ccf" args=" " scope="PUBLIC" type="ptFunction" line="1104">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="num_cupom" args=" " scope="PUBLIC" type="ptFunction" line="1084">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="abrir_cupom" args="<mcpf> " scope="PUBLIC" type="ptFunction" line="1061">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="cancelar_cupom" args="<msen>, <mupdate> " scope="PUBLIC" type="ptFunction" line="1030">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="cancelar_item" args="<mitem> " scope="PUBLIC" type="ptFunction" line="1010">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="arquivo_mfd" args="<mtipo> " scope="PUBLIC" type="ptFunction" line="963">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="espelho_mfd" args="<mtipo> " scope="PUBLIC" type="ptFunction" line="918">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="memoria_d" args="<mtp_rel> " scope="PUBLIC" type="ptFunction" line="839">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="abrir_gaveta" args=" " scope="PUBLIC" type="ptFunction" line="825">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="reducaoZ" args=" " scope="PUBLIC" type="ptFunction" line="378">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="leituraX" args="<mvlr_ab>, <mtp_imp> " scope="PUBLIC" type="ptFunction" line="244">
+   <tag filename="C:\helio\siachb\funcao_ecf.prg" name="ini_ecf" args="<mini> " scope="PUBLIC" type="ptFunction" line="1">
+</taglist>

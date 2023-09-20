@@ -1,0 +1,180 @@
+****************************************************
+* INCLUSAO DE ASSISTENCIAS e SOLICITACAO DE PRODUTOS
+****************************************************
+FUNCTION sacass10(mtp)
+****************
+LOCAL mprg:='SACASS10',mtitulo,;
+      mtela,lci,cci,lba,cba,opcao,mquantd,mmotivo,mmotivo1,mmotivo2,mcopia:=' ',mop_ass:=0,aret:={}
+
+PRIVATE mcod_cli,mcod_merc,mcod_ven,mmerc:=SPACE(35),malias,mcod_forn:=0,cons_cli := {}
+
+IF mtp = NIL
+	mtitulo := 'INCLUSAO DE ASSISTENCIA MERCADORIA'
+        IF ! ver_nivel(mprg,mtitulo,'15',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+        malias := 'ass'
+ELSE
+	mtitulo := 'INCLUSAO DE SOLICITACAO DE PRODUTOS'
+        IF ! ver_nivel(mprg+mtp,mtitulo,'15',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+        malias := 'solpr'
+ENDIF
+*---------------------------------------------
+IF ! AbriArq('sacsolpr','solpr');RETURN NIL;ENDIF
+IF ! AbriArq('sacass','ass');RETURN NIL;ENDIF
+IF ! AbriArq('saclog','log');RETURN NIL;ENDIF
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+*---------------------------------------------
+lci := 00
+cci := 00
+lba := 09
+cba := 70
+mcod_cli  := 0
+op_tela(10,10,21,80,mtitulo)
+
+WHILE .T.
+        mmotivo := mmotivo1 := mmotivo2 := SPACE(50)
+        mcod_merc := mquantd   := mcod_ven  := mcod_forn := mop_ass := 0
+        exibi_prg(mprg)
+        DEVPOS(lci+1,cci+1);DEVOUT('Data..........:')
+        DEVPOS(lci+2,cci+1);DEVOUT('Cod.Cliente...:')
+        DEVPOS(lci+3,cci+1);DEVOUT('Cod.Fornecedor:')
+        DEVPOS(lci+4,cci+1);DEVOUT('Cod.Produto...:')
+        DEVPOS(lci+5,cci+1);DEVOUT('Quantidade....:')
+        DEVPOS(lci+6,cci+1);DEVOUT('Cod.Vendedor..:')
+        DEVPOS(lci+7,cci+1);DEVOUT('Motivo........:')
+        setcor(3)
+        DEVPOS(lci+1,cci+16);DEVOUT(DATE())
+        setcor(1)
+        op_tela(13,20,15,67,mtitulo)
+        DEVPOS(0,1);DEVOUT('Escolha o Tipo de Assistencia:')
+        @ 0,31 PROMPT ' 1-> do CLIENTE'
+        @ 1,31 PROMPT ' 2-> da EMPRESA'
+        SET INTEN ON
+        MENU TO mop_ass
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        wvw_lclosewindow()
+        IF mop_ass = 1
+                Wvw_SetTitle( ,mtitulo+' - DO CLIENTE')
+        ELSE
+                Wvw_SetTitle( ,mtitulo+' - DA EMPRESA')
+        ENDIF
+        @ lci+2,cci+18 GET mcod_cli PICT '99999' VALID ver_cli(mcod_cli,lci+2,cci+24)
+        @ lci+3,cci+18 GET mcod_forn PICT '9999' VALID IF(EMPTY(mcod_forn),.T.,v_fornece(mcod_forn,lci+3,cci+24))
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        @ lci+4,cci+18 GET mcod_merc PICT '99999' VALID ver_cod(mcod_merc,lci+4,cci+24,.F.,0)
+        READ
+        READ
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        mcod_ven := VAL(cli->codvend)
+        mmerc := merc->merc
+        @ lci+4,cci+24 GET mmerc PICT '@!' WHEN merc->livre_desc = 'S'
+        @ lci+5,cci+18 GET mquantd PICT '999,999.999' VALID IF(EMPTY(mquantd),.F.,.T.)
+        @ lci+6,cci+18 GET mcod_ven VALID ven(mcod_ven,lci+6,cci+22)
+        @ lci+7,cci+18 GET mmotivo VALID IF(EMPTY(mmotivo),.F.,.T.)
+        @ lci+8,cci+18 GET mmotivo1
+        @ lci+9,cci+18 GET mmotivo2
+        READ
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        opcao := op_simnao('S','Confirma a Operacao:')
+        IF opcao ='N' .OR. LASTKEY() = 27
+                LOOP
+        ENDIF
+                sr_getconnection():exec('INSERT INTO '+IF(malias = 'ass','sacass','sacsolpr')+' ('+;
+			'empresa  ,'+;
+			'data     ,'+;
+			'cod_cli  ,'+;
+                        'cliente  ,'+;
+			'uf_cli   ,'+;
+                        'cod_pro  ,'+;
+			'produto  ,'+;
+                        'motivo   ,'+;
+			'motivo1  ,'+;
+                        'motivo2  ,'+;
+			'quantd   ,'+;
+			'vendedor ,'+;
+			'oper_incl,'+;
+			'cod_forn ,'+;
+			'fornece  ,'+;
+			'tipo_ass ,'+;
+                        'SR_DELETED)'+;
+                        ' VALUES ('+;
+                        sr_cdbvalue(mcodempresa         )+','+; //1
+                        sr_cdbvalue(DATE()              )+','+; //2
+                        sr_cdbvalue(mcod_cli )+','+; //3
+                        sr_cdbvalue(cli->razao          )+','+; //4
+                        sr_cdbvalue(cli->uf             )+','+; //5
+                        sr_cdbvalue(mcod_merc)+','+; //6
+                        sr_cdbvalue(mmerc               )+','+; //7
+                        sr_cdbvalue(mmotivo             )+','+; //8
+                        sr_cdbvalue(mmotivo1            )+','+; //9
+                        sr_cdbvalue(mmotivo2            )+','+; //10
+                        sr_cdbvalue(mquantd             )+','+; //11
+                        sr_cdbvalue(STRZERO(mcod_ven,3) )+','+; //12
+                        sr_cdbvalue(cod_operado         )+','+; //13
+                        sr_cdbvalue(STRZERO(mcod_forn,4))+','+; //14
+                        sr_cdbvalue(forn->razao         )+','+; //15
+                        sr_cdbvalue(IF(mop_ass = 1,'C','E'))+','+; //16
+                        sr_cdbvalue(' ')+')',,.f.)
+
+
+        IF mop_ass = 2
+                aret:={}
+                sr_getconnection():exec("SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(mcod_merc),,.t.,@aret)
+                mlinha := aret[1,2]+aret[1,8]+aret[1,9]+aret[1,14]+STRZERO((aret[1,56] - mquantd)*1000,13)+STRZERO(iat(aret[1,46])*100,14)+aret[1,68]
+                sr_getconnection():exec("UPDATE sacmerc SET saldo_mer = "+sr_cdbvalue(aret[1,56] - mquantd )+",chv_cript = "+sr_cdbvalue(CRIPTO(mlinha,1))+" WHERE cod_merc = "+sr_cdbvalue(mcod_merc),,.f.)
+                        sr_getconnection():exec('INSERT INTO logproduto (data_sis,data,'+;
+                        'hora,cod_prod,quantd,saldo_ant,saldo_pos,cod_oper,prog,terminal,'+;
+                        'processo,ent_sai,SR_DELETED )'+;
+                        ' VALUES ('+;
+                        sr_cdbvalue(DATE())+','+; //1
+                        sr_cdbvalue(mdata_sis)+','+; //2
+                        sr_cdbvalue(TIME())+','+; //3
+                        sr_cdbvalue(mcod_merc)+','+; //4
+                        sr_cdbvalue(mquantd)+','+; //5
+                        sr_cdbvalue(aret[1,56])+','+; //6
+                        sr_cdbvalue(aret[1,56] - mquantd)+','+; //7
+                        sr_cdbvalue(cod_operado)+','+; //8
+                        sr_cdbvalue('SACASS10')+','+; //9
+                        sr_cdbvalue(LEFT(NETNAME(),15))+','+; //12
+                        sr_cdbvalue('SAIDA PRODUTO P/ASSISTENCIA')+','+; //11
+                        sr_cdbvalue('S')+','+; //11
+                        sr_cdbvalue(' ')+')',,.f.)
+        
+        ENDIF
+        sr_getconnection():exec('COMMIT',,.f.)
+        opcao := op_simnao('S','Deseja Imprimir a ASSISTENCIA:')
+        IF opcao ='N' .OR. LASTKEY() = 27
+                LOOP
+        ENDIF
+        mcopia:= mensagem1('Quantidade de COPIAS [1,2,3]:','1','1,2,3')
+        imp_ass(mcod_merc,mmerc,mmotivo,mquantd,STRZERO(mcod_ven,3),VAL(mcopia),DATE(),TIME(),mmotivo1,mmotivo2)
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************************  F I M ***********************************
+
+
+
+
+
+
+
+

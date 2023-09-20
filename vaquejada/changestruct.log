@@ -1,0 +1,8 @@
+17/09/08 20:37:50: SACVISI	Warning: DROP COLUMN:	INDKEY_001	unsuccessful metadata update - Native error code 335544351	
+17/09/08 20:38:02: SACCLI	Warning: DROP COLUMN:	INDKEY_001	unsuccessful metadata update - Native error code 335544351	
+17/09/08 20:38:05: SACDOLAR	Warning: DROP COLUMN:	INDKEY_001	unsuccessful metadata update - Native error code 335544351	
+17/09/08 20:38:05: SACCTVIS	Warning: DROP COLUMN:	INDKEY_001	unsuccessful metadata update - Native error code 335544351	
+17/09/08 20:38:05: SACCTVIS	Warning: DROP COLUMN:	INDKEY_002	unsuccessful metadata update - Native error code 335544351	
+17/09/08 20:38:06: SACPDVPD	Warning: DROP COLUMN:	INDKEY_001	unsuccessful metadata update - Native error code 335544351	
+17/09/08 20:38:06: SACPDVPR	Warning: DROP COLUMN:	INDKEY_001	unsuccessful metadata update - Native error code 335544351	
+17/09/08 20:38:08: ECFERRO	Warning: DROP COLUMN:	INDKEY_001	unsuccessful metadata update - Native error code 335544351	

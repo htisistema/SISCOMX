@@ -1,0 +1,14 @@
+[barr1]
+FileType=FIXED
+Delimiter="
+Separator=;
+StartAtRow=1
+UseHeaderRow=0
+Field1=CODIGO,CHAR,6,0,0
+Field2=DESCRI,CHAR,27,0,6
+Field3=BARRA,CHAR,14,0,33
+Field4=PRECO,CHAR,7,0,47
+Field5=REF,CHAR,8,0,54
+Field6=TAM,CHAR,4,0,62
+Field7=OBS,CHAR,32,0,66
+Field8=OBS1,CHAR,26,0,98

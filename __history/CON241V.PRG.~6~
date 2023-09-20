@@ -1,0 +1,271 @@
+*** CON241V.PRG: Inclusao de VALES (Receber)
+***
+************************************************
+MEMVAR getlist,nivel_acess,mdata_sis,cod_operado,mmens,;
+       memp_resa,mcgc_firm,mend_firm,mcid_firm,muf_firm,mfone_firm,minsc_firm
+
+FUNCTION con241v(mcx)
+****************
+LOCAL MPRG:='CON241V'
+LOCAL mtipo,mduplicata,mcod_ven,mtraco,opcao,mnum_ped,tela,mcomissao,mvalor,;
+      magencia,mc_c,mcorrente,mobs,mextenso,mlinha,mlin,lin,;
+      lci,cci,lba,cba,mmens,mcom_sem:=' '
+
+PRIVATE mcod_cli,mvenc,memissao,mnome_vend,mcom_ven,mnome_cli,mend,mbairro,mcidade,;
+        muf,mcgc,mcpf,minsc,mbanco,mnum_banco,mtipo_imp,mdesc_cart,mprazo_cart,;
+        mcartao,mcodemp:=SPACE(3),;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),cons_cli :={}
+
+IF ! ver_nivel(mprg,'CONTA A RECEBER (INCLUSAO DE VALES)','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+lci := 00
+cci := 00
+lba := 09
+cba := 79
+
+mtraco := REPLI('-',80)
+op_tela(10,10,20,79,' Inclusao de Vales ')
+exibi_prg(mprg)
+DEVPOS(lci,cci+2)  ;DEVOUT('Codigo da Empresa......:')
+DEVPOS(lci+1,cci+2);DEVOUT('Codigo do Cliente......:')
+DEVPOS(lci+2,cci+2);DEVOUT('Codigo do Vendedor.....:')
+DEVPOS(lci+3,cci+2);DEVOUT('Numero Documentos......:')
+DEVPOS(lci+4,cci+2);DEVOUT('Data de Emissao........:')
+DEVPOS(lci+5,cci+2);DEVOUT('Data de Vencimento.....:')
+DEVPOS(lci+6,cci+2);DEVOUT('Valor Vale R$..........:')
+DEVPOS(lci+7,cci+2);DEVOUT('OBS.:')
+*------------------------------------------------------------------------------------
+IF ! AbriArq('saccaixa','caix');RETURN NIL;ENDIF
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+IF ! AbriArq('sactipdc','tipdc');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+*------------------------------------------------------------------------------------
+WHILE .T.
+******** VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+        mcodemp:= mcodempresa
+        mnome_cli := SPACE(40)
+        mend := SPACE(35)
+        mbairro := mcidade := SPACE(20)
+        muf := SPACE(2)
+        mcgc := SPACE(14)
+        mcpf := SPACE(11)
+        minsc := SPACE(14)
+        mnome_vend := SPACE(30)
+        mduplicata := SPACE(12)
+        memissao=mdata_sis
+        mvenc=CTOD("  /  /  ")
+        mtipo='VL'
+        mnum_ped := mnum_banco := mcomissao := mdesc_cart := ;
+        mprazo_cart:= mcod_cli := mcom_ven := mcod_ven := mvalor:=0
+        mbanco := 'C'
+        magencia := SPACE(8)
+        mc_c := SPACE(13)
+        mcorrente := SPACE(35)
+        mobs := SPACE(60)
+        mcartao := SPACE(20)
+        ver_tipdc(mtipo,'*')
+        Mensagem('Digite o Numero da Duplicata. - <F1> Ajuda - [ESC] Abandona.')
+*       setcor(3)
+*       DEVPOS(lci+1,cci+27);DEVOUT(mtipo)
+*       setcor(1)
+        @ lci,cci+27 GET mcodemp PICT "999" VALID ver_emp(mcodemp,,,,'*') WHEN mmult_emp ='S'
+        @ lci+1,cci+27 GET mcod_cli PICT "99999"                //VALID lim_get() WHEN men_get(lci+6,cci+25,'Informe o Cod. do Cliente ou <ENTER>p/pesquisar p/NOME - <F1>Ajuda')
+        @ lci+1,cci+33 GET mnome_cli PICT "@!" WHEN EMPTY(mcod_cli)
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        IF ! EMPTY(mcod_cli)
+                cons_cli :={}
+                sr_getconnection():exec("SELECT * FROM saccli WHERE cod_cli = "+sr_cdbvalue(mcod_cli),,.t.,@cons_cli)
+                IF LEN(cons_cli) = 0
+                        atencao('Cliente nao cadastrado !!!')
+                        LOOP
+                ENDIF
+        ELSEIF ! EMPTY(mnome_cli)
+                cons_cli :={}
+                sr_getconnection():exec("SELECT * FROM saccli WHERE razao = "+sr_cdbvalue(RTRIM(mnome_cli)),,.t.,@cons_cli)
+                IF LEN(cons_cli) = 0
+                        atencao('Cliente nao cadastrado !!!')
+                        LOOP
+                ELSE
+                        mcod_cli:=f7_cli()
+                        IF LASTKEY() = 27
+                                LOOP
+                        ENDIF
+                ENDIF
+        ENDIF
+        IF ! mcli(mcod_cli,lci+1,cci+27)
+                LOOP
+        ENDIF
+        mcod_ven := cons_cli[1,106]
+        memissao := mdata_sis
+        mvenc    := mdata_sis + 1
+        mduplicata := STR(mcod_cli,5)+SUBSTR(DTOC(memissao),1,2)+SUBSTR(DTOC(memissao),4,2)
+        ven(VAL(mcod_ven),lci+2,cci+31)
+        Mensagem('Complete os Dados. [ESC] Abandona.')
+        *****************
+        SELE('dupr');ORDSETFOCUS(1)
+        GO TOP
+        *****************
+        setcor(3)
+        DEVPOS(lci+2,cci+27);DEVOUT(mcod_ven)
+        DEVPOS(lci+3,cci+27);DEVOUT(mduplicata)
+        DEVPOS(lci+4,cci+27);DEVOUT(memissao)
+        DEVPOS(lci+5,cci+27);DEVOUT(mvenc)
+        setcor(1)
+        @ lci+5,cci+27 GET mvenc VALID IF(mvenc<=memissao .OR. (mvenc-memissao) > 30,.F.,.T.)
+        @ lci+6,cci+27 GET mvalor PICT "9,999,999.99" VALID mvalor>0
+        @ lci+7,cci+07 GET mobs
+        READ
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        mcom_sem := ' '
+        IF m_set[1,155] = 'S'
+                mcom_sem := mensagem1('Tipo de Recebimento:',' ','X, ')
+        ENDIF
+        opcao := op_simnao('S','Confirma os Dados ? [S/n]:')
+        IF opcao = "N"
+                LOOP
+        ENDIF
+        IF ADIREG()
+                dupr-> empresa := mcodemp
+                dupr-> tipo := mtipo
+                dupr-> duplicata := mduplicata
+                dupr-> valor_dup := mvalor
+                dupr-> tip_cli := cons_cli[1,8]
+                dupr-> fornec := mcod_cli
+                dupr-> cliente := mnome_cli
+                dupr-> emissao := memissao
+                dupr-> venc := mvenc
+                dupr-> venc1:= mvenc
+                dupr-> valor := mvalor
+                dupr-> pago := " "
+                dupr-> vendedor := mcod_ven
+                dupr-> banco := mbanco
+                dupr-> comissao := 0
+                dupr-> obs      := mobs
+                dupr-> operador := cod_operado
+                dupr-> com_sem := mcom_sem
+                DBUNLOCKALL()
+                DBCOMMITALL()
+        ELSE
+                atencao('Nao foi possivel Acessar o Arquivo !!!')
+                LOOP
+        ENDIF
+        IF mcx <> NIL
+                ********************
+                SELE('caix');ORDSETFOCUS(1)
+                ********************
+                IF ADIREG()
+                        caix-> empresa := mcodemp
+                        caix-> tipo := 'VL'
+                        caix-> nota := '    VALE'
+                        caix-> data := memissao
+                        caix-> venci := mvenc
+                        caix-> documento := mduplicata
+                        caix-> cod_cli := mcod_cli
+                        caix-> valor := mvalor
+                        caix-> descri1 := 'Vale: '+STR(mcod_cli,5)+'-'+mnome_cli
+                        caix-> cod_vend  := mcod_ven
+                        caix-> cod_opera := cod_operado
+                        caix-> hora      := TIME()
+                        caix-> c_s := mcom_sem
+                        COMMIT
+                        UNLOCK
+                ELSE
+                        atencao('Nao foi possivel acessar o Arquivo !!!')
+                        LOOP
+                ENDIF
+        ENDIF
+        IF ! imp_arq('VALES.REL','D');LOOP;ENDIF
+        **************
+        SELE('dupr');ORDSETFOCUS(1)
+        **************
+        IF m_set[1,65] = 'F'
+                FOR i = 1 TO m_set[1,66]
+                        //SET DEVI TO PRINT
+                        //SET PRINTER TO (m_indiv[1,17])
+                        imprt(mtipo_imp,'E',2,0)
+                        DEVPOS(PROW(),00);DEVOUT(memp_resa)
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+1,00);DEVOUT(mend_firm)
+                        DEVPOS(PROW()+1,00);DEVOUT(mcid_firm +' - '+ mfone_firm)
+                        DEVPOS(PROW()+1,00);DEVOUT('Inscr. '+minsc_firm+' -  C.G.C.: '+mcgc_firm)
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+
+                        DEVPOS(PROW()+2,25);DEVOUT('V A L E S')
+
+                        DEVPOS(PROW()+2,00);DEVOUT('Data do Vale..:')
+                        DEVPOS(PROW(),16);DEVOUT(memissao)
+
+                        DEVPOS(PROW()+2,00);DEVOUT('Valor do Vale.:')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(LTRIM(TRANSFORM(mvalor,'99,999,999.99')))
+
+                        DEVPOS(PROW()+2,00);DEVOUT('Descricao.....:')
+                        DEVPOS(PROW(),16);DEVOUT('Vale: '+STR(mcod_cli,5)+'-'+mnome_cli)
+                        DEVPOS(PROW()+1,16);DEVOUT('      '+mobs)
+
+                        DEVPOS(PROW()+4,00);DEVOUT(PADC('...........................           ............................',80))
+                        DEVPOS(PROW()+1,00);DEVOUT(PADC('         C A I X A                              Solicitante       ',80))
+
+                        DEVPOS(PROW()+2,00);DEVOUT(mtraco)
+                        IF m_set[1,66] > 1 .AND. i < m_set[1,66]
+                                DEVPOS(PROW()+3,00);DEVOUT(' ')
+                        ENDIF
+                NEXT
+                EJECT
+        ELSEIF m_set[1,65] = 'B'
+                mtraco := REPLI('=',60)
+                FOR i = 1 TO m_set[1,66]
+                        //SET DEVI TO PRINT
+                        //SET PRINTER TO (m_indiv[1,17])
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW(),00);DEVOUT(memp_resa)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(mend_firm)
+                        DEVPOS(PROW()+1,00);DEVOUT(mcid_firm +' - '+ mfone_firm)
+                        DEVPOS(PROW()+1,00);DEVOUT('Inscr. '+minsc_firm+' -  C.G.C.: '+mcgc_firm)
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+2,00);DEVOUT(PADC('V A L E S',35))
+
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+2,00);DEVOUT('Data do Vale..:')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(memissao)
+
+                        DEVPOS(PROW()+2,00);DEVOUT('Valor do Vale.:')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(LTRIM(TRANSFORM(mvalor,'99,999,999.99')))
+
+                        DEVPOS(PROW()+2,00);DEVOUT('Descricao.....:')
+                        DEVPOS(PROW(),16);DEVOUT('Vale: '+STR(mcod_cli,5)+'-'+mnome_cli)
+                        DEVPOS(PROW()+1,16);DEVOUT('      '+mobs)
+
+                        DEVPOS(PROW()+3,00);DEVOUT(PADC('...............................',60))
+                        DEVPOS(PROW()+1,00);DEVOUT(PADC('           C A I X A           ',60))
+                        DEVPOS(PROW()+3,00);DEVOUT(PADC('...............................',60))
+                        DEVPOS(PROW()+1,00);DEVOUT(PADC('          Solicitante          ',60))
+
+                        DEVPOS(PROW()+2,00);DEVOUT(REPLI('-',60))
+                        IF m_set[1,66] > 1 .AND. i < m_set[1,66]
+                                DEVPOS(PROW()+3,00);DEVOUT(' ')
+                        ENDIF
+                NEXT
+                DEVPOS(PROW()+m_indiv[1,16],00);DEVOUT(' ')
+        ENDIF
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('VALES.REL')
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************** f i m *************************************
+
+
+
+

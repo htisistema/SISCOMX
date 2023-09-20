@@ -1,0 +1,79 @@
+***************************************
+* CONSULTA DE SERIE DOS PRODUTOS
+***************************************
+MEMVAR getlist,nivel_acess
+
+FUNCTION sac4ser()
+******************
+LOCAL MPRG:='SAC4SER'
+LOCAL lci,cci,lba,cba,opcao,mserie,tela
+
+PRIVATE mcliente,mcgc,mcpf,cons_cli:={}
+
+IF ! ver_nivel(mprg,'CONSULTA DE SERIE DOS PRODUTOS','1245',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+lci := 10
+cci := 10
+lba := 20
+cba := 78
+tela := SAVESCREEN(00,00,24,79)
+CLOSE ALL
+IF ! AbriArq('sacserie','serie');RETURN NIL;ENDIF
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+//
+GO BOTT
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+
+WHILE .T.
+        ****************************
+        SELE('serie');ORDSETFOCUS(2)
+        GO TOP
+        ****************************
+        mensagem('Digite o No. de Serie do produto')
+        mserie := SPACE(8)
+        botao(lci,cci,lba,cba,,' CONSULTA DA SERIE DO PRODUTO ')
+        DEVPOS(lci+1,cci+1);DEVOUT('Digite a Serie:')
+        DEVPOS(lci+2,cci+1);DEVOUT('Produto.......:')
+        DEVPOS(lci+3,cci+1);DEVOUT('Fornecedor....:')
+        DEVPOS(lci+4,cci+1);DEVOUT('Data Entrada..:')
+        DEVPOS(lci+4,cci+29);DEVOUT('Operador:')
+        DEVPOS(lci+5,cci+1);DEVOUT('Garantia......:')
+        DEVPOS(lci+6,cci+1);DEVOUT('Cliente.......:')
+        DEVPOS(lci+7,cci+1);DEVOUT('Data de Saida.:')
+        DEVPOS(lci+7,cci+29);DEVOUT('Operador:')
+        DEVPOS(lci+8,cci+1);DEVOUT('Fim Garantia..:')
+        DEVPOS(lci+9,cci+1);DEVOUT('No.do Pedido..:')
+
+        @ lci+1,cci+17 GET mserie PICT '99999999'
+        READ
+        IF LASTKEY() = 27
+                RESTSCREEN(00,00,24,79,tela)
+                RETURN NIL
+        ENDIF
+        IF ! serie->(DBSEEK(mserie))
+                atencao('Esta serie nao esta cadastrada !!!')
+                LOOP
+        ENDIF
+        ver_cod(VAL(serie->codigo),lci+2,cci+24)
+        v_fornece(VAL(serie->cod_forn),lci+3,cci+24)
+        ver_cli(VAL(serie->cod_cli),lci+6,cci+24)
+        setcor(3)
+        DEVPOS(lci+2,cci+17);DEVOUT(serie->codigo)
+        DEVPOS(lci+3,cci+17);DEVOUT(serie->cod_forn)
+        DEVPOS(lci+4,cci+17);DEVOUT(serie->data_ent)
+        DEVPOS(lci+4,cci+39);DEVOUT(serie->opera_ent)
+        DEVPOS(lci+5,cci+17);DEVOUT(STRZERO(serie->garantia,3))
+        DEVPOS(lci+6,cci+17);DEVOUT(serie->cod_cli)
+        DEVPOS(lci+7,cci+17);DEVOUT(serie->data_sai)
+        DEVPOS(lci+7,cci+39);DEVOUT(serie->opera_sai)
+        DEVPOS(lci+8,cci+17);DEVOUT(serie->data_fim)
+        DEVPOS(lci+9,cci+17);DEVOUT(serie->num_ped)
+        setcor(1)
+        mensagem('Pressione qualquer tecla p/retornar')
+        INKEY(0)
+ENDDO
+RETURN NIL

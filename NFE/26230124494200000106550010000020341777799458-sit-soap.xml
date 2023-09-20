@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NFeConsultaProtocolo4"><retConsSitNFe versao="2.01" xmlns="http://www.portalfiscal.inf.br/nfe">
+<infProt Id="ID">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_1.37.0</verAplic>
+<cStat>656</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: Consumo indevido pelo aplicativo da empresa [det: N&#xFA;mero m&#xE1;ximo de consultas excedido (11) para a NF-e: 26230124494200000106550010000020321231475656]</xMotivo>
+<cUF>26</cUF></infProt>
+</retConsSitNFe></nfeResultMsg></soapenv:Body></soapenv:Envelope>

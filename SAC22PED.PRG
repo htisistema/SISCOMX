@@ -1,0 +1,802 @@
+MEMVAR getlist
+*****************************
+* SOLICITAR PEDIDO DE COMPRAS
+*****************************
+FUNCTION sac22ped()
+*******************
+MEMVAR cod_operado,nivel_acess,mdata_sis
+LOCAL MPRG:='SAC22PED',mqtd_lin := 0,mitem := 1,f:=0,cons_tela := {},;
+      mped_merc := {},mcons_mov := {},mquantd:=0,m_cbarra:={},B_pesquisa,B_fecha
+
+PRIVATE m_matriz:={},m_codigo:={},i,opcao,mcod_merc:=0,mmerc := SPACE(40),mcod_bc := SPACE(14),;
+        mcod_merc := 0, mvlr_fat := 0,mnum_ped:=0,m_alt:={},mtotal_ped:=0
+
+SET KEY -9 TO
+SET KEY -7 TO F8_PROD()
+SET KEY 286 TO
+SET KEY 294 TO
+SET KEY -4 TO
+********************
+CLEAR GETS
+setcor(1)                    && cor para os SAY
+op_tela(00,00,50,120,memp_resa+SPACE(50)+'EMISSAO PEDIDO DE COMPRA'+SPACE(40)+'Terminal: '+m_indiv[1,1],,1)
+IF ! ver_nivel(mprg,'EMISSAO PEDIDO DE COMPRA','1245',nivel_acess,,'AMBIE')
+        RELEASE ALL
+        wvw_lclosewindow()
+        RETURN NIL
+ENDIF
+WvW_PBSetFont( NIL, 'Arial Black', 25, 10,)
+B_pesquisa := wvw_pbCreate(NIL,25,2,27,22,'ESTATISTICAS',,{||calc_estat()},,1,.F.)
+B_fecha    := wvw_pbCreate(NIL,25,25,27,45,'<F10>Fechamento',,{||fecha_ped_comp('1')},,1,.F.)
+WVW_PBEnable( NIL, B_fecha, .F. )
+WHILE .T.
+                WVW_PBEnable( NIL, B_pesquisa, .F. )
+                SET KEY 287 TO
+                botao(1,1,23,78)
+                botao(29,1,49,78)
+                setcor(1)
+                DEVPOS( 1,02);DEVOUT('Cod.Produto:')
+                DEVPOS( 2,02);DEVOUT('Descricao..:')
+                DEVPOS( 3,02);DEVOUT('Saldo......:')
+                DEVPOS( 4,02);DEVOUT('Sld.Anterio:')
+                DEVPOS( 5,02);DEVOUT('Preco Venda:')
+                DEVPOS( 6,02);DEVOUT('Preco Custo:')
+                DEVPOS( 7,02);DEVOUT('Quantidade.:')
+                DEVPOS( 8,02);DEVOUT('Valor R$...:')
+                DEVPOS(31,02);DEVOUT('Mes/Ano:        Quantidade:')
+                DEVPOS(32,02);DEVOUT('Mes/Ano:        Quantidade:')
+                DEVPOS(33,02);DEVOUT('Mes/Ano:        Quantidade:')
+                DEVPOS(34,02);DEVOUT('Mes/Ano:        Quantidade:')
+                DEVPOS(35,02);DEVOUT('                            -----------')
+                DEVPOS(36,02);DEVOUT('Total Quantidade..........:')
+                DEVPOS(37,02);DEVOUT('Total Dias................:')
+                DEVPOS(38,02);DEVOUT('Media por Dias............:')
+                @ 9,1 TO 9,78
+                WVW_DrawLabel(,10,2,'Fornecedor'+SPACE(20)+'Ultimas Compra:   Data    Venda R$   Custo R$  Documento',,,,, 'terminal',13,9,,,,,)
+                @ 11,1 TO 11,78
+                //SETCOLOR('W/B+,B+/W')
+                botao(1,80,50,120-1)
+                WVW_DrawLabel(,1,81,'PEDIDO DE COMPRA',,,,, 'Arial Black',25,20,,,,,)
+                mqtd_lin := mtotal_ped := 0
+                mitem := 1
+                f := 2
+                IF LEN(m_codigo) > 20
+                        mqtd_lin := LEN(m_codigo) - 20
+                ENDIF
+                @ f,80 SAY ''
+                f++
+                WVW_DrawLabel(,f,COL(),REPLI(CHR(223),88),,,,, 'terminal',13,4,,,,,)
+                f++
+                @ f,80 SAY ''
+                WVW_DrawLabel(,f,COL(),'Item  Cod.  Descricao                                    Quantd.   Vlr.Unit.   Vlr.Total',,,,, 'terminal',13,4,,,,,)
+                f++
+                WVW_DrawLabel(,f,COL(),REPLI(CHR(223),88),,,,, 'terminal',13,4,,,,,)
+                f++
+                i:=0
+                FOR i = 1 TO LEN(m_codigo)
+                        IF EMPTY(m_codigo[i]) .OR. m_codigo[i] = NIL
+                                LOOP
+                        ENDIF
+                        mtotal_ped := mtotal_ped + (m_matriz[i,2] * m_matriz[i,1])
+                        IF mqtd_lin < i
+                                @ f,80 SAY ''
+                                WVW_DrawLabel(,f,COL(),STRZERO(i,4)+' '+m_codigo[i]+'  '+m_matriz[i,3]+'   '+TRANSFORM(m_matriz[i,1],'99999.99')+' '+TRANSFORM(m_matriz[i,2],ALLTRIM('@E '+m_set[1,98]))+' '+TRANSFORM(m_matriz[i,2] * m_matriz[i,1],ALLTRIM('@E '+m_set[1,98])),,,,, 'terminal',13,4,,,,,)
+                                f++
+                        ENDIF
+
+                NEXT
+
+                tela_ := {}
+                tela_ := WVW_SAVESCREEN(,15,55,50,120-1)
+                setcor(1)
+                botao(45,80,50,119,,,'*')
+                DEVPOS(45,81);DEVOUT(' T O T A L   R$:')
+                WVW_DrawLabel(,46,82,TRANSFORM(mtotal_ped,ALLTRIM('@E '+m_set[1,98])),,,210,, 'arial black',60,35,,,,,)
+
+                mmerc := SPACE(40)
+                mcod_bc := SPACE(14)
+                mcod_merc := mvlr_fat := mquantd := 0
+                setcor(1)
+                SET KEY -9 TO fecha_ped_comp('1')       // neste mesmo PRG. <F10>Tecla
+                mensagem('<F10>Fechamento  - <ESC>Sair')
+                SET KEY -7 TO F8_PROD()
+                mloop := 0
+                @ 1,15 GET mcod_bc PICT '@!'
+                READ
+                IF LASTKEY() = 27 .AND. LEN(m_codigo) > 0
+			IF 'N' = op_simnao('S','Deseja Sair o PEDIDO DE COMPRA:')
+				LOOP
+			ENDIF
+                        SET KEY -2 TO
+                        SET KEY -7 TO
+                        EXIT
+                ENDIF
+                IF LASTKEY() = 27
+                        SET KEY -2 TO
+                        SET KEY -7 TO
+                        EXIT
+                ENDIF
+                IF ! EMPTY(mcod_bc)
+                        IF mcod_bc = 'ALT'
+                                alt_ped_ent()
+                                LOOP
+                        ELSEIF LEN(RTRIM(mcod_bc)) > 5 .OR. VAL(mcod_bc) = 0
+                                mponto := ASCAN(m_cbarra,mcod_bc)
+                                IF mponto > 0
+                                        alt_ped_ent()
+                                        LOOP
+                                ELSE
+                                        mped_merc := {}
+                                        sr_getconnection():exec("SELECT * FROM sacmerc WHERE cod_barr = "+sr_cdbvalue(ALLTRIM(mcod_bc)),,.t.,@mped_merc)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+                                        IF LEN(mped_merc) = 0
+                                                mped_merc := {}
+                                                sr_getconnection():exec("SELECT * FROM sacmerc WHERE ref = "+sr_cdbvalue(SUBSTR(mcod_bc,1,10)),,.t.,@mped_merc)
+                                                sr_getconnection():exec('COMMIT',,.f.)
+                                                IF LEN(mped_merc) = 0
+                                                        atencao('Codigo de BARRA e REFERENCIA AUXILIAR nao encontrado')
+                                                        LOOP
+                                                ENDIF
+                                        ENDIF
+                                ENDIF
+                                mcod_merc := VAL(mped_merc[1,8])
+                        ELSE
+                                mcod_merc := VAL(mcod_bc)
+                                mponto := ASCAN(m_codigo,STRZERO(mcod_merc,5))
+                                IF mponto > 0
+                                        alt_ped_ent()
+                                        LOOP
+                                ENDIF
+                                mped_merc := {}
+                                sr_getconnection():exec("SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(mcod_merc),,.t.,@mped_merc)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                                IF LEN(mped_merc) = 0
+                                        atencao('Codigo da mercadoria nao cadastrado')
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                ELSEIF EMPTY(mmerc)
+                        mcod_merc := IF(m_set[1,93] <> 'A',f4_merc(),f4_merc1())
+                        mped_merc := {}
+                        sr_getconnection():exec("SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(mcod_merc),,.t.,@mped_merc)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(mped_merc) = 0
+                                atencao('Codigo da mercadoria nao cadastrado')
+                                LOOP
+                        ENDIF
+                        mmerc := mped_merc[1,9]
+                        IF LASTKEY() = 27
+                                LOOP
+                        ENDIF
+                ENDIF
+                IF EMPTY(mcod_bc) .AND. EMPTY(mmerc)
+                        WVW_RESTSCREEN(,15,55,50,120-1,tela_,.T.)
+                        LOOP
+                ENDIF
+                WVW_PBEnable( NIL, B_pesquisa, .T. )
+                mcons_mov := {}
+                sr_getconnection():exec("SELECT * FROM sacmov WHERE codigo = "+sr_cdbvalue(STRZERO(mcod_merc,5))+" AND ent_sai = 'E' ORDER BY data_s_e descending   ",,.t.,@mcons_mov)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(mcons_mov) = 0
+                        DEVPOS(17,25);DEVOUT('S E M      M O V I M E N T O')
+                ELSE
+                        IF LEN(mcons_mov) > 10
+                                i:=0
+                                FOR i = 1 TO 10
+                                        WVW_DrawLabel(,11+i,2,mcons_mov[i,13]+'-'+mcons_mov[i,14]+' '+DTOC(mcons_mov[i,16])+' '+TRANSFORM(mcons_mov[i,22],'99,999.99')+' '+TRANSFORM(mcons_mov[i,26],'999,999.99')+'  '+mcons_mov[i,2],,,,, 'terminal',13,9,,,,,)
+                                        //DEVPOS(11+i,1);DEVOUT(mcons_mov[i,13]+'-'+mcons_mov[i,14]+' '+DTOC(mcons_mov[i,16])+' '+TRANSFORM(mcons_mov[i,22],'99,999.99')+' '+TRANSFORM(mcons_mov[i,26],'999,999.99')+' '+mcons_mov[i,2])
+                                NEXT
+                        ELSE
+                                i:=0
+                                FOR i = 1 TO LEN(mcons_mov)
+                                        WVW_DrawLabel(,11+i,2,mcons_mov[i,13]+'-'+mcons_mov[i,14]+' '+DTOC(mcons_mov[i,16])+' '+TRANSFORM(mcons_mov[i,22],'99,999.99')+' '+TRANSFORM(mcons_mov[i,26],'999,999.99')+'  '+mcons_mov[i,2],,,,, 'terminal',13,9,,,,,)
+                                        //DEVPOS(11+i,1);DEVOUT(mcons_mov[i,13]+'-'+mcons_mov[i,14]+' '+DTOC(mcons_mov[i,16])+' '+TRANSFORM(mcons_mov[i,22],'99,999.99')+' '+TRANSFORM(mcons_mov[i,26],'999,999.99')+' '+mcons_mov[i,2])
+                                NEXT
+                        ENDIF
+                ENDIF
+
+                // DESATIVA O FECHAMENTO DO PEDIDO...
+                SET KEY -9 TO                     // neste mesmo PRG. <F10>Tecla
+                //
+                mcod_merc := VAL(mped_merc[1,8])
+                setcor(3)
+                @ 1,15 SAY STRZERO(mcod_merc,5)
+                @ 2,15 SAY mped_merc[1,9]
+                @ 3,15 SAY mped_merc[1,56] PICT '9,999,999.99'
+                @ 4,15 SAY mped_merc[1,55] PICT '9,999,999.99'
+                @ 5,15 SAY mped_merc[1,46] PICT '9,999,999.99'
+                @ 6,15 SAY mped_merc[1,44] PICT '9,999,999.99'
+                setcor(1)
+                WHILE mquantd = 0
+                        @ 7,15 GET mquantd PICT '9,999,999.999' VALID IF(EMPTY(mquantd),.F.,.T.)
+                        @ 8,15 GET mvlr_fat PICT '9,999,999.999'
+                        READ
+                        IF LASTKEY() = 27
+                                EXIT
+                        ENDIF
+                ENDDO
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+                WVW_RESTSCREEN(,15,55,50,120-1,tela_,.T.)
+                setcor(1)
+                opcao := op_simnao('S','Confirma Inclusao da Mercadoria:')
+                IF opcao = 'N'
+                        mquantd := 1
+                ELSE
+                        aret:={}
+                        sr_getconnection():exec("SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(mcod_merc),,.t.,@aret)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        AADD(m_codigo,STRZERO(mcod_merc,5))
+                        AADD(m_cbarra,aret[1,2])
+                        AADD(m_matriz,{mquantd,mvlr_fat,aret[1,9]})
+                        AADD(m_alt,STRZERO(mcod_merc,5)+' '+LEFT(aret[1,9],38)+' '+TRANSFORM(mquantd,'99999.99')+' '+TRANSFORM(mvlr_fat,ALLTRIM('@E '+m_set[1,98]))+' '+TRANSFORM(mvlr_fat * mquantd,ALLTRIM('@E '+m_set[1,98])))
+                        mquantd := 1
+                        WVW_PBEnable( NIL, B_fecha, .T. )
+                ENDIF
+ENDDO
+WVW_PBDestroy( NIL, B_pesquisa )
+WVW_PBDestroy( NIL, B_fecha )
+RELEASE ALL
+wvw_lclosewindow()
+RETURN NIL
+***************************  F I M  **********************************
+* ALTERACAO DE MERCADORIA
+***************************
+FUNCTION alt_ped_ent
+********************
+MEMVAR mponto,mquantd,mvlr_fat,m_matriz,m_codigo,m_alt,opcao
+op_tela(08,10,23,89,' ALTERACAO DE PRODUTOS ')
+mensagem('Escolha com as Setas e Tecle <ENTER>p/Alterar ou <ESC>p/Sair')
+setcor(1)
+setcor(10);mponto := ACHOICE(00,01,18,78,m_alt,,,mponto);setcor(1)
+wvw_lclosewindow()
+IF mponto = 0
+        RETURN .T.
+ENDIF
+op_tela(10,10,17,79,' ALTERACAO DE PRODUTOS ')
+CLEAR GETS
+DO WHILE .T.
+        DEVPOS(01,00);DEVOUT('Codigo.....:')
+        DEVPOS(02,00);DEVOUT('Descricao..:')
+        DEVPOS(03,00);DEVOUT('Quantidade.:')
+        DEVPOS(04,00);DEVOUT('Preco Venda:')
+        //setcor(3)
+        DEVPOS(01,14);DEVOUT(m_codigo[mponto])
+        DEVPOS(02,COL()+1);DEVOUT(m_matriz[mponto,3])
+        mvlr_fat = m_matriz[mponto,2]
+        mquantd = m_matriz[mponto,1]
+        setcor(1)
+        IF LASTKEY() = 27;EXIT;ENDIF
+        @ 03,14 GET mquantd PICT '9,999,999.999'
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        IF mquantd = 0
+                opcao := op_simnao('S','Confirma Exclusao da Mercadoria:')
+                IF opcao = 'S'
+                        mquantd = 0
+                        m_codigo[mponto] = '     '
+*                       m_merc[mponto] = SPACE(40)
+                        m_matriz[mponto,1] := m_matriz[mponto,2] := 0
+                        m_matriz[mponto,3] := SPACE(5)
+                        m_alt[mponto] := SUBSTR(m_alt[mponto],1,45)+'***** Mercadoria Excluida *****'
+                        mcont_item --
+                        DEVPOS(50-2,10);DEVOUT(STRZERO(mcont_item,3))
+                        setcor(1)
+                        mquantd := 1
+                        EXIT
+                ELSE
+                        mquantd := 1
+                        EXIT
+                ENDIF
+        ENDIF
+        mensagem('Digite o valor do produto - <ESC>Sair')
+        @ 04,14 GET mvlr_fat PICT ALLTRIM(m_set[1,98])
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        //mtot_ped = 0
+        //mtot_ped = mvlr_fat * mquantd
+        opcao := op_simnao('S','Confirma Alteracao da Mercadoria:')
+        IF opcao = 'S'
+                m_matriz[mponto,1] = mquantd
+                m_matriz[mponto,2] = mvlr_fat
+                mquantd := 1
+                EXIT
+        ELSE
+                mquantd := 1
+                EXIT
+        ENDIF
+ENDDO
+CLEAR GETS
+wvw_lclosewindow()
+RETURN .T.
+********************************** F I M ***************************************
+* FECHAMENTO DO EMISSAO PEDIDO DE COMPRA
+*****************************
+MEMVAR getlist
+
+FUNCTION fecha_ped_comp(mtip)
+*************************
+LOCAL mopcao,mtraco,mfrete:=0,mforma_pag:=SPACE(12),mcond_pag:=SPACE(8)
+
+MEMVAR mtotal_ped
+PRIVATE cons_forn,mcod_forn,mobs,mobs2,mobs3,mobs4,mobs5,mobs6
+
+CLEAR GETS
+mtip := '1'
+mtraco := REPLI('=',80)
+mobs:=mobs2:=mobs3:=mobs4:=mobs5:=mobs6 := SPACE(60)
+mforma_pag:=SPACE(12)
+mcond_pag:=SPACE(8)
+op_tela(05,0,14,90,'F E C H A M E N T O    D O    O R C A M E N T O ')
+WHILE .T.
+        exibi_prg('SAC22PED')
+        mensagem('Preencha os campos de acordo com o HELP - <ESC> p/retornar')
+        mfrete:=0
+        setcor(1)
+        DEVPOS(0,1);DEVOUT('Valor do Frete R$.....:')
+        DEVPOS(1,1);DEVOUT('Sub-Total do PEDIDO...:')
+        DEVPOS(2,1);DEVOUT('Codigo Fornecedor.....:')
+        DEVPOS(3,1);DEVOUT('Forma de Pagamento....:')
+        DEVPOS(4,1);DEVOUT('Codicao Pagamento.....:')
+        DEVPOS(5,1);DEVOUT('Observacoes...........:')
+        ****
+        @ 0,24 GET mfrete PICT '999,999.99'
+        READ
+        IF LASTKEY() = 27
+                CLEAR GETS
+                SET KEY -8 TO
+                EXIT
+        ENDIF
+        mtotal_ped := mtotal_ped + mfrete
+        setcor(3)
+        WVW_DrawLabel(,1,26,ALLTRIM(TRANSFORM(mtotal_ped,'99,999,999.99')),,,,, 'Arial Black',13,12,,,,,)
+        setcor(1)
+        mcod_forn := 0
+        @ 2,24 GET mcod_forn PICT '9999' VALID IF(EMPTY(mcod_forn),.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                CLEAR GETS
+                SET KEY -8 TO
+                EXIT
+        ENDIF
+        IF ! EMPTY(mcod_forn)
+                cons_forn := {}
+                sr_getconnection():exec("SELECT * FROM sacforn WHERE cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4)),,.t.,@cons_forn)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(cons_forn) = 0
+                        atencao('Fornecedor nao cadastrado !!!')
+                        LOOP
+                ENDIF
+                mcod_forn := VAL(cons_forn[1,1])
+                mcond_pag := cons_forn[1,21]
+                mforma_pag := cons_forn[1,25]
+        ENDIF
+        setcor(3)
+        DEVPOS(2,24);DEVOUTPICT(mcod_forn,'9999')
+        DEVPOS(2,COL()+1);DEVOUT(cons_forn[1,2])
+        setcor(1)
+        @  3,24 GET mforma_pag
+        @  4,24 GET mcond_pag
+        @  5,24 GET mobs
+        @  6,24 GET mobs2 WHEN ! EMPTY(mobs)
+        @  7,24 GET mobs3 WHEN ! EMPTY(mobs2)
+        @  8,24 GET mobs4 WHEN ! EMPTY(mobs3)
+        @  9,24 GET mobs5 WHEN ! EMPTY(mobs4)
+        READ
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        mopcao := op_simnao('S','Confirma Fechamento do PEDIDO... [S/n]:')
+        IF mopcao = 'N'
+                SET KEY -8 TO
+                EXIT
+        ELSEIF mopcao = 'S'
+                IF mtip = '1'
+                        mensagem('Aguarde um momento Gerando NUMERO para o PEDIDO.......')
+                        //sr_starttrace()
+                        lExit := .T.
+                        while lExit
+                                sr_begintransaction()
+                                try
+                                aret:={}
+                                sr_getconnection():exec( "select numero from sacnopdcom where sr_recno = 1 for update with lock",,.t.,@aret)
+                                if len(aRet)  = 0
+                                        sr_getconnection():exec("insert into sacnopdcom (numero,sr_deleted,sr_recno)   values (" + sr_cdbvalue(strzero(1,6) ) + ",' ',1)",,.f.)
+                                        mnum_ped = 1
+                                else
+                                        mnum_ped = VAL(aret[1,1])+1
+                                        sr_getconnection():exec("update sacnopdcom set numero = " + sr_cdbvalue(strzero(mnum_ped,6)) + ", data_ped = " + sr_cdbvalue( mdata_sis) + " where sr_recno = 1 ",,.f.)
+                                endif
+                                sr_committransaction()
+                                lExit:=.F.
+                                catch e
+                                tracelog(valtoprg())
+                                sr_COMMITtransaction()
+
+                        END
+                        sr_endtransaction()
+                        mcont_item := 0
+                        i := 0
+                        mcampo_arq := 'num_ped,'  ;//1
+                                      +'dat_ped,'  ;//2
+                                      +'gru_sub,'  ;//3
+                                      +'cod_merc,' ;//4
+                                      +'merc,'     ;//5
+                                      +'unidade,'     ;//6
+                                      +'peso,'     ;//7
+                                      +'quantd,'   ;//8
+                                      +'vlr_fat,'  ;//9
+                                      +'cod_forn,'  ;//10
+                                      +'fornece,'  ;//11
+                                      +'cod_fab,'  ;//12
+                                      +'fabrica,'  ;//13
+                                      +'cod_oper,' ;//14
+                                      +'frete,'    ;//15
+                                      +'forma_pag,'  ;//16
+                                      +'cond_pag,'  ;//17
+                                      +'obs,'      ;//18
+                                      +'obs2,'     ;//19
+                                      +'obs3,'     ;//20
+                                      +'obs4,'     ;//21
+                                      +'obs5'
+                        FOR i = 1 TO LEN(m_codigo)
+                                IF EMPTY(m_codigo[i]) .OR. m_codigo[i] = NIL
+                                        LOOP
+                                ENDIF
+                                mensagem('Aguarde um momento Atualizando o Arquivo de PEDIDO...... Codigo da Mercadoria: '+m_codigo[i])
+		                cons_merc := {}
+		                cComm  := "SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(m_codigo[i])
+		                sr_getconnection():exec(ccomm,,.t.,@cons_merc)
+                                sr_getconnection():exec('COMMIT',,.f.)
+		                IF LEN(cons_merc) = 0
+		                	LOOP
+		              	ENDIF
+                                cComm  := 'INSERT INTO sacped_e ('+mcampo_arq+',sr_deleted) VALUES ('
+                                cComm  := ccomm + sr_cdbvalue(STRZERO(mnum_ped,6))+','+;//1
+                                sr_cdbvalue(mdata_sis)+','+;//2
+                                sr_cdbvalue(cons_merc[1,7]           )+','+;//3
+                                sr_cdbvalue(m_codigo[i]             )+','+;//4
+                                sr_cdbvalue(cons_merc[1,9]           )+','+;//5
+                                sr_cdbvalue(cons_merc[1,14]           )+','+;//6
+                                sr_cdbvalue(cons_merc[1,17]           )+','+;//7
+                                sr_cdbvalue(m_matriz[i,1]           )+','+;//8
+                                sr_cdbvalue(m_matriz[i,2]          )+','+;//9
+                                sr_cdbvalue(STRZERO(mcod_forn,4))+','+;//10
+                                sr_cdbvalue(cons_forn[1,2]           )+','+;//11
+                                sr_cdbvalue(cons_merc[1,30]          )+','+;//12
+                                sr_cdbvalue(cons_merc[1,31]          )+','+;//13
+                                sr_cdbvalue(cod_operado           )+','+;//14
+                                sr_cdbvalue(mfrete)+','+;               //15
+                                sr_cdbvalue(mforma_pag)+','+;               //16
+                                sr_cdbvalue(mcond_pag)+','+;               //17
+                                sr_cdbvalue(mobs)+','+;                      //18
+                                sr_cdbvalue(mobs2)+','+;                      //19
+                                sr_cdbvalue(mobs3)+','+;                      //20
+                                sr_cdbvalue(mobs4)+','+;                      //21
+                                sr_cdbvalue(mobs5)+','+;                      //22
+                                sr_cdbvalue(' ')+')'
+                                sr_getconnection():exec(ccomm,,.f.)
+                                sr_getconnection():exec("COMMIT",,.f.)
+                        NEXT
+                        sr_endtransaction()
+                        end
+                        sr_getconnection():exec("COMMIT",,.f.)
+                ELSE
+                        cons_ped := {}
+                        cComm  := "SELECT * FROM sacped_e WHERE sr_deleted = ' ' AND num_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                        sr_getconnection():exec(ccomm,,.t.,@cons_ped)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        FOR i = 1 TO LEN(cons_ped)
+                                ccomm := 'UPDATE sacped_e SET cod_forn = '+sr_cdbvalue(STRZERO(mcod_forn,4))
+                                ccomm := ccomm + ',vlr_fat = '+sr_cdbvalue(cons_ped[i,13])
+                                ccomm := ccomm + ',obs  = '+sr_cdbvalue(mobs)
+                                ccomm := ccomm + ',obs2 = '+sr_cdbvalue(mobs2)
+                                ccomm := ccomm + ',obs3 = '+sr_cdbvalue(mobs3)
+                                ccomm := ccomm + ',obs4 = '+sr_cdbvalue(mobs4)
+                                ccomm := ccomm + ',obs5 = '+sr_cdbvalue(mobs5)
+                                ccomm := ccomm + " WHERE num_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))+" AND pcod_merc = "+sr_cdbvalue(cons_ped[i,6])
+                                sr_getconnection():exec(ccomm,,.f.)
+                        NEXT
+                        sr_getconnection():exec("COMMIT",,.f.)
+                ENDIF
+                cons_ped := {}
+                sr_getconnection():exec("SELECT * FROM sacped_e WHERE sr_deleted = ' ' AND num_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6)),,.t.,@cons_ped)
+                sr_getconnection():exec('COMMIT',,.f.)
+                m_matriz:={}
+                m_codigo:={}
+                m_cbarra:={}
+                m_alt:={}
+                form_ped_ent(1,STRZERO(mnum_ped,6))
+                mobs := mobs2 := mobs3 := mobs4 := mobs5 := SPACE(60)
+                mflag := 0
+                CLEAR GETS
+                EXIT
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+********************** F I M **********************************************
+FUNCTION calc_estat()
+**********************
+LOCAL mdata:={},mqtd:={},mvlr:={},mcust:={},mdia := '',ccomm :=' '
+i:=0
+FOR i = 1 TO 4
+        AADD(mdata,'     ')
+        AADD(mqtd,0)
+        AADD(mvlr,0)
+        AADD(mcust,0)
+NEXT
+CLEAR GETS
+@ 31,10 GET mdata[1] PICT '99/99' VALID IF(EMPTY(mdata[1]),.F.,.T.)
+@ 32,10 GET mdata[2] PICT '99/99' WHEN ! EMPTY(mdata[1])
+@ 33,10 GET mdata[3] PICT '99/99' WHEN ! EMPTY(mdata[2])
+@ 34,10 GET mdata[4] PICT '99/99' WHEN ! EMPTY(mdata[3])
+READ
+IF LASTKEY() = 27
+        RETURN NIL
+ENDIF
+
+i := 0
+FOR i = 1 TO 4  //mqtd_mes
+        IF EMPTY(mdata[i])
+                LOOP
+        ENDIF
+
+        q_mov:={}
+        cComm  := "SELECT SUM(quantd) "
+        /*
+        IF mpreco = 'V'
+                ccomm := ccomm +",SUM(vl_fatura * quantd)"
+        ELSEIF mpreco = 'C'
+                ccomm := ccomm +",SUM(pr_unit * quantd)"
+        ELSE
+                ccomm := ccomm +",SUM(pr_unit * quantd)"
+        ENDIF
+        ccomm := ccomm +",SUM(pr_unit * quantd)"
+        */
+        ccomm := ccomm +" FROM sacmov WHERE cancel IS NULL AND NOT tipo = '01' AND ent_sai = 'S' AND documento NOT LIKE 'BL%'"
+        /*
+        IF ! EMPTY(mcod_forn)
+                ccomm := ccomm + " AND cod_cli = "+sr_cdbvalue(mcod_forn)
+        ENDIF
+        IF ! EMPTY(mcod_ven)
+                ccomm := ccomm + " AND cod_vend = "+sr_cdbvalue(STRZERO(mcod_ven,3))
+        ENDIF
+        IF ! EMPTY(mcod_ope)
+                ccomm := ccomm + " AND cod_oper = "+sr_cdbvalue(STRZERO(mcod_ope,3))
+        ENDIF
+        IF ! EMPTY(mexc_forn)
+                ccomm := ccomm + " AND NOT cod_fab = "+sr_cdbvalue(STRZERO(mexc_forn,4))
+        ENDIF
+        IF ! EMPTY(mexc_cli)
+                ccomm := ccomm + " AND NOT cod_cli = "+sr_cdbvalue(STRZERO(mexc_cli,5))
+        ENDIF
+        IF ! EMPTY(mexc_vend)
+                ccomm := ccomm + " AND NOT cod_vend = "+sr_cdbvalue(STRZERO(mexc_vend,3))
+        ENDIF
+        */
+        ccomm := ccomm + " AND data_s_e >= "+sr_cdbvalue('20'+SUBSTR(mdata[i],4,2)+'/'+SUBSTR(mdata[i],1,2)+'/01')
+        mdia := ''
+        IF SUBSTR(mdata[i],1,2) = '01' .OR. SUBSTR(mdata[i],1,2) = '03' .OR. SUBSTR(mdata[i],1,2) = '05' .OR. SUBSTR(mdata[i],1,2)='07' .OR. SUBSTR(mdata[i],1,2)='08' .OR. SUBSTR(mdata[i],1,2) = '10' .OR. SUBSTR(mdata[i],1,2) = '12'
+                mdia := '31'
+        ELSEIF SUBSTR(mdata[i],1,2) = '02'
+                mdia := '28'
+        ELSE
+                mdia := '30'
+        ENDIF
+        ccomm := ccomm + " AND data_s_e <= "+sr_cdbvalue('20'+SUBSTR(mdata[i],4,2)+'/'+SUBSTR(mdata[i],1,2)+'/'+mdia)
+        ccomm := ccomm + " AND codigo = "+sr_cdbvalue(STRZERO(mcod_merc,5))
+        //ccomm := ccomm + " ORDER BY produto"
+        sr_getconnection():exec(ccomm,,.t.,@q_mov)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(q_mov) = 0
+                LOOP
+        ENDIF
+        mqtd[i] := q_mov[1,1]
+        mvlr[i] := VAL(mdia)
+        //mcust[i]:=q_mov[1,3]
+
+NEXT
+DEVPOS(31,30);DEVOUT(TRANSFORM(mqtd[1],'999,999.999')+'  Media dia: '+TRANSFORM(mqtd[1]/mvlr[1],'999,999.999'))
+DEVPOS(32,30);DEVOUT(TRANSFORM(mqtd[2],'999,999.999')+'  Media dia: '+TRANSFORM(mqtd[2]/mvlr[2],'999,999.999'))
+DEVPOS(33,30);DEVOUT(TRANSFORM(mqtd[3],'999,999.999')+'  Media dia: '+TRANSFORM(mqtd[3]/mvlr[3],'999,999.999'))
+DEVPOS(34,30);DEVOUT(TRANSFORM(mqtd[4],'999,999.999')+'  Media dia: '+TRANSFORM(mqtd[4]/mvlr[4],'999,999.999'))
+DEVPOS(36,30);DEVOUT(TRANSFORM(mqtd[1]+mqtd[2]+mqtd[3]+mqtd[4],'999,999.999'))
+DEVPOS(37,30);DEVOUT(TRANSFORM(mvlr[1]+mvlr[2]+mvlr[3]+mvlr[4],'999,999.999'))
+DEVPOS(38,30);DEVOUT(TRANSFORM((mqtd[1]+mqtd[2]+mqtd[3]+mqtd[4])/(mvlr[1]+mvlr[2]+mvlr[3]+mvlr[4]),'999,999.999'))
+CLEAR GETS
+keyboard CHR(13)
+RETURN NIL
+**************************** F I M *************************************
+* FUNCAO P/IMPRIMIR PEDIDO FORMULARIO
+*************************************
+FUNCTION form_ped_ent(mquantd,mnum_pent)
+***************************************************
+LOCAL mpagina,imppedido:={},cons_merc:={},cons_forn:={},y,mt_pedido,mtot_itens:=0,;
+      mtraco,i,opcao
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+mtipo_imp := m_indiv[1,18]
+
+mtraco := REPLI(CHR(223),132)
+i := mpagina := 0
+
+IF mquantd > 0
+        IF ! imp_arq('PD'+mnum_pent+'.REL','T')
+                CLEAR GETS
+                SET KEY -8 TO
+                RETURN NIL
+        ENDIF
+        SETPRC(00,00)
+        imppedido:={}
+        cComm  := "SELECT * FROM sacped_e WHERE sr_deleted = ' ' AND num_ped = "+sr_cdbvalue(mnum_pent)
+        //IF m_set[1,174] = 'A'
+                cComm := cComm + ' ORDER BY merc'
+        //ELSEIF m_set[1,174] = 'C'
+        //        cComm := cComm + ' ORDER BY pcod_merc'
+        //ENDIF
+        sr_getconnection():exec(ccomm,,.t.,@imppedido)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(imppedido) = 0
+        	atencao('Nao foi encontrado este PEDIDODE COMPRA No.:'+mnum_pent)
+                SET DEVICE TO SCREEN;SET PRINT TO;SET PRINT OFF
+                RETURN NIL
+        ENDIF
+        FOR i = 1 TO mquantd
+                IF i = mquantd .AND. i > 1
+                        opcao := op_simnao('S','Imprimir a 2a.VIA de impressao [S/n]:')
+                        IF opcao = 'N'
+                                EXIT
+                        ENDIF
+                ENDIF
+                IF mtipo_imp = 'M'
+                        imprt(mtipo_imp)
+                ENDIF
+                imprt(mtipo_imp,'N')
+                mpagina := 77
+                IF m_set[1,18] = 'J' .AND. FILE('hticabe.jpg')
+                        mpagina := 85
+                        DEVPOS(00,05);DEVOUT('"hticabe.jpg"')
+                ELSE
+                        imprt(mtipo_imp,'N+')
+                        imprt(mtipo_imp,'W1')
+                        DEVPOS(PROW(),00);DEVOUT(memp_resa)
+                        imprt(mtipo_imp,'N-')
+                        imprt(mtipo_imp,'W0')
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(ALLTRIM(m_set[1,132])+', '+ALLTRIM(m_set[1,160])+'-'+ALLTRIM(m_set[1,161])+'-'+ALLTRIM(m_set[1,133])+'-'+ALLTRIM(m_set[1,134])+'-'+ALLTRIM(m_set[1,19])+' - Fone: '+m_set[1,136])
+                ENDIF
+                imprt(mtipo_imp,'C')
+                IF m_set[1,18] = 'J'
+                        @ PROW()+8,00 SAY mtraco
+                ELSE
+                        @ PROW()+1,00 SAY mtraco
+                ENDIF
+                @ PROW()+1,10 SAY ''
+                imprt(mtipo_imp,'E')
+                @ PROW(),15 SAY 'PEDIDO DE COMPRA No.: '+mnum_pent
+                imprt(mtipo_imp,'N')
+                imprt(mtipo_imp,'C')
+                @ PROW()+1,00 SAY 'Emissao:'
+                @ PROW(),PCOL()+1 SAY imppedido[1,4]
+                @ PROW(),PCOL()+2 SAY 'Ope:'
+                @ PROW(),PCOL() SAY imppedido[1,47]
+                IF mimp_tipo <> 2
+                        imprt(mtipo_imp,'C')
+                ENDIF
+                //@ PROW(),00 SAY PADL('  T:'+ALLTRIM(imppedido[1,3])+IF(mquantd > 1,' C-'+STRZERO(i,2),''),132)
+                cons_forn:={}
+                sr_getconnection():exec("SELECT * FROM sacforn WHERE cod_forn = "+sr_cdbvalue(imppedido[1,14]),,.t.,@cons_forn)
+                sr_getconnection():exec('COMMIT',,.f.)
+                @ PROW()+1,00 SAY cons_forn[1,1]
+                @ PROW(),PCOL()+1 SAY cons_forn[1,2]
+                IF LEN(ALLTRIM(cons_forn[1,16])) > 11
+                       @ PROW(),80 SAY 'CNPJ:'
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_forn[1,16],'@@R 99.999.999/9999-99')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('-IE: '+cons_forn[1,17])
+                ELSEIF LEN(ALLTRIM(cons_forn[1,16])) = 11
+                        @ PROW(),80 SAY 'CPF:'
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_forn[1,18],'@@R 999.999.999-99')
+                ENDIF
+                @ PROW()+1,00 SAY 'Nome Fantasia: '+cons_forn[1,35]
+                @ PROW(),PCOL()+3 SAY 'Responsavel: '+cons_forn[1,22]
+                @ PROW(),PCOL()+2 SAY '   - Fone:'+cons_forn[1,13]
+                @ PROW()+1,00 SAY 'End.: '+ALLTRIM(cons_forn[1,6])+' - '+ALLTRIM(cons_forn[1,7])+' - '+ALLTRIM(cons_forn[1,8])+' - '+ALLTRIM(cons_forn[1,9])+' - Fone:'+ALLTRIM(cons_forn[1,16])+' - CEP.:'+cons_forn[1,10]
+                @ PROW()+1,00 SAY mtraco
+                @ PROW()+1,00 SAY 'Codigo'
+                @ PROW(),PCOL()+2 SAY 'Descricao                              '
+                @ PROW(),PCOL()+2 SAY ' UN'
+                @ PROW(),PCOL()+2 SAY ' Quantidade'
+                @ PROW(),PCOL()+2 SAY ' Valor Compra'
+                @ PROW(),PCOL()+2 SAY '  Valor Total'
+                @ PROW()+1,00 SAY mtraco
+                y:=mt_pedido:=mtot_itens:=0
+                FOR y = 1 TO LEN(imppedido)
+                        imprt(mtipo_imp,'C')
+                        cons_merc:={}
+                        sr_getconnection():exec("SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(imppedido[y,6]),,.t.,@cons_merc)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(cons_merc) = 0
+                                atencao('Nao foi possivel encontrar este PRODUTO: '+imppedido[y,6]+' no arquivo de mercadoria. (PODE TER SIDO EXCLUIDA)')
+                                LOOP
+                        ENDIF
+                        @ PROW()+1,00 SAY cons_merc[1,8]
+                        @ PROW(),PCOL()+2 SAY cons_merc[1,9]
+                        @ PROW(),PCOL()+2 SAY cons_merc[1,14]
+                        @ PROW(),PCOL()+2 SAY imppedido[y,10] PICT '999,999.999'
+                        @ PROW(),PCOL()+2 SAY imppedido[y,13] PICT '99,999,999.99'
+                        @ PROW(),PCOL()+2 SAY imppedido[y,10] * imppedido[y,13] PICT '99,999,999.99'
+                        mt_pedido := mt_pedido + (imppedido[y,10]*iat(imppedido[y,13]))
+                        mtot_itens ++
+                        IF PROW() >= mpagina
+                                imprt(mtipo_imp,'C')
+                                @ PROW()+1,00 SAY mtraco
+                                imprt(mtipo_imp,'N')
+                                SETPRC(00,00)
+                                EJECT
+                                IF m_set[1,18] = 'J' .AND. FILE('hticabe.jpg')
+                                        mpagina := 85
+                                        DEVPOS(00,03);DEVOUT('"hticabe.jpg"')
+                                ELSE
+                                        imprt(mtipo_imp,'N+')
+                                        imprt(mtipo_imp,'W1')
+                                        DEVPOS(PROW(),00);DEVOUT(memp_resa)
+                                        imprt(mtipo_imp,'N-')
+                                        imprt(mtipo_imp,'W0')
+                                        imprt(mtipo_imp,'C')
+                                        DEVPOS(PROW()+1,00);DEVOUT(ALLTRIM(m_set[1,132])+', '+ALLTRIM(m_set[1,160])+'-'+ALLTRIM(m_set[1,161])+'-'+ALLTRIM(m_set[1,133])+'-'+ALLTRIM(m_set[1,134])+'-'+ALLTRIM(m_set[1,19])+' - Fone: '+m_set[1,136])
+                                ENDIF
+                                @ PROW(),00 SAY PADL('continuacao',80)
+                                imprt(mtipo_imp,'C')
+                                @ PROW()+1,00 SAY mtraco
+                                @ PROW()+1,00 SAY 'Codigo'
+                                @ PROW(),PCOL()+2 SAY 'Descricao                              '
+                                @ PROW(),PCOL()+2 SAY ' UN'
+                                @ PROW(),PCOL()+2 SAY '    Quantd.'
+                                @ PROW(),PCOL()+2 SAY ' Vlr. Venda'
+                                @ PROW(),PCOL()+2 SAY ' Vlr.Total'
+                                imprt(mtipo_imp,'C')
+                                @ PROW()+1,00 SAY mtraco
+                        ENDIF
+                NEXT
+                imprt(mtipo_imp,'C')
+                @ PROW()+1,00 SAY mtraco
+                @ PROW()+1,00 SAY 'Observacao: '+ALLTRIM(imppedido[1,38])
+                @ PROW()+1,00 SAY '            '+ALLTRIM(imppedido[1,43])
+                @ PROW()+1,00 SAY '            '+ALLTRIM(imppedido[1,44])
+                @ PROW()+1,00 SAY '            '+ALLTRIM(imppedido[1,45])
+                @ PROW()+1,00 SAY '            '+ALLTRIM(imppedido[1,46])
+                @ PROW()+1,00 SAY mtraco
+                imprt(mtipo_imp,'N+')
+                imprt(mtipo_imp,'W1')
+                @ PROW()+1,00 SAY 'Qtd.Itens.:'
+                @ PROW(),PCOL()+1 SAY STRZERO(mtot_itens,6)
+                @ PROW()+1,00 SAY 'Sub-total..:'
+                @ PROW(),PCOL()+1 SAY ALLTRIM(TRANSFORM(mt_pedido,'99,999,999.99'))
+                @ PROW()+1,00 SAY 'Valor Frete:'
+                @ PROW(),PCOL()+1 SAY ALLTRIM(TRANSFORM(imppedido[1,30],'99,999,999.99'))
+                @ PROW()+1,00 SAY 'Total Nota.:'
+                @ PROW(),PCOL()+1 SAY ALLTRIM(TRANSFORM(mt_pedido + imppedido[1,30],'99,999,999.99'))
+                @ PROW()+1,00 SAY mtraco
+                @ PROW()+1,00 SAY 'Forma de Pagamento...:'
+                @ PROW(),PCOL()+1 SAY imppedido[1,49]
+                @ PROW()+1,00 SAY 'Condicao de Pagamento:'
+                @ PROW(),PCOL()+1 SAY imppedido[1,48]
+                imprt(mtipo_imp,'N-')
+                imprt(mtipo_imp,'W0')
+                imprt(mtipo_imp,'C')
+                @ PROW()+1,00 SAY mtraco
+                @ PROW()+1,00 SAY DTOC(DATE())+' - '+time()
+                EJECT
+        NEXT
+        SET DEVICE TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('PD'+mnum_pent+'.REL',,,'T')
+ENDIF
+RETURN NIL
+**************************** F I M *************************************

@@ -1,0 +1,19 @@
+Error BASE/1132  Error de rango: acceso al array
+Funcoes: SAC5COM8.PRG->SAC5COM8(141)
+Funcoes: SAC00.PRG->AFTERINKEY(2441)
+Funcoes: SAC00.PRG->(b)SAC0(1395)
+Funcoes: ->INKEY(0)
+Funcoes: SAC00.PRG->SAC0(1425)
+Funcoes: SACROT1.PRG->SENHA(824)
+Funcoes: SISCOM.002->MAIN(1127)
+************************************************************************************************************************
+Data e Hora........: 29/11/22 - 10:47:39
+Empresa............: DOCE GOSTO MAIS
+Sistema/Atualizacao: .: SISCOM :. Sistema Automacao Comercial - v22.11.28
+Usuario do Sistema.: 999
+Nome do Executavel.: C:\HELIO\siachb\SISCOM.EXE
+Nome do Micro......: HELIO1 - Nome Terminal: helio
+Memoria Disponivel.: 2097151 - Espaço em Disco....: 128026673152
+Pasta de Diretorio.: HELIO\siachb
+Sistema Operacional: Windows NT Professional 6.02.9200
+Caminho do Banco...: localhost:C:\HELIO\SIACHB\SISCOM.GDB

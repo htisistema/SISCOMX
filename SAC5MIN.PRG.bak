@@ -1,0 +1,422 @@
+***************************************
+* RELATORIO DE PRODUTO ABAIXO DO MINIMO
+***************************************
+MEMVAR getlist,nivel_acess
+
+FUNCTION sac5min
+**************
+LOCAL MPRG:='SAC5MIN',;
+      tela,lci,cci,lba,cba,mgrupo1,mgrupo2,mcod_merc1,mcod_mer2,opcao,mquantd,;
+      i,mtecla,mpromocao,mtotal,mtotal_pro,mtipo_tab,mcod_merc2,mtipo_rel,;
+      mtot_falta:=0,msld_falta:=0,msld_ind:=0,mtot_ind:=0,mtip_custo:=' ',;
+      mperc_fal:=0,ccomm,cons_abaixo:={},cons_merc:={},cons_grupo:={},cont:=0
+
+PRIVATE mtraco,mtot_item,telaprint,mtit,mtipo,mpag,mcod_forn,mcod_espe,;
+        mfornec,muf,mfornece,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+IF ! ver_nivel(mprg,'RELATORIO DE PRODUTOS ABAIXO DO MINIMO','1456',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+mtraco := REPLI('=',132)
+
+lci := cci := 00
+lba := 13
+cba := 75
+*-------------------------------------------------------------------------
+/*
+IF ! AbriArq('sacespe','espe');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*/
+IF ! AbriArq('sacgrupo','grup');RETURN NIL;ENDIF
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+*-------------------------------------------------------------------------
+op_tela(05,10,18,85,' Estoque Abaixo do Minimo ou Maximo ')
+WHILE .T.
+        limpa(00,00,35,90)
+        mtipo_imp := m_indiv[1,18]
+        mpromocao := mtipo_tab := SPACE(1)
+        mgrupo1 := msub_grupo := mtot_item := mcod_forn := mcod_espe := ;
+        mperc_fal := i := mtotal := mtotal_pro := mquantd := 0
+        mfornece := SPACE(40)
+        muf := SPACE(2)
+        mtipo := ' '
+        mtecla := 'A'
+        mtip_custo := 'C'
+        mensagem('Preencha os Campos ou em Branco p/Imprimir todos - <ESC>p/Abandonar')
+        @ lci+8,cci TO lci+8,cba
+        @ lci+11,cci TO lci+11,cba
+        janela(lci+8,cba,' Processados ','*')
+        janela(lci+11,cba,' Impressos ','*')
+        DEVPOS(lci+1,cci+2);DEVOUT('Cod.Grupo......:')
+        DEVPOS(lci+2,cci+2);DEVOUT('Cod.Sub-Grupo..:')
+        DEVPOS(lci+3,cci+2);DEVOUT('Cod.Fornecedor.:')
+        DEVPOS(lci+4,cci+2);DEVOUT('Cod.Especie....:')
+        DEVPOS(lci+5,cci+2);DEVOUT('Ordem [A]lfabetica [C]odigo [G]rupo......:')
+        DEVPOS(lci+6,cci+2);DEVOUT('Calcular o Saldo p/[C]usto merc. [R]eal..:')
+        DEVPOS(lci+7,cci+2);DEVOUT('Percentual no Saldo p/Calcular Falta (%).:')
+        DEVPOS(lci+9,cci+2);DEVOUT('Produtos.......:')
+        DEVPOS(lci+10,cci+2);DEVOUT('Quantidade.....:')
+        DEVPOS(lci+12,cci+2);DEVOUT('Produtos.......:')
+        DEVPOS(lci+13,cci+2);DEVOUT('Quantidade.....:')
+
+        @ lci+1,cci+19 GET mgrupo1 PICT '999' VALID IF(EMPTY(mgrupo1),.T.,ver_gru(@mgrupo1,lci+1,cci+23,.F.))
+        @ lci+2,cci+19 GET msub_grupo PICT '99' WHEN ! EMPTY(mgrupo1) VALID ver_sgru(mgrupo1,msub_grupo,lci+2,cci+23)
+        @ lci+3,cci+19 GET mcod_forn PICT '9999' VALID v_fornece(mcod_forn,lci+3,cci+24)
+        @ lci+4,cci+19 GET mcod_espe PICT '9999' VALID ver_espe(mcod_espe,lci+4,cci+24,,0)
+        @ lci+5,cci+45 GET mtecla PICT '@!' VALID mtecla $ 'A,C,G' WHEN EMPTY(mgrupo1)
+        @ lci+6,cci+45 GET mtip_custo PICT '@!' VALID mtip_custo $ 'C,R'
+        @ lci+7,cci+45 GET mperc_fal PICT '999.99'
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+
+        mtipo_rel := mensagem1('Tipo de Relatorio [A]baixo do minimo - [M]Abaixo do Maximo:','A','A,M')
+        IF ! imp_arq('PRO_ABAI.REL','R')
+                LOOP
+        ENDIF
+        IF mtecla = 'G' .OR. ! EMPTY(mgrupo1)
+                mtecla := 'G'
+                cons_grupo := {}
+                ccomm := "SELECT * FROM sacgrupo WHERE gru_sub IS NOT NULL"
+                IF ! EMPTY(mgrupo1) .AND. ! EMPTY(msub_grupo)
+                        cComm  := ccomm + " AND gru_sub = "+sr_cdbvalue(STRZERO(mgrupo1,3)+'  ')
+                        cComm  := ccomm + " OR gru_sub = "+sr_cdbvalue(STRZERO(mgrupo1,3)+STRZERO(msub_grupo,2))
+                ELSEIF ! EMPTY(mgrupo1)
+                        cComm  := ccomm + " AND gru_sub LIKE "+sr_cdbvalue(STRZERO(mgrupo1,3)+'%')
+                ENDIF
+                ccomm := ccomm + "ORDER BY gru_sub"
+                sr_getconnection():exec(ccomm,,.t.,@cons_grupo)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(cons_grupo) = 0
+                        atencao('Nao existe nenhum GRUPO para ser listado...')
+                        LOOP
+                ENDIF
+        ELSE
+                cons_abaixo := {}
+                cComm  := "SELECT * FROM sacmerc WHERE cod_merc IS NOT NULL"
+                IF ! EMPTY(mgrupo1)
+                        ccomm := ccomm + " AND gru_sub LIKE "+sr_cdbvalue(STRZERO(VAL(mgrupo1),3)+'%')
+                ENDIF
+                IF ! EMPTY(mcod_espe)
+                        ccomm := ccomm + " AND especie = "+sr_cdbvalue(STRZERO(mcod_espe,4))
+                ENDIF
+                IF ! EMPTY(mcod_forn)
+                        ccomm := ccomm + " AND cod_fab = "+sr_cdbvalue(STRZERO(mcod_forn,4))
+                ENDIF
+                IF ! EMPTY(msub_grupo)
+                        ccomm := ccomm + " AND gru_sub LIKE "+sr_cdbvalue(ALLTRIM(mgrupo1)+ALLTRIM(msub_grupo))
+                ENDIF
+                IF  mtipo_rel = 'A'
+                        ccomm := ccomm + " AND saldo_mer <= est_min AND est_min > 0"
+                ELSE
+                        ccomm := ccomm + " AND saldo_mer <= est_max AND est_max > 0"
+                ENDIF
+                IF mtecla = 'A'
+                        ccomm := ccomm + " ORDER BY merc"
+                ENDIF
+                IF mtecla = 'C'
+                        ccomm := ccomm + " ORDER BY cod_merc"
+                ENDIF
+                sr_getconnection():exec(ccomm,,.t.,@cons_abaixo)
+                sr_getconnection():exec('COMMIT',,.f.)
+        ENDIF
+        mpag = 0
+        IF mtipo_rel = 'A'
+                mtit := 'Mercadoria abaixo do MINIMO'
+        ELSE
+                mtit := 'Mercadoria abaixo do MAXIMO'
+        ENDIF
+        IF mperc_fal > 0
+                mtit := mtit + ' com mais:'+TRANSFORM(mperc_fal,'999.99')+' % Saldo que Falta'
+        ENDIF
+        IF ! EMPTY(mgrupo1)
+                mtipo := 'Grupo: '+STRZERO(mgrupo1,3)
+        ENDIF
+        IF ! EMPTY(msub_grupo)
+                mtipo := ' Sub-grupo:'+STRZERO(msub_grupo,3)
+        ENDIF
+        IF ! EMPTY(mcod_espe)
+                mtipo := mtipo+' - Cod.Especie: '+STRZERO(mcod_espe,4)
+        ENDIF
+        IF ! EMPTY(mcod_forn)
+                mtipo := mtipo+' - Cod.Fabricate: '+STRZERO(mcod_forn,4)
+        ENDIF
+        IF mtecla <> 'G'
+                mtot_falta := msld_falta := msld_ind := i := 0
+                FOR i = 1 TO LEN(cons_abaixo)
+                        SETPOS(lci+9,cci+19);DISPOUT(cons_abaixo[i,8]+'-'+cons_abaixo[i,9])
+                        SETPOS(lci+10,cci+19);DISPOUT(STRZERO(i,6))
+                        IF mpag = 0 .OR. PROW() >= 58
+                                mpag ++
+                                IF mpag > 1
+                                        EJECT
+                                ENDIF
+                                cabecalho(mpag,mtit,mtipo)
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,01);DEVOUT('Cod.')
+                                DEVPOS(PROW(),07);DEVOUT('Descricao')
+                                DEVPOS(PROW(),49);DEVOUT('UN')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('   Saldo')
+                                IF mtipo_rel = 'A'
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.MIN.')
+                                ELSE
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.MAX.')
+                                ENDIF
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Ult.Com.')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Pr.Ult.Com')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Custo Real')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(' Prc.Venda')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.Falta')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(' Vlr.Falta')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                                IF ! EMPTY(mgrupo1)
+                                        DEVPOS(PROW()+1,00);DEVOUT(' ')
+                                        prt_gru(VAL(mgrupo1))
+                                ENDIF
+                        ENDIF
+                        IF  mtipo_rel = 'A'
+                                IF cons_abaixo[i,56] >= cons_abaixo[i,28] .OR. EMPTY(cons_abaixo[i,28])
+                                        LOOP
+                                ENDIF
+                        ELSE
+                                IF EMPTY(cons_abaixo[i,29]) .OR. cons_abaixo[i,56] >= cons_abaixo[i,29]
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(cons_abaixo[i,8])
+                        DEVPOS(PROW(),07);DEVOUT(cons_abaixo[i,9])
+                        DEVPOS(PROW(),49);DEVOUT(cons_abaixo[i,14])
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(cons_abaixo[i,56],'99999.99'))
+                        msld_ind := 0
+                        IF mtipo_rel = 'A'
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(cons_abaixo[i,28],'99999.99'))
+                                msld_ind := cons_abaixo[i,28] - cons_abaixo[i,56]
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(cons_abaixo[i,29],'99999.99'))
+                                msld_ind := cons_abaixo[i,29] - cons_abaixo[i,56]
+                        ENDIF
+                        IF mperc_fal > 0
+                                msld_ind := msld_ind * ((mperc_fal/100)+1)
+                        ENDIF
+                        msld_falta := msld_falta + msld_ind
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_abaixo[i,33])
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_abaixo[i,44],'999,999.99')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_abaixo[i,45],'999,999.99')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_abaixo[i,46],'999,999.99')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(msld_ind,'99,999.99'))
+                        IF mtip_custo = 'C'
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(msld_ind*cons_abaixo[i,44],'999,999.99'))
+                                mtot_falta := mtot_falta + (msld_ind*cons_abaixo[i,44])
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(msld_ind*cons_abaixo[i,45],'999,999.99'))
+                                mtot_falta := mtot_falta + (msld_ind*cons_abaixo[i,45])
+                        ENDIF
+                        mtot_item ++
+                        SETPOS(lci+12,cci+19);DISPOUT(cons_abaixo[i,8]+'-'+cons_abaixo[i,9])
+                        SETPOS(lci+13,cci+19);DISPOUT(STRZERO(mtot_item,6))
+                NEXT
+                IF PROW() >= 57
+                        EJECT
+                        mpag ++
+                        cabecalho(mpag,mtit,mtipo)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,01);DEVOUT('Cod.')
+                        DEVPOS(PROW(),07);DEVOUT('Descricao')
+                        DEVPOS(PROW(),49);DEVOUT('UN')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('   Saldo')
+                        IF mtipo_rel = 'A'
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.MIN.')
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.MAX.')
+                        ENDIF
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Ult.Com.')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Pr.Ult.Com')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Custo Real')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(' Prc.Venda')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.Falta')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(' Vlr.Falta')
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                ENDIF
+                imprt(mtipo_imp,'N')
+                DEVPOS(PROW()+2,00);DEVOUT('Total de Item..........:')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(LTRIM(TRANSFORM(mtot_item, '9,999,999.99')))
+                DEVPOS(PROW()+1,00);DEVOUT('Saldo Total que Falta..:')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(LTRIM(TRANSFORM(msld_falta,'9,999,999.99')))
+                DEVPOS(PROW()+1,00);DEVOUT('Valor Total que Falta..:')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(LTRIM(TRANSFORM(mtot_falta,'9,999,999.99')))
+                DEVPOS(PROW()+2,00);DEVOUT(TIME())
+                EJECT
+                SETPRC(00,00)
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                conf_impressao('PRO_ABAI.REL')
+        ELSE
+                cont:=0
+                mtot_falta := msld_falta := msld_ind := mtot_item := 0
+                mnome_gru := SPACE(30)
+                FOR cont = 1 TO LEN(cons_grupo)
+                        IF mpag = 0 .OR. PROW() >= 58
+                                mpag ++
+                                IF mpag > 1
+                                        EJECT
+                                ENDIF
+                                cabecalho(mpag,mtit,mtipo)
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,01);DEVOUT('Cod.')
+                                DEVPOS(PROW(),07);DEVOUT('Descricao')
+                                DEVPOS(PROW(),49);DEVOUT('UN')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('   Saldo')
+                                IF mtipo_rel = 'A'
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.MIN.')
+                                ELSE
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.MAX.')
+                                ENDIF
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Ult.Com.')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Pr.Ult.Com')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Custo Real')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(' Prc.Venda')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.Falta')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(' Vlr.Falta')
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        ENDIF
+                        IF LEN(ALLTRIM(cons_grupo[cont,1])) = 3
+                                mnome_gru := cons_grupo[cont,1]+' - '+cons_grupo[cont,2]
+                                LOOP
+                        ENDIF
+                        cons_abaixo := {}
+                        ccomm  := "SELECT * FROM sacmerc WHERE cod_merc IS NOT NULL"
+                        ccomm := ccomm + " AND gru_sub = "+sr_cdbvalue(cons_grupo[cont,1])
+                        IF  mtipo_rel = 'A'
+                                ccomm := ccomm + " AND saldo_mer <= est_min AND est_min > 0"
+                        ELSE
+                                ccomm := ccomm + " AND saldo_mer <= est_max AND est_max > 0"
+                        ENDIF
+                        ccomm := ccomm + " ORDER BY gru_sub,merc"
+                        sr_getconnection():exec(ccomm,,.t.,@cons_abaixo)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(cons_abaixo) > 0
+                                imprt(mtipo_imp,'N+')
+                                imprt(mtipo_imp,'W1')
+                                DEVPOS(PROW()+1,00);DEVOUT('G R U P O: '+mnome_gru)
+                                DEVPOS(PROW()+1,00);DEVOUT('SUB-GRUPO: '+SUBSTR(cons_grupo[cont,1],4,2)+' - '+cons_grupo[cont,2])
+                                imprt(mtipo_imp,'N-')
+                                imprt(mtipo_imp,'W0')
+                        ENDIF
+                        i:=0
+                        FOR i = 1 TO LEN(cons_abaixo)
+                                SETPOS(lci+9,cci+19);DISPOUT(cons_abaixo[i,8]+'-'+cons_abaixo[i,9])
+                                SETPOS(lci+10,cci+19);DISPOUT(STRZERO(i,6))
+                                IF mpag = 0 .OR. PROW() >= 58
+                                        mpag ++
+                                        IF mpag > 1
+                                                EJECT
+                                        ENDIF
+                                        cabecalho(mpag,mtit,mtipo)
+                                        imprt(mtipo_imp,'C')
+                                        DEVPOS(PROW()+1,01);DEVOUT('Cod.')
+                                        DEVPOS(PROW(),07);DEVOUT('Descricao')
+                                        DEVPOS(PROW(),49);DEVOUT('UN')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('   Saldo')
+                                        IF mtipo_rel = 'A'
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.MIN.')
+                                        ELSE
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.MAX.')
+                                        ENDIF
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Ult.Com.')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Pr.Ult.Com')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Custo Real')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(' Prc.Venda')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.Falta')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(' Vlr.Falta')
+                                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                                        IF ! EMPTY(mgrupo1)
+                                                DEVPOS(PROW()+1,00);DEVOUT(' ')
+                                                prt_gru(VAL(mgrupo1))
+                                        ENDIF
+                                ENDIF
+                                IF  mtipo_rel = 'A'
+                                        IF cons_abaixo[i,56] >= cons_abaixo[i,28] .OR. EMPTY(cons_abaixo[i,28])
+                                                LOOP
+                                        ENDIF
+                                ELSE
+                                        IF EMPTY(cons_abaixo[i,29]) .OR. cons_abaixo[i,56] >= cons_abaixo[i,29]
+                                                LOOP
+                                        ENDIF
+                                ENDIF
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,00);DEVOUT(cons_abaixo[i,8])
+                                DEVPOS(PROW(),07);DEVOUT(cons_abaixo[i,9])
+                                DEVPOS(PROW(),49);DEVOUT(cons_abaixo[i,14])
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(cons_abaixo[i,56],'99999.99'))
+                                msld_ind := 0
+                                IF mtipo_rel = 'A'
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(cons_abaixo[i,28],'99999.99'))
+                                        msld_ind := cons_abaixo[i,28] - cons_abaixo[i,56]
+                                ELSE
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(cons_abaixo[i,29],'99999.99'))
+                                        msld_ind := cons_abaixo[i,29] - cons_abaixo[i,56]
+                                ENDIF
+                                IF mperc_fal > 0
+                                        msld_ind := msld_ind * ((mperc_fal/100)+1)
+                                ENDIF
+                                msld_falta := msld_falta + msld_ind
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_abaixo[i,33])
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_abaixo[i,44],'999,999.99')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_abaixo[i,45],'999,999.99')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_abaixo[i,46],'999,999.99')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(msld_ind,'99,999.99'))
+                                IF mtip_custo = 'C'
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(msld_ind*cons_abaixo[i,44],'999,999.99'))
+                                        mtot_falta := mtot_falta + (msld_ind*cons_abaixo[i,44])
+                                ELSE
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(msld_ind*cons_abaixo[i,45],'999,999.99'))
+                                        mtot_falta := mtot_falta + (msld_ind*cons_abaixo[i,45])
+                                ENDIF
+                                mtot_item ++
+                                SETPOS(lci+12,cci+19);DISPOUT(cons_abaixo[i,8]+'-'+cons_abaixo[i,9])
+                                SETPOS(lci+13,cci+19);DISPOUT(STRZERO(mtot_item,6))
+                        NEXT
+                NEXT
+                IF PROW() >= 57
+                        EJECT
+                        mpag ++
+                        cabecalho(mpag,mtit,mtipo)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,01);DEVOUT('Cod.')
+                        DEVPOS(PROW(),07);DEVOUT('Descricao')
+                        DEVPOS(PROW(),49);DEVOUT('UN')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('   Saldo')
+                        IF mtipo_rel = 'A'
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.MIN.')
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.MAX.')
+                        ENDIF
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Ult.Com.')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Pr.Ult.Com')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Custo Real')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(' Prc.Venda')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Sld.Falta')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(' Vlr.Falta')
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                ENDIF
+                imprt(mtipo_imp,'N')
+                DEVPOS(PROW()+2,00);DEVOUT('Total de Item..........:')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(LTRIM(TRANSFORM(mtot_item, '9,999,999.99')))
+                DEVPOS(PROW()+1,00);DEVOUT('Saldo Total que Falta..:')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(LTRIM(TRANSFORM(msld_falta,'9,999,999.99')))
+                DEVPOS(PROW()+1,00);DEVOUT('Valor Total que Falta..:')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(LTRIM(TRANSFORM(mtot_falta,'9,999,999.99')))
+                DEVPOS(PROW()+2,00);DEVOUT(TIME())
+                EJECT
+                SETPRC(00,00)
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                conf_impressao('PRO_ABAI.REL')
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+***************************** F I M **************************************
+

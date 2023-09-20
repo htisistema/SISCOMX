@@ -1,0 +1,61 @@
+***********************************
+* MENU DE ETIQUETAS PRODUTOS
+***********************************
+
+FUNCTION sac5etq1()
+****************
+LOCAL MPRG:='SAC5ETQ1',;
+      op_opcao,lci,cci,lba,cba
+
+lci := cci := 0
+lba := 07
+cba := 28
+
+IF ! AbriArq('sacgrupo','grup');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*--------------------------------------------------
+op_tela(10,10,19,43,' Produtos ')
+
+WHILE .T.
+        mensagem('Escolha a Opcao ou <ESC>p/Retornar')
+        op_opcao := 0
+        exibi_prg(mprg)
+        setcor(1)
+        @ lci,cci   PROMPT ' Etiqueta  Normal            '
+        @ lci+1,cci PROMPT ' Etiqueta  Pequena           '
+        @ lci+2,cci PROMPT ' Etiqueta  Media             '
+        @ lci+3,cci PROMPT ' Etiqueta  Roupa             '
+        @ lci+4,cci PROMPT ' Cod.Barra ( ELTRON/ZEBRA)   '
+        @ lci+5,cci PROMPT ' Cod.Barra ( BEETLE)         '
+        @ lci+6,cci PROMPT ' Cod.Barra ( ARGOX e BEETLE) '
+        @ lci+7,cci PROMPT ' Cod.Barra ( JATO DE TINTA)  '
+        @ lci+8,cci PROMPT ' Gerar Arquivo p/Importacao (ZEBRA)'
+*       @ lci+9,cci PROMPT ' Por PEDIDO Normal           '
+        MENU TO op_opcao
+        DO CASE
+                CASE LASTKEY() = 27
+                        EXIT
+                CASE op_opcao = 1
+                        sac5et11()
+                CASE op_opcao = 2
+                        sac5et12()
+                CASE op_opcao = 3
+                        sac5et14()
+                CASE op_opcao = 4
+                        sac5et16()
+                CASE op_opcao = 5
+                        sac5et17()
+                CASE op_opcao = 6
+                        sac5et19()
+                CASE op_opcao = 7
+                        sac5et20()
+                CASE op_opcao = 8
+                        sac5et21()
+                CASE op_opcao = 9
+                        sac5et22()
+        ENDCASE
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************************** F I M ************************************
+

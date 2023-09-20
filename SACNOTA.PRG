@@ -1,0 +1,455 @@
+MEMVAR getlist
+***************************
+* IMPRIMI NOTA FISCAL
+***************************
+FUNCTION nota(mv)
+*****************
+LOCAL mtela_ap,mnomenf,mcodigo_aux:=0,machou:=0,mtela_prod,msobra:=0,mperc_qtd:=0
+
+MEMVAR mseguro,mencargo,mcod_cli,minsc,m_normal,mcod_nat,mcod_nat1,m_isento,m_desc,m_icmdif,;
+       m_icmsub,mfrete,mtp_vend,mcond_vezes,mintev,mintev1,mintev2,mintev3,mintev4,;
+       mintev5,mnum_ped,mdocumento,mdata,marca,mtipo_nota,mtot_nota,mtot_icmf,mtot_icm,;
+       mbase_icmf,mbase_icm,mtot_ipi,mtot_quantd,mtot_peso,mtot_liq,mmodelo,msittrib
+
+PRIVATE mopcao,opcao,i,pode,f,mtraco,mcodigo,mdescricao,;
+      m_acucar:={},msaldo_atu,mextenso,lin1,lin2,;
+      mlin1,mlin2,mlin3,mlin4,mlin5,mlin6,m_altera:={},tela2,;
+      mpag,mdoc_aux,mtot_aux,mcod_fat,mlin,m_pos:={},mpos,mvlr_icmsub:=0,mdesc_icm:=0,;
+      mpr_fat:=0,mdif_icms:=0,mtip_cli:=' ',mbase_sub:=0,micm_sub:=0,;
+      mtot_desc:=0,point,;
+      mnum_dup,mnum_dup1,mnum_dup2,mnum_dup3,mnum_dup4,mnum_dup5,;
+      mvenci,mvenci1,mvenci2,mvenci3,mvenci4,mvenci5,;
+      mvlr_dup:=0,mvlr_dup1:=0,mvlr_dup2:=0,mvlr_dup3:=0,mvlr_dup4:=0,mvlr_dup5:=0,;
+      mnota,;
+      mtot_prod:=0,mpis :=0,mconfis :=0,micms_desc :=0,mpercent:=0,;
+      ctot_quantd:=0,cbase_icm := 0,ctot_icm := 0,cbase_icmf := 0,;
+      ctot_icmf := 0,ctot_ipi := 0,ctot_prod := 0,ctot_nota := 0,;
+      ctot_peso := 0,ctot_liq := 0
+
+CLEAR GETS
+mcod_fat := SPACE(2)
+mtraco := REPLI('=',80)
+mlin := 10
+mcod_fat = '01'
+op_tela(02,42,35,118,' Alteracao de Produtos ',,'*')
+WHILE .T.
+        m_altera := {}
+        mtot_icm := mtot_nota := mtot_desc := mtot_quantd := mtot_peso := ;
+        mtot_liq := mtot_icmf := mtot_aux := mtot_ipi := mvlr_icmsub := ;
+        mdesc_icm := i := f := mbase_icm := mbase_icmf := msobra := 0
+        lin1 := lin2 := SPACE(60)
+        mpos := 1
+        marca := SPACE(1)
+        IF mtipo_nota = 'N'     //.AND. m_set[1,151] <> 'E'
+                f:=0
+                FOR f = 1 TO LEN(m_normal)
+                        mpr_fat := IF(mcod_fat = '01',m_normal[f,7],IF(mcod_fat='02',IF(! EMPTY(m_normal[f,32]),m_normal[f,32],(m_normal[f,12] * (m_set[1,6]/100+1))),m_normal[f,7] - (m_normal[f,7] * (mpercent/100))))
+			m_normal[f,7] := mpr_fat
+                        IF mperc_qtd > 0
+                        	m_normal[f,5] := iat(m_normal[f,5] * (mperc_qtd / 100),0)
+                        ENDIF
+			AADD(m_altera,m_normal[f,21]+' '+m_normal[f,2]+' '+TRANSFORM(m_normal[f,5],'99999.99')+' '+TRANSFORM(mpr_fat,'9999999.99')+' '+TRANSFORM(m_normal[f,20],'99.99'))
+                        AADD(m_pos,{'mnormal',f})
+                        mpos++
+                        mtot_aux := mtot_aux + (mpr_fat * m_normal[f,5])        //- IF(mcod_nat = '6.109',(mpr_fat * m_normal[f,5])*.12,0)
+                        mtot_nota := mtot_nota + (iat(mpr_fat,2) * m_normal[f,5])      //- IF(mcod_nat = '6.109',(mpr_fat * m_normal[f,5])*.12,0)
+                        mtot_ipi := mtot_ipi + (mpr_fat * m_normal[f,5]) * (m_normal[f,24]/100)
+                        mtot_desc := mtot_desc + ((mpr_fat * m_normal[f,5])*(m_normal[f,11]/100))
+                        mtot_quantd := mtot_quantd + m_normal[f,5]
+                        mtot_peso := mtot_peso + (m_normal[f,9] * m_normal[f,5])
+                        IF m_normal[f,13] > 0
+                                mbase_icmf := mbase_icmf + (mpr_fat * m_normal[f,5])
+                                mtot_icmf := mtot_icmf + m_normal[f,13]
+                        ENDIF
+                        IF m_normal[f,14] = 'N'         //.AND. m_normal[f,20] > 0
+                                mbase_icm = mbase_icm + (mpr_fat * m_normal[f,5])
+                        ENDIF
+                        IF ! EMPTY(m_normal[f,22])                                                    // 2.35
+                                mvlr_icmsub := mvlr_icmsub + ((((mpr_fat * (m_set[1,6]/100+1)) * m_normal[f,5])*((m_normal[f,22]/100)+1))*(m_set[1,20]/100)) - ((((mpr_fat * (m_set[1,6]/100+1)) * m_normal[f,5]) * (m_normal[f,20]/100))) 
+                        ENDIF
+                        IF m_normal[f,25] = 'S'  //desconto icm no produto
+                                mdesc_icm := mdesc_icm + (m_set[1,20]/100) * (mpr_fat * m_normal[f,5])
+                        ENDIF
+                NEXT
+                IF mcod_nat = '6.109' .OR. mcod_nat = '6.110'
+                        mpis :=iat(mtot_nota * .0165,2)
+                        mconfis :=iat(mtot_nota * .076,2)
+                        micms_desc :=iat(mtot_nota * .12,2)
+                        mtot_nota := mtot_nota - iat((mpis+mconfis+micms_desc),2)
+                ENDIF
+        ELSE
+                f:=0
+                FOR f = 1 TO LEN(m_normal)
+                        mpr_fat := IF(mcod_fat = '01',m_normal[f,7],IF(mcod_fat='02',IF(! EMPTY(m_normal[f,32]),m_normal[f,32],(m_normal[f,12] * (m_set[1,6]/100+1))),m_normal[f,7] - (m_normal[f,7] * (mpercent/100))))
+			m_normal[f,7] := mpr_fat
+                        AADD(m_altera,m_normal[f,21]+' '+m_normal[f,2]+' '+TRANSFORM(m_normal[f,5],'99999.99')+' '+TRANSFORM(mpr_fat,'9999999.99')+' '+TRANSFORM(m_normal[f,20],'99.99'))
+                        AADD(m_pos,{'mnormal',f})
+                        mpos++
+                        mtot_nota := mtot_nota + (iat(mpr_fat,2) * m_normal[f,5])      //- IF(mcod_nat = '6.109',(mpr_fat * m_normal[f,5])*.12,0)
+                        mtot_ipi := mtot_ipi + (iat(mpr_fat,2) * m_normal[f,5]) * (m_normal[f,24]/100)
+                        mtot_quantd := mtot_quantd + m_normal[f,5]
+                NEXT
+        ENDIF
+        IF LEN(m_altera) = 0
+                atencao('Nao pode emitir esta nota pois nao foi incluido nenhum Produto...')
+	        wvw_lclosewindow()
+                RETURN .F.
+        ENDIF
+	mperc_qtd := mpercent := f := 0
+        i := 1
+        WHILE .T.
+                mensagem('PARA ALTERAR O PRODUTO <ENTER> - <ESC>p/proseguir')
+                DEVPOS(01,01);DEVOUT('Produto')
+                DEVPOS(01,49);DEVOUT('Quantd.')
+                DEVPOS(01,58);DEVOUT('Valor')
+                DEVPOS(01,69);DEVOUT("ICM'S")
+                @ 02,01 to 02,77
+                @ 20,01 to 20,77
+                DEVPOS(21,01);DEVOUT('Sub Total_:')
+                DEVPOS(21,49);DEVOUT('Vlr.Total_:')
+                @ 22,03 to 22,77
+                janela(22,01,' DADOS PARA NOTA FISCAL DE CORRECAO ','*','D')
+                DEVPOS(23,01);DEVOUT('Base ICMS.......:             ')
+                DEVPOS(23,31);DEVOUT('Vlr.ICMS.......:             ')
+                DEVPOS(24,01);DEVOUT('Base ICMS SUBST.:             ')
+                DEVPOS(24,31);DEVOUT('Vlr.ICMS SUBST.:             ')
+                DEVPOS(25,01);DEVOUT('Vlr.Total IPI...:             ')
+                DEVPOS(26,01);DEVOUT('Vlr.Total Prod..:             ')
+                DEVPOS(26,31);DEVOUT('Vlr.Total NOTA.:             ')
+                DEVPOS(27,01);DEVOUT('Quantidade TOTAL:             Peso Bruto:             Liquido:             ')
+                setcor(3)
+                DEVPOS(21,13);DEVOUTPICT(mtot_nota + mtot_desc + mfrete + mseguro + mencargo,'9,999,999.99')
+                DEVPOS(21,61);DEVOUTPICT(mtot_nota+mdif_icms,'9,999,999.99')
+                setcor(1)
+
+                botao1(29,12,31,29)
+                botao1(29,35,31,52)
+                setcor(10)
+                @ 30,13 PROMPT  ' 1-> Prosseguir '
+                @ 30,36 PROMPT  '  2-> Alterar   '
+                SET INTEN ON
+                MENU TO mop_nota
+                setcor(1)
+                IF LASTKEY() = 27
+                        EXIT
+                ENDIF
+                IF mop_nota = 1
+                        EXIT
+                ELSE
+                        setcor(10);point := ACHOICE(03,01,19,77,m_altera);setcor(1)
+                        IF LASTKEY() = 27       //point = 0
+                                LOOP
+                        ELSE
+                                IF LASTKEY() = 4 .OR. LASTKEY() = 19
+                                        mtela_prod := SAVESCREEN(00,00,24,79)
+                                        op_tela(09,05,11,35,' Consulta Produto ')
+                                        mcodigo_aux := machou  := 0
+                                        DEVPOS(01,01);DEVOUT('Digite o Codigo:')
+                                        @ 01,18 GET mcodigo_aux PICT '99999'
+                                        READ
+                                        i := 0
+                                        FOR i = 1 TO LEN(m_altera)
+                                                IF STRZERO(mcodigo_aux,5) = SUBSTR(m_altera[i],1,5)
+                                                        machou := 1
+                                                        point := i
+                                                        EXIT
+                                                ENDIF
+                                        NEXT
+                                        IF machou = 0
+                                                atencao('Nao foi possivel encontrar este Produto')
+                                                wvw_lclosewindow()
+                                                LOOP
+                                        ENDIF
+                                        wvw_lclosewindow()
+                                ENDIF
+                                op_tela(11,05,16,76,' Alteracao de Produto ')
+                                setcor(3)
+                                DEVPOS(01,01);DEVOUT('Codigo....: ')
+                                DEVPOS(02,01);DEVOUT('Descricao.:')
+                                DEVPOS(03,01);DEVOUT('Quantidade:')
+                                DEVPOS(04,01);DEVOUT('Valor.....:')
+                                DEVPOS(05,01);DEVOUT('ICM.......:')
+                                DEVPOS(06,01);DEVOUT('Unidade...:')
+                                setcor(1)
+                                cons_merc := {}
+                                sr_getconnection():exec("SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(m_normal[m_pos[point,2],21]),,.t.,@cons_merc)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                                IF LEN(cons_merc) = 0
+                                        atencao('Codigo da mercadoria nao cadastrado')
+                                        LOOP
+                                ENDIF
+
+                                DEVPOS(01,13);DEVOUT(m_normal[m_pos[point,2],21])
+                                @ 02,13 GET m_normal[m_pos[point,2],2] PICT '@!' WHEN cons_merc[1,25] = 'S'
+                                @ 03,13 GET m_normal[m_pos[point,2],5] PICT '99999.99'
+                                IF(m_normal[m_pos[point,2],5] = 0,m_normal[m_pos[point,2],7] := 0,m_normal[m_pos[point,2],7])
+                                @ 04,13 GET m_normal[m_pos[point,2],7] PICT '9999999.99' WHEN m_normal[m_pos[point,2],5] > 0
+                                @ 06,13 GET m_normal[m_pos[point,2],14] PICT '@!' VALID IF(EMPTY(m_normal[m_pos[point,2],14]),.F.,.T.) WHEN cons_merc[1,25] = 'S'
+                                READ
+                                wvw_lclosewindow()
+                                IF LASTKEY() = 27
+                                        LOOP
+                                ENDIF
+                                IF m_normal[m_pos[point,2],5] = 0
+                                        m_normal[m_pos[point,2],7]:=0
+                                ENDIF
+                                //EXIT
+                        ENDIF
+                ENDIF
+        ENDDO
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        //IF point > 0
+        //        LOOP
+        //ENDIF
+        IF mtipo_nota = 'C'
+                ctot_quantd := 0
+                IF mv = '2'
+                        cbase_icm := totnt-> vl_base
+                        ctot_icm  := totnt-> vl_icm
+                        cbase_icmf := totnt-> base_icmsu
+                        ctot_icmf := totnt-> vl_icmsu
+                        ctot_ipi  := totnt-> ipi
+                        ctot_prod := totnt-> vl_prod
+                        ctot_nota := totnt-> vl_nota
+                        ctot_peso := totnt-> peso
+                        ctot_liq  := totnt-> peso_liq
+                ENDIF
+                @ 23,18 GET cbase_icm PICT '9,999,999.99'
+                @ 23,48 GET ctot_icm PICT '9,999,999.99'
+                @ 24,18 GET cbase_icmf PICT '9,999,999.99'
+                @ 24,48 GET ctot_icmf PICT '9,999,999.99'
+                @ 25,18 GET ctot_ipi PICT '9,999,999.99'
+                @ 26,18 GET ctot_prod PICT '9,999,999.99'
+                @ 26,48 GET ctot_nota PICT '9,999,999.99'
+                @ 27,18 GET ctot_quantd PICT '999,999.99'
+                @ 27,42 GET ctot_peso PICT '999,999.99'
+                @ 27,63 GET ctot_liq PICT '999,999.99'
+                READ
+        ENDIF
+        /*
+        IF mtp_vend = 'AP' .AND. m_set[1,117] = 'N'
+                mtela_ap := SAVESCREEN(00,00,24,79)
+                mnum_dup1 := mnum_dup2 := mnum_dup3 := ;
+                mnum_dup4 := mnum_dup5 := SPACE(8)
+                mvenci := mvenci1 := mvenci2 := mvenci3 := ;
+                mvenci4 := mvenci5 := CTOD('  /  /  ')
+                mvlr_dup := mvlr_dup1 := mvlr_dup2 := mvlr_dup3 := ;
+                mvlr_dup4 := mvlr_dup5 := 0
+                mnum_dup := STRZERO(mnum_ped,6)
+*               WHILE .T.
+                        setcor(3)
+                        botao(13,10,22,70,,' Duplicatas ')
+                        setcor(1)
+                        DEVPOS(14,11);DEVOUT('Qt.Vezes:')
+                        DEVPOS(14,25);DEVOUT('Intervalos:    -   -   -   -   -')
+                        DEVPOS(15,11);DEVOUT('No.Dup.:')
+                        DEVPOS(15,33);DEVOUT('Venc.:')
+                        DEVPOS(15,52);DEVOUT('Vlr.:')
+                        DEVPOS(16,11);DEVOUT('No.Dup.:')
+                        DEVPOS(16,33);DEVOUT('Venc.:')
+                        DEVPOS(16,52);DEVOUT('Vlr.:')
+                        DEVPOS(17,11);DEVOUT('No.Dup.:')
+                        DEVPOS(17,33);DEVOUT('Venc.:')
+                        DEVPOS(17,52);DEVOUT('Vlr.:')
+                        DEVPOS(18,11);DEVOUT('No.Dup.:')
+                        DEVPOS(18,33);DEVOUT('Venc.:')
+                        DEVPOS(18,52);DEVOUT('Vlr.:')
+                        DEVPOS(19,11);DEVOUT('No.Dup.:')
+                        DEVPOS(19,33);DEVOUT('Venc.:')
+                        DEVPOS(19,52);DEVOUT('Vlr.:')
+                        DEVPOS(20,11);DEVOUT('No.Dup.:')
+                        DEVPOS(20,33);DEVOUT('Venc.:')
+                        DEVPOS(20,52);DEVOUT('Vlr.:')
+                        DEVPOS(21,11);DEVOUT('Valor do IPI:'+TRANSFORM(mtot_ipi,'999,999.99'))
+		        IF ver_serie() = '141410' .OR. ver_serie() = '141302'
+	                        opcao := op_simnao('N','Deseja IMPRESSAO DAS DUPLICATAS:')
+			ELSE
+	                        opcao := op_simnao('S','Deseja IMPRESSAO DAS DUPLICATAS:')
+			ENDIF
+                        IF opcao = 'S'
+                                @ 14,21 GET mcond_vezes PICT '@@R 9-99' VALID IF((VAL(SUBSTR(mcond_vezes,1,1))) + (VAL(SUBSTR(mcond_vezes,2,2))) > 7,.F.,.T.)
+                                @ 14,37 GET mintev PICT '999' VALID IF(EMPTY(mintev),.F.,.T.)
+                                @ 14,41 GET mintev1 PICT '999' WHEN VAL(SUBSTR(mcond_vezes,2,2)) >= 2 VALID IF(EMPTY(mintev1),.F.,.T.)
+                                @ 14,45 GET mintev2 PICT '999' WHEN VAL(SUBSTR(mcond_vezes,2,2)) >= 3 VALID IF(EMPTY(mintev2),.F.,.T.)
+                                @ 14,49 GET mintev3 PICT '999' WHEN VAL(SUBSTR(mcond_vezes,2,2)) >= 4 VALID IF(EMPTY(mintev3),.F.,.T.)
+                                @ 14,53 GET mintev4 PICT '999' WHEN VAL(SUBSTR(mcond_vezes,2,2)) >= 5 VALID IF(EMPTY(mintev4),.F.,.T.)
+                                @ 14,57 GET mintev5 PICT '999' WHEN VAL(SUBSTR(mcond_vezes,2,2)) = 6 VALID IF(EMPTY(mintev5),.F.,.T.)
+                                READ
+
+                                IF EMPTY(mnum_ped) .OR. mnum_ped = 0 .OR. ver_serie() = '141235' .OR. ver_serie() = '141376'
+                                        mnum_dup := mdocumento
+                                ENDIF
+                                IF  VAL(SUBSTR(mcond_vezes,2,2)) = 1
+                                        mnum_dup := mnum_dup+'-1/1'
+                                        mvenci := mdata + mintev
+                                        IF ver_serie() = '141225' .OR. ver_serie() = '141254'
+                                                mvlr_dup := mtot_nota+mfrete+mencargo+mseguro+mtot_ipi+mvlr_icmsub+mdif_icms+micm_sub
+                                        ELSE
+                                                mvlr_dup := mtot_nota+mfrete+mencargo+mseguro+mtot_ipi+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)
+                                        ENDIF
+                                ELSEIF  VAL(SUBSTR(mcond_vezes,2,2)) = 2
+                                        mnum_dup1 := mnum_dup+'-2/2'
+                                        mnum_dup := mnum_dup+'-1/2'
+                                        mvenci := mdata + mintev
+                                        mvenci1 := mdata + mintev1
+                                        IF ver_serie() = '141265'
+	                                        mvlr_dup := ((mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /2)
+        	                                mvlr_dup1 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /2
+        	                       	ELSE
+	                                        mvlr_dup := ((mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /2) + mtot_ipi + mfrete
+        	                                mvlr_dup1 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /2
+        	                       	ENDIF
+                                        msobra := mvlr_dup
+                                ELSEIF  VAL(SUBSTR(mcond_vezes,2,2)) = 3
+                                        mnum_dup1 := mnum_dup+'-2/3'
+                                        mnum_dup2 := mnum_dup+'-3/3'
+                                        mnum_dup := mnum_dup+'-1/3'
+                                        mvenci := mdata + mintev
+                                        mvenci1 := mdata + mintev1
+                                        mvenci2 := mdata + mintev2
+                                        IF ver_serie() = '141265'
+	                                        mvlr_dup := ((mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /2)
+        	                                mvlr_dup1 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /2
+	                                        mvlr_dup2 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /3
+        	                       	ELSE
+	                                        mvlr_dup := ((mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /2) + mtot_ipi + mfrete
+        	                                mvlr_dup1 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /2
+	                                        mvlr_dup2 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /3
+        	                       	ENDIF
+                                ELSEIF  VAL(SUBSTR(mcond_vezes,2,2)) = 4
+                                        mnum_dup1 := mnum_dup+'-2/4'
+                                        mnum_dup2 := mnum_dup+'-3/4'
+                                        mnum_dup3 := mnum_dup+'-4/4'
+                                        mnum_dup := mnum_dup+'-1/4'
+                                        mvenci := mdata + mintev
+                                        mvenci1 := mdata + mintev1
+                                        mvenci2 := mdata + mintev2
+                                        mvenci3 := mdata + mintev3
+                                        IF ver_serie() = '141265'
+	                                        mvlr_dup := ((mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /2)
+        	                                mvlr_dup1 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /2
+	                                        mvlr_dup2 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /3
+	                                        mvlr_dup3 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /4
+        	                       	ELSE
+	                                        mvlr_dup := ((mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /2) + mtot_ipi + mfrete
+        	                                mvlr_dup1 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /2
+	                                        mvlr_dup2 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /3
+	                                        mvlr_dup3 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /4
+        	                       	ENDIF
+                                ELSEIF  VAL(SUBSTR(mcond_vezes,2,2)) = 5
+                                        mnum_dup1 := mnum_dup+'-2/5'
+                                        mnum_dup2 := mnum_dup+'-3/5'
+                                        mnum_dup3 := mnum_dup+'-4/5'
+                                        mnum_dup4 := mnum_dup+'-5/5'
+                                        mnum_dup := mnum_dup+'-1/5'
+                                        mvenci := mdata + mintev
+                                        mvenci1 := mdata + mintev1
+                                        mvenci2 := mdata + mintev2
+                                        mvenci3 := mdata + mintev3
+                                        mvenci4 := mdata + mintev4
+                                        IF ver_serie() = '141265'
+	                                        mvlr_dup := ((mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /2)
+        	                                mvlr_dup1 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /2
+	                                        mvlr_dup2 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /3
+	                                        mvlr_dup3 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /4
+	                                        mvlr_dup4 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /5
+        	                       	ELSE
+	                                        mvlr_dup := ((mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /2) + mtot_ipi + mfrete
+        	                                mvlr_dup1 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /2
+	                                        mvlr_dup2 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /3
+	                                        mvlr_dup3 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /4
+	                                        mvlr_dup4 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /5
+        	                       	ENDIF
+                                ELSEIF  VAL(SUBSTR(mcond_vezes,2,2)) = 6
+                                        mnum_dup1 := mnum_dup+'-2/6'
+                                        mnum_dup2 := mnum_dup+'-3/6'
+                                        mnum_dup3 := mnum_dup+'-4/6'
+                                        mnum_dup4 := mnum_dup+'-5/6'
+                                        mnum_dup5 := mnum_dup+'-6/6'
+                                        mnum_dup := mnum_dup+'-1/6'
+                                        mvenci := mdata + mintev
+                                        mvenci1 := mdata + mintev1
+                                        mvenci2 := mdata + mintev2
+                                        mvenci3 := mdata + mintev3
+                                        mvenci4 := mdata + mintev4
+                                        mvenci5 := mdata + mintev5
+                                        IF ver_serie() = '141265'
+	                                        mvlr_dup := ((mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /2)
+        	                                mvlr_dup1 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /2
+	                                        mvlr_dup2 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /3
+	                                        mvlr_dup3 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /4
+	                                        mvlr_dup4 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /5
+	                                        mvlr_dup5 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms + mtot_ipi + mfrete+micm_sub-(mdesc_icm+mvlr_entrada)) /6
+        	                       	ELSE
+	                                        mvlr_dup := ((mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /2) + mtot_ipi + mfrete
+        	                                mvlr_dup1 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /2
+	                                        mvlr_dup2 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /3
+	                                        mvlr_dup3 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /4
+	                                        mvlr_dup4 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /5
+	                                        mvlr_dup5 := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub-(mdesc_icm+mvlr_entrada)) /6
+        	                       	ENDIF
+                                ENDIF
+                                msobra := 0
+                                msobra := (mtot_nota+mencargo+mseguro+mvlr_icmsub+mdif_icms+micm_sub+mtot_ipi-(mdesc_icm+mvlr_entrada))  - (iat(mvlr_dup,2) + iat(mvlr_dup1,2) +iat(mvlr_dup2,2) +iat(mvlr_dup3,2) +iat(mvlr_dup4,2) + iat(mvlr_dup5,2))
+                                mvlr_dup := mvlr_dup + msobra
+
+                                @ 15,20 GET mnum_dup PICT '@!'
+                                @ 15,40 GET mvenci
+                                @ 15,58 GET mvlr_dup PICT '999,999.99'
+                                @ 16,20 GET mnum_dup1 PICT '@!'
+                                @ 16,40 GET mvenci1
+                                @ 16,58 GET mvlr_dup1 PICT '999,999.99'
+                                @ 17,20 GET mnum_dup2 PICT '@!'
+                                @ 17,40 GET mvenci2
+                                @ 17,58 GET mvlr_dup2 PICT '999,999.99'
+                                @ 18,20 GET mnum_dup3 PICT '@!'
+                                @ 18,40 GET mvenci3
+                                @ 18,58 GET mvlr_dup3 PICT '999,999.99'
+                                @ 19,20 GET mnum_dup4 PICT '@!'
+                                @ 19,40 GET mvenci4
+                                @ 19,58 GET mvlr_dup4 PICT '999,999.99'
+                                @ 20,20 GET mnum_dup5 PICT '@!'
+                                @ 20,40 GET mvenci5
+                                @ 20,58 GET mvlr_dup5 PICT '999,999.99'
+                                READ
+                                mopcao := op_simnao('S','Confirma as Duplicatas:')
+                                IF mopcao = 'N'
+                                        mnum_dup  := mnum_dup1 := mnum_dup2 := mnum_dup3 := ;
+                                        mnum_dup4 := mnum_dup5 := SPACE(6)
+                                        mvenci := mvenci1 := mvenci2 := ;
+                                        mvenci3 := mvenci4 := ;
+                                        mvenci5 := CTOD('  /  /  ')
+                                        mvlr_dup := mvlr_dup1 := mvlr_dup2 := mvlr_dup3 := ;
+                                        mvlr_dup4 := mvlr_dup5 := 0
+                                        LOOP
+                                ENDIF
+                                RESTSCREEN(00,00,24,79,mtela_ap)
+                        ENDIF
+*               ENDDO
+        ENDIF
+
+        IF op_simnao('S','Confirma Impressao da Nota Fiscal:') = 'N'
+                RELEASE mopcao,opcao,i,pode,f,mtraco,mcodigo,mdescricao,;
+                        m_acucar:={},mbase_icmf,mtot_icmf,mbase_icm,mtot_icm,msaldo_atu,mextenso,lin1,lin2,;
+                        mlin1,mlin2,mlin3,mlin4,mlin5,mlin6,mtot_peso,mtot_liq,m_altera:={},tela2,;
+                        mpag,mdoc_aux,mtot_aux,mcod_fat,mlin,m_pos:={},mpos
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        */
+        CLEAR GETS
+        sacnf_e(m_normal,mv,'ICM NORMAL')
+        RELEASE mopcao,opcao,i,pode,f,mtraco,mcodigo,mdescricao,;
+                m_acucar:={},mbase_icmf,mtot_icmf,mbase_icm,mtot_icm,msaldo_atu,mextenso,lin1,lin2,;
+                mlin1,mlin2,mlin3,mlin4,mlin5,mlin6,mtot_peso,mtot_liq,m_altera:={},tela2,;
+                mpag,mdoc_aux,mtot_aux,mcod_fat,mlin,m_pos:={},mpos
+        wvw_lclosewindow()
+        RETURN NIL
+ENDDO
+RETURN NIL
+*********************** F I M **********************************
+
+

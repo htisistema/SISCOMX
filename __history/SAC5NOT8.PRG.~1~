@@ -1,0 +1,150 @@
+*********************************************************
+* RELATORIO DE EMISSAO DE NOTAS FISCAIS COM >>> IPI <<<<
+*********************************************************
+MEMVAR getlist,mdata_sis,nivel_acess
+FUNCTION sac5not8
+*****************
+LOCAL MPRG:='SAC5NOT8',;
+      tela,tela1,lci,cci,lba,cba,mop,opcao,mtraco,mdata1,mdata2,;
+      mtot_qtd,mtot_nota,mtot_ipi,mcod_nat,mtipo_nota,mcod_nota,mcod_aux,mcod_cli,;
+      mvlr_nota,mvlr_icm,mpag,mtit,mtipo
+
+PRIVATE msai_ent,mcredito,mnatureza,mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+IF ! ver_nivel(mprg,'RELATORIO DE NOTAS FISCAIS EMITIDAS COM >> IPI <<','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+mtraco := REPLI('=',80)
+lci := cci := 0
+lba := 08
+cba := 60
+*-----------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('SACMOVNT','MOVNT');RETURN NIL;ENDIF
+IF ! AbriArq('SACTOTNT','TOTNT');RETURN NIL;ENDIF
+IF ! AbriArq('SACOP','OP');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*-----------------------------------------------------
+op_tela(lci,cci,lba+2,cba,'RELATORIO DE NOTAS FISCAIS EMITIDAS COM >> IPI <<')
+
+WHILE .T.
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        mvlr_nota := mvlr_icm := mtot_qtd := mtot_nota := mtot_ipi := mcod_cli := 0
+        mcredito := msai_ent := ' '
+        mnatureza := SPACE(40)
+        mdata1 := mdata_sis - 31
+        mdata2 := mdata_sis
+        mcod_aux := SPACE(4)
+        mcod_nat := SPACE(5)
+        mcod_nota := SPACE(1)
+        mensagem('Preencha os Campos - <ESC>p/Abandonar')
+        @ lci+4,cci TO lci+4,cba
+        @ lci+6,cci TO lci+6,cba
+        DEVPOS(lci+1,cci+2);DEVOUT('Codigo Cliente....:')
+        DEVPOS(lci+2,cci+2);DEVOUT('Data Inicial......:')
+        DEVPOS(lci+3,cci+2);DEVOUT('Data Final........:')
+        DEVPOS(lci+5,cci+2);DEVOUT('Cod.Natureza OP...:')
+        DEVPOS(lci+7,cci+2);DEVOUT('Nota Balcao/Normal:')
+
+        @ lci+1,cci+22 GET mcod_cli PICT '99999' VALID ver_cli(mcod_cli,lci+1,cci+28)
+        @ lci+2,cci+22 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ lci+3,cci+22 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+        @ lci+5,cci+22 GET mcod_nat PICT '9.999' VALID ver_nat(mcod_nat)
+        @ lci+7,cci+22 GET mcod_nota PICT '@!' VALID mcod_nota $ 'B,N, '
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        setcor(3)
+        DEVPOS(lci+5,29);DEVOUT(mnatureza)
+        setcor(1)
+        mensagem('Espere o coletando dados p/o relatorio OK !!!')
+        ****************
+        SELE('totnt');ORDSETFOCUS(1)
+        GO TOP
+        ****************
+        totnt->(DBSEEK(DTOS(mdata1),.T.))
+
+        IF EOF()
+                atencao('Nao existe movimento neste periodo !!!')
+                LOOP
+        ENDIF
+        mensagem('Espere o Final da impressao OK !!! - <ESC> Imterrompe a Impressao')
+        IF ! imp_arq('NOTA_EMI.REL','R')
+                LOOP
+        ENDIF
+        mpag := 0
+        mtit := 'Relatorio de Notas Fiscais Emitidas com IPI'
+        mtipo := 'periodo: '+DTOC(mdata1)+' a '+DTOC(mdata2)
+        WHILE totnt->emissao <= mdata2 .AND. ! EOF()
+                IF (! EMPTY(mcod_cli) .AND. mcod_cli <> totnt->cod_cli);
+                   .OR. (totnt->cod_nat = SPACE(4) .OR. EMPTY(totnt->ipi));
+                   .OR. (! EMPTY(mcod_nota) .AND. totnt->cod_nota <> mcod_nota);
+                   .OR. (! EMPTY(mcod_nat) .AND. totnt->cod_nat <> mcod_nat)
+                        SKIP
+                        LOOP
+                ENDIF
+                IF mpag=0 .OR. PROW()>=59
+                        mpag ++
+                        IF mpag>1
+                                EJECT
+                        ENDIF
+                        cabecalho(mpag,mtit,mtipo,mprg)
+                        imprt(mtipo_imp,'C',1)
+                        DEVPOS(PROW(),02);DEVOUT('Data')
+                        DEVPOS(PROW(),09);DEVOUT('No. Nota')
+                        DEVPOS(PROW(),20);DEVOUT('Valor Nota')
+                        DEVPOS(PROW(),34);DEVOUT('Valor Base')
+                        DEVPOS(PROW(),48);DEVOUT('Valor IPI')
+                        DEVPOS(PROW(),59);DEVOUT('Cliente')
+                        DEVPOS(PROW(),106);DEVOUT('Cod.Nat.Oper.')
+                        DEVPOS(PROW(),121);DEVOUT('Tipo de Nota')
+                        imprt(mtipo_imp,'N',1)
+                        DEVPOS(PROW(),00);DEVOUT(mtraco)
+                ENDIF
+                imprt(mtipo_imp,'C',1)
+                DEVPOS(PROW(),00);DEVOUT(totnt->emissao)
+                DEVPOS(PROW(),09);DEVOUT(totnt->documento)
+                DEVPOS(PROW(),18);DEVOUT(TRANSFORM(totnt->vl_nota,'9,999,999.99'))
+                DEVPOS(PROW(),31);DEVOUT(TRANSFORM(totnt->vl_base,'9,999,999.99'))
+                DEVPOS(PROW(),45);DEVOUT(TRANSFORM(totnt->ipi,'9,999,999.99'))
+                IF totnt->cancel == 'C'
+                        DEVPOS(PROW(),59);DEVOUT('NOTA FISCAL FOI CANCELADA')
+                ELSE
+                        mtot_ipi := mtot_ipi + totnt->ipi
+                        mtot_nota := mtot_nota + totnt->vl_nota
+                        DEVPOS(PROW(),59);DEVOUT(totnt->cod_cli+'-'+totnt->cliente)
+                ENDIF                                                                             DEVPOS(PROW(),96);DEVOUT(mcod_aux)
+                DEVPOS(PROW(),110);DEVOUT(totnt->cod_nat)
+                IF totnt->cod_nota = 'B'
+                        DEVPOS(PROW(),121);DEVOUT('BALCAO')
+                ELSE
+                        DEVPOS(PROW(),121);DEVOUT('NORMAL')
+                ENDIF
+                mtot_qtd ++
+                SKIP
+        ENDDO
+        imprt(mtipo_imp,'N',1)
+        DEVPOS(PROW(),00);DEVOUT(REPLI('-',80))
+        DEVPOS(PROW()+1,00);DEVOUT('Quantd.Notas:')
+        DEVPOS(PROW(),14);DEVOUT(TRANSFORM(mtot_qtd,'9,999'))
+        DEVPOS(PROW()+1,00);DEVOUT('Total Geral das Notas:')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(mtot_nota,'9,999,999.99'))
+        DEVPOS(PROW(),PCOL()+1);DEVOUT("- Total Geral de IPI:")
+        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(mtot_ipi,'9,999,999.99'))
+        DEVPOS(PROW()+2,00);DEVOUT(TIME())
+        imprt(mtipo_imp,'N')
+        EJECT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('NOTA_EMI.REL')
+        EXIT
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*************************** F I M **********************************************
+

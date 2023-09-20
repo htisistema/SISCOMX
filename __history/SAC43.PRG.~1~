@@ -1,0 +1,875 @@
+* CONSULTA DE FORNECEDOR
+*************************
+MEMVAR getlist,nivel_acess,mdata_sis
+
+FUNCTION sac43(mtipo_con)
+***************
+LOCAL MPRG:='SAC43',;
+      tela,opcao,lba,cba,mnome,msele,morder,mcgc
+
+PRIVATE mcod_forn,mdata1,mdata2
+
+IF ! ver_nivel(mprg,'CONSULTA DE FORNECEDOR','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+lba := 21
+cba := 80
+
+*------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('SACPED_E','PED_E');RETURN NIL;ENDIF
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupp','dupp');RETURN NIL;ENDIF
+IF ! AbriArq('sacfin','fin');RETURN NIL;ENDIF
+IF ! AbriArq('sacmov','mov');RETURN NIL;ENDIF
+*------------------------------------------------------------------
+set_key('forn','merc')
+op_tela(01,10,30,90,' Consulta de Fornecedor ')
+WvW_PBSetFont( NIL, "Courier New", 15, 0,)
+nPBid := wvw_pbCreate(NIL,27,10,28,25, 'CONTA CORRENTE',NIL,{||menu_c_c(STRZERO(mcod_forn,4),forn->razao)})
+WHILE .T.
+        limpa(0,0,26,100)
+        exibi_prg(mprg)
+        mdata2 := mdata_sis
+        opcao := 'S'
+        mcod_forn := 0
+        mnome := SPACE(30)
+        mcgc := SPACE(14)
+        mensagem('Digite o Codigo ou Nome do Fornecedor a Consultar - <ESC>Retornar')
+        DEVPOS(1,1);DEVOUT('Codigo....:')
+        DEVPOS(1,21);DEVOUT('Data Cadastro:')
+        DEVPOS(2,1);DEVOUT('R.Social..:')
+        DEVPOS(3,1);DEVOUT('Tipo de Conta:')
+
+        DEVPOS(4,1);DEVOUT('CNPJ:')
+        DEVPOS(4,26);DEVOUT('Insc.:')
+
+        @ 5,0 TO 5,cba
+        janela(5,0,' Logradouro ','*','*')
+        DEVPOS(6,1);DEVOUT('Endereco..:')
+        DEVPOS(7,1);DEVOUT('Bairro....:')
+        DEVPOS(8,1);DEVOUT('Cidade....:')
+        DEVPOS(8,35);DEVOUT('UF...:')
+        DEVPOS(9,1);DEVOUT('CEP.......:')
+        DEVPOS(9,35);DEVOUT('C.P..:')
+        DEVPOS(10,1);DEVOUT('EMAIL.....:')
+
+        @ 11,0 TO 11,cba
+        janela(11,0,' Telefones ','*','*')
+        DEVPOS(12,1);DEVOUT('Fone:')
+        DEVPOS(12,23);DEVOUT('Fone:')
+        DEVPOS(12,45);DEVOUT('Fax:')
+
+        @ 13,0 TO 13,cba
+        janela(13,0,' Cobranca ','*','*')
+        DEVPOS(14,1);DEVOUT('Banco:')
+        DEVPOS(14,11);DEVOUT('Carteira:')
+        DEVPOS(14,24);DEVOUT('Prazo Pag.:')
+        DEVPOS(14,46);DEVOUT('Limite:')
+
+        @ 15,0 TO 15,cba
+        janela(15,0,' Contatos ','*','*')
+        DEVPOS(16,1);DEVOUT('Gerente..:')
+        DEVPOS(16,32);DEVOUT('Faturamento:')
+        DEVPOS(17,1);DEVOUT('Cobranca.:')
+        DEVPOS(17,32);DEVOUT('Vendedor...:')
+
+        @ 18,0 TO 18,cba
+        DEVPOS(19,1);DEVOUT('Ult.Compra:')
+        DEVPOS(20,1);DEVOUT('Observacao:')
+
+        SET INTEN ON
+        WVW_PBEnable( NIL, nPBId, .F. )
+
+        @ 1,13 GET mcod_forn PICT '9999'
+        @ 2,13 GET mnome PICT '@!' WHEN mcod_forn = 0
+        @ 4,7 GET mcgc PICT '@@R 99.999.999/9999-99' WHEN EMPTY(mcod_forn) .AND. EMPTY(mnome) VALID IF(mcgc = forn->cgc,.T.,pesq_cgc(mcgc,'forn'))
+        READ
+        IF LASTKEY() = 27
+                fimset()
+                RELEASE mcod_forn,mdata1,mdata2
+                EXIT
+        ENDIF
+        IF EMPTY(mcod_forn) .AND. EMPTY(mnome) .AND. EMPTY(mcgc)
+                LOOP
+        ENDIF
+        ************
+        SELE('forn')
+        ************
+        IF ! EMPTY(mcod_forn)
+                ****************
+                ORDSETFOCUS(1)
+                GO TOP
+                ****************
+                IF ! forn->(DBSEEK(STRZERO(mcod_forn,4)))
+                        atencao('FORNECEDOR com esse Codigo nao Cadastrado !!!')
+                        LOOP
+                ENDIF
+        ELSEIF ! EMPTY(mnome)
+                ****************
+                ORDSETFOCUS(2)
+                GO TOP
+                ****************
+                IF ! forn->(DBSEEK(RTRIM(mnome)))
+                        atencao('FORNECEDOR com esse Nome nao Cadastrado !!!')
+                        LOOP
+                ENDIF
+        ELSEIF ! EMPTY(mcgc)
+                ***************
+                ORDSETFOCUS(3)
+                GO TOP
+                IF ! forn->(DBSEEK(mcgc))
+                        atencao('FORNECEDOR com esse CNPJ nao Cadastrado !!!')
+                        LOOP
+                ENDIF
+        ENDIF
+        WHILE .T.
+                mcod_forn := VAL(forn->cod_forn)
+                mdata1 := forn->data_cad
+                VerDesp(forn->tipo,3,22)
+                setcor(3)
+                DEVPOS(1,13);DEVOUT(forn->cod_forn)
+                DEVPOS(1,36);DEVOUT(forn->data_cad)
+                DEVPOS(2,13);DEVOUT(forn->razao)
+                DEVPOS(3,16);DEVOUT(forn->tipo)
+                DEVPOS(4,7);DEVOUTPICT(forn->cgc,'@@R 99.999.999/9999-99')
+                DEVPOS(4,33);DEVOUT(forn->insc)
+
+                DEVPOS(6,13);DEVOUT(forn->endereco)
+                DEVPOS(7,13);DEVOUT(forn->bairro)
+                DEVPOS(8,13);DEVOUT(forn->cidade)
+                DEVPOS(8,42);DEVOUT(forn->uf)
+                DEVPOS(9,13);DEVOUT(forn->cep)
+                DEVPOS(9,42);DEVOUT(forn->cpostal)
+                DEVPOS(10,13);DEVOUT(forn->email)
+
+                DEVPOS(12,07);DEVOUT(forn->tel1)
+                DEVPOS(12,29);DEVOUT(forn->tel2)
+                DEVPOS(12,50);DEVOUT(forn->fax)
+
+
+                DEVPOS(14,8);DEVOUT(forn->banco)
+                DEVPOS(14,21);DEVOUT(forn->carteira)
+                DEVPOS(14,36);DEVOUT(forn->prazo_pag)
+                DEVPOS(14,54);DEVOUTPICT(forn->limite,'9,999,999.99')
+
+                DEVPOS(16,12);DEVOUT(forn->ct_gerente)
+                DEVPOS(16,45);DEVOUT(forn->ct_fatura)
+                DEVPOS(17,12);DEVOUT(forn->ct_cobran)
+                DEVPOS(17,45);DEVOUT(forn->ct_vendedo)
+
+                DEVPOS(19,14);DEVOUT(forn->ult_comp)
+                DEVPOS(20,14);DEVOUT(forn->obs)
+                DEVPOS(21,14);DEVOUT(forn->obs1)
+                DEVPOS(22,14);DEVOUT(forn->obs2)
+                DEVPOS(23,14);DEVOUT(forn->obs3)
+                DEVPOS(24,14);DEVOUT(forn->obs4)
+                DEVPOS(25,14);DEVOUT(forn->obs5)
+                setcor(1)
+                IF mtipo_con = 'F'
+                        mensagem('<D>uplicatas  <ESC>Abandonar')
+                ELSE
+                        mensagem('<D>uplicatas <M>ovim. <P>ed.Solicitados <C>onta Corrente <ESC>Abandonar')
+                ENDIF
+                WVW_PBEnable( NIL, nPBId, .T. )
+                INKEY(0)
+                IF LASTKEY() = 27
+                        EXIT
+                ENDIF
+                IF LASTKEY() = 5
+                        SKIP
+                        IF EOF()
+                                atencao('Fim de Arquivo !!!')
+                                SKIP -1
+                        ENDIF
+                        LOOP
+                ENDIF
+                IF LASTKEY() = 24
+                        SKIP -1
+                        IF BOF()
+                                atencao('Inicio de Arquivo !!!')
+                                SKIP
+                        ENDIF
+                        LOOP
+                ENDIF
+                IF LASTKEY() = 18
+                        SKIP 10
+                        IF EOF()
+                                atencao('Fim de Arquivo !!!')
+                                GO BOTT
+                        ENDIF
+                        LOOP
+                ENDIF
+                IF LASTKEY() = 3
+                        SKIP -10
+                        IF BOF()
+                                atencao('Inicio de Arquivo !!!')
+                                GO TOP
+                        ENDIF
+                        LOOP
+                ENDIF
+                IF LASTKEY() = ASC('c') .OR. LASTKEY() = ASC('C')
+                        menu_c_c(STRZERO(mcod_forn,4),forn->razao)
+                ENDIF
+                IF LASTKEY() = ASC('d') .OR. LASTKEY() = ASC('D')
+                        msele := SELE()
+                        morder := INDEXORD()
+                        con214(forn->cod_forn)
+                        SELE(msele);ORDSETFOCUS(morder)
+                ENDIF
+                IF LASTKEY() = ASC('m') .OR. LASTKEY() = ASC('M')
+*                       sac414(mcod_forn,'*')
+                        sac524(mcod_forn)
+                        ***************
+                        SELE('forn')
+                        ***************
+                ENDIF
+                IF LASTKEY() = ASC('p') .OR. LASTKEY() = ASC('P')
+                        sac43_1()        // mesmo 'PRG'
+                ENDIF
+        ENDDO
+ENDDO
+WVW_PBDestroy( NIL, nPBId )
+wvw_lclosewindow()
+RETURN NIL
+*********************** f i m ************************************
+* CONSULTA PEDIDOS SOLICITADO PELO FORNECEDOR
+*******************************
+FUNCTION sac43_1
+****************
+LOCAL tela,tela1,lba,cba,li,ci,lb,cb,opcao,marq,i,mtecla,m_posicao:={},;
+      m_movimento:={},point,msele,morde
+MEMVAR mcod_forn
+PRIVATE mnome_ven
+
+tela := SAVESCREEN(01,00,24,79)
+
+lba := 16
+cba := 77
+
+li := 10
+ci := 12
+lb := 22
+cb := 60
+
+msele := SELE()
+morde := INDEXORD()
+
+WHILE .T.
+        ****************
+        SELE('ped_e');ORDSETFOCUS(1)
+        GO TOP
+        ****************
+        ASIZE(m_movimento,0)
+        ASIZE(m_posicao,0)
+        mensagem('Aguarde um Momento OK !!!')
+
+        WHILE ! EOF()
+
+                IF STRZERO(mcod_forn,4) <> ped_e->cod_forn
+                        SKIP
+                        LOOP
+                ENDIF
+                IF ped_e->recebi = '*'
+                        SKIP
+                        LOOP
+                ENDIF
+                IF LEN(m_movimento) >= 4096
+                        atencao('Periodo muito Grande, Solicite pelo Relatorio')
+                        EXIT
+                ENDIF
+                AADD(m_movimento,' '+DTOC(ped_e->dat_ped)+' '+CHR(179)+'   '+ped_e->num_ped+'  '+CHR(179)+' '+TRANSFORM(ped_e->quantd,'99999.99')+' '+CHR(179)+TRANSFORM(ped_e->vlr_fat,'9,999,999.99'))
+                AADD(m_posicao,RECNO())
+                SKIP
+        ENDDO
+        IF LEN(m_movimento) >= 4096
+                LOOP
+        ENDIF
+        IF LEN(m_movimento) = 0
+                atencao('Nao existe movimento neste periodo !!!')
+                SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+                RETURN NIL
+        ENDIF
+        botao(li,ci,lb,cb)
+        @ li+2,ci+1 TO li+2,cb-1
+        @ li+3,ci+11 TO lb-1,ci+11
+        @ li+3,ci+23 TO lb-1,ci+23
+        @ li+3,ci+34 TO lb-1,ci+34
+        DEVPOS(li+1,ci+4);DEVOUT('Data')
+        DEVPOS(li+1,ci+13);DEVOUT('Documento')
+        DEVPOS(li+1,ci+26);DEVOUT('Quantd.')
+        DEVPOS(li+1,ci+42);DEVOUT('Valor')
+        tela1 := SAVESCREEN(01,00,24,79)
+        WHILE .T.
+                CLEAR TYPEAHEAD
+                mensagem("< ou > Consulta  -  <ESC> Retorna  -  <ENTER> p/Resumo" )
+                point := ACHOICE(li+3,ci+1,lb-1,cb-1,m_movimento)
+
+                DO CASE
+                        CASE LASTKEY()=27
+                                RESTSCREEN(01,00,24,79,tela)
+                                SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+                                RETURN NIL
+                        CASE LASTKEY() = 13
+                                GO m_posicao[point]
+                                botao(10,02,lba,cba)
+                                DEVPOS(1,2);DEVOUT('No.Pedido do Fornecedor....:')
+                                setcor(3)
+                                DEVPOS(1,COL()+1);DEVOUT(ped_e->ped_forn)
+                                setcor(1)
+                                DEVPOS(2,2);DEVOUT('Codigo do Fornecedor.......:')
+                                setcor(3)
+                                DEVPOS(2,COL()+1);DEVOUT(ped_e->cod_forn+' - '+ped_e->fornece)
+                                setcor(1)
+                                DEVPOS(3,2);DEVOUT('Comprador..................:')
+                                setcor(3)
+                                DEVPOS(3,COL()+1);DEVOUT(ped_e->comprador)
+                                setcor(1)
+                                DEVPOS(4,2);DEVOUT('Total do Pedido R$.........:')
+                                setcor(3)
+                                DEVPOS(4,COL()+1);DEVOUTPICT(ped_e->vlr_fat * ped_e->quantd,'9,999,999.99')
+                                setcor(1)
+                                mensagem('Pressione qualquer tecla p/retornar')
+                                INKEY(0)
+                                RESTSCREEN(01,00,24,79,tela1)
+                                LOOP
+                ENDCASE
+        ENDDO
+ENDDO
+RETURN NIL
+*********************** f i m ************************************
+**** MENU_C_C.PRG: Menu de CONTAS CONRRENTE
+********************************************
+FUNCTION menu_c_c(mc_forn,mrazao)
+**************************
+LOCAL MPRG:='SAC43',op41
+
+op41 := 0
+op_tela(10,10,16,40,' MENU DO CONTA CORRENTE ')
+WHILE .T.
+        exibi_prg(mprg)
+        @ 1,0 PROMPT " 0-> Credito (Adiantamento)    "
+        @ 2,0 PROMPT " 1-> Debito (Entrada Produto)  "
+        @ 3,0 PROMPT " 2-> Alterar Lancamentos       "
+        @ 4,0 PROMPT " 3-> Relatorios/Consultas      "
+        @ 5,0 PROMPT " 4-> Consulta Geral do Saldo   "
+        MENU TO op41
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        DO CASE
+                CASE op41=1
+                        cred_c_c(mc_forn,mrazao)
+                CASE op41=2
+                        deb_c_c(mc_forn,mrazao)
+                CASE op41=3
+                        alt_c_c(mc_forn,mrazao)
+                CASE op41=4
+                        rel_c_c(mc_forn,mrazao)
+                CASE op41=5
+                        cons_c_c()
+        ENDCASE
+ENDDO
+RETURN NIL
+*********************** f i m ************************************
+**** LANCAMENTO DE CREDITO
+**************************
+FUNCTION cred_c_c(mc_f,mraz)
+**************************
+LOCAL MPRG:='SAC43',mdata_lanc,mvalor:=0,mobs:=SPACE(80),mopcao:='',mcons_prod:={}
+
+op_tela(10,10,14,90,' LANCAMENTO DE CREDITO NO CONTA CORRENTE ')
+WHILE .T.
+        mdata_lanc := mdata_sis
+        mvalor:=0
+        exibi_prg(mprg)
+        DEVPOS(1,1);DEVOUT('Fornecedor.....:')
+        DEVPOS(2,1);DEVOUT('Data Lancamento:')
+        DEVPOS(3,1);DEVOUT('Valor R$.......:')
+        DEVPOS(4,1);DEVOUT('Observacao.....:')
+        SETCOR(3)
+        DEVPOS(1,18);DEVOUT(mc_f+' - '+mraz)
+        SETCOR(1)
+        @ 2,18 GET mdata_lanc
+        @ 3,18 GET mvalor PICT '99,999,999.99'
+        @ 4,18 GET mobs
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        IF op_simnao('S','Confirma o Lancamento:') = 'S'
+                mcons_prod:={}
+                sr_getconnection():exec("SELECT saldo,data FROM c_c_forn WHERE cod_forn = "+sr_cdbvalue(mc_f)+' ORDER BY data,hora',,.t.,@mcons_prod)
+                IF LEN(mcons_prod) = 0
+                        msaldo := 0
+                ELSE
+                        //IF mdata_lanc < mcons_prod[LEN(mcons_prod),2]
+                        //        atencao('Este lancamento nao pode ser efetuado com esta data que e menor que a data do ultimo lancamento')
+                        //        LOOP
+                        //ENDIF
+                        msaldo := mcons_prod[LEN(mcons_prod),1]
+                ENDIF
+                sr_getconnection():exec('INSERT INTO c_c_forn ('+;
+                'COD_FORN       ,'+; //1
+                'COD_OPER       ,'+; //2
+                'DATA           ,'+; //3
+                'HORA           ,'+; //4 'COD_PROD       ,'+; //5 'QUANTIDADE     ,'+; //6
+                'VALOR          ,'+; //5
+                'DEB_CRED       ,'+; //6
+                'SALDO          ,'+; //7
+                'OBS            ,'+; //8
+                'SR_DELETED )'+;
+                ' VALUES ('+;
+                sr_cdbvalue(mc_f                                        )+','+; //1
+                sr_cdbvalue(cod_operado                                 )+','+; //2
+                sr_cdbvalue(mdata_lanc                                  )+','+; //3
+                sr_cdbvalue(TIME()                                      )+','+; //4
+                sr_cdbvalue(mvalor                                      )+','+; //5
+                sr_cdbvalue('C'                                         )+','+; //6
+                sr_cdbvalue(msaldo + mvalor                             )+','+; //7
+                sr_cdbvalue(mobs                                        )+','+; //8
+                sr_cdbvalue(' ')+')',,.f.)
+                sr_getconnection():exec("COMMIT",,.f.)
+                EXIT
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************** f i m ************************************
+**** LANCAMENTO DE DEBITO
+*************************
+FUNCTION deb_c_c(mc_f,mraz)
+**************************
+LOCAL MPRG:='SAC43',mdata_lanc,mvalor:=0,mobs:=SPACE(80),mopcao:='',mquantidade:=0
+PRIVATE mcod_merc:=0
+op_tela(10,10,17,90,' LANCAMENTO DE DEBITO NO CONTA CORRENTE',mprg)
+WHILE .T.
+        mdata_lanc := mdata_sis
+        mcod_merc:=mquantidade:=mvalor:=0
+        exibi_prg(mprg)
+        DEVPOS(1,1);DEVOUT('Fornecedor.....:')
+        DEVPOS(2,1);DEVOUT('Data Lancamento:')
+        DEVPOS(3,1);DEVOUT('Produto........:')
+        DEVPOS(4,1);DEVOUT('Quantidade.....:')
+        DEVPOS(5,1);DEVOUT('Valor R$.......:')
+        DEVPOS(6,1);DEVOUT('Observacao.....:')
+        SETCOR(3)
+        DEVPOS(1,18);DEVOUT(mc_f+' - '+mraz)
+        SETCOR(1)
+        @ 2,18 GET mdata_lanc
+        @ 3,18 GET mcod_merc PICT '99999' VALID IF(EMPTY(mcod_merc),.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        mcons_prod:={}
+        sr_getconnection():exec("SELECT merc FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(mcod_merc),,.t.,@mcons_prod)
+        IF LEN(mcons_prod) = 0
+                atencao('Este produto nao foi encontrado...')
+                LOOP
+        ENDIF
+        SETCOR(3)
+        DEVPOS(3,25);DEVOUT(mcons_prod[1,1])
+        SETCOR(1)
+        @ 4,18 GET mquantidade PICT '99,999,999.99'
+        @ 5,18 GET mvalor PICT '99,999,999.99'
+        @ 6,18 GET mobs
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        IF op_simnao('S','Confirma o Lancamento:') = 'S'
+                mcons_prod:={}
+                sr_getconnection():exec("SELECT saldo,data FROM c_c_forn WHERE cod_forn = "+sr_cdbvalue(mc_f)+' ORDER BY data,hora',,.t.,@mcons_prod)
+                IF LEN(mcons_prod) = 0
+                        msaldo := 0
+                ELSE
+                        //IF mdata_lanc < mcons_prod[LEN(mcons_prod),2]
+                        //        atencao('Este lancamento nao pode ser efetuado com esta data que e menor que a data do ultimo lancamento')
+                        //        LOOP
+                        //ENDIF
+                        msaldo := mcons_prod[LEN(mcons_prod),1]
+                ENDIF
+                sr_getconnection():exec('INSERT INTO c_c_forn ('+;
+                'COD_FORN       ,'+; //1
+                'COD_OPER       ,'+; //2
+                'DATA           ,'+; //3
+                'HORA           ,'+; //4
+                'COD_PROD       ,'+; //5
+                'QUANTIDADE     ,'+; //6
+                'VALOR          ,'+; //7
+                'DEB_CRED       ,'+; //8
+                'SALDO          ,'+; //8
+                'OBS            ,'+; //9
+                'SR_DELETED )'+;
+                ' VALUES ('+;
+                sr_cdbvalue(mc_f                                        )+','+; //1
+                sr_cdbvalue(cod_operado                                 )+','+; //2
+                sr_cdbvalue(mdata_lanc                                  )+','+; //3
+                sr_cdbvalue(TIME()                                      )+','+; //4
+                sr_cdbvalue(mcod_merc                        )+','+; //4
+                sr_cdbvalue(mquantidade                                 )+','+; //5
+                sr_cdbvalue(mvalor                                      )+','+; //5
+                sr_cdbvalue('D'                                         )+','+; //6
+                sr_cdbvalue(msaldo - (mvalor*mquantidade)               )+','+; //5
+                sr_cdbvalue(mobs                                        )+','+; //7
+                sr_cdbvalue(' ')+')',,.f.)
+                sr_getconnection():exec("COMMIT",,.f.)
+                EXIT
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************** f i m ************************************
+**** RELATORIO DE DEBITO
+*************************
+FUNCTION rel_c_c(mc_f,mraz)
+***************************
+LOCAL MPRG:='SAC43',mdata1,mdata2,mcons_cc:={},mcons_deb:={},mcons_cred:={},pag:=0,i:=0,msaldo:=0,mmerc:='',;
+      mcons_merc:={}
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mtipo:='',mtit:=''
+
+op_tela(10,10,17,90,' RELATORIO CONTA CORRENTE',mprg)
+mtipo_imp := m_indiv[1,18]
+WHILE .T.
+        mdata1 := mdata_sis - 30
+        mdata2 := mdata_sis
+        exibi_prg(mprg)
+        DEVPOS(1,1);DEVOUT('Fornecedor.....:')
+        DEVPOS(2,1);DEVOUT('Data Inicial...:')
+        DEVPOS(3,1);DEVOUT('Data Final.....:')
+        SETCOR(3)
+        DEVPOS(1,18);DEVOUT(mc_f+' - '+mraz)
+        SETCOR(1)
+        @ 2,18 GET mdata1
+        @ 3,18 GET mdata2 VALID IF(mdata2 < mdata1,.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        IF op_simnao('S','Confirma o Processo:') = 'S'
+                mcons_cc:={}
+                sr_getconnection():exec("SELECT * FROM c_c_forn WHERE cod_forn = "+sr_cdbvalue(mc_f)+" AND data >= "+sr_cdbvalue(mdata1)+" AND data <= "+sr_cdbvalue(mdata2)+" ORDER BY data,hora",,.t.,@mcons_cc)
+                IF LEN(mcons_cc) = 0
+                        atencao('Nao existe movimento neste Periodo...')
+                        LOOP
+                ENDIF
+                mtit := 'CORRENTE FORNECEDOR: '+mc_f+' - '+mraz
+                mtipo := DTOC(mdata1)+' a '+DTOC(mdata2)
+                IF ! imp_arq('REL_CONTA.REL','R',,,'N')
+                        LOOP
+                ENDIF
+                mensagem('Aguarde coletando para o relatorio....')
+                mcons_deb:={}
+                sr_getconnection():exec("SELECT SUM(quantidade * valor) FROM c_c_forn WHERE data < "+sr_cdbvalue(mdata1)+" AND deb_cred = 'D' AND cod_forn = "+sr_cdbvalue(mc_f),,.t.,@mcons_deb)
+                mcons_cred:={}
+                sr_getconnection():exec("SELECT SUM(valor) FROM c_c_forn WHERE data < "+sr_cdbvalue(mdata1)+" AND deb_cred = 'C' AND cod_forn = "+sr_cdbvalue(mc_f),,.t.,@mcons_cred)
+                msaldo := mcons_cred[1,1] - mcons_deb[1,1]
+                pag:=i:=0
+                FOR i = 1 TO LEN(mcons_cc)
+                        mensagem('Data: '+DTOC(mcons_cc[i,3]))
+                        IF pag=0 .OR. PROW()>=59
+		                IF pag = 0
+                                        pag=pag+1
+                                        IF pag>1
+                                                EJECT
+                                        ENDIF
+                                        cabecalho(pag,mtit,mtipo,mprg)
+                                        imprt(mtipo_imp,'C')
+                                        DEVPOS(PROW()+1,00);DEVOUT("  Data   Produto                                        Quantidade   Vlr.Unit.   Valor Total         Saldo Observacao")
+                                        DEVPOS(PROW()+1,00);DEVOUT(REPLICATE("=",137))
+                                        DEVPOS(PROW()+1,00);DEVOUT('SALDO ANTERIOR R$                                                                             '+TRANSFORM(msaldo,'9,999,999.99'))
+                                ENDIF
+                        ENDIF
+
+                        mcons_merc:={}
+                        sr_getconnection():exec("SELECT merc FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(mcons_cc[i,5]),,.t.,@mcons_merc)
+                        IF LEN(mcons_merc) = 0
+                                mmerc := SPACE(40)
+                        ELSE
+                                mmerc := mcons_merc[1,1]
+                        ENDIF
+                        msaldo := IF(mcons_cc[i,8] = 'D',msaldo - (mcons_cc[i,7]*mcons_cc[i,6]),msaldo + mcons_cc[i,7])
+                        DEVPOS(PROW()+1,00);DEVOUT(DTOC(mcons_cc[i,3])+' '+mcons_cc[i,5]+' '+mmerc+' '+IF(mcons_cc[i,8] = 'D',TRANSFORM(mcons_cc[i,6],'999,999.99'),'          ')+'  '+IF(mcons_cc[i,8] = 'D',TRANSFORM(mcons_cc[i,7],'999,999.99'),'          ')+'  '+IF(mcons_cc[i,8] = 'D',TRANSFORM(mcons_cc[i,7]*mcons_cc[i,6],'9,999,999.99'),TRANSFORM(mcons_cc[i,7],'9,999,999.99'))+'  '+TRANSFORM(msaldo,'9,999,999.99')+' '+SUBSTR(mcons_cc[i,10],1,30))
+                NEXT
+                DEVPOS(PROW()+2,00);DEVOUT(time())
+                EJECT
+                SETPRC(00,00)
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                conf_impressao('REL_CONTA.REL')
+                EXIT
+
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************** f i m ************************
+* CONSULTA GERAL DO SALDO DA CONTA CORRENTE
+*******************************************
+FUNCTION cons_c_c()
+*******************
+LOCAL MPRG:='SAC43',mcons_deb:={},mcons_cred:={},mcons_forn:={},pag:=0,mtot_cred:=0,mtot_deb:=0,mqtd_tot:=0,;
+      mtot_unid := 0,mtot_kg := 0,mtotg_unid := 0,mtotg_kg := 0,mforn_prod:={},mcons_prod:={},mcons_soma:={}
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mtipo:='',mtit:=''
+
+//op_tela(10,10,17,90,' CONSULTA GERAL DO SALDO DA CONTA CORRENTE',mprg)
+mtipo_imp := m_indiv[1,18]
+WHILE .T.
+        IF op_simnao('S','Confirma o Processo:') = 'S'
+                mtit := 'CONSULTA GERAL DO SALDO'
+                mtipo := ''
+                IF ! imp_arq('REL_CONTA.REL','R',,,'N')
+                        LOOP
+                ENDIF
+                mensagem('Aguarde coletando para o relatorio....')
+                mcons_deb:={}
+                sr_getconnection():exec("SELECT cod_forn,SUM(quantidade * valor),SUM(quantidade) FROM c_c_forn WHERE deb_cred = 'D' GROUP BY cod_forn,cod_forn",,.t.,@mcons_deb)
+                mcons_cred:={}
+                sr_getconnection():exec("SELECT cod_forn,SUM(valor) FROM c_c_forn WHERE deb_cred = 'C' GROUP BY cod_forn,cod_forn",,.t.,@mcons_cred)
+                i:=mtot_cred:=mtot_deb:=pag:=mqtd_tot:=0
+                FOR i = 1 TO LEN(mcons_cred)
+                        IF pag=0 .OR. PROW()>=59
+		                IF pag = 0
+                                        pag=pag+1
+                                        IF pag>1
+                                                EJECT
+                                        ENDIF
+                                        cabecalho(pag,mtit,mtipo,mprg)
+                                        imprt(mtipo_imp,'C')
+                                        DEVPOS(PROW()+1,00);DEVOUT('Forncedor                                         Adiantamentos    Recebimentos           Saldo     Unidade        Kilo')
+                                        DEVPOS(PROW()+1,00);DEVOUT(REPLICATE("=",132))
+                                ENDIF
+                        ENDIF
+                        mcons_forn:={}
+                        sr_getconnection():exec("SELECT razao FROM sacforn WHERE cod_forn = "+sr_cdbvalue(mcons_cred[i,1]),,.t.,@mcons_forn)
+                        IF LEN(mcons_forn) > 0
+                                DEVPOS(PROW()+1,00);DEVOUT(mcons_cred[i,1]+' - '+mcons_forn[1,1]+'  '+TRANSFORM(mcons_cred[i,2],'999,999,999.99'))
+                        ELSE
+                                DEVPOS(PROW()+1,00);DEVOUT(mcons_cred[i,1]+' - '+SPACE(40)+'  '+TRANSFORM(mcons_cred[i,2],'999,999,999.99'))
+                        ENDIF
+                        mtot_cred := mtot_cred + mcons_cred[i,2]
+                        y:=achou:=0
+                        FOR y = 1 TO LEN(mcons_deb)
+                                IF mcons_cred[i,1] = mcons_deb[y,1]
+                                        achou := 1
+                                        EXIT
+                                ENDIF
+                        NEXT
+                        IF achou = 1
+                                mtot_unid:=mtot_kg:=0
+                                mforn_prod:={}
+                                sr_getconnection():exec("SELECT cod_prod FROM c_c_forn WHERE cod_forn = "+sr_cdbvalue(mcons_deb[y,1])+" AND deb_cred = 'D' GROUP BY cod_prod,cod_prod",,.t.,@mforn_prod)
+                                FOR x = 1 TO LEN(mforn_prod)
+                                        mcons_prod:={}
+                                        sr_getconnection():exec("SELECT unidade FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(mforn_prod[x,1]),,.t.,@mcons_prod)
+                                        IF LEN(mcons_prod) = 0
+                                                EXIT
+                                        ENDIF
+                                        mcons_soma:={}
+                                        sr_getconnection():exec("SELECT SUM(quantidade) FROM c_c_forn WHERE cod_forn = "+sr_cdbvalue(mcons_deb[y,1])+" AND cod_prod = "+sr_cdbvalue(mforn_prod[x,1])+" AND deb_cred = 'D'",,.t.,@mcons_soma)
+                                        IF mcons_prod[1,1] = 'UN'
+                                                mtot_unid := mtot_unid + mcons_soma[1,1]
+                                                mtotg_unid := mtotg_unid + mcons_soma[1,1]
+                                        ELSE
+                                                mtot_kg := mtot_kg + mcons_soma[1,1]
+                                                mtotg_kg := mtotg_kg + mcons_soma[1,1]
+                                        ENDIF
+                                NEXT
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(mcons_deb[y,2],'999,999,999.99'))
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(mcons_cred[i,2] - mcons_deb[y,2],'999,999,999.99'))
+                                //DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(mcons_deb[y,3],'999,999.99'))
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(mtot_unid,'999,999.99'))
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(mtot_kg,'999,999.99'))
+                                mtot_deb := mtot_deb + mcons_deb[y,2]
+                                mqtd_tot:=mqtd_tot + mcons_deb[y,3]
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(0,'999,999,999.99'))
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(mcons_cred[i,2] - 0,'999,999,999.99'))
+                        ENDIF
+                NEXT
+                DEVPOS(PROW()+1,00);DEVOUT(REPLICATE("=",132))
+                DEVPOS(PROW()+1,00);DEVOUT('Adiantamentos R$: '+TRANSFORM(mtot_cred,'999,999,999.99'))
+                DEVPOS(PROW()+1,00);DEVOUT('Recebimentos R$.: '+TRANSFORM(mtot_deb,'999,999,999.99'))
+                DEVPOS(PROW()+1,00);DEVOUT(                   '--------------')
+                DEVPOS(PROW()+1,00);DEVOUT('SALDO GERAL R$..: '+TRANSFORM(mtot_cred - mtot_deb,'999,999,999.99'))
+                DEVPOS(PROW()+2,00);DEVOUT('Total em Unidade: '+TRANSFORM(mtotg_unid,'999,999,999.99'))
+                DEVPOS(PROW()+1,00);DEVOUT('Total em KG.....: '+TRANSFORM(mtotg_kg,'999,999,999.99'))
+                DEVPOS(PROW()+2,00);DEVOUT(time())
+                EJECT
+                SETPRC(00,00)
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                conf_impressao('REL_CONTA.REL')
+                EXIT
+        ENDIF
+ENDDO
+RETURN NIL
+*********************** f i m ************************************
+**** ALTERACAO DE LANCAMENTO DA CONTA CORRENTE
+**********************************************
+FUNCTION alt_c_c(mc_f,mraz)
+*******************
+LOCAL MPRG:='SAC43',mcons_deb:={},mcons_cred:={},mcons_alt:={},point:=0,mcons_prod:={},mposicao:={},mcons_forn:={},;
+      mtot_cred:=0,mtot_deb:=0
+PRIVATE mcod_forn:=0,mdata
+
+op_tela(15,10,18,90,' ALTERACAO DE LANCAMENTO NA CONTA CORRENTE',mprg)
+WHILE .T.
+        mdata := CTOD('  /  /  ')
+        DEVPOS(1,1);DEVOUT('Fornecedor........:')
+        DEVPOS(2,1);DEVOUT('Data do Lancamento:')
+        SETCOR(3)
+        DEVPOS(1,21);DEVOUT(mc_f+' - '+mraz)
+        SETCOR(1)
+        @ 2,21 GET mdata
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        mensagem('Aguarde coletando para o relatorio....')
+        mcons_forn:={}
+        mcomando := "SELECT * FROM c_c_forn WHERE cod_forn = "+sr_cdbvalue(mc_f)
+        IF ! EMPTY(mdata)
+                mcomando := mcomando + " AND data = "+sr_cdbvalue(mdata)
+        ENDIF
+        sr_getconnection():exec(mcomando,,.t.,@mcons_forn)
+        IF LEN(mcons_forn) = 0
+                atencao('Nao existe movimento...')
+                LOOP
+        ENDIF
+        mcons_alt:={}
+        i:=mtot_cred:=mtot_deb:=0
+        FOR i = 1 TO LEN(mcons_forn)
+                AADD(mposicao,mcons_forn[i,11])
+                AADD(mcons_alt,mcons_forn[i,8]+'   '+DTOC(mcons_forn[i,3])+' '+mcons_forn[i,5]+' '+TRANSFORM(mcons_forn[i,6],'999,999,999.99')+' '+TRANSFORM(mcons_forn[i,7],'999,999,999.99'))
+                IF mcons_forn[i,8] = 'D'
+                        mtot_deb := mtot_deb + (mcons_forn[i,6] * mcons_forn[i,7])
+                ELSE
+                        mtot_cred := mtot_cred + mcons_forn[i,7]
+                ENDIF
+        NEXT
+        op_tela(5,10,47,70,' ALTERACAO DE LANCAMENTO NA CONTA CORRENTE',mprg,'*')
+        DEVPOS(1,1);DEVOUT('D/C   Data   Produto   Quantidade          Valor')
+        setcor(3)
+        @ 2,0 TO 2,100
+        @ 41,0 TO 41,100
+        DEVPOS(42,0);DEVOUT('Credito: '+TRANSFORM(mtot_cred,'999,999.99')+' - Debito: '+TRANSFORM(mtot_deb,'999,999.99')+' - Saldo: '+TRANSFORM(mtot_cred - mtot_deb,'999,999.99'))
+        setcor(1)
+        point := ACHOICE(3,1,43,60,mcons_alt,,,point)
+        DO CASE
+                CASE LASTKEY()=27
+                        wvw_lclosewindow()
+                        EXIT
+                CASE LASTKEY() = 13
+                        IF SUBSTR(mcons_alt[point],1,1) = 'C'
+                                mcons_deb:={}
+                                sr_getconnection():exec("SELECT data,valor,obs FROM c_c_forn WHERE sr_recno = "+sr_cdbvalue(mposicao[point]),,.t.,@mcons_deb)
+                                op_tela(10,05,15,65,'ALTERACAO DE DOCUMENTO (CREDITO/ADIANTAMENTO)')
+                                DEVPOS(1,1);DEVOUT('Fornecedor.....:')
+                                DEVPOS(2,1);DEVOUT('Data Lancamento:')
+                                DEVPOS(3,1);DEVOUT('Valor R$.......:')
+                                DEVPOS(4,1);DEVOUT('Observacao.....:')
+                                SETCOR(3)
+                                DEVPOS(1,18);DEVOUT(mc_f+' - '+mraz)
+                                SETCOR(1)
+                                @ 2,18 GET mcons_deb[1,1] VALID IF(EMPTY(mcons_deb[1,1]),.F.,.T.)
+                                @ 3,18 GET mcons_deb[1,2] PICT '99,999,999.99'
+                                @ 4,18 GET mcons_deb[1,3]
+                                READ
+                                IF LASTKEY() = 27
+                                        wvw_lclosewindow()
+                                        wvw_lclosewindow()
+                                        LOOP
+                                ENDIF
+                                IF op_simnao(IF(mcons_deb[1,2] = 0,'N','S'),IF(mcons_deb[1,2] = 0,'Confirma a EXCLUSAO:','Confirma o Lancamento:')) = 'S'
+                                        TRY
+                                                IF mcons_deb[1,2] > 0
+                                                        sr_getconnection():exec("UPDATE c_c_forn SET data = " + sr_cdbvalue(mcons_deb[1,1])  +;
+                                                                                        ",valor = " + sr_cdbvalue(mcons_deb[1,2])+;
+                                                                                        ",obs   = " + sr_cdbvalue(mcons_deb[1,3])  +;
+                                                                                        " WHERE sr_recno = " + sr_cdbvalue(mposicao[point]),,.f.)
+                                                ELSE
+                                                        sr_getconnection():exec("DELETE FROM c_c_forn WHERE sr_recno = " + sr_cdbvalue(mposicao[point]),,.f.)
+                                                ENDIF
+                                                sr_committransaction()
+                                        catch e
+                                                tracelog(valtoprg())
+                                                sr_COMMITtransaction()
+                                        END
+                                        sr_getconnection():exec("COMMIT",,.f.)
+
+                                ENDIF
+                                wvw_lclosewindow()
+                                wvw_lclosewindow()
+                        ELSE
+                                op_tela(10,05,17,65,'ALTERACAO DE DOCUMENTO (DEBITO/ENTRADA PRODUTO)')
+                                mcons_cred:={}
+                                sr_getconnection():exec("SELECT data,cod_prod,quantidade,valor,obs FROM c_c_forn WHERE sr_recno = "+sr_cdbvalue(mposicao[point]),,.t.,@mcons_cred)
+                                DEVPOS(1,1);DEVOUT('Fornecedor.....:')
+                                DEVPOS(2,1);DEVOUT('Data Lancamento:')
+                                DEVPOS(3,1);DEVOUT('Produto........:')
+                                DEVPOS(4,1);DEVOUT('Quantidade.....:')
+                                DEVPOS(5,1);DEVOUT('Valor R$.......:')
+                                DEVPOS(6,1);DEVOUT('Observacao.....:')
+                                SETCOR(3)
+                                DEVPOS(1,18);DEVOUT(mc_f+' - '+mraz)
+                                SETCOR(1)
+                                mcod_merc := VAL(mcons_cred[1,2])
+                                @ 2,18 GET mcons_cred[1,1] VALID IF(EMPTY(mcons_cred[1,1]),.F.,.T.)
+                                @ 3,18 GET mcod_merc PICT '99999' VALID IF(EMPTY(mcod_merc),.F.,.T.)
+                                READ
+                                IF LASTKEY() = 27
+                                        wvw_lclosewindow()
+                                        wvw_lclosewindow()
+                                        LOOP
+                                ENDIF
+                                mcons_prod:={}
+                                sr_getconnection():exec("SELECT merc FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(mcod_merc),,.t.,@mcons_prod)
+                                IF LEN(mcons_prod) = 0
+                                        atencao('Este produto nao foi encontrado...')
+                                        wvw_lclosewindow()
+                                        wvw_lclosewindow()
+                                        LOOP
+                                ENDIF
+                                SETCOR(3)
+                                DEVPOS(3,25);DEVOUT(mcons_prod[1,1])
+                                SETCOR(1)
+                                @ 4,18 GET mcons_cred[1,3] PICT '99,999,999.99'
+                                @ 5,18 GET mcons_cred[1,4] PICT '99,999,999.99'
+                                @ 6,18 GET mcons_cred[1,5]
+                                READ
+                                IF LASTKEY() = 27
+                                        wvw_lclosewindow()
+                                        wvw_lclosewindow()
+                                        LOOP
+                                ENDIF
+                                IF op_simnao(IF(mcons_cred[1,3] = 0 .OR. mcons_cred[1,4] = 0,'N','S'),IF(mcons_cred[1,3] = 0 .OR. mcons_cred[1,4] = 0,'Confirma a EXCLUSAO:','Confirma o Lancamento:')) = 'S'
+                                        TRY
+                                                IF mcons_cred[1,3] = 0 .OR. mcons_cred[1,4] = 0
+                                                        sr_getconnection():exec("DELETE FROM c_c_forn WHERE sr_recno = " + sr_cdbvalue(mposicao[point]),,.f.)
+                                                ELSE
+                                                        sr_getconnection():exec("UPDATE c_c_forn SET data = " + sr_cdbvalue(mcons_cred[1,1])  +;
+                                                                                        ",cod_prod = " + sr_cdbvalue(mcod_merc)+;
+                                                                                        ",quantidade = " + sr_cdbvalue(mcons_cred[1,3])+;
+                                                                                        ",valor = " + sr_cdbvalue(mcons_cred[1,4])+;
+                                                                                        ",obs   = " + sr_cdbvalue(mcons_cred[1,5])  +;
+                                                                                        " WHERE sr_recno = " + sr_cdbvalue(mposicao[point]),,.f.)
+                                                ENDIF
+                                                sr_committransaction()
+                                        catch e
+                                                tracelog(valtoprg())
+                                                sr_COMMITtransaction()
+                                        END
+                                        sr_getconnection():exec("COMMIT",,.f.)
+                                ENDIF
+                                wvw_lclosewindow()
+                                wvw_lclosewindow()
+                        ENDIF
+        ENDCASE
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************** f i m ************************************

@@ -1,0 +1,4 @@
+SYSTEM            ICON         \hrb.ico
+DOWNLOADIT        BITMAP       Imagens\Download.bmp
+NOTYET            BITMAP       Imagens\Ainda_Nao.bmp
+ALREADY           BITMAP       Imagens\Downloaded.bmp

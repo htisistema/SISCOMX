@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><retConsReciNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>1</tpAmb>
+<verAplic>NFEPE_P_1.9.0</verAplic>
+<nRec>261210025471823</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF><dhRecbto>2021-04-26T19:45:46-03:00</dhRecbto>
+ <protNFe versao="4.00"><infProt Id="NFe1"><tpAmb>1</tpAmb>
+<verAplic>NFEPE_P_1.9.0</verAplic>
+<chNFe>26210424494200000106550010000010871483499917</chNFe>
+<dhRecbto>2021-04-26T19:45:46-03:00</dhRecbto><cStat>629</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: Valor do Produto difere do produto Valor Unit&#xE1;rio de Comercializa&#xE7;&#xE3;o e Quantidade Comercial</xMotivo>
+</infProt></protNFe></retConsReciNFe>

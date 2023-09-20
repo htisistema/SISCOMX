@@ -1,0 +1,533 @@
+*******************************************
+* ALTERACAO E EXCLUSAO NOTA FISCAL
+*******************************************
+FUNCTION sac214
+*****************
+LOCAL MPRG:='SAC214',;
+      opcao,mop,tela,tela1,tecla,lba,cba,li,ci,lb,cb,mnota,ment_sai,mdoc,;
+      mcli,memissao,mcod_nota:=' ',m_nota:={},mposicao:={},m_codigo:={},mcod_nat:=SPACE(4),;
+      f,point,mvl_nota,mvl_base,mvl_icm,mvl_icmsu,mpoint,mserie,;
+      mb_icmsub,mv_icmsub,aiepict:={},muf,minsc,m_produtos:={},mponto:=0,mtel_prod,;
+      mcfop,maliq_icm,mipi,msittrib,mmodelo,mquantd:=0,mvlr:=0,cons_movnt:={}
+MEMVAR nivel_acess,getlist
+
+PRIVATE mcliente,mcpf,mcgc,mcod_forn:=0,cons_cli:={}
+
+IF ! ver_nivel(mprg,'ALTERACAO E EXCLUSAO NOTA','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+lba = 08
+cba = 77
+
+li = 09
+ci = 00
+lb = 20
+cb = 79
+opcao = 0
+CLOSE ALL
+//
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('sacmovnt','movnt');RETURN NIL;ENDIF
+IF ! AbriArq('sacmov','mov');RETURN NIL;ENDIF
+IF ! AbriArq('sactotnt','totnt');RETURN NIL;ENDIF
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+op_tela(00,00,24,79,' ALTERACAO de Nota Fiscal ')
+
+WHILE .T.
+        ASIZE(m_nota,0)
+        ASIZE(m_produtos,0)
+        ASIZE(mposicao,0)
+        mnota := SPACE(6)
+        @ 23,00 CLEAR TO 23,79
+        botao(li,ci,lb,cb,,' ALTERACAO dos Produtos ')
+        @ 2,1 TO 2,cba-1
+        @ 1,5 PROMPT ' Nota de Saida   '
+        @ 1,COL()+5 PROMPT ' Nota de Entrada '
+        SET INTEN ON
+        MENU TO opcao
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+
+        DO CASE
+                CASE opcao = 1
+                        ment_sai := 'S'
+                        DEVPOS(3,22);DEVOUT('Emissao:')
+                        DEVPOS(4,1);DEVOUT('Cliente:')
+                CASE opcao = 2
+                        ment_sai := 'E'
+                        DEVPOS(3,22);DEVOUT('Chegada:')
+                        DEVPOS(4,1);DEVOUT('Fornec.:')
+        ENDCASE
+        DEVPOS(3,1);DEVOUT('No.Doc.:')
+        DEVPOS(3,40);DEVOUT('CFOP:')
+        DEVPOS(3,52);DEVOUT('Serie:')
+        DEVPOS(3,65);DEVOUT('Modelo:')
+        DEVPOS(4,60);DEVOUT('UF:')
+        DEVPOS(5,1);DEVOUT('CPF:')
+        DEVPOS(5,22);DEVOUT('CGC:')
+        DEVPOS(5,43);DEVOUT('Insc.:')
+        DEVPOS(6,1);DEVOUT('Vlr.Nota:')
+        DEVPOS(6,22);DEVOUT('Base:')
+        DEVPOS(6,39);DEVOUT('ICM:')
+        DEVPOS(6,55);DEVOUT('ICMF:')
+        DEVPOS(7,1);DEVOUT('Base ICM Sub.:')
+        DEVPOS(7,28);DEVOUT('Valor ICM Sub.:')
+        @ 3,10 GET mnota PICT '999999'
+        @ 4,10 GET mcod_forn PICT '9999' WHEN opcao = 2
+        READ
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        IF opcao = 1
+                cons_totnt := {}
+                cComm  := "SELECT * FROM sactotnt WHERE documento = "+sr_cdbvalue('NF'+mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+                sr_getconnection():exec(ccomm,,.t.,@cons_totnt)
+                IF LEN(cons_totnt) = 0
+                        atencao('Esta nota nao consta no arquivo verifique a nota digitada')
+                        LOOP
+                ENDIF
+        ELSE
+                cons_totnt := {}
+                cComm  := "SELECT * FROM sactotnt WHERE documento = "+sr_cdbvalue('NF'+mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+                ccomm  := ccomm +" AND cod_cli = "+sr_cdbvalue(STRZERO(mcod_forn,4)+' ')
+                sr_getconnection():exec(ccomm,,.t.,@cons_totnt)
+                IF LEN(cons_totnt) = 0
+                        atencao('Esta nota nao consta no arquivo verifique a nota digitada')
+                        LOOP
+                ENDIF
+        ENDIF
+        mcod_nota:= cons_totnt[1,4]
+        mcod_nat := cons_totnt[1,36]
+        memissao := cons_totnt[1,10]
+        mserie   := cons_totnt[1,6]
+        mmodelo  := cons_totnt[1,7]
+        mcpf     := cons_totnt[1,18]
+        mcgc     := cons_totnt[1,17]
+        minsc    := cons_totnt[1,16]
+        muf      := cons_totnt[1,15]
+        mvl_nota := cons_totnt[1,27]
+        mvl_base := cons_totnt[1,20]
+        mvl_icm  := cons_totnt[1,21]
+        mvl_icmsu:= cons_totnt[1,22]
+        mb_icmsub := cons_totnt[1,24]
+        mv_icmsub := cons_totnt[1,23]
+        setcor(3)
+        @ 4,10 SAY cons_totnt[1,12]
+        IF ment_sai = 'E'
+                ver_fab(VAL(cons_totnt[1,12]),4,COL()+1)
+        ELSE
+                ver_cli(VAL(cons_totnt[1,12]),4,COL()+1)
+        ENDIF
+        setcor(1)
+        mop := SPACE(1)
+        mop := mensagem1('[A]lterar [E]xcluir:','A','A,E')
+        IF mop = 'A'
+                @ 3,31 GET memissao
+                @ 3,46 GET mcod_nat PICT '9.999'
+                @ 3,59 GET mserie PICT '@!'
+                @ 3,72 GET mmodelo PICT '@!'
+                @ 4,64 GET muf PICT '@!'
+                @ 5,6 GET mcpf PICT '@!'
+                @ 5,27 GET mcgc PICT '@!'
+                @ 5,50 GET minsc PICT '@!'
+                @ 6,11 GET mvl_nota PICT '999,999.99'
+                @ 6,28 GET mvl_base PICT '999,999.99'
+                @ 6,44 GET mvl_icm PICT '999,999.99'
+                @ 6,61 GET mvl_icmsu PICT '999,999.99'
+                @ 7,16 GET mb_icmsub PICT '999,999.99'
+                @ 7,44 GET mv_icmsub PICT '999,999.99'
+                READ
+                IF LASTKEY() = 27
+                        RESTSCREEN(01,00,24,79,tela1)
+                        LOOP
+                ENDIF
+                mop := op_simnao('S','Confirma a Alteracao da NOTA:')
+                RESTSCREEN(01,00,24,79,tela1)
+                IF mop = 'N'
+                        LOOP
+                ENDIF
+                cComm  := "UPDATE sactotnt SET emissao = "+sr_cdbvalue(memissao)
+                ccomm  := ccomm + ",vl_nota 	= "+sr_cdbvalue(mvl_nota) 
+                ccomm  := ccomm + ",vl_base 	= "+sr_cdbvalue(mvl_base) 
+                ccomm  := ccomm + ",vl_icm  	= "+sr_cdbvalue(mvl_icm ) 
+                ccomm  := ccomm + ",vl_icmsu	= "+sr_cdbvalue(mvl_icmsu)
+                ccomm  := ccomm + ",cod_nat 	= "+sr_cdbvalue(mcod_nat )
+                ccomm  := ccomm + ",base_icmsu 	= "+sr_cdbvalue(mb_icmsub)
+                ccomm  := ccomm + ",vlr_icmsub 	= "+sr_cdbvalue(mv_icmsub)
+                ccomm  := ccomm + ",serie    	= "+sr_cdbvalue(mserie   )
+                ccomm  := ccomm + ",modelo   	= "+sr_cdbvalue(mmodelo  )
+                ccomm  := ccomm + ",cpf_cli  	= "+sr_cdbvalue(mcpf     )
+                ccomm  := ccomm + ",cgc_cli  	= "+sr_cdbvalue(mcgc     )
+                ccomm  := ccomm + ",insc_cli 	= "+sr_cdbvalue(minsc    )
+                ccomm  := ccomm + ",uf_cli   	= "+sr_cdbvalue(muf      )
+		ccomm  := ccomm +" WHERE documento = "+sr_cdbvalue('NF'+mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+	        IF opcao = 2
+	                ccomm  := ccomm +" AND cod_cli = "+sr_cdbvalue(STRZERO(mcod_forn,4)+' ')
+                ENDIF
+                sr_getconnection():exec(ccomm,,.f.)
+                IF opcao = 1
+                        cons_movnt := {}
+                        cComm  := "SELECT * FROM sacmovnt "
+                        ccomm  := ccomm +" WHERE conjunta = "+sr_cdbvalue(mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+                        //ccomm  := ccomm +" AND cod_cli = "+sr_cdbvalue(totnt->cod_cli)
+                        sr_getconnection():exec(ccomm,,.t.,@cons_movnt)
+                        IF LEN(cons_movnt) = 0
+                                atencao('Esta nota nao consta no arquivo verifique a nota digitada')
+                                LOOP
+                        ENDIF
+
+                        cComm  := "UPDATE sacmovnt SET serie = "+sr_cdbvalue(mserie)
+                        ccomm  := ccomm + ",modelo = "+sr_cdbvalue(mmodelo)+",uf_cli = "+sr_cdbvalue(muf)
+                        ccomm  := ccomm + ",insc_cli = "+sr_cdbvalue(minsc)+",cgc_cli = "+sr_cdbvalue(mcgc)
+                        ccomm  := ccomm + ",cpf_cli = "+sr_cdbvalue(mcpf)
+                        ccomm  := ccomm +" WHERE conjunta = "+sr_cdbvalue(mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+                        //ccomm  := ccomm +" AND cod_cli = "+sr_cdbvalue(totnt->cod_cli)
+                        sr_getconnection():exec(ccomm,,.f.)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        m:=0
+                        FOR m = 1 TO LEN(cons_movnt)
+                                AADD(mposicao,cons_movnt[m,11])
+                                AADD(m_produtos,cons_movnt[m,11]+'-'+cons_movnt[m,12]+' '+cons_movnt[m,65]+' ICM:'+TRANSFORM(cons_movnt[m,38],'999')+' IPI:'+TRANSFORM(cons_movnt[m,54],'999')+' CST:'+cons_movnt[m,61])
+                        NEXT
+                ELSE
+                        cons_movnt := {}
+                        cComm  := "SELECT * FROM sacmov "
+                        ccomm  := ccomm +" WHERE documento = "+sr_cdbvalue('NF'+mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+                        ccomm  := ccomm +" AND cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4)+' ')
+                        sr_getconnection():exec(ccomm,,.t.,@cons_movnt)
+                        IF LEN(cons_movnt) = 0
+                                atencao('Esta nota nao consta no arquivo verifique a nota digitada')
+                                LOOP
+                        ENDIF
+
+                        cComm  := "UPDATE sacmov SET serie = "+sr_cdbvalue(mserie)
+                        ccomm  := ccomm + ",modelo = "+sr_cdbvalue(mmodelo)+",uf_cli = "+sr_cdbvalue(muf)
+                        ccomm  := ccomm +" WHERE documento = "+sr_cdbvalue('NF'+mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+                        ccomm  := ccomm +" AND cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4)+' ')
+                        sr_getconnection():exec(ccomm,,.f.)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        m:=0
+                        FOR m = 1 TO LEN(cons_movnt)
+                                AADD(mposicao,cons_movnt[m,10])
+                                AADD(m_produtos,cons_movnt[m,10]+'-'+cons_movnt[m,11]+' '+cons_movnt[m,73]+' ICM:'+TRANSFORM(cons_movnt[m,42],'999')+' IPI:'+TRANSFORM(cons_movnt[m,61],'999')+' CST:'+cons_movnt[m,69])
+                        NEXT
+                ENDIF
+                WHILE .T.
+                        mponto := ACHOICE(li+1,ci+1,lb-1,cb-1,m_produtos,,,mponto)
+                        DO CASE
+                                CASE LASTKEY()=27
+                                        EXIT
+                                CASE LASTKEY() = 13
+                                        //GO mposicao[mponto]
+                                        IF opcao = 1
+                                                c_movnt := {}
+                                                cComm  := "SELECT * FROM sacmovnt "
+                                                ccomm  := ccomm +" WHERE conjunta = "+sr_cdbvalue(mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+                                                ccomm  := ccomm +" AND codigo = "+sr_cdbvalue(mposicao[mponto])
+                                                //ccomm  := ccomm +" AND cod_cli = "+sr_cdbvalue(totnt->cod_cli)+" AND codigo = "+sr_cdbvalue(mposicao[mponto])
+                                                sr_getconnection():exec(ccomm,,.t.,@c_movnt)
+                                                IF LEN(c_movnt) = 0
+                                                        atencao('Esta nota nao consta no arquivo verifique a nota digitada')
+                                                        LOOP
+                                                ENDIF
+                                                mcfop     := c_movnt[1,65]
+                                                maliq_icm := c_movnt[1,38]
+                                                mipi      := c_movnt[1,54]
+                                                msittrib  := c_movnt[1,61]
+                                                mquantd   := c_movnt[1,19]
+                                                mvlr      := c_movnt[1,22]
+                                        ELSE
+                                                c_movnt := {}
+                                                cComm  := "SELECT * FROM sacmov "
+                                                ccomm  := ccomm +" WHERE documento = "+sr_cdbvalue('NF'+mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+                                                ccomm  := ccomm +" AND cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4)+' ')+" AND codigo = "+sr_cdbvalue(mposicao[mponto])
+                                                sr_getconnection():exec(ccomm,,.t.,@c_movnt)
+                                                IF LEN(c_movnt) = 0
+                                                        atencao('Esta nota nao consta no arquivo verifique a nota digitada')
+                                                        LOOP
+                                                ENDIF
+                                                mcfop     := c_movnt[1,73]
+                                                maliq_icm := c_movnt[1,42]
+                                                mipi      := c_movnt[1,61]
+                                                msittrib  := c_movnt[1,69]
+                                                mquantd   := c_movnt[1,19]
+                                                mvlr      := c_movnt[1,25]
+                                        ENDIF
+                                        tel_prod := SAVESCREEN(14,00,24,79)
+                                        botao(15,00,19,79,,' Alteracao do Peoduto ')
+                                        DEVPOS(16,01);DEVOUT('Produto:')
+                                        DEVPOS(17,01);DEVOUT('CFOP:')
+                                        DEVPOS(17,14);DEVOUT('Aliq.ICM:')
+                                        DEVPOS(17,29);DEVOUT('IPI:')
+                                        DEVPOS(17,39);DEVOUT('CST:')
+                                        DEVPOS(18,01);DEVOUT('Quantd:')
+                                        DEVPOS(18,25);DEVOUT('Valor Unit.:')
+                                        setcor(3)
+                                        DEVPOS(16,10);DEVOUT(SUBSTR(m_produtos[mponto],1,47))
+                                        DEVPOS(18,09);DEVOUTPICT(mquantd,'999,999.9999')
+                                        DEVPOS(18,38);DEVOUTPICT(mvlr,'9,999,999.9999')
+                                        setcor(1)
+                                        @ 17,07 GET mcfop PICT '9.999'
+                                        @ 17,24 GET maliq_icm PICT '999'
+                                        @ 17,34 GET mipi PICT '999'
+                                        @ 17,44 GET msittrib
+                                        READ
+                                        IF LASTKEY() = 27
+                                                RESTSCREEN(14,00,24,79,tel_prod)
+                                                LOOP
+                                        ENDIF
+                                        mensagem('Tecle <ALT+Q> p/alterar quantidade e Valor')
+                                        INKEY(2)
+                                        mensagem('')
+                                        IF LASTKEY() = 272 .AND. opcao = 1
+                                                @ 18,09 GET mquantd PICT '999,999.9999'
+                                                @ 18,38 GET mvlr PICT '9,999,999.9999' WHEN mquantd > 0
+                                                READ
+                                                IF LASTKEY() = 27
+                                                        RESTSCREEN(00,00,24,79,tel_prod)
+                                                        LOOP
+                                                ENDIF
+                                                IF mquantd = 0 .AND. LEN(m_produtos) = 1
+                                                        atencao('Nao e possivel excluir produtos so tem um produtos')
+                                                        LOOP
+                                                ENDIF
+                                                mop := op_simnao('S','Confirma a Alteracao do Produto:')
+                                                IF mop = 'N'
+                                                        RESTSCREEN(14,00,24,79,tel_prod)
+                                                        LOOP
+                                                ENDIF
+                                                BLOQREG()
+                                                IF opcao = 1
+                                                        cComm  := "UPDATE sacmovnt SET cod_nat = "+sr_cdbvalue(mcfop)
+                                                        ccomm  := ccomm + ",icm = "+sr_cdbvalue(maliq_icm)+",ipi = "+sr_cdbvalue(mipi)
+                                                        ccomm  := ccomm + ",sittrib = "+sr_cdbvalue(msittrib)+",quantd = "+sr_cdbvalue(mquantd)
+                                                        ccomm  := ccomm + ",vl_fatura = "+sr_cdbvalue(mvlr)
+                                                        ccomm  := ccomm +" WHERE conjunta = "+sr_cdbvalue(mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+                                                        ccomm  := ccomm +" AND codigo = "+sr_cdbvalue(mposicao[mponto])
+                                                        //ccomm  := ccomm +" AND cod_cli = "+sr_cdbvalue(totnt->cod_cli)+" AND codigo = "+sr_cdbvalue(mposicao[mponto])
+                                                        sr_getconnection():exec(ccomm,,.f.)
+                                                        sr_getconnection():exec('COMMIT',,.f.)
+                                                        m_produtos[mponto]:=c_movnt[1,11]+'-'+c_movnt[1,12]+' '+mcfop+' ICM:'+TRANSFORM(maliq_icm,'999')+' IPI:'+TRANSFORM(mipi,'999')+' CST:'+msittrib
+                                                ELSE
+                                                        cComm  := "UPDATE sacmov SET cod_nat = "+sr_cdbvalue(mcfop)
+		                                      	ccomm  := ccomm + ",icm_aliq = "+sr_cdbvalue(maliq_icm)+",ipi_aliq = "+sr_cdbvalue(mipi)
+							IF maliq_icm = 0 
+			                                      	ccomm  := ccomm + ",icm = 0"
+							ELSE
+			                                      	ccomm  := ccomm + ",icm = "+sr_cdbvalue((mquantd*mvlr)*(maliq_icm/100))
+        						ENDIF
+	                                                ccomm  := ccomm + ",sittrib = "+sr_cdbvalue(msittrib)+",quantd = "+sr_cdbvalue(mquantd)
+                                                        ccomm  := ccomm + ",vl_fatura = "+sr_cdbvalue(mvlr)
+                                                        ccomm  := ccomm +" WHERE documento = "+sr_cdbvalue('NF'+mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+                                                        ccomm  := ccomm +" AND cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4)+' ')+" AND codigo = "+sr_cdbvalue(mposicao[mponto])
+                                                        sr_getconnection():exec(ccomm,,.f.)
+                                                        sr_getconnection():exec('COMMIT',,.f.)
+                                                        m_produtos[mponto]:=c_movnt[1,10]+'-'+c_movnt[1,11]+' '+mcfop+' ICM:'+TRANSFORM(maliq_icm,'999')+' IPI:'+TRANSFORM(mipi,'999')+' CST:'+msittrib
+                                                ENDIF
+                                                RESTSCREEN(14,00,24,79,tel_prod)
+                                                IF mquantd = 0
+                                                        m_produtos[mponto] := 'DELETE'+SUBSTR(m_produtos[mponto],6)
+                                                        BLOQREG()
+                                                        DELE
+                                                        DBCOMMIT()
+                                                        DBUNLOCK()
+                                                        sr_getconnection():exec("DELETE FROM sacmov WHERE SR_DELETED = 'T'",,.f.)
+                                                        sr_getconnection():exec("DELETE FROM sacmovnt WHERE SR_DELETED = 'T'",,.f.)
+                                                        sr_getconnection():exec("DELETE FROM sactotnt WHERE SR_DELETED = 'T'",,.f.)
+                                                        sr_getconnection():exec("COMMIT",,.f.)
+
+                                                ENDIF
+			                        cons_movnt := {}
+			                        cComm  := "SELECT * FROM sacmovnt "
+			                        ccomm  := ccomm +" WHERE conjunta = "+sr_cdbvalue(mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+			                        sr_getconnection():exec(ccomm,,.t.,@cons_movnt)
+			                        IF LEN(cons_movnt) = 0
+			                                atencao('Esta nota nao consta no arquivo verifique a nota digitada')
+			                                LOOP
+			                        ENDIF
+                                                i := 0
+                                                FOR i = 1 TO LEN(cons_movnt)
+                                                        mvl_nota := mvl_nota + (cons_movnt[i,19]*cons_movnt[i,22])
+                                                        mvl_base := mvl_base + (cons_movnt[i,19]*cons_movnt[i,22])
+                                                        mvl_icm  := mvl_icm  + ((cons_movnt[i,19]*cons_movnt[i,22])*(cons_movnt[i,38]/100))
+                                                NEXT
+/*
+						****************
+                                                SELE('movnt');ORDSETFOCUS(10)
+                                                GO TOP
+                                                ****************
+                                                movnt->(DBSEEK(mnota+'  '+ment_sai+totnt->cod_cli))
+                                                mvl_nota :=mvl_base :=mvl_icm  :=0
+                                                WHILE ! EOF() .AND. mnota+'  ' = movnt->conjunta
+                                                        mvl_nota := mvl_nota + (movnt->quantd*movnt->vl_fatura)
+                                                        mvl_base := mvl_base + (movnt->quantd*movnt->vl_fatura)
+                                                        mvl_icm  := mvl_icm  + ((movnt->quantd*movnt->vl_fatura)*(movnt->icm/100))
+                                                       SKIP
+                                                ENDDO
+*/
+				                cComm  := "UPDATE sactotnt SET emissao = "+sr_cdbvalue(memissao)
+				                ccomm  := ccomm + ",vl_nota 	= "+sr_cdbvalue(mvl_nota) 
+				                ccomm  := ccomm + ",vl_base 	= "+sr_cdbvalue(mvl_base) 
+				                ccomm  := ccomm + ",vl_icm  	= "+sr_cdbvalue(mvl_icm ) 
+						ccomm  := ccomm +" WHERE documento = "+sr_cdbvalue('NF'+mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+					        IF opcao = 2
+					                ccomm  := ccomm +" AND cod_cli = "+sr_cdbvalue(STRZERO(mcod_forn,4)+' ')
+				                ENDIF
+				                sr_getconnection():exec(ccomm,,.f.)
+				                sr_getconnection():exec("COMMIT",,.f.)
+/*
+                                                ****************
+                                                SELE('totnt');ORDSETFOCUS(6)
+                                                ****************
+                                                BLOQREG()
+                                                totnt->vl_nota := mvl_nota
+                                                totnt->vl_base := mvl_base
+                                                totnt->vl_icm  := mvl_icm
+                                                DBCOMMIT()
+                                                DBUNLOCK()
+*/
+                                                setcor(3)
+                                                DEVPOS(6,11);DEVOUTPICT(mvl_nota,'999,999.99')
+                                                DEVPOS(6,28);DEVOUTPICT(mvl_base,'999,999.99')
+                                                DEVPOS(6,44);DEVOUTPICT(mvl_icm,'999,999.99')
+                                                setcor(1)
+                                                RESTSCREEN(14,00,24,79,tel_prod)
+                                                LOOP
+                                        ENDIF
+                                        mop := op_simnao('S','Confirma a Alteracao do Produto:')
+                                        IF mop = 'N'
+                                                RESTSCREEN(14,00,24,79,tel_prod)
+                                                LOOP
+                                        ENDIF
+                                        BLOQREG()
+  
+                                        IF opcao = 1
+                                                cComm  := "UPDATE sacmovnt SET cod_nat = "+sr_cdbvalue(mcfop)
+                                                ccomm  := ccomm + ",icm = "+sr_cdbvalue(maliq_icm)+",ipi = "+sr_cdbvalue(mipi)
+                                                ccomm  := ccomm + ",sittrib = "+sr_cdbvalue(msittrib)+",quantd = "+sr_cdbvalue(mquantd)
+                                                ccomm  := ccomm + ",vl_fatura = "+sr_cdbvalue(mvlr)
+                                                ccomm  := ccomm +" WHERE conjunta = "+sr_cdbvalue(mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+                                                ccomm  := ccomm +" AND codigo = "+sr_cdbvalue(mposicao[mponto])
+                                                //ccomm  := ccomm +" AND cod_cli = "+sr_cdbvalue(totnt->cod_cli)+" AND codigo = "+sr_cdbvalue(mposicao[mponto])
+                                                sr_getconnection():exec(ccomm,,.f.)
+                                                sr_getconnection():exec('COMMIT',,.f.)
+                                                m_produtos[mponto]:=c_movnt[1,11]+'-'+c_movnt[1,12]+' '+mcfop+' ICM:'+TRANSFORM(maliq_icm,'999')+' IPI:'+TRANSFORM(mipi,'999')+' CST:'+msittrib
+                                        ELSE
+                                                cComm  := "UPDATE sacmov SET cod_nat = "+sr_cdbvalue(mcfop)
+                                                ccomm  := ccomm + ",icm_aliq = "+sr_cdbvalue(maliq_icm)+",ipi_aliq = "+sr_cdbvalue(mipi)
+						IF maliq_icm = 0 
+			                     		ccomm  := ccomm + ",icm = 0"
+			                        ELSE              	
+							ccomm  := ccomm + ",icm = "+sr_cdbvalue((mquantd*mvlr)*(maliq_icm/100))
+        					ENDIF
+                                                ccomm  := ccomm + ",sittrib = "+sr_cdbvalue(msittrib)+",quantd = "+sr_cdbvalue(mquantd)
+                                                ccomm  := ccomm + ",vl_fatura = "+sr_cdbvalue(mvlr)
+                                                ccomm  := ccomm +" WHERE documento = "+sr_cdbvalue('NF'+mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)
+                                                ccomm  := ccomm +" AND cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4)+' ')+" AND codigo = "+sr_cdbvalue(mposicao[mponto])
+                                                sr_getconnection():exec(ccomm,,.f.)
+                                                sr_getconnection():exec('COMMIT',,.f.)
+                                                m_produtos[mponto]:=c_movnt[1,10]+'-'+c_movnt[1,11]+' '+mcfop+' ICM:'+TRANSFORM(maliq_icm,'999')+' IPI:'+TRANSFORM(mipi,'999')+' CST:'+msittrib
+                                        ENDIF
+                                        RESTSCREEN(14,00,24,79,tel_prod)
+                        ENDCASE
+                ENDDO
+                RESTSCREEN(01,00,24,79,tela1)
+                LOOP
+        ELSEIF mop = 'E'
+                mop := op_simnao('N','Confirmando esta operacao vai ser EXCLUIDA e nao tem como recuperar, tem certeza que deseja Confirma a Exclusao:')
+                IF LASTKEY() = 27 .OR. mop = 'N'
+                        RESTSCREEN(01,00,24,79,tela1)
+                        LOOP
+                ENDIF
+/*
+                IF ! BLOQREG()
+                        atencao('Nao foi possivel bloquear o registro')
+                        RESTSCREEN(01,00,24,79,tela1)
+                        LOOP
+                ENDIF
+                DELE
+                DBCOMMIT()
+                DBUNLOCK()
+*/
+                sr_getconnection():exec("DELETE FROM sacmov WHERE SR_DELETED = 'T'",,.f.)
+                sr_getconnection():exec("DELETE FROM sacmovnt WHERE SR_DELETED = 'T'",,.f.)
+                sr_getconnection():exec("DELETE FROM sactotnt WHERE SR_DELETED = 'T'",,.f.)
+                
+                IF opcao = 1
+                        c_movnt := {}
+                        sr_getconnection():exec("SELECT * FROM sacmovnt WHERE conjunta = "+sr_cdbvalue(mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai),,.t.,@c_movnt)
+                        IF LEN(c_movnt) = 0
+                                atencao('Esta nota nao consta no arquivo verifique a nota digitada')
+                                LOOP
+                        ENDIF
+                        sr_getconnection():exec("DELETE FROM sactotnt WHERE documento = "+sr_cdbvalue('NF'+mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai),,.f.)
+                        sr_getconnection():exec("DELETE FROM sacmovnt WHERE conjunta = "+sr_cdbvalue(mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai),,.f.)
+                        sr_getconnection():exec("COMMIT",,.f.)
+                ELSE
+
+                        c_movnt := {}
+                        sr_getconnection():exec("SELECT * FROM sacmov WHERE conjunta = "+sr_cdbvalue(mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai),,.t.,@c_movnt)
+                        IF LEN(c_movnt) = 0
+                                atencao('Esta nota nao consta no arquivo verifique a nota digitada')
+                                LOOP
+                        ENDIF
+                        sr_getconnection():exec("DELETE FROM sactotnt WHERE documento = "+sr_cdbvalue('NF'+mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai),,.f.)
+                        sr_getconnection():exec("DELETE FROM sacmov WHERE documento = "+sr_cdbvalue('NF'+mnota)+" AND ent_sai = "+sr_cdbvalue(ment_sai)+" AND cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4)+' '),,.f.)
+                        sr_getconnection():exec("COMMIT",,.f.)
+                         
+
+                ENDIF                
+/*
+                ****************
+                SELE('movnt');ORDSETFOCUS(10)
+                GO TOP
+                ****************
+                IF ! movnt->(DBSEEK(mnota+'  '+ment_sai+totnt->cod_cli))
+                        atencao('Esta nota nao consta no arquivo verifique a nota digitada')
+                        LOOP
+                ENDIF
+                *******************
+                mpoint := RECNO()
+                WHILE movnt->conjunta = mnota
+                        AADD(m_codigo,{VAL(movnt->codigo),movnt->quantd})
+                        SKIP
+                ENDDO
+                GO mpoint
+                IF ! BLOQARQ()
+                        atencao('Nao foi possivel bloquear o arquivo')
+                        LOOP
+                ENDIF
+                DELE FOR mnota+SPACE(2) = movnt->conjunta .AND. mcod_nota = movnt->cod_nota .AND. mcod_nat = movnt->cod_nat
+                DBCOMMITALL()
+                DBUNLOCKALL()
+                sr_getconnection():exec("DELETE FROM sacmov WHERE SR_DELETED = 'T'",,.f.)
+                sr_getconnection():exec("DELETE FROM sacmovnt WHERE SR_DELETED = 'T'",,.f.)
+                sr_getconnection():exec("DELETE FROM sactotnt WHERE SR_DELETED = 'T'",,.f.)
+                sr_getconnection():exec("COMMIT",,.f.)
+                *******************
+                SELE('merc');ORDSETFOCUS(1)
+                GO TOP
+                *******************
+
+                f := 0
+                FOR f = 1 TO LEN(m_codigo)
+                        SEEK STRZERO(m_codigo[f,1],5)
+                        IF ! BLOQREG()
+                                atencao('Nao foi possivel acessar o arquivo')
+                                LOOP
+                        ENDIF
+                        merc->saldo_fis := merc->saldo_fis + m_codigo[f,2]
+                        DBUNLOCK()
+                NEXT
+                DBCOMMITALL()
+*/
+                RESTSCREEN(01,00,24,79,tela1)
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+

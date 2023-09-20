@@ -1,0 +1,404 @@
+* LISTAGEM CLASSIFICACAO DOS CLIENTES QUE MAIS COMPROU
+********************
+FUNCTION sac5com8
+**************
+LOCAL MPRG:='SAC5COM8',;
+      lba,cba,opcao,i,mdata1,mdata2,;
+      mcod_merc,mmerc,mtot_vlr,mtot_quantd,mtot_prunit,mger_vlr,mger_quantd,;
+      mger_prunit,m_cliente:={},mlucro,mdia,mop,;
+      mquantd_merc,mgrupo,msubgrupo,mcod_espe,mcod_ven,mcod_ope,mvlr1:=0,;
+      mvlr2:=0,mcodemp:=SPACE(3),nxls:={},mop_est := 'N'
+
+PRIVATE mtraco,telaprint,mtit,mtipo,mpag,mcod_cli,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),cons_cli:={},mcod_forn,mcod_prom
+
+IF ! ver_nivel(mprg,'RELATORIO CLASSIFICACAO DOS CLIENTES QUE MAIS COMPROU','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+mtraco := REPLI('=',132)
+
+lba := 16
+cba := 75
+*----------------------------------------------------------------------------
+CLOSE ALL
+//
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+IF ! AbriArq('sacgrupo','grup');RETURN NIL;ENDIF
+IF ! AbriArq('sacespe','espe');RETURN NIL;ENDIF
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*----------------------------------------------------------------------------
+op_tela(00,00,19,75,' CLASSIFICAO DOS CLIENTES ')
+WHILE .T.
+        exibi_prg(mprg)
+        limpa(00,00,30,90)
+        mtipo_imp := m_indiv[1,18]
+        mmerc := SPACE(40)
+        i := mlucro := mtot_vlr := mtot_quantd := mtot_prunit := mger_vlr := ;
+        mger_quantd := mger_prunit := mop := mquantd_merc := mcod_cli := ;
+        mgrupo := msubgrupo := mcod_espe := mcod_ven := mcod_ope := mcod_prom := ;
+        mcod_forn := mvlr1 := mvlr2 := mcod_merc := 0
+        mdata1 := mdata_sis - 30
+        mdata2 := mdata_sis
+        mop_est := 'N'
+        ASIZE(m_cliente,0)
+        mensagem('Preencha os Campos - <ESC>p/Sair')
+        @ 14,00 TO 14,75
+        @ 16,00 TO 16,75
+        DEVPOS(0,2);DEVOUT('Codigo Empresa.:')
+        DEVPOS(1,2);DEVOUT('Data Inicial...:')
+        DEVPOS(2,2);DEVOUT('Data Final.....:')
+        DEVPOS(3,2);DEVOUT('Codigo Produto.:')
+        DEVPOS(4,2);DEVOUT('Grupo..........:')
+        DEVPOS(5,2);DEVOUT('Sub-Grupo......:')
+        DEVPOS(6,2);DEVOUT('Especie Produto:')
+        DEVPOS(7,2);DEVOUT('Codigo Vendedor:')
+        DEVPOS(8,2);DEVOUT('Codigo Operador:')
+        DEVPOS(9,2);DEVOUT('Cod. Fornecedor:')
+        DEVPOS(10,2);DEVOUT('Codigo Promotor:')
+        DEVPOS(11,2);DEVOUT('Intervalo de R$:            a           ')
+        DEVPOS(12,2);DEVOUT('Quantidade de Clientes a ser listado:')
+        DEVPOS(13,2);DEVOUT('Imprimir Estatistica [S/N]..........:')
+        setcor(3)
+        DEVPOS(17,2);DEVOUT('Produto Processados:')
+        setcor(1)
+
+        @ 0,19 GET mcodemp PICT "999" VALID ver_emp(mcodemp,00,23,,'*') WHEN mmult_emp ='S'
+        @ 1,19 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ 2,19 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+        @ 3,19 GET mcod_merc PICT '99999' VALID ver_cod(mcod_merc,3,25,,0)
+        @ 4,19 GET mgrupo PICT '999' VALID IF(EMPTY(mgrupo),.T.,ver_gru(@mgrupo,4,24,.F.))
+        @ 5,19 GET msubgrupo PICT '99' VALID IF(EMPTY(msubgrupo),.T.,ver_sgru(mgrupo,msubgrupo,5,24,.F.))
+        @ 6,19 GET mcod_espe PICT '9999' VALID ver_espe(mcod_espe,6,24,,0)
+        @ 7,19 GET mcod_ven PICT '999' VALID IF(EMPTY(mcod_ven),.T.,ven(mcod_ven,7,24))
+        @ 8,19 GET mcod_ope PICT '999' VALID IF(EMPTY(mcod_ope),.T.,ven(mcod_ope,8,24))
+        @ 9,19 GET mcod_forn PICT '9999' VALID IF(EMPTY(mcod_forn),.T.,v_fornece(mcod_forn,9,24))
+        @ 10,19 GET mcod_prom PICT '999' VALID IF(EMPTY(mcod_prom),.T.,ven(mcod_prom,10,24))
+        @ 11,19 GET mvlr1 PICT '999,999.99'
+        @ 11,32 GET mvlr2 PICT '999,999.99' VALID IF(mvlr2 < mvlr1,.F.,.T.)
+        @ 12,41 GET mquantd_merc PICT '9999' VALID lim_get() WHEN men_get(13,38,'Informe a quantidade de Cliente que deseja lista ou deixe em branco para listar TODOS')
+        @ 13,41 GET mop_est PICT '@!' VALID mop_est $ 'S,N' WHEN nivel_acess = '1'
+        READ
+        IF LASTKEY() = 27
+                CLOSE ALL
+                RELEASE ALL
+                EXIT
+        ENDIF
+        IF mdata1 = mdata2
+                mdia := 1
+        ELSE
+                mdia := (mdata2 - mdata1) + 1
+        ENDIF
+        setcor(10)
+        @ 15,1 PROMPT ' Total das Compras ' MESSAGE '** Classificacao pelo TOTAL DAS COMPRAS de cada CLIENTE **'
+        @ 15,COL()+2 PROMPT ' Quantidade ' MESSAGE '** Classificacao pela QUANTIDADE VENDIDA de cada CLIENTE **'
+        @ 15,COL()+2 PROMPT ' Lucro Geral ' MESSAGE '** Classificacao pelo (%) de Lucro referente ao Lucro GERAL **'
+        @ 15,COL()+2 PROMPT ' Lucro p/Prod. ' MESSAGE '** Classificacao pelo (%) do CLIENTE INDIVIDUAL **'
+        SET INTEN ON
+        MENU TO mop
+        setcor(1)
+
+        marq := 'MAIS_PRO.REL'
+        mensagem('Espere o Final da Impressao OK - [ESC]Sair')
+        IF LASTKEY() = 27 .OR. ! imp_arq('MAIS_PRO.REL','R',,,,,,'E')
+                LOOP
+        ENDIF
+        mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)+' Intervalo de '+STRZERO(mdia,4)+' dias'
+        IF ! EMPTY(mcod_prom)
+                mtipo := mtipo + ' - Promotor: '+STRZERO(mcod_prom,3)
+        ENDIF
+        cons_mov := {}
+        cComm  := "SELECT SUM(mov.quantd),SUM(mov.quantd * mov.vl_vend),SUM(mov.quantd * mov.pr_unit),cli.cod_cli,cli.razao,cli.nome,cli.codvend,cli.promotor"
+        cComm  := ccomm + " FROM sacmov mov"
+        cComm  := ccomm + " JOIN saccli cli ON cli.cod_cli = mov.cod_cli"
+        IF ! EMPTY(mcod_prom)
+                ccomm := ccomm + ' AND cli.promotor = '+sr_cdbvalue(STRZERO(mcod_prom,3))
+        ENDIF
+        cComm  := ccomm + " WHERE mov.data_s_e  BETWEEN "+sr_cdbvalue(mdata1)+" AND "+sr_cdbvalue(mdata2)
+        cComm  := ccomm + " AND mov.tipo = '02' AND mov.cancel IS NULL"
+        cComm  := ccomm + " AND mov.documento NOT LIKE 'TR%'"
+        cComm  := ccomm + " AND mov.documento NOT LIKE 'BL%'"
+        cComm  := ccomm + " AND mov.ent_sai = 'S'"
+        //cComm  := ccomm + " AND cod_cli = "+sr_cdbvalue(cons_cli[i,2])
+        IF ! EMPTY(mcodemp)
+                cComm  := ccomm + " AND mov.empresa = "+sr_cdbvalue(mcodemp)
+        ENDIF
+        IF ! EMPTY(mcod_merc)
+                cComm  := ccomm + " AND mov.codigo = "+sr_cdbvalue(mcod_merc)
+        ENDIF
+        IF ! EMPTY(mgrupo)              //.AND. STRZERO(mgrupo,3) <> SUBSTR(mov->gru_sub,1,3));
+                cComm  := ccomm + " AND mov.gru_sub LIKE "+sr_cdbvalue(STRZERO(mgrupo,3)+'%')
+        ENDIF
+        IF ! EMPTY(msubgrupo)          
+                cComm  := ccomm + " AND mov.gru_sub = "+sr_cdbvalue(STRZERO(mgrupo,3)+STRZERO(msubgrupo,2))
+        ENDIF
+        IF ! EMPTY(mcod_forn)            //.AND. mov->cod_fab <> STRZERO(mcod_forn,4));
+                cComm  := ccomm + " AND mov.cod_fab = "+sr_cdbvalue(STRZERO(mcod_forn,4))
+        ENDIF
+        IF ! EMPTY(mcod_ope)            //.AND. STRZERO(mcod_ope,3) <> mov->cod_oper);
+                cComm  := ccomm + " AND mov.cod_oper = "+sr_cdbvalue(STRZERO(mcod_ope,3))
+        ENDIF
+        IF ! EMPTY(mcod_ven)            //.AND. STRZERO(mcod_ven,3) <> mov->cod_vend);
+                cComm  := ccomm + " AND mov.cod_vend = "+sr_cdbvalue(STRZERO(mcod_ven,3))
+        ENDIF
+        IF ! EMPTY(mcod_espe)           //.AND. mov->especie <> STRZERO(mcod_espe,4))
+                cComm  := ccomm + " AND mov.especie = "+sr_cdbvalue(STRZERO(mcod_espe,4))
+        ENDIF
+        cComm  := ccomm + " AND mov.vl_vend > 0 "
+        cComm  := ccomm + " group by cli.cod_cli,cli.razao,cli.nome,cli.codvend,cli.promotor"        
+        sr_getconnection():exec(ccomm,,.t.,@cons_mov)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(cons_mov) = 0
+                atencao('Nao existe movimento neste periodo....')
+                LOOP    
+        ENDIF
+        i:=0
+        FOR i = 1 TO LEN(cons_mov)
+                SETPOS(15,24);DISPOUT(STR(cons_mov[i,4],5)+' - '+cons_mov[i,5])
+                mger_vlr := mger_vlr + cons_mov[i,2]
+                mger_quantd := mger_quantd + cons_mov[i,1]
+                mtot_vlr := mtot_vlr + cons_mov[i,2]
+                mtot_quantd := mtot_quantd + cons_mov[i,1]
+                mtot_prunit := mtot_prunit + cons_mov[i,3]
+                mger_prunit := mger_prunit + cons_mov[i,3]
+                IF mtot_prunit = 0
+                        mlucro := 100
+                ELSE
+                        mlucro := ((mtot_vlr-mtot_prunit)/mtot_vlr)*100
+                ENDIF
+                IF EMPTY(mtot_quantd) .OR. ;
+                   (! EMPTY(mvlr1) .AND. mtot_vlr < mvlr1) .OR. ;
+                   (! EMPTY(mvlr2) .AND. mtot_vlr > mvlr2)
+                        mtot_vlr := mtot_quantd := mtot_prunit := 0
+                        LOOP
+                ENDIF
+                AADD(m_cliente,{cons_mov[i,4],IF(! EMPTY(cons_mov[i,6]),cons_mov[i,6],cons_mov[i,5]),mtot_quantd,mtot_prunit/mtot_quantd,mtot_vlr/mtot_quantd,;
+                                mtot_vlr,mtot_quantd/mdia,;
+                                mtot_vlr-mtot_prunit,mlucro,mtot_vlr-mtot_prunit,cons_mov[i,7]})
+                mtot_vlr := mtot_quantd := mtot_prunit := 0
+        NEXT
+        DO CASE
+                CASE mop = 1
+                        ASORT(m_cliente,,,{|x,y| x[6] > y[6]})
+                        mtit = 'CLASSIFICACAO CLIENTE pelo Total de Compras (CUSTO REAL)'
+                CASE mop = 2
+                        ASORT(m_cliente,,,{|x,y| x[3] > y[3]})
+                        mtit = 'CLASSIFICACAO CLIENTE pela quantidade (CUSTO REAL)'
+                CASE mop = 3
+                        ASORT(m_cliente,,,{|x,y| x[8] > y[8]})
+                        mtit = 'CLASSIFICACAO CLIENTE pelo Lucro Geral (CUSTO REAL)'
+                CASE mop = 4
+                        ASORT(m_cliente,,,{|x,y| x[9] > y[9]})
+                        mtit = 'CLASSIFICACAO CLIENTE pelo Lucro Individual (CUSTO REAL)'
+        ENDCASE
+        mpag = 1
+        IF ! EMPTY(mcod_forn)
+                cons_cli := {}
+                sr_getconnection():exec("SELECT * FROM sacforn WHERE cod_forn = "+sr_cdbvalue(STRZERO(mcod_for,4)),,.t.,@cons_cli)
+                sr_getconnection():exec('COMMIT',,.f.)
+                mtipo = mtipo+' - Fornecedor: '+STRZERO(mcod_for,4)+'-'+cons_cli[1,2]
+        ENDIF
+        IF ! EMPTY(mcod_ven)
+                cons_cli := {}
+                sr_getconnection():exec("SELECT * FROM insopera WHERE scod_op = "+sr_cdbvalue(STRZERO(mcod_ven,3)),,.t.,@cons_cli)
+                sr_getconnection():exec('COMMIT',,.f.)
+                mtipo = mtipo+' - Vendedor: '+STRZERO(mcod_ven,3)+'-'+cons_cli[1,2]
+        ENDIF
+
+        IF mimp_tipo = 4
+                nxls := {}
+                f:=1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                MYRUN('DEL '+marq)
+                nXls := xlsOpen(marq)
+                xlsWrite( nXls, f, 1,mtit)
+                f++                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+                xlsWrite( nXls, f, 1,mtipo)
+                f++                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+
+                IF ! EMPTY(mcod_forn)
+                        q_forn := {}
+                        sr_getconnection():exec("SELECT * FROM sacforn WHERE cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4)),,.t.,@q_forn)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        xlsWrite( nXls, f, 1,'Fornecedor :'+STRZERO(mcod_forn,4)+'-'+q_forn[1,2]+' Telefones: '+ALLTRIM(q_forn[1,13])+'/'+ALLTRIM(q_forn[1,14]))
+                        f++
+                ENDIF                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                xlsWrite( nXls, f, 3, 'Vlr.Medio')
+                xlsWrite( nXls, f, 4, 'Vlr.Medio')
+                xlsWrite( nXls, f, 5, 'Vlr.Total')
+                xlsWrite( nXls, f, 6, ' (%)')
+                xlsWrite( nXls, f, 7, 'Qtd.Med')
+                xlsWrite( nXls, f, 10, 'part.')
+                f++
+                xlsWrite( nXls, f, 1, 'Cliente')
+                xlsWrite( nXls, f, 2, 'Quantd.')
+                xlsWrite( nXls, f, 3, 'Custo')
+                xlsWrite( nXls, f, 4, 'Venda')
+                xlsWrite( nXls, f, 5, 'das Venda')
+                xlsWrite( nXls, f, 6, 'Vendas')
+                xlsWrite( nXls, f, 7, 'p/dia')
+                xlsWrite( nXls, f, 8, 'Lucro R$')
+                xlsWrite( nXls, f, 9, 'Lucro %')
+                xlsWrite( nXls, f, 10, 'Lucro %')
+                f++
+                IF EMPTY(mquantd_merc) .OR. mquantd_merc > LEN(m_cliente)
+                        mquantd_merc := LEN(m_cliente)
+                ENDIF
+                i:=0
+                FOR i = 1 TO mquantd_merc
+                        mensagem('IMPRIMINDO PARA EXCEL o CLIENTES: '+STR(m_cliente[i,1],5)+' - '+m_cliente[i,2]+'  Aguarde um momento ...')
+                        xlsWrite( nXls, f, 1,STR(m_cliente[i,1],5)+'-'+m_cliente[i,2])
+                        xlsWrite( nXls, f, 2,ALLTRIM(TRANSFORM(m_cliente[i,3],'@E 999,999.99')))
+                        xlsWrite( nXls, f, 3, ALLTRIM(TRANSFORM(m_cliente[i,4],'@E 999,999.99')))
+                        xlsWrite( nXls, f, 4, ALLTRIM(TRANSFORM(m_cliente[i,5],'@E 999,999.99')))
+                        xlsWrite( nXls, f, 5, ALLTRIM(TRANSFORM(m_cliente[i,6],'@E 99,999,999.99')))
+                        xlsWrite( nXls, f, 6, ALLTRIM(TRANSFORM((m_cliente[i,6]/mger_vlr)*100,'@E 999.99')))
+                        xlsWrite( nXls, f, 7, ALLTRIM(TRANSFORM(m_cliente[i,7],'@E999,999.999')))
+                        xlsWrite( nXls, f, 8, ALLTRIM(TRANSFORM(m_cliente[i,8],'@E 999,999.99')))
+                        xlsWrite( nXls, f, 9, ALLTRIM(TRANSFORM(m_cliente[i,9],'@E 9,999.99')))
+                        xlsWrite( nXls, f, 10, ALLTRIM(TRANSFORM((m_cliente[i,8]/(mger_vlr-mger_prunit))*100,'@E 999.99')) )
+                        f++                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+                NEXT
+                /*
+                xlsWrite( nXls, f, 1,'T O T A L   G E R A L:')
+                xlsWrite( nXls, f, 2,ALLTRIM(TRANSFORM(mger_quantd,'@E 99,999,999.99')))
+                xlsWrite( nXls, f, 3,TRANSFORM(mger_prunit / mger_quantd,'@E 999,999.99'))
+                xlsWrite( nXls, f, 5,TRANSFORM(mger_vlr / mger_quantd,'@E 999,999.99'))
+                xlsWrite( nXls, f, 6,TRANSFORM(mger_vlr,'@E 99,999,999.99'))
+                xlsWrite( nXls, f, 7,TRANSFORM(100,'@E 999.99'))
+                xlsWrite( nXls, f, 8,TRANSFORM((mger_quantd/mdia),'@E 99,999.999'))
+                xlsWrite( nXls, f, 9,TRANSFORM(mger_vlr - mger_prunit,'@E 999,999.99'))
+                xlsWrite( nXls, f,10,TRANSFORM(((mger_vlr-mger_prunit)/mger_prunit)*100,'@E 999.99'))
+                */
+        	xlsClose( nXls )
+        ELSE 
+                cabecalho(mpag,mtit,mtipo,mprg)
+                imprt(mtipo_imp,'C')
+                IF mop_est = 'S'
+                        DEVPOS(PROW()+1,57);DEVOUT('Vlr.Medio')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Vlr.Medio')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    Vlr.Total')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('  (%) ')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('  Qtd.Med')
+                        DEVPOS(PROW(),PCOL()+20);DEVOUT('part.')
+                ELSE
+                        DEVPOS(PROW()+1,57);DEVOUT('Vlr.Medio')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    Vlr.Total')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('  (%) ')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('  Qtd.Med')
+                ENDIF
+
+                DEVPOS(PROW()+1,00);DEVOUT('Cliente')
+                DEVPOS(PROW(),49);DEVOUT('Quantd.')
+                IF mop_est = 'S'
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    Custo')
+                ENDIF
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('    Venda')
+
+                IF mop_est = 'S'
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    das Venda')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Vendas')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    p/dia')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('  Lucro R$')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Lucro %')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Lucro %')
+                ELSE
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    das Venda')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Vendas')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    p/dia')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Vend.')
+                ENDIF
+                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                i := 0
+                IF EMPTY(mquantd_merc) .OR. mquantd_merc > LEN(m_cliente)
+                        mquantd_merc := LEN(m_cliente)
+                ENDIF
+                FOR i = 1 TO mquantd_merc
+                        DEVPOS(PROW()+1,00);DEVOUT(STR(m_cliente[i,1],5)+'-'+m_cliente[i,2])
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_cliente[i,3],'999999.99')
+                        IF mop_est = 'S'
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_cliente[i,4],'99,999.99')
+                        ENDIF
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_cliente[i,5],'99,999.99')
+                        IF mop_est = 'S'
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_cliente[i,6],'99,999,999.99')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM((m_cliente[i,6]/mger_vlr)*100,'999.99'))
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(m_cliente[i,7],'99999.999'))
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(m_cliente[i,8],'999,999.99'))
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(m_cliente[i,9],'9999.99'))
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM((m_cliente[i,8]/(mger_vlr-mger_prunit))*100,'999.99'))
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_cliente[i,6],'99,999,999.99')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM((m_cliente[i,6]/mger_vlr)*100,'999.99'))
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(m_cliente[i,7],'99999.999'))
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(m_cliente[i,11])
+                        ENDIF
+                        IF PROW() >= 59
+                                mpag ++
+                                EJECT
+                                cabecalho(mpag,mtit,mtipo,mprg)
+                                imprt(mtipo_imp,'C')
+                                IF mop_est = 'S'
+                                        DEVPOS(PROW()+1,57);DEVOUT('Vlr.Medio')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Vlr.Medio')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    Vlr.Total')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('  (%) ')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('  Qtd.Med')
+                                        DEVPOS(PROW(),PCOL()+20);DEVOUT('part.')
+                                ELSE
+                                        DEVPOS(PROW()+1,57);DEVOUT('Vlr.Medio')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    Vlr.Total')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('  (%) ')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('  Qtd.Med')
+                                ENDIF
+
+                                DEVPOS(PROW()+1,00);DEVOUT('Cliente')
+                                DEVPOS(PROW(),49);DEVOUT('Quantd.')
+                                IF mop_est = 'S'
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    Custo')
+                                ENDIF
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('    Venda')
+
+                                IF mop_est = 'S'
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    das Venda')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Vendas')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    p/dia')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('  Lucro R$')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Lucro %')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Lucro %')
+                                ELSE
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    das Venda')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Vendas')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    p/dia')
+                                ENDIF
+                                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                        ENDIF
+                NEXT
+                IF PROW() >= 57
+                        mpag ++
+                        EJECT
+                        cabecalho(mpag,mtit,mtipo,mprg)
+                ENDIF
+                imprt(mtipo_imp,'N')
+                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                imprt(mtipo_imp,'C')
+                DEVPOS(PROW()+1,00);DEVOUT('T O T A L   G E R A L:')
+                DEVPOS(PROW()+1,1);DEVOUT('Quantidade de Produtos.........: '+TRANSFORM(mger_quantd,'99,999,999.999'))
+                DEVPOS(PROW()+1,1);DEVOUT('Preco Medio CUSTO Produtos.. R$: '+TRANSFORM(mger_prunit / mger_quantd,'99,999,999.99'))
+                DEVPOS(PROW()+1,1);DEVOUT('Preco Medio VENDA Produtos.. R$: '+TRANSFORM(mger_vlr / mger_quantd,'99,999,999.99'))
+                DEVPOS(PROW()+1,1);DEVOUT('Valor TOTAL GERAL DAS VENDAS R$: '+TRANSFORM(mger_vlr,'99,999,999.99'))
+                //DEVPOS(PROW()+1,1);DEVOUT(TRANSFORM(100,'999.99'))
+                DEVPOS(PROW()+1,1);DEVOUT('Quantidade MEDIA por Dia.......: '+TRANSFORM((mger_quantd/mdia),'999,999.999'))
+                DEVPOS(PROW()+1,1);DEVOUT('Valor MEDIO por Dia......... R$: '+TRANSFORM((mger_vlr/mdia),'99,999,999.99'))
+                DEVPOS(PROW()+1,1);DEVOUT('Lucro GERAL das Vendas...... R$: '+TRANSFORM(mger_vlr - mger_prunit,'99,999,999.99'))
+                DEVPOS(PROW()+1,1);DEVOUT('Percentual MEDIO de Lucro......: '+TRANSFORM(((mger_vlr-mger_prunit)/mger_prunit)*100,'9999.99')+' %')
+                DEVPOS(PROW()+2,00);DEVOUT(TIME())
+                imprt(mtipo_imp,'N')
+                EJECT
+                SETPRC(00,00)
+                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                conf_impressao(marq)
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+

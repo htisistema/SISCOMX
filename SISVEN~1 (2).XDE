@@ -1,0 +1,43 @@
+<!--
+################################################
+# xDevStudio Project - xdev@kssoftware.com.br  #
+# Created @ 25/11/2007 21:52:10                #
+#                                              #
+### Standard xDev Config - Layout v1.5 #########
+-->
+<project>
+   <option compiler="12996">
+   <option outputname="sisvenda">
+   <option targettype="EXE">
+   <option outputpath="">
+   <option root="($)">
+   <option runpath="">
+   <option runparams="">
+   <option pathch="ch;C:\xHarbour\include">
+   <option pathlib="lib;C:\helio\siachb;C:\xharbour\lib">
+   <option pathobj="c:\helio\siachb">
+   <option pathtooutput="C:\helio\siachb">
+   <option defines="">
+   <option documentroot="">
+
+   <compilerparam name="Harbour.xCompiler">
+      <option presetsname="14484">
+      <option fflagb="Sim">
+      <option fguilib="Gtwvw">
+      <option rdd2="Sim">
+   </compilerparam>
+
+   <unit filename="SAC.PRG" compile="Sim">
+   <unit filename="HRBFUN.PRG" compile="Sim">
+   <unit filename="SACROT.PRG" compile="Sim">
+   <unit filename="SACROT1.PRG" compile="Sim">
+   <unit filename="ch\winuser.ch" compile="Sim">
+   <unit filename="ch\WVWTOOLS.CH" compile="Sim">
+   <unit filename="lib\dbffpt.lib" compile="Sim">
+   <unit filename="lib\dbfcdx.lib" compile="Sim">
+   <unit filename="lib\WVWTOOLS.LIB" compile="Sim">
+   <unit filename="ch\wingdi.ch" compile="Sim">
+   <unit filename="sisvenda.prg" compile="Sim">
+   <unit filename="SACTP.PRG" compile="Sim">
+   <unit filename="SACTPS.PRG" compile="Sim">
+</project>

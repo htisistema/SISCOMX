@@ -1,0 +1,1158 @@
+********************************
+*  LIBERA OU CANCELAR PEDIDOS  *
+********************************
+FUNCTION sac350(mped_orc)
+*****************
+LOCAL mprg:='SAC350',;
+      tela,tela1,lba,cba,opcao,mnum_pedido,mtempo,m_codigo:={},;
+      mdias,mcod_vend,mdata_ped,mposicao,;
+      mhora,mtipo_venda,mcod_op,mcod_emp,mcodemp,mlimite:=0,mstatus:=' ',;
+      mmotivo:=' ',m_produto:={},m_quantd:={},mpos:=0,m_resumo:={},cons_p:={},;
+      cons_cli:={},m_totped:={},nulo:='NULL'
+
+PRIVATE mcod_cli,mnum_ped:=0,m_posicao:={},point,mtot_ped:=0,m_pedido:={},;
+        mlib_vlr:=0,mali_ped,mali_con,nomeclatura,mtipo_lib
+
+IF mped_orc = 'P'
+        nomeclatura := 'PEDIDOS'
+        IF ! ver_nivel(mprg,'LIBERA OU CANCELAR PEDIDOS','15',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+        mali_ped := 'ped_s'
+        mali_con := 'ped_c'
+ELSE
+        nomeclatura := 'ORCAMENTOS'
+        mprg := mprg + 'O'
+        IF ! ver_nivel(mprg,'LIBERA OU CANCELAR ORCAMENTOS','15',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+        mali_ped := 'orcam'
+        mali_con := 'orc_c'
+ENDIF
+lba := 22
+cba := 90
+*---------------------------------------------------------------
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('sacped_c','ped_c');RETURN NIL;ENDIF
+IF ! AbriArq('sacorcam','orcam');RETURN NIL;ENDIF
+IF ! AbriArq('sacorc_c','orc_c');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('saccaixa','caix');RETURN NIL;ENDIF
+*---------------------------------------------------------------
+mnum_pedido := SPACE(6)
+CLEAR GETS
+point := 0
+mtipo_lib:=0
+WHILE .T.
+        op_tela(10,10,12,56,' Tipo de Liberacao ')
+        mcodemp := '   '
+        mtot_ped := 0
+        exibi_prg(mprg)
+        setcor(10)
+        @ 01,01 PROMPT '  Liberacao ' MESSAGE '** Liberacao de Pedidos - <ESC> Retornar **'
+        @ 01,13 PROMPT '  Producao  ' MESSAGE '** Pedidos Liberados p/Producao - <ESC> Retornar **'
+        @ 01,24 PROMPT '  Faturamento ' MESSAGE '** Pedidos Liberados p/Faturamento - <ESC> Retornar **'
+        MENU TO mtipo_lib
+        setcor(1)
+        wvw_lclosewindow()
+        IF LASTKEY() = 27
+                CLOSE ALL
+                RETURN NIL
+        ENDIF
+        WHILE .T.
+                mensagem('Aguarde um momento OK !!!')
+                ASIZE(m_pedido,0)
+                ASIZE(m_codigo,0)
+                ASIZE(m_posicao,0)
+                ASIZE(m_produto,0)
+                ASIZE(m_quantd,0)
+                IF mtipo_lib = 1 .OR. mtipo_lib = 3
+                        IF mped_orc = 'P'
+                                op_tela(00,05,22,95,' LIBERAR OU CANCELAR PEDIDOS ')
+                        ELSE
+                                op_tela(00,05,22,95,' LIBERAR OU CANCELAR ORCAMENTOS ')
+                        ENDIF
+                        setcor(3)
+                        @ 2,1 TO 2,cba-1
+                        DEVPOS(1,1);DEVOUT(' No.Ped ')
+                        DEVPOS(1,10);DEVOUT('Cd.Cli ')
+                        DEVPOS(1,17);DEVOUT('Vend ')
+                        DEVPOS(1,21);DEVOUT('   Data   ')
+                        DEVPOS(1,32);DEVOUT('Hr.Pedido ')
+                        DEVPOS(1,46);DEVOUT('    Valor')
+                        DEVPOS(1,57);DEVOUT('Tp')
+                        DEVPOS(1,61);DEVOUT('Oper.')
+                        DEVPOS(1,67);DEVOUT('Emp.')
+                        DEVPOS(1,72);DEVOUT('St.')
+                        cons_p:={}
+                        IF mali_ped = 'ped_s'
+                                cComm  := "SELECT * FROM sacped_s"
+                        ELSE
+                                cComm  := "SELECT * FROM sacorcam"
+                        ENDIF
+                        IF mtipo_lib = 1
+                                ccomm := ccomm +  " WHERE sr_deleted = ' ' AND ppag IS NULL AND plib_por IS NULL"
+                                /*
+                                IF ! EMPTY(plib_por);
+                                   .OR. (mali_ped)->ppag = 'C';
+                                   .OR. (mali_ped)->ppag = 'F';
+                                   .OR. (mali_ped)->ppag = '*'
+                                        SKIP;LOOP
+                                ENDIF
+                                */
+                        ELSE
+                                ccomm := ccomm + " AND ppag = 'F'"
+                                /*
+                                IF (mali_ped)->ppag <> 'F';
+                                   .OR. (mali_ped)->ppag = '*'
+                                        SKIP;LOOP
+                                ENDIF
+                                */
+                        ENDIF
+                        ccomm := ccomm + " ORDER BY pnum_ped"
+                        sr_getconnection():exec(ccomm,,.t.,@cons_p)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        i:=0
+                        FOR i = 1 TO LEN(cons_p)
+                                prog_imp(i,cons_p[i,2])
+                                mnum_pedido = cons_p[i,2]
+                                mcod_vend := cons_p[i,32]
+                                mcod_op   := cons_p[i,34]
+                                mdata_ped := cons_p[i,4]
+                                mhora := cons_p[i,47]
+                                mtot_ped := 0
+                                mtipo_venda := cons_p[i,45]
+                                mposicao := RECNO()
+                                mcod_cli := cons_p[i,23]
+                                mcod_emp  := cons_p[i,1]
+                                mstatus   := cons_p[i,49]
+                                mmotivo   := cons_p[i,91]
+                                WHILE mnum_pedido = cons_p[i,2]
+                                        mpos := ASCAN(m_produto,cons_p[i,6])
+                                        IF mpos = 0
+                                                AADD(m_produto,cons_p[i,6])
+                                                AADD(m_quantd,{cons_p[i,14],1,cons_p[i,7]})
+                                        ELSE
+                                                m_quantd[mpos,1] := m_quantd[mpos,1] + cons_p[i,14]
+                                                m_quantd[mpos,2] := m_quantd[mpos,2] + 1
+                                        ENDIF
+                                        mtot_ped := mtot_ped + cons_p[i,14] * cons_p[i,18]
+                                        i ++
+                                        IF i > LEN(cons_p)
+                                               EXIT
+                                        ENDIF
+                                ENDDO
+                                i := i - 1
+                                AADD(m_pedido,mtot_ped)
+                                AADD(m_codigo,' '+mnum_pedido+'  '+mcod_cli+'  '+mcod_vend+'  '+DTOC(mdata_ped)+'  '+mhora+'  '+TRANSFORM(mtot_ped,'99,999,999.99')+'  '+mtipo_venda+'  '+mcod_op+'   '+mcod_emp+'  '+mstatus+' '+IF(! EMPTY(mmotivo),'O',' '))
+                                AADD(m_posicao,mnum_pedido)
+                        NEXT
+                ELSEIF mtipo_lib = 2
+                        IF mped_orc = 'P'
+                                op_tela(00,05,22,95,' PRODUCAO PEDIDOS ')
+                        ELSE
+                                op_tela(00,05,22,95,' PRODUCAO ORCAMENTOS ')
+                        ENDIF
+                        setcor(3)
+                        @ 2,1 TO 2,cba-1
+                        DEVPOS(1,1);DEVOUT(' No.Ped')
+                        DEVPOS(1,COL()+1);DEVOUT('Cd.Cli')
+                        DEVPOS(1,COL()+1);DEVOUT('Cidade'+SPACE(14))
+                        DEVPOS(1,COL()+1);DEVOUT('Vend')
+                        DEVPOS(1,COL()+1);DEVOUT('  Data  ')
+                        DEVPOS(1,COL()+1);DEVOUT('      Valor')
+                        DEVPOS(1,COL()+1);DEVOUT('ST')
+                        DEVPOS(1,COL()+1);DEVOUT('OBS')
+                        cons_p:={}
+                        IF mali_ped = 'ped_s'
+                                cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND ppag = 'P' AND plib_por IS NULL"
+                        ELSE
+                                cComm  := "SELECT * FROM sacorcam WHERE sr_deleted = ' ' AND ppag = 'P' AND plib_por IS NULL"
+                        ENDIF
+                        ccomm := ccomm + " ORDER BY pnum_ped"
+                        sr_getconnection():exec(ccomm,,.t.,@cons_p)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        i:=0
+                        FOR i = 1 TO LEN(cons_p)
+                                prog_imp(i,cons_p[i,2])
+                                mnum_pedido = cons_p[i,2]
+                                mcod_vend := cons_p[i,32]
+                                mcod_op   := cons_p[i,34]
+                                mdata_ped := cons_p[i,4]
+                                mhora := cons_p[i,47]
+                                mtot_ped := 0
+                                mtipo_venda := cons_p[i,45]
+                                mposicao := RECNO()
+                                mcod_cli := cons_p[i,23]
+                                mcod_emp  := cons_p[i,1]
+                                mstatus   := cons_p[i,49]
+                                mmotivo   := cons_p[i,91]
+                                m_totped:={}
+                                IF mali_ped = 'ped_s'
+                                        cComm  := "SELECT SUM(pquantd * pvlr_fat) FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped  = "+sr_cdbvalue(cons_p[i,2])
+                                ELSE
+                                        cComm  := "SELECT SUM(pquantd * pvlr_fat) FROM sacorcam WHERE sr_deleted = ' ' AND pnum_ped  = "+sr_cdbvalue(cons_p[i,2])
+                                ENDIF
+                                sr_getconnection():exec(ccomm,,.t.,@m_totped)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                                mtot_ped := m_totped[1,1]
+                                cons_cli:={}
+                                cComm  := "SELECT * FROM saccli WHERE cod_cli  = "+sr_cdbvalue(cons_p[i,23])
+                                sr_getconnection():exec(ccomm,,.t.,@cons_cli)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                                WHILE mnum_pedido = cons_p[i,2]
+                                        mpos := ASCAN(m_produto,cons_p[i,6])
+                                        IF mpos = 0
+                                                AADD(m_produto,cons_p[i,6])
+                                                AADD(m_quantd,{cons_p[i,14],1,cons_p[i,7]})
+                                        ELSE
+                                                m_quantd[mpos,1] := m_quantd[mpos,1] + cons_p[i,14]
+                                                m_quantd[mpos,2] := m_quantd[mpos,2] + 1
+                                        ENDIF
+                                        i ++
+                                        IF i > LEN(cons_p)
+                                               EXIT
+                                        ENDIF
+                                ENDDO
+                                AADD(m_pedido,mtot_ped)
+                                AADD(m_codigo,' '+mnum_pedido+'  '+mcod_cli+' '+cons_cli[1,24]+'  '+mcod_vend+'  '+DTOC(mdata_ped)+' '+TRANSFORM(mtot_ped,'999,999.99')+' '+mstatus+'  '+IF(! EMPTY(mmotivo),'O',' '))
+                                AADD(m_posicao,mnum_pedido)
+                                i := i - 1
+                        NEXT
+                ENDIF
+                IF LEN(m_codigo) = 0
+                        atencao('Nenhum Pedido p/Liberar !!!  -  <ESC> p/Sair')
+                        wvw_lclosewindow()
+                        EXIT
+                ENDIF
+                WHILE .T.
+                        mensagem("[ -> ] p/Atualizar - <ESC> Retorna - <ENTER> p/Confirma ou Resumo do PEDIDO")
+                        limpa(3,1,lba-1,cba-1)
+                        setcor(10);point := ACHOICE(3,1,lba-1,cba-1,m_codigo,,,point);setcor(1)
+
+                        IF LASTKEY()=27 .OR. LASTKEY() = 4
+                                EXIT
+                        ELSEIF LASTKEY() = 13
+                                opcao := mensagem1('Deseja <C>onfirmar <R>esumo do Pedido <E>storno:','C','C,R,E')
+                                IF LASTKEY() = 27
+                                        LOOP
+                                ENDIF
+                                IF opcao = 'R'
+                                        c_p := {}
+                                        IF mali_ped = 'ped_s'
+                                                cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped  = "+sr_cdbvalue(m_posicao[point])
+                                        ELSE
+                                                cComm  := "SELECT * FROM sacorcam WHERE sr_deleted = ' ' AND pnum_ped  = "+sr_cdbvalue(m_posicao[point])
+                                        ENDIF
+                                        sr_getconnection():exec(ccomm,,.t.,@c_p)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+                                        m_resumo := {}
+                                        i:=0
+                                        FOR i = 1 TO LEN(c_p)
+                                                AADD(m_resumo,' '+c_p[i,6]+'-'+c_p[i,7]+'  '+TRANSFORM(c_p[i,14],'999,999.99')+'  '+TRANSFORM(c_p[i,14]*c_p[i,18],'999,999.99'))
+                                        NEXT
+                                        op_tela(00,05,22,95,' RESUMO DOS PRODUTOS P/PRODUCAO ')
+                                        setcor(3)
+                                        @ 2,1 TO 2,cba-1
+                                        DEVPOS(1,1);DEVOUT(' Produto')
+                                        DEVPOS(1,50);DEVOUT('Quantidade')
+                                        DEVPOS(1,COL()+2);DEVOUT('Valor')
+                                        DEVPOS(lba-1,1);DEVOUT('OBS.: '+c_p[1,91])
+                                        setcor(1)
+                                        setcor(10);point := ACHOICE(3,1,lba-2,cba-1,m_resumo,,,point);setcor(1)
+                                        wvw_lclosewindow()
+                                        LOOP
+                                ENDIF
+                                IF mtipo_lib = 2 .AND. opcao = 'C'
+                                        op_tela(07,20,09,65,' OBSERVACAO ')
+                                        DEVPOS(01,01);DEVOUT((mali_ped)->pmotivo)
+                                        opcao := op_simnao('N','Confirma a PRODUCAO do Pedido: ')
+                                        wvw_lclosewindow()
+                                        IF opcao = 'N' .OR. LASTKEY() = 27;LOOP;ENDIF
+                                        mnum_ped := VAL(SUBSTR(m_codigo[point],1,7))
+                                        mensagem('Aguarde Liberando o PEDIDO No.: '+STRZERO(mnum_ped,6))
+                                        cComm  := "UPDATE sacped_s SET ppag = 'F',plib_dat = "+sr_cdbvalue(mdata_sis)+",plib_por = "+sr_cdbvalue(cod_operado)+" WHERE pnum_ped  = "+sr_cdbvalue(m_posicao[point])
+                                        sr_getconnection():exec(ccomm,,.f.)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+                                        ASIZE(m_pedido,0)
+                                        ASIZE(m_codigo,0)
+                                        ASIZE(m_posicao,0)
+                                        ASIZE(m_produto,0)
+                                        ASIZE(m_quantd,0)
+                                        wvw_lclosewindow()
+                                        EXIT
+                                ELSEIF mtipo_lib = 2 .AND. opcao = 'E'
+                                        opcao := op_simnao('N','Confirma o ESTORNO do Pedido: ')
+                                        IF opcao = 'N' .OR. LASTKEY() = 27;LOOP;ENDIF
+                                        mnum_ped := VAL(SUBSTR(m_codigo[point],1,7))
+                                        mensagem('Aguarde Estornando o PEDIDO No.: '+STRZERO(mnum_ped,6))
+                                        cComm  := "UPDATE sacped_s SET ppag = "+nulo+",plib_dat = "+nulo+",plib_por = "+nulo+",pmotivo = "+nulo+" WHERE pnum_ped  = "+sr_cdbvalue(m_posicao[point])
+                                        sr_getconnection():exec(ccomm,,.f.)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+                                        ASIZE(m_pedido,0)
+                                        ASIZE(m_codigo,0)
+                                        ASIZE(m_posicao,0)
+                                        ASIZE(m_produto,0)
+                                        ASIZE(m_quantd,0)
+                                        wvw_lclosewindow()
+                                        EXIT
+                                ELSEIF mtipo_lib = 3 .AND. opcao = 'C'
+                                        *************
+                                        SELE((mali_ped));ORDSETFOCUS(1)
+                                        *************
+                                        GO m_posicao[point]
+                                        tela1350_1 := SAVESCREEN(01,00,24,79)
+                                        botao(10,10,12,55,,' OBSERVACAO ')
+                                        setcor(3)
+                                        DEVPOS(11,12);DEVOUT((mali_ped)->pmotivo)
+                                        setcor(1)
+                                        opcao := mensagem1('Confirma a TRANSFORMACAO do Pedido: ','N','S,N',14)
+                                        RESTSCREEN(01,00,24,79,tela1350_1)
+                                        IF opcao = 'N' .OR. LASTKEY() = 27;LOOP;ENDIF
+                                        IF ! BLOQARQ()
+                                                atencao('Nao foi possivel Bloquear o Arquivo "SACPED_S.DBF" !!!')
+                                                EXIT
+                                        ENDIF
+                                        mnum_ped := VAL(SUBSTR(m_codigo[point],1,7))
+                                        mensagem('Aguarde Liberando o PEDIDO No.: '+STRZERO(mnum_ped,6))
+                                        WHILE STRZERO(mnum_ped,6) = (mali_ped)->pnum_ped .AND. ! EOF()
+                                                (mali_ped)->ppag := 'F'
+                                                (mali_ped)->plib_dat := mdata_sis
+                                                (mali_ped)->plib_por := cod_operado
+                                                SKIP
+                                        ENDDO
+                                        DBUNLOCKALL()
+                                        GO m_posicao[point]
+                                        *************
+                                        SELE((mali_con));ORDSETFOCUS(1)
+                                        GO TOP
+                                        *************
+                                        IF (mali_con)->(DBSEEK(STRZERO(mnum_ped,6)))
+                                                BLOQREG()
+                                                (mali_con)->lib_dat := mdata_sis
+                                                (mali_con)->lib_por := cod_operado
+                                                (mali_con)->lib_vlr := mlib_vlr
+                                                DBUNLOCK()
+                                        ELSE
+                                                ADIREG()
+                                                (mali_con)->empresa := mcodempresa
+                                                (mali_con)->num_ped := (mali_ped)->pnum_ped
+                                                (mali_con)->vlr_ped := m_pedido[point]
+                                                (mali_con)->empresa := (mali_ped)->pempresa
+                                                (mali_con)->termina := (mali_ped)->ptermina
+                                                (mali_con)->dat_ped := (mali_ped)->pdat_ped
+                                                (mali_con)->cod_cli := (mali_ped)->pcod_cli
+                                                (mali_con)->cgc     := (mali_ped)->pcgc
+                                                (mali_con)->cpf     := (mali_ped)->pcpf
+                                                (mali_con)->placa   := (mali_ped)->pplaca
+                                                (mali_con)->carro   := (mali_ped)->pcarro
+                                                (mali_con)->modelo  := (mali_ped)->pmodelo
+                                                (mali_con)->km      := (mali_ped)->pkm
+                                                (mali_con)->cod_vend := (mali_ped)->pcod_vend
+                                                (mali_con)->vendedor := (mali_ped)->pvendedor
+                                                (mali_con)->cod_oper := (mali_ped)->pcod_oper
+                                                (mali_con)->comi_oper:= (mali_ped)->pcomi_oper
+                                                (mali_con)->hora     := (mali_ped)->phora
+                                                (mali_con)->pag      := (mali_ped)->ppag
+                                                (mali_con)->datapag  := (mali_ped)->pdatapag
+                                                (mali_con)->lib_dat := mdata_sis
+                                                (mali_con)->lib_por := cod_operado
+                                                (mali_con)->lib_vlr := mlib_vlr
+                                                DBUNLOCK()
+                                        ENDIF
+                                        DBCOMMITALL()
+                                ELSE
+                                        mnum_ped := VAL(m_posicao[point])
+                                        mcod_cli := VAL(SUBSTR(m_codigo[point],10,5))
+                                        mtot_ped := m_pedido[point]
+                                        sac350_1(,,mtot_ped)
+                                        wvw_lclosewindow()
+                                        EXIT
+                                ENDIF
+                        ENDIF
+                ENDDO
+                IF LASTKEY()=27
+                        EXIT
+                ENDIF
+        ENDDO
+        wvw_lclosewindow()
+ENDDO
+RETURN NIL
+************************* F I M ******************************************
+* CONSULTA DE CLIENTE
+*************************
+FUNCTION sac350_1(mcodcli,mtp,mvalor)
+***************
+LOCAL MPRG:='SAC350_1',;
+      tela350_1,tela1350_1,opcao,lba,cba,mrazao,mnome,msele,morder,li,ci,lb,cb,mcgc,;
+      mcpf,mcidade,mcon_sele,mcon_orde,minsc:=SPACE(19),mmotivo:=SPACE(40),;
+      m_cod:={},msaldo_ant:=0,m_hist:={},m_ponto:={},mdata_con,mponto,;
+      mlin1,mlin3,pag:=0,mdata_aux,mtit,mtipo,mtot_doc:=0,mqtd_doc:= 0,cons_ped:={}
+
+MEMVAR mtot_ped,mali_ped
+
+
+PRIVATE mdata1,mdata2,mlimite,mcompras,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mdata_doc
+
+IF mali_ped = 'orcam'
+        mprg := mprg+'O'
+ENDIF
+lba := 22
+cba := 79
+
+li := 01
+ci := 00
+lb := 22
+cb := 79
+
+tela350_1:=SAVESCREEN(00,00,24,79)
+*---------------------------------------------------------------------
+IF ! AbriArq('sacocorr','ocorr');RETURN NIL;ENDIF
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+//
+IF ! AbriArq('sachist','hist');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+IF ! AbriArq('saccheq','cheq');RETURN NIL;ENDIF
+IF ! AbriArq('SACMOVNT','MOVNT');RETURN NIL;ENDIF
+IF ! AbriArq('SACTOTNT','TOTNT');RETURN NIL;ENDIF
+IF ! AbriArq('sacmov','mov');RETURN NIL;ENDIF
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('sactabme','tabme');RETURN NIL;ENDIF
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*---------------------------------------------------------------------
+IF mcodcli <> NIL
+        mcod_cli := mcodcli
+ENDIF
+mdata2 := mdata_sis
+opcao := 'S'
+mnome := mrazao:= SPACE(40)
+mcompras := 0
+mcgc := SPACE(14)
+mcpf := SPACE(11)
+mcidade := SPACE(20)
+minsc  := SPACE(19)
+op_tela(0,0,lba,cba,' Consulta de CLIENTES ')
+DEVPOS(1,1);DEVOUT('Codigo....:')
+DEVPOS(1,21);DEVOUT('Data Cadastro:')
+DEVPOS(2,1);DEVOUT('R.Social..:')
+DEVPOS(2,55);DEVOUT('Data Nasc.:')
+DEVPOS(3,1);DEVOUT('Fantasia..:')
+DEVPOS(3,55);DEVOUT('[C]liente [O]utros:')
+
+@ 4,1 TO 4,cba-1
+DEVPOS(5,1);DEVOUT('CNPJ:')
+DEVPOS(5,26);DEVOUT('Insc.:')
+DEVPOS(6,1);DEVOUT('CPF:')
+DEVPOS(6,22);DEVOUT('RG:')
+DEVPOS(6,42);DEVOUT('Orgao:')
+DEVPOS(6,61);DEVOUT('Emissao:')
+
+DEVPOS(7,1);DEVOUT('Endereco..:')
+DEVPOS(8,1);DEVOUT('Bairro....:')
+DEVPOS(8,35);DEVOUT('Cidade:')
+DEVPOS(8,65);DEVOUT('UF:')
+DEVPOS(9,1);DEVOUT('CEP.......:')
+DEVPOS(9,24);DEVOUT('EMAIL.....:')
+DEVPOS(10,1);DEVOUT('Fone:')
+DEVPOS(10,23);DEVOUT('Fone:')
+DEVPOS(10,45);DEVOUT('Fax:')
+
+DEVPOS(11,1);DEVOUT('Comprador:')
+DEVPOS(11,28);DEVOUT('Prazo Pag.:')
+DEVPOS(11,49);DEVOUT('Contato:')
+DEVPOS(12,1);DEVOUT('Area:')
+DEVPOS(12,22);DEVOUT('Vend.resp.:')
+DEVPOS(13,1);DEVOUT('Operador Resp.:')
+DEVPOS(14,1);DEVOUT('Observacao:')
+
+@ 15,1 TO 15,cba-1
+DEVPOS(16,1);DEVOUT('Maior Compra:')
+DEVPOS(16,25);DEVOUT('No.Pedido:')
+DEVPOS(16,44);DEVOUT('Valor Pedido:')
+DEVPOS(17,1);DEVOUT('Ult.Compra..:')
+DEVPOS(17,25);DEVOUT('No.Pedido:')
+DEVPOS(17,44);DEVOUT('Valor Pedido:')
+DEVPOS(18,1);DEVOUT('Med.Dias Atraso:')
+DEVPOS(18,26);DEVOUT('Qtd.Doc.:')
+DEVPOS(19,1);DEVOUT('Limite:')
+DEVPOS(19,23);DEVOUT('Compras:')
+DEVPOS(19,46);DEVOUT('Saldo:')
+DEVPOS(20,1);DEVOUT('Acumulado Compras R$:')
+DEVPOS(20,40);DEVOUT('Data Ult.Orcamento:')
+**************************
+SELE('cli');ORDSETFOCUS(1)
+GO TOP
+**************************
+cli->(DBSEEK(mcod_cli))
+mdata1 := mdata_doc := cli->data_cad
+mlimite := cli->limite
+mcompras := 0
+dias_atras(mcod_cli)
+@ 4,1 TO 4,cba-1
+setcor(3)
+IF cli->bloqueio = 'S'
+        janela(1,cba,' *** CLIENTE BLOQUEADO *** ')
+ELSE
+        janela(1,cba,'                           ')
+ENDIF
+DEVPOS(1,13);DEVOUT(STR(cli->cod_cli,5))
+DEVPOS(1,36);DEVOUT(cli->data_cad)
+DEVPOS(2,13);DEVOUT(cli->razao)
+DEVPOS(2,67);DEVOUT(cli->nascimento)
+DEVPOS(3,13);DEVOUT(cli->nome)
+DEVPOS(3,75);DEVOUT(cli->tipo)
+DEVPOS(5,6);DEVOUTPICT(cli->cgc,'@@R 99.999.999/9999-99')
+DEVPOS(5,32);DEVOUT(cli->insc)
+DEVPOS(6,6);DEVOUTPICT(cli->cpf,'@@R 999.999.999-99')
+DEVPOS(6,26);DEVOUT(cli->rg)
+DEVPOS(6,49);DEVOUT(cli->orgao)
+DEVPOS(6,70);DEVOUT(cli->dat_emi)
+DEVPOS(7,13);DEVOUT(cli->endereco+', '+RTRIM(cli->numero)+IF(! EMPTY(RTRIM(cli->complemento)),' - Compl.:'+RTRIM(cli->complemento),''))
+DEVPOS(8,13);DEVOUT(cli->bairro)
+DEVPOS(8,43);DEVOUT(cli->cidade)
+DEVPOS(8,69);DEVOUT(cli->uf)
+DEVPOS(9,13);DEVOUTPICT(cli->cep,'99999-999')
+DEVPOS(9,36);DEVOUT(cli->email)
+DEVPOS(10,7);DEVOUT(cli->tel1)
+DEVPOS(10,29);DEVOUT(cli->tel2)
+DEVPOS(10,50);DEVOUT(cli->fax)
+
+DEVPOS(11,12);DEVOUT(cli->comprado)
+DEVPOS(11,40);DEVOUTPICT(cli->prazo_pag,'@R 99-99-99')
+DEVPOS(11,57);DEVOUT(cli->contato)
+DEVPOS(12,6);DEVOUT(cli->area)
+DEVPOS(12,34);DEVOUT(cli->codvend)
+DEVPOS(13,17);DEVOUT(cli->codoper)
+DEVPOS(14,13);DEVOUT(cli->obs)
+
+DEVPOS(16,15);DEVOUT(cli->ultcomp_m)
+DEVPOS(16,36);DEVOUT(cli->numped_m)
+DEVPOS(16,58);DEVOUTPICT(cli->vlrcomp_m,'9,999,999.99')
+DEVPOS(17,15);DEVOUT(cli->ult_comp)
+DEVPOS(17,36);DEVOUT(cli->num_ped)
+DEVPOS(17,58);DEVOUTPICT(cli->vlr_comp,'9,999,999.99')
+DEVPOS(18,19);DEVOUTPICT(cli->dia_atras/cli->qtd_doc,'999.99')
+DEVPOS(18,36);DEVOUTPICT(cli->qtd_doc,'9999')
+mcompras := ver_compras(mcod_cli)
+DEVPOS(19,9);DEVOUTPICT(cli->limite,'9,999,999.99')
+DEVPOS(19,32);DEVOUTPICT(mcompras,'9,999,999.99')
+mlimite := cli->limite
+DEVPOS(19,53);DEVOUTPICT(cli->limite - mcompras,'9,999,999.99')
+IF nivel_acess = '1'
+        DEVPOS(20,22);DEVOUTPICT(cli->tot_comp,'9,999,999.99')
+ENDIF
+DEVPOS(20,60);DEVOUT(cli->ult_orc)
+ven(VAL(cli->codvend),12,38)
+limpa(13,22,13,22+30)
+ven(VAL(cli->codoper),13,22)
+setcor(1)
+IF cli->tipo = 'U' .AND. ! EMPTY(cli->codforn)
+        DEVPOS(4,1);DEVOUT('Cod.no CONTAS APAGAR: ')
+        setcor(3)
+        DEVPOS(4,COL());DEVOUT(cli->codforn+' - ')
+        setcor(1)
+        v_fornece(VAL(cli->codforn),4,COL())
+ENDIF
+spc(mcod_cli,mvalor,'*','*',,'*')
+WHILE .T.
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        mensagem('<ENTER>Liberar/Canc.<D>upl <C>heq <M>ov <P>Ped <H>ist C<O>m <L>imite')
+        INKEY(0)
+        IF LASTKEY() = 27 .OR. (LASTKEY() = 13 .AND. mcodcli <> NIL)
+                wvw_lclosewindow()
+                RESTSCREEN(00,00,24,79,tela350_1)
+                RETURN NIL
+        ELSEIF LASTKEY() = 13 .AND. mcodcli = NIL
+                opcao := mensagem1('Digite [L]iberar, [A]nalisando, [Q]Cheque, [P]roducao, [F]aturamento ou [C]ancelar PEDIDOS:',' ','L,C,A,P,Q,F')
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+                IF opcao = 'C'
+                        IF ! ver_nivel(mprg+opcao,'CANCELAR '+nomeclatura+' (MODULO LIBERACAO)','15',nivel_acess,,'AMBIE')
+                                LOOP
+                        ENDIF
+                        tela1350_1 := SAVESCREEN(01,00,24,79)
+                        botao(10,10,12,55,,' MOTIVO DO CANCELAMENTO ')
+                        mmotivo:=SPACE(40)
+                        @ 11,12 GET mmotivo VALID IF(EMPTY(mmotivo),.F.,.T.)
+                        READ
+                        IF LASTKEY() = 27
+                                RESTSCREEN(01,00,24,79,tela1350_1)
+                                LOOP
+                        ENDIF
+                        SR_BEGINTRANSACTION()
+                                ccomm :="UPDATE sacped_s SET ppag = 'C',pdatapag = "+sr_cdbvalue(mdata_sis)+",pautoriz = "+sr_cdbvalue(cod_operado)+",pent_por = "+sr_cdbvalue(cod_operado)+",pent_dat = "+sr_cdbvalue(mdata_sis)+",pmotivo = "+sr_cdbvalue(mmotivo)+",phora_pg = "+sr_cdbvalue(TIME())+" WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                                sr_getconnection():exec(ccomm,,.f.)
+                                IF mali_ped = 'ped_s'
+                                        mensagem('Atualizando o SALDO DA MERCADORIA... Aguarde')
+                                        cons_ped:={}
+                                        sr_getconnection():exec("SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6)),,.t.,@cons_ped)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+                                        IF LEN(cons_ped) = 0
+                                                LOOP
+                                        ENDIF
+                                        i := 0
+                                        FOR i = 1 TO LEN(cons_ped)
+                                                IF ! EMPTY(cons_ped[i,80])
+                                                                sr_getconnection():exec("UPDATE merc_det SET venda = NULL,n_ped = NULL WHERE codigo = "+sr_cdbvalue(cons_ped[i,6])+" .AND. chassis = "+sr_cdbvalue(cons_ped[i,80]),,.f.)
+                                                ENDIF
+                                                mensagem('Atualizando o SALDO DA MERCADORIA... Aguarde')
+                                                aret:={}
+                                                sr_getconnection():exec("select * from sacmerc where cod_merc = "+sr_cdbvalue(cons_ped[i,6]),,.t.,@aret)
+                                                sr_getconnection():exec('COMMIT',,.f.)
+                                                mlinha := aret[1,2]+aret[1,8]+aret[1,9]+aret[1,14]+STRZERO((aret[1,56] + cons_ped[i,14])*1000,13)+STRZERO(iat(aret[1,46])*100,14)+aret[1,68]
+                                                        sr_getconnection():exec("UPDATE sacmerc SET saldo_mer = "+sr_cdbvalue(aret[1,56] + cons_ped[i,14])+",data_atu = "+sr_cdbvalue(mdata_sis)+",chv_cript = "+sr_cdbvalue(criptografia(mlinha,'C'))+" WHERE cod_merc = "+sr_cdbvalue(cons_ped[i,6]),,.f.)
+                                                        sr_getconnection():exec('INSERT INTO logproduto (data_sis,data,'+;
+                                                                'hora,cod_prod,quantd,saldo_ant,saldo_pos,cod_oper,prog,terminal,'+;
+                                                                'processo,ent_sai,SR_DELETED )'+;
+                                                                ' VALUES ('+;
+                                                                sr_cdbvalue(DATE())+','+; //1
+                                                                sr_cdbvalue(mdata_sis)+','+; //2
+                                                                sr_cdbvalue(TIME())+','+; //3
+                                                                sr_cdbvalue(cons_ped[i,6])+','+; //4
+                                                                sr_cdbvalue(cons_ped[i,14])+','+; //5
+                                                                sr_cdbvalue(aret[1,56])+','+; //6
+                                                                sr_cdbvalue(aret[1,56] + cons_ped[i,14])+','+; //7
+                                                                sr_cdbvalue(cod_operado)+','+; //8
+                                                                sr_cdbvalue('SAC350_1')+','+; //9
+                                                                sr_cdbvalue(LEFT(NETNAME(),15))+','+; //12
+                                                                sr_cdbvalue('CANCELAR PD: '+STRZERO(mnum_ped,6))+','+; //11
+                                                                sr_cdbvalue('E')+','+; //11
+                                                                sr_cdbvalue(' ')+')',,.f.)
+                                                        mensagem('Atualizando o OCORRENCIA... Aguarde')
+                                                        cComm  := "INSERT INTO sacocorr (tipo,documento,data_exe,hora_exe,cod_oper,data_oco,hora_oco,cod_vend,codigo,quantd,saldo_atu,saldo_exe,pedido,obs,sr_deleted) VALUES (?,?,?,?,?,?,?,?,?,? ,? ,? ,? ,? , ' ')"
+                                                        apCode := SR_SQLParse( cComm, @nErr, @nPos )
+                                                        cComm  := SR_SQLCodeGen(apCode,{'CAN',STRZERO(mnum_ped,6),mdata_sis,TIME(),cod_operado,cons_ped[i,4],cons_ped[i,47],cons_ped[i,32],cons_ped[i,6],cons_ped[i,14],aret[1,1],aret[1,1] + cons_ped[i,14],'S',mmotivo},sr_getconnection():nsystemid)
+                                                        sr_getconnection():exec(ccomm,,.f.)
+                                        NEXT
+                                ENDIF
+                                sr_committransaction()
+                        sr_endtransaction()
+                        RESTSCREEN(01,00,24,79,tela1350_1)
+                ELSEIF opcao = 'A'
+                        IF ! ver_nivel(mprg+opcao,'ANALISES DE '+nomeclatura+' (MODULO LIBERACAO)','15',nivel_acess,,'AMBIE')
+                                LOOP
+                        ENDIF
+                        tela1350_1 := SAVESCREEN(01,00,24,79)
+                        botao(10,10,12,55,,' ANALISANDO ')
+                        mmotivo:=(mali_ped)->pmotivo
+                        @ 11,12 GET mmotivo VALID IF(EMPTY(mmotivo),.F.,.T.)
+                        READ
+                        IF LASTKEY() = 27
+                                RESTSCREEN(01,00,24,79,tela1350_1)
+                                LOOP
+                        ENDIF
+                        ccomm :="UPDATE sacped_s SET ppag = 'A',pdatapag = "+sr_cdbvalue(mdata_sis)
+                        ccomm := ccomm + ",pautoriz = "+sr_cdbvalue(cod_operado)+",pmotivo = "+sr_cdbvalue(mmotivo)
+                        ccomm := ccomm +",phora_pg = "+sr_cdbvalue(TIME())+" WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                        sr_getconnection():exec(ccomm,,.f.)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        RESTSCREEN(01,00,24,79,tela1350_1)
+                ELSEIF opcao = 'Q'
+                        IF ! ver_nivel(mprg+opcao,'CHEQUE '+nomeclatura+' (MODULO LIBERACAO)','15',nivel_acess,,'AMBIE')
+                                LOOP
+                        ENDIF
+                        tela1350_1 := SAVESCREEN(01,00,24,79)
+                        botao(10,10,12,55,,' CHEQUE ')
+                        mmotivo:=(mali_ped)->pmotivo
+                        @ 11,12 GET mmotivo VALID IF(EMPTY(mmotivo),.F.,.T.)
+                        READ
+                        IF LASTKEY() = 27
+                                RESTSCREEN(01,00,24,79,tela1350_1)
+                                LOOP
+                        ENDIF
+                        ccomm :="UPDATE sacped_s SET ppag = 'Q',pdatapag = "+sr_cdbvalue(mdata_sis)
+                        ccomm := ccomm + ",pautoriz = "+sr_cdbvalue(cod_operado)+",pmotivo = "+sr_cdbvalue(mmotivo)
+                        ccomm := ccomm +",phora_pg = "+sr_cdbvalue(TIME())+" WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                        sr_getconnection():exec(ccomm,,.f.)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        RESTSCREEN(01,00,24,79,tela1350_1)
+                ELSEIF opcao = 'P'
+                        IF ! ver_nivel(mprg+opcao,'PRODUCAO DE '+nomeclatura+' (MODULO LIBERACAO)','15',nivel_acess,,'AMBIE')
+                                LOOP
+                        ENDIF
+                        tela1350_1 := SAVESCREEN(01,00,24,79)
+                        botao(10,10,12,55,,' PRODUCAO ')
+                        mmotivo:=(mali_ped)->pmotivo
+                        @ 11,12 GET mmotivo VALID IF(EMPTY(mmotivo),.F.,.T.)
+                        READ
+                        IF LASTKEY() = 27
+                                RESTSCREEN(01,00,24,79,tela1350_1)
+                                LOOP
+                        ENDIF
+                        ccomm :="UPDATE sacped_s SET ppag = 'P',pdatapag = "+sr_cdbvalue(mdata_sis)
+                        ccomm := ccomm + ",pautoriz = "+sr_cdbvalue(cod_operado)+",pmotivo = "+sr_cdbvalue(mmotivo)
+                        ccomm := ccomm +",phora_pg = "+sr_cdbvalue(TIME())+" WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                        sr_getconnection():exec(ccomm,,.f.)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        RESTSCREEN(01,00,24,79,tela1350_1)
+                ELSEIF opcao = 'L'
+                        IF ! ver_nivel(mprg+opcao,'LIBERACAO DE '+nomeclatura+' (MODULO LIBERACAO)','15',nivel_acess,,'AMBIE')
+                                LOOP
+                        ENDIF
+                        mensagem('Aguarde LIBERANDO PEDIDO No.:'+STRZERO(mnum_ped,6 ))
+                        ccomm :="UPDATE sacped_s SET ppag = 'L',pdatapag = "+sr_cdbvalue(mdata_sis)
+                        ccomm := ccomm + ",pautoriz = "+sr_cdbvalue(cod_operado)
+                        ccomm := ccomm +",phora_pg = "+sr_cdbvalue(TIME())+" WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                        sr_getconnection():exec(ccomm,,.f.)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        RESTSCREEN(01,00,24,79,tela1350_1)
+                ELSEIF opcao = 'F'
+                        IF ! ver_nivel(mprg+opcao,'FATURAMENTO DO '+nomeclatura+' (MODULO LIBERACAO)','15',nivel_acess,,'AMBIE')
+                                LOOP
+                        ENDIF
+                        mlib_vlr := m_pedido[point]
+                        botao(10,10,12,60,,' Liberacao de Pedido ')
+                        DEVPOS(11,11);DEVOUT('Valor a ser Liberado no Pedido:')
+                        @ 11,COL()+1 GET mlib_vlr PICT '9,999,999.99' VALID IF(mlib_vlr < m_pedido[point],.F.,.T.)
+                        READ
+                        IF LASTKEY() = 27
+                                RESTSCREEN(01,00,24,79,tela1350_1)
+                                LOOP
+                        ENDIF
+                        IF mlib_vlr <> m_pedido[point]
+                                IF ! aut_sen('Liberar Valor a Maior do Pedido:','LIB_PED_VLR',,mcod_cli)
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        mensagem('Aguarde Liberando o PEDIDO No.:'+STRZERO(mnum_ped,6 ))
+                        ccomm :="UPDATE sacped_s SET ppag = 'F',plib_dat = "+sr_cdbvalue(mdata_sis)
+                        ccomm := ccomm + ",plib_por = "+sr_cdbvalue(cod_operado)
+                        ccomm := ccomm +" WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                        sr_getconnection():exec(ccomm,,.f.)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                ENDIF
+                RESTSCREEN(00,00,24,79,tela350_1)
+                RELEASE ALL
+                RETURN NIL
+        ELSEIF LASTKEY() = ASC('o') .OR. LASTKEY() = ASC('O')
+                tela1350_1 := SAVESCREEN(01,00,24,79)
+                botao(li,ci,lb,cb,,' DADOS COMERCIAL ')
+                setcor(1)
+                DEVPOS(li+1,ci+01);DEVOUT('Endereco p/Cobranca:')
+                DEVPOS(li+2,ci+01);DEVOUT('Bairro.....:')
+                DEVPOS(li+2,ci+36);DEVOUT('Cidade:')
+                DEVPOS(li+3,ci+01);DEVOUT('UF.........:')
+                DEVPOS(li+3,ci+17);DEVOUT('CEP:')
+                DEVPOS(li+3,ci+33);DEVOUT('Fone:')
+                DEVPOS(li+4,ci+01);DEVOUT('Empresa....:')
+                DEVPOS(li+4,ci+36);DEVOUT('Cargo:')
+                DEVPOS(li+5,ci+01);DEVOUT('Salario....:')
+                DEVPOS(li+6,ci+01);DEVOUT('Endereco...:')
+                DEVPOS(li+7,ci+01);DEVOUT('Bairro.....:')
+                DEVPOS(li+8,ci+01);DEVOUT('Cidade.....:')
+                DEVPOS(li+8,ci+36);DEVOUT('UF...:')
+                DEVPOS(li+8,ci+47);DEVOUT('CEP:')
+                DEVPOS(li+9,ci+01);DEVOUT('Fone.......:')
+                DEVPOS(li+9,ci+30);DEVOUT('Fax:')
+
+                DEVPOS(li+10,ci+01);DEVOUT('Filiacao...:')
+
+                DEVPOS(li+12,ci+01);DEVOUT('Ref.Pessoal:')
+                DEVPOS(li+12,ci+43);DEVOUT('Fone:')
+                DEVPOS(li+13,ci+01);DEVOUT('Ref.Pessoal:')
+                DEVPOS(li+13,ci+43);DEVOUT('Fone:')
+                DEVPOS(li+14,ci+01);DEVOUT('Loja.......:')
+                DEVPOS(li+14,ci+43);DEVOUT('Desde:')
+                DEVPOS(li+15,ci+01);DEVOUT('Loja.......:')
+                DEVPOS(li+15,ci+43);DEVOUT('Desde:')
+                DEVPOS(li+16,ci+01);DEVOUT('Banco......:')
+                DEVPOS(li+16,ci+27);DEVOUT('Agencia:')
+                DEVPOS(li+16,ci+48);DEVOUT('C/C:')
+                DEVPOS(li+17,ci+01);DEVOUT('Banco......:')
+                DEVPOS(li+17,ci+27);DEVOUT('Agencia:')
+                DEVPOS(li+17,ci+48);DEVOUT('C/C:')
+                DEVPOS(li+18,ci+01);DEVOUT('Cartao.....:')
+                DEVPOS(li+18,ci+32);DEVOUT('No.:')
+                DEVPOS(li+18,ci+57);DEVOUT('Venc.:')
+                DEVPOS(li+19,ci+01);DEVOUT('Cartao.....:')
+                DEVPOS(li+19,ci+32);DEVOUT('No.:')
+                DEVPOS(li+19,ci+57);DEVOUT('Venc.:')
+                setcor(3)
+                DEVPOS(li+1,ci+22);DEVOUT(cli->end_cob)
+                DEVPOS(li+2,ci+14);DEVOUT(cli->bairro_cob)
+                DEVPOS(li+2,ci+44);DEVOUT(cli->cidade_cob)
+                DEVPOS(li+3,ci+14);DEVOUT(cli->uf_cob)
+                DEVPOS(li+3,ci+22);DEVOUT(cli->cep_cob)
+                DEVPOS(li+3,ci+39);DEVOUT(cli->fone_cob)
+                DEVPOS(li+4,ci+14);DEVOUT(cli->empre_c)
+                DEVPOS(li+4,ci+43);DEVOUT(cli->cargo_c)
+                DEVPOS(li+5,ci+14);DEVOUT(cli->salario_c)
+                DEVPOS(li+6,ci+14);DEVOUT(cli->end_c)
+                DEVPOS(li+7,ci+14);DEVOUT(cli->bairro_c)
+                DEVPOS(li+8,ci+14);DEVOUT(cli->cidade_c)
+                DEVPOS(li+8,ci+43);DEVOUT(cli->uf_c)
+                DEVPOS(li+8,ci+52);DEVOUT(cli->cep_c)
+                DEVPOS(li+9,ci+14);DEVOUT(cli->fone_c1)
+                DEVPOS(li+9,ci+35);DEVOUT(cli->fone_c2)
+                DEVPOS(li+10,ci+14);DEVOUT(cli->pai)
+                DEVPOS(li+10,ci+14);DEVOUT(cli->mae)
+                DEVPOS(li+12,ci+14);DEVOUT(cli->nome_r1)
+                DEVPOS(li+12,ci+49);DEVOUT(cli->fone_r1)
+                DEVPOS(li+13,ci+14);DEVOUT(cli->nome_r2)
+                DEVPOS(li+13,ci+49);DEVOUT(cli->fone_r2)
+                DEVPOS(li+14,ci+14);DEVOUT(cli->loja1)
+                DEVPOS(li+14,ci+50);DEVOUT(cli->desde1)
+                DEVPOS(li+15,ci+14);DEVOUT(cli->loja2)
+                DEVPOS(li+15,ci+50);DEVOUT(cli->desde2)
+                DEVPOS(li+16,ci+14);DEVOUT(cli->banco1)
+                DEVPOS(li+16,ci+35);DEVOUT(cli->ag1)
+                DEVPOS(li+16,ci+52);DEVOUT(cli->conta1)
+                DEVPOS(li+17,ci+14);DEVOUT(cli->banco2)
+                DEVPOS(li+17,ci+35);DEVOUT(cli->ag2)
+                DEVPOS(li+17,ci+52);DEVOUT(cli->conta2)
+                DEVPOS(li+18,ci+14);DEVOUT(cli->cartao1)
+                DEVPOS(li+18,ci+36);DEVOUT(cli->no1)
+                DEVPOS(li+18,ci+63);DEVOUT(cli->venc1)
+                DEVPOS(li+19,ci+14);DEVOUT(cli->cartao2)
+                DEVPOS(li+19,ci+36);DEVOUT(cli->no2)
+                DEVPOS(li+19,ci+63);DEVOUT(cli->venc2)
+                setcor(1)
+                INKEY(0)
+                RESTSCREEN(01,00,24,79,tela1350_1)
+        ELSEIF LASTKEY() = ASC('d') .OR. LASTKEY() = ASC('D')
+                mcon_sele:= SELE()
+                mcon_orde:=INDEXORD()
+                con244(cli->cod_cli)
+                SELE(mcon_sele);ORDSETFOCUS(mcon_orde)
+        ELSEIF LASTKEY() = ASC('c') .OR. LASTKEY() = ASC('C')
+                clicheq()       // mesmo 'PRG'
+        ELSEIF LASTKEY() = ASC('m') .OR. LASTKEY() = ASC('M')
+                sac525(mcod_cli)
+        ELSEIF LASTKEY() = ASC('h') .OR. LASTKEY() = ASC('H')
+                tela1350_1 := SAVESCREEN(01,00,24,79)
+                WHILE .T.
+                        ASIZE(m_hist,0)
+                        ASIZE(m_ponto,0)
+                        ******************
+                        SELE('hist');ORDSETFOCUS(1)
+                        GO TOP
+                        IF hist->(DBSEEK(cli->cod_cli))
+                                AADD(m_hist,'Data:'+DTOC(hist->data)+' - '+hist->descricao)
+                                AADD(m_ponto,RECNO())
+                                mdata_con := hist->data
+                                SKIP
+                                WHILE ! EOF() .AND. cli->cod_cli = hist->codcli
+                                        IF mdata_con = hist->data
+                                                AADD(m_hist,'                '+hist->descricao)
+                                                AADD(m_ponto,RECNO())
+                                        ELSEIF ! EOF()
+                                                AADD(m_hist,REPLI('-',76-03))
+                                                AADD(m_ponto,0)
+                                                AADD(m_hist,'Data:'+DTOC(hist->data)+' - '+hist->descricao)
+                                                AADD(m_ponto,RECNO())
+                                                mdata_con := hist->data
+                                        ENDIF
+                                        SKIP
+                                ENDDO
+                                AADD(m_hist,PADC('****************************  F  I  M  ****************************',76-03))
+                                AADD(m_ponto,0)
+                        ENDIF
+                        setcor(3)
+                        botao(3,01,lba-5,78,,' HISTORICO DO CLIENTE ')
+                        IF ! EMPTY(m_hist)
+                                mponto := LEN(m_hist)
+                                Mensagem('<ENTER> p/alterar ou <ESC>p/Inclusao')
+                                setcor(10);mponto := ACHOICE(4,02,lba-6,77,m_hist,,,mponto);setcor(1)
+                                IF LASTKEY() = 13
+                                        IF m_ponto[mponto] = 0
+                                                RESTSCREEN(01,00,24,79,tela1350_1)
+                                                LOOP
+                                        ENDIF
+                                        GO m_ponto[mponto]
+                                        mlin1 := hist->descricao
+                                        mdata_con := hist->data
+                                        botao(lba-4,01,lba-2,78,,' Alteracao Historico ')
+                                        setcor(1)
+                                        DEVPOS(lba-3,2);DEVOUT('Data:')
+                                        DEVPOS(lba-3,16);DEVOUT('-')
+                                        @ lba-3,7 GET mdata_con
+                                        @ lba-3,18 GET mlin1
+                                        READ
+                                        IF LASTKEY() = 27
+                                                RESTSCREEN(01,00,24,79,tela1350_1)
+                                                EXIT
+                                        ENDIF
+                                        IF EMPTY(mlin1)
+                                                opcao := 'N'
+                                                opcao := op_simnao('N','Confirma a Exclusao:')
+                                                IF LASTKEY() = 27 .OR. opcao = 'N'
+                                                        RESTSCREEN(01,00,24,79,tela1350_1)
+                                                        LOOP
+                                                ENDIF
+                                                BLOQREG()
+                                                DELE
+                                                DBCOMMIT()
+                                                DBUNLOCK()
+                                                sr_getconnection():exec("DELETE FROM sachist WHERE SR_DELETED = 'T'",,.f.)
+                                                sr_getconnection():exec("COMMIT",,.f.)
+                                        ELSE
+                                                opcao := 'S'
+                                                opcao := op_simnao('S','Confirma a Alteracao:')
+                                                IF opcao = 'N'
+                                                        RESTSCREEN(01,00,24,79,tela1350_1)
+                                                        LOOP
+                                                ENDIF
+                                                BLOQREG()
+                                                hist->descricao := mlin1
+                                                DBCOMMIT()
+                                                DBUNLOCK()
+
+                                        ENDIF
+                                        RESTSCREEN(01,00,24,79,tela1350_1)
+                                        LOOP
+                                ELSE
+                                        mlin1 := mlin3:= mlin2 := SPACE(60)
+                                        mdata_con := mdata_sis
+                                        botao(lba-7,01,lba,78,,' INCLUSAO Historico ')
+                                        setcor(1)
+                                        DEVPOS(lba-6,2);DEVOUT('Data:')
+                                        DEVPOS(lba-6,16);DEVOUT('-')
+                                        mensagem('Preencha a Data ou <ESC> p/Sair')
+                                        @ lba-6,7 GET mdata_con
+                                        READ
+                                        IF LASTKEY() = 27
+                                                RESTSCREEN(01,00,24,79,tela1350_1)
+                                                EXIT
+                                        ENDIF
+                                        Mensagem('Descrevar e tecle <F10>p/Gravar ou <ESC>p/Sair')
+                                        setcor(3)
+                                        mlin1 := MEMOEDIT(mlin2,lba-6,18,lba-1,cba-1,,,,,,)
+                                        setcor(1)
+                                        IF LASTKEY() = 27
+                                                RESTSCREEN(01,00,24,79,tela1350_1)
+                                                LOOP
+                                        ENDIF
+                                        i := 0
+                                        linhas := MLCOUNT(mlin1,60)
+
+                                        FOR i = 1 TO  linhas
+                                                mlin3 := MEMOLINE(mlin1,60,i,,)
+                                                ADIREG()
+                                                hist->codcli    := cli->cod_cli
+                                                hist->data      := mdata_con
+                                                hist->hora      := TIME()
+                                                hist->descricao := mlin3
+                                                hist->operador  := cod_operado
+                                        NEXT
+                                        DBCOMMITALL()
+                                        DBUNLOCKALL()
+                                ENDIF
+                        ELSE
+                                mlin1 := mlin3 := mlin2 := SPACE(60)
+                                mdata_con := mdata_sis
+                                botao(lba-7,01,lba,78,,' INCLUSAO Historico ')
+                                setcor(1)
+                                DEVPOS(lba-6,2);DEVOUT('Data:')
+                                DEVPOS(lba-6,16);DEVOUT('-')
+                                mensagem('Preencha a Data ou <ESC> p/Sair')
+                                @ lba-6,7 GET mdata_con
+                                READ
+                                IF LASTKEY() = 27
+                                        RESTSCREEN(01,00,24,79,tela1350_1)
+                                        EXIT
+                                ENDIF
+                                Mensagem('Descrevar e tecle <F10>p/Gravar ou <ESC>p/Sair')
+                                setcor(3)
+                                mlin1 := MEMOEDIT(mlin2,lba-6,18,lba-1,cba-1,,,,,,)
+                                setcor(1)
+                                IF LASTKEY() = 27
+                                        RESTSCREEN(01,00,24,79,tela1350_1)
+                                        LOOP
+                                ENDIF
+                                i := 0
+                                linhas := MLCOUNT(mlin1,60)
+
+                                FOR i = 1 TO  linhas
+                                        mlin3 := MEMOLINE(mlin1,60,i,,)
+                                        ADIREG()
+                                        hist->codcli    := cli->cod_cli
+                                        hist->data      := mdata_con
+                                        hist->hora      := TIME()
+                                        hist->descricao := mlin3
+                                        hist->operador  := cod_operado
+                                NEXT
+                                DBCOMMITALL()
+                                DBUNLOCKALL()
+                        ENDIF
+                ENDDO
+                RESTSCREEN(01,00,24,79,tela1350_1)
+                SET KEY -9 TO
+                opcao := mensagem1('Deseja Imprimir o Historico do CLIENTE:','N','S,N')
+                IF opcao = 'S'
+                        botao(10,10,14,50,,' Imprimir o Historico ')
+                        DEVPOS(11,11);DEVOUT('Data Inicial do Historico..:')
+                        @ 12,11 TO 12,49
+                        DEVPOS(13,11);DEVOUT('Data Inicial dos Documentos:')
+                        @ 11,39 GET mdata1
+                        @ 13,39 GET mdata_doc
+                        READ
+                        IF LASTKEY() = 27
+                                LOOP
+                        ENDIF
+                        ******************
+                        SELE('hist');ORDSETFOCUS(1)
+                        GO TOP
+                        pag := 0
+                        mtit := 'HISTORICO DO CLIENTE'
+                        IF hist->(DBSEEK(cli->cod_cli))
+                                mcompras := 0
+                                mcompras := ver_compras(mcod_cli)
+                                IF ! imp_arq('HIST_CLI.REL','R')
+                                        LOOP
+                                ENDIF
+                                mdata_aux := CTOD('  /  /  ')
+                                WHILE ! EOF() .AND. cli->cod_cli = hist->codcli
+                                        IF pag=0 .OR. PROW()>=59
+                                                pag=pag+1
+                                                IF pag>1
+                                                        EJECT
+                                                ENDIF
+                                                cabecalho(pag,mtit,mtipo,mprg)
+                                                DEVPOS(PROW()+1,00);DEVOUT('CLIENTE: '+STR(cli->cod_cli,5)+' - '+cli->razao)
+                                                DEVPOS(PROW()+1,00);DEVOUT('DATA DE CADASTRO: '+DTOC(cli->data_cad))
+                                                DEVPOS(PROW()+1,00);DEVOUT('LIMITE R$: ')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cli->limite,'9,999,999.99')
+                                                DEVPOS(PROW(),PCOL()+2);DEVOUT('COMPRAS R$: ')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mcompras,'9,999,999.99')
+                                                DEVPOS(PROW(),PCOL()+2);DEVOUT('SALDO R$: ')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cli->limite - mcompras,'9,999,999.99')
+                                                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                                        ENDIF
+                                        IF hist->data < mdata1
+                                                SKIP;LOOP
+                                        ENDIF
+                                        IF mdata_aux <> hist->data
+                                                DEVPOS(PROW()+1,00);DEVOUT(hist->data)
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT(': ')
+                                                mdata_aux := hist->data
+                                        ELSE
+                                                DEVPOS(PROW()+1,00);DEVOUT(SPACE(8))
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('  ')
+                                        ENDIF
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(hist->descricao)
+                                        SKIP
+                                ENDDO
+                                IF ! EMPTY(mdata_doc)
+                                        **************
+                                        SELE('dupr');ORDSETFOCUS(3)
+                                        GO TOP
+                                        **************
+                                        dupr->(DBSEEK(DTOS(mdata_doc),.T.))
+                                        IF ! EOF()
+                                                mtot_doc := mqtd_doc := 0
+                                                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                                                DEVPOS(PROW()+1,00);DEVOUT(' DOCUMENTO PAGOS no Periodo de : '+DTOC(mdata_doc)+' a '+DTOC(mdata_sis))
+                                                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                                                DEVPOS(PROW()+1,00);DEVOUT('     Documento')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT(' Emissao')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT(' Vencim.')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Data Pg.')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Atrazo')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Valor Doc.')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Valor Pag.')
+                                                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                                                WHILE ! EOF() .AND. dupr->datpag <= mdata_sis
+                                                        IF pag=0 .OR. PROW()>=59
+                                                                pag=pag+1
+                                                                IF pag>1
+                                                                        EJECT
+                                                                ENDIF
+                                                                cabecalho(pag,mtit,mtipo,mprg)
+                                                                DEVPOS(PROW()+1,00);DEVOUT('     Documento')
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT(' Emissao')
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT(' Vencim.')
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Data Pg.')
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Atrazo')
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Valor Doc.')
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Valor Pag.')
+                                                                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                                                        ENDIF
+                                                        IF (dupr->pago <> 'B');
+                                                           .OR.(dupr->fornec<>mcod_cli)
+                                                                SKIP;LOOP
+                                                        ENDIF
+                                                        DEVPOS(PROW()+1,00);DEVOUT(dupr->tipo+dupr->duplicata)
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(DTOC(dupr->emissao))
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(DTOC(dupr->venc))
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(DTOC(dupr->datpag))
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(dupr->venc-dupr->datpag,'999999')
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(dupr->valor,'999,999.99')
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(dupr->vlpago,'999,999.99')
+                                                        mtot_doc := mtot_doc + dupr->vlpago
+                                                        mqtd_doc ++
+                                                        SKIP
+                                                ENDDO
+                                                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                                                DEVPOS(PROW()+1,00);DEVOUT('RESUMO: Total de Documentos PAGOS: '+TRANSFORM(mqtd_doc,'999999')+' em Valor R$: '+TRANSFORM(mtot_doc,'9,999,999.99'))
+                                        ENDIF
+                                        **************
+                                        SELE('dupr');ORDSETFOCUS(4)
+                                        GO TOP
+                                        **************
+                                        dupr->(DBSEEK(DTOS(mdata_doc),.T.))
+                                        IF ! EOF()
+                                                mtot_doc := mqtd_doc := 0
+                                                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                                                DEVPOS(PROW()+1,00);DEVOUT(' DOCUMENTO A RECEBER ')
+                                                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                                                DEVPOS(PROW()+1,00);DEVOUT('     Documento')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT(' Emissao')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT(' Vencim.')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Atrazo')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Valor Doc.')
+                                                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                                                WHILE ! EOF()
+                                                        IF pag=0 .OR. PROW()>=59
+                                                                pag=pag+1
+                                                                IF pag>1
+                                                                        EJECT
+                                                                ENDIF
+                                                                cabecalho(pag,mtit,mtipo,mprg)
+                                                                DEVPOS(PROW()+1,00);DEVOUT('     Documento')
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT(' Emissao')
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT(' Vencim.')
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Atrazo')
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Valor Doc.')
+                                                                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                                                        ENDIF
+                                                        IF (! EMPTY(dupr->datpag));
+                                                           .OR.(dupr->fornec<>mcod_cli)
+                                                                SKIP;LOOP
+                                                        ENDIF
+                                                        DEVPOS(PROW()+1,00);DEVOUT(dupr->tipo+dupr->duplicata)
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(DTOC(dupr->emissao))
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(DTOC(dupr->venc))
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(dupr->venc-mdata_sis,'999999')
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(dupr->valor,'999,999.99')
+                                                        mtot_doc := mtot_doc + dupr->valor
+                                                        mqtd_doc ++
+                                                        SKIP
+                                                ENDDO
+                                                DEVPOS(PROW()+1,00);DEVOUT(REPLI('-',80))
+                                                DEVPOS(PROW()+1,00);DEVOUT('RESUMO: Total de Documentos: '+TRANSFORM(mqtd_doc,'999999')+' em Valor R$: '+TRANSFORM(mtot_doc,'9,999,999.99'))
+                                        ENDIF
+                                ENDIF
+                                EJECT
+                                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                                conf_impressao('HIST_CLI.REL')
+                        ENDIF
+                ENDIF
+                RESTSCREEN(01,00,24,79,tela1350_1)
+        ELSEIF LASTKEY() = ASC('p') .OR. LASTKEY() = ASC('P')
+                sac5ped1(STRZERO(mnum_ped,6))
+*               sac5ped5(mcod_cli)
+                ***************
+                SELE('cli');ORDSETFOCUS(1)
+                ***************
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************** f i m ************************************

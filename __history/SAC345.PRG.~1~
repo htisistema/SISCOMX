@@ -1,0 +1,46 @@
+********************
+* EXCLUIR ORCAMENTOS
+********************
+MEMVAR getlist,nivel_acess,mdata_sis
+
+FUNCTION sac345
+****************
+LOCAL MPRG:='SAC345',mtitulo:='EXCLUIR ORCAMENTOS'
+
+LOCAL Opcao,mdata1,mdata2,mcons_orcam := {}
+
+IF ! ver_nivel(mprg,mtitulo,'1',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+op_tela(10,10,13,45,mtitulo,,1)
+WHILE .T.
+        exibi_prg(mprg)
+        mdata1 := mdata_sis - 31
+        mdata2 := mdata_sis
+        mensagem('Preencha os Campos - <ESC>p/Abandonar')
+        DEVPOS(1,1);DEVOUT('Data Inicial...:')
+        DEVPOS(2,1);DEVOUT('Data Final.....:')
+        @ 1,19 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ 2,19 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        mensagem('Aguarde o Coletando dados p/ impressao...')
+	mcons_orcam := {}
+	sr_getconnection():exec("SELECT * FROM sacorcam WHERE pdat_ped >= "+sr_cdbvalue(mdata1)+" AND pdat_ped <= "+sr_cdbvalue(mdata2),,.t.,@mcons_orcam)
+	IF LEN(mcons_orcam) = 0
+                atencao('Nao existe nenhum Orcamento para ser Excluido neste periodo')
+                LOOP
+	ENDIF
+        opcao := op_simnao('N','Confirma a EXCLUSAO DOS ORCAMENTOS [S/n]:')
+        IF opcao = 'N'
+                LOOP
+        ENDIF
+        mensagem('Aguarde o final do processamento....')
+        sr_getconnection():exec("DELETE FROM sacorcam WHERE pdat_ped >= "+sr_cdbvalue(mdata1)+" AND pdat_ped <= "+sr_cdbvalue(mdata2),,.f.)
+        sr_getconnection():exec("COMMIT",,.f.)
+        EXIT
+ENDDO
+wvw_lclosewindow()
+RETURN NIL

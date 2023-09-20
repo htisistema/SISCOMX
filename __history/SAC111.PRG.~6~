@@ -1,0 +1,530 @@
+MEMVAR getlist
+*************************
+* ALTERACAO PRODUTO
+*******************
+FUNCTION sac111(mcodigo,op)
+***************************
+LOCAL MPRG:='SAC111',;
+      mproduto,munidade,mpr_unit,mest_min,;
+      lba,cba,tela,mp_lucro,mcod_barra,cod_aux,;
+      mpeso,mpeso_liq,mgrama,mcod_aux,misento,mpre_ven,mpre_ven1,;
+      mcomissao,mcom_mont,mpromocao,mbebida,micm_sub,mlocal,maplic0,maplic1,maplic2,;
+      maplic3,maplic4,mvarejo,mipi,mgramatura,mdisp,mlivre_desc,;
+      mFatConv,mdesc_merc,mind_icms,msit_trib,mdolar,mdesc_icm:=SPACE(1),;
+      mprazo := 0,micm_sub2,msittrib,mref,point,mest_max,opcao,mpr_ven,mpr_ven1,;
+      mdata1,mnbm,mprodepe,mmen_icms,mtipo_merc:=' ',mbalanca:='N',mmetragem,mpacote,;
+      maltera := ' ',mincluir:='',mforn_aux:=0,mdescri,mpocket:=' ',mpr_venda2,mpr_venda3,mpr_venda4,cons_merc:={},ccomm:='',;
+      msld_neg:='N',mdescont:='N',miat:=' ',mippt:=' ',mlinha:='',mcest:=SPACE(7)
+MEMVAR nivel_acess,mdata_sis,cod_operado
+PRIVATE mfabrica,mcod_forn,msele,morde,mcod_espe,mdesc_icm1:=0,mcod_merc,mgrupo,;
+        msub_grupo,mcodemp:='001',mcod_fis,m_merc:={}
+
+mmen_icms := 'Verifique na leitura X da impressora fiscal ou digite 01'
+
+IF ! ver_nivel(mprg,'ALTERACAO DE PRODUTO','1',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+msele := SELE()
+morde := INDEXORD()
+*----------------------------------------------
+IF ! AbriArq('sacgrupo','grup');RETURN NIL;ENDIF
+IF ! AbriArq('sacespe','espe');RETURN NIL;ENDIF
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+*--------------------------------------------------
+
+lba:=50
+cba:=99
+
+SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+mincluir := ''
+op_tela(00,00,50,100,' ALTERACAO DO PRODUTO ',,'*')
+WHILE .T.
+        mensagem('Preencha os Campos - <ESC> p/Retornar')
+        DEVPOS( 0,1);DEVOUT('Grupo...................:')
+        DEVPOS( 1,1);DEVOUT('Sub-Grupo...............:')
+        DEVPOS( 2,1);DEVOUT('Codigo..................:')
+        DEVPOS( 3,1);DEVOUT('Descricao do Produto....:')
+        DEVPOS( 4,1);DEVOUT('Descricao para Nota ....:')
+        DEVPOS( 5,1);DEVOUT('Codigo Fabricante.......:')
+        DEVPOS( 6,1);DEVOUT('Cod.Especie do Produto..:')
+        DEVPOS( 7,1);DEVOUT('Codigo Barra............:')
+        DEVPOS( 8,1);DEVOUT('Referencia Auxiliar.....:')
+        DEVPOS( 9,1);DEVOUT('Data do Cadastro........:')
+        DEVPOS(10,1);DEVOUT('Unidade.................:')
+        DEVPOS(11,1);DEVOUT('Lucro (%)...............:')
+        DEVPOS(12,1);DEVOUT('Peso Liquido............:')
+        DEVPOS(13,1);DEVOUT('Peso Bruto..............:')
+        DEVPOS(14,1);DEVOUT('Estoque Minimo..........:')
+        DEVPOS(15,1);DEVOUT('Estoque Maximo..........:')
+        DEVPOS(16,1);DEVOUT('Bloq. Saldo Negativo....:')
+        DEVPOS(17,1);DEVOUT('Disponivel [S/N]........:')
+        DEVPOS(18,1);DEVOUT('Descontinuado [S/N].....:')
+        DEVPOS(19,1);DEVOUT('Codigo Empresa..........:')
+        DEVPOS(20,1);DEVOUT('Tipo do Produto.........:')
+        DEVPOS(21,1);DEVOUT('Descricao Livre [S/N]...:')
+        DEVPOS(22,1);DEVOUT('Ajuste p/Dolar [S/N]....:')
+        DEVPOS(23,1);DEVOUT('Prazo Maximo............:')
+        DEVPOS(24,1);DEVOUT('Envia p/APP... [S/N]....:')
+        DEVPOS(25,1);DEVOUT('Gramatura 1x............:')
+        DEVPOS(26,1);DEVOUT('Volume..................:')
+        DEVPOS(27,1);DEVOUT('Local...................:')
+        DEVPOS(28,1);DEVOUT('Uso Balanca.............:')
+        DEVPOS(29,1);DEVOUT('Comissao do Vendedor....:')
+        DEVPOS(30,1);DEVOUT('Comissao do Montador....:')
+        DEVPOS(31,1);DEVOUT('Venda Diferenciada(%)...:')
+        DEVPOS(32,1);DEVOUT('Desconto [%]....... ....:')
+        DEVPOS(33,1);DEVOUT('Preco de Venda Avista R$:')
+        DEVPOS(34,1);DEVOUT('Preco Venda Aprazo R$...:')
+        botao(8,54,26,cba,,'DADOS FISCAIS')
+        DEVPOS( 9,55);DEVOUT('(IAT)-[A]rrendondar [T]runcar:')
+        DEVPOS(10,55);DEVOUT('(IPPT)[P]roprio [T]ercerizado:')
+        IF m_set[1,126] = 'S'
+                DEVPOS(11,55);DEVOUT('Codigo CSOSN.................:')
+        ELSE
+                DEVPOS(11,55);DEVOUT('Cod.Situacao Tributaria (CST):')
+        ENDIF
+        DEVPOS(12,55);DEVOUT('Codigo do NCM................:')
+        DEVPOS(13,55);DEVOUT('Codigo do PRODEPE............:')
+        DEVPOS(14,55);DEVOUT('Codigo Mensagem NF...........:')
+        DEVPOS(15,55);DEVOUT('ICM [%] / ISS [%]............:')
+        DEVPOS(16,55);DEVOUT('ICM Substituto [%]...........:')
+        DEVPOS(17,55);DEVOUT('IPI [%]......................:')
+        DEVPOS(18,55);DEVOUT('Codigo Fiscal................:')
+        DEVPOS(19,55);DEVOUT('Desc.ICMS NOTA [S/N].........:')
+        DEVPOS(20,55);DEVOUT('Fator........................:')
+        DEVPOS(21,55);DEVOUT('ICM Sub.Pessoa Fisica........:')
+        DEVPOS(22,55);DEVOUT('[%} PIS......................:')
+        DEVPOS(23,55);DEVOUT('[%} CONFIS...................:')
+        DEVPOS(24,55);DEVOUT('CFOP p/Dentro do Estado......:')
+        DEVPOS(25,55);DEVOUT('CFOP p/Fora do Estado........:')
+        DEVPOS(26,55);DEVOUT('Codigo do CEST...............:')
+
+
+        botao(28,54,37,cba,,'OUTRAS INFORMACOES')
+        DEVPOS(29,55);DEVOUT('Saldo........................:')
+        DEVPOS(30,55);DEVOUT('Custo Mercadoria.............:')
+        DEVPOS(31,55);DEVOUT('Custo Real...................:')
+        DEVPOS(32,55);DEVOUT('Metragem.....................:')
+        DEVPOS(33,55);DEVOUT('Pacote.......................:')
+        DEVPOS(34,55);DEVOUT('Promocao.....................:')
+        DEVPOS(35,55);DEVOUT('Data Ultima Entrada..........:')
+        DEVPOS(36,55);DEVOUT('Data Ultima Saida............:')
+
+        botao(40,0,lba,cba,,'APLICACAO DO PRODUTO')
+        DEVPOS(41,1);DEVOUT('Aplicacao............:')
+
+        mfabrica := SPACE(30)
+        WHILE .T.
+                cComm  := "SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(STRZERO(mcodigo,5))
+                cons_merc := {}
+                sr_getconnection():exec(ccomm,,.t.,@cons_merc)
+                IF LEN(cons_merc) = 0
+                        atencao('Nao foi encontrado o PRODUTO..')
+                        wvw_lclosewindow()
+                        RETURN NIL
+                ENDIF
+                //point := RECNO()
+                mcodemp := cons_merc[1,1]
+                mcod_barra := cons_merc[1,2]
+                mref := cons_merc[1,6]
+                mcodigo := VAL(cons_merc[1,8])
+                mgrupo := VAL(SUBSTR(cons_merc[1,7],1,3))
+                msub_grupo := VAL(SUBSTR(cons_merc[1,7],4,2))
+                IF EMPTY(cons_merc[1,99])
+                        mdescri  := cons_merc[1,9]+SPACE(60)
+                ELSE
+                        mdescri  := cons_merc[1,99]+cons_merc[1,4]
+                ENDIF
+                mproduto := cons_merc[1,9]
+                mtipo_merc := cons_merc[1,10]
+                munidade := cons_merc[1,14]
+                mcod_espe := VAL(cons_merc[1,15])
+                mpeso_liq := cons_merc[1,16]
+                mpeso := cons_merc[1,17]
+                mdisp := cons_merc[1,24]
+                mvarejo := cons_merc[1,50]
+                mest_min := cons_merc[1,28]
+                mest_max := cons_merc[1,29]
+                mfabrica := cons_merc[1,31]
+                mcod_forn := mforn_aux := VAL(cons_merc[1,30])
+                mp_lucro := cons_merc[1,22]
+                misento := cons_merc[1,61]
+                mpr_ven := cons_merc[1,46]
+                mpr_ven1 := cons_merc[1,47]
+                mpr_venda2 := cons_merc[1,100]
+                mpr_venda3 := cons_merc[1,101]
+                mpr_venda4 := cons_merc[1,102]
+                mcomissao := cons_merc[1,26]
+                mcom_mont := cons_merc[1,27]
+                mpromocao := cons_merc[1,23]
+                mbebida := cons_merc[1,62]
+                micm_sub := cons_merc[1,63]
+                micm_sub2:= cons_merc[1,64]
+                mcod_clf := cons_merc[1,66]
+                mcod_fis := SUBSTR(cons_merc[1,67],1,1)
+                mipi     := cons_merc[1,65]
+                mlocal := cons_merc[1,73]
+                mgramatura := cons_merc[1,74]
+                mprazo   := cons_merc[1,75]
+                mFatConv  := cons_merc[1,76]
+                mlivre_desc := cons_merc[1,25]
+                mdesc_merc := cons_merc[1,80]
+                mind_icms := cons_merc[1,82]
+                msit_trib := cons_merc[1,83]
+                mnbm := cons_merc[1,70]
+                mprodepe := cons_merc[1,69]
+                mdolar    := cons_merc[1,84]
+                msittrib  := cons_merc[1,68]
+                mdesc_icm := cons_merc[1,71]
+                mdesc_icm1 := cons_merc[1,72]
+                maplic0 := cons_merc[1,85]
+                maplic1 := cons_merc[1,86]
+                maplic2 := cons_merc[1,87]
+                maplic3 := cons_merc[1,88]
+                maplic4 := cons_merc[1,89]
+                mbalanca := cons_merc[1,11]
+                mmetragem := cons_merc[1,19]
+                mpacote   := cons_merc[1,20]
+                mpocket   := cons_merc[1,98]
+                ver_gru(mgrupo,0,34)
+                ver_sgru(mgrupo,msub_grupo,1,34)
+                ver_fab(mcod_forn,5,34)
+		msld_neg:=cons_merc[1,103]
+		mdescont:=cons_merc[1,104]
+                mdata1 := cons_merc[1,13]
+                miat   := cons_merc[1,81]
+                mippt  := cons_merc[1,91]
+                mcest  := cons_merc[1,114]
+                setcor(3)
+                DEVPOS(0,27);DEVOUT(STRZERO(mgrupo,3))
+                DEVPOS(1,27);DEVOUT(msub_grupo)
+                DEVPOS(2,27);DEVOUT(STRZERO(mcodigo,5))
+                DEVPOS(3,27);DEVOUT(mproduto)
+                DEVPOS(4,27);DEVOUT(mdescri)
+                DEVPOS(5,27);DEVOUT(STRZERO(mcod_forn,4))
+                DEVPOS(6,27);DEVOUT(STRZERO(mcod_espe,4))
+                ver_espe(mcod_espe,6,34,,0)
+                setcor(3)
+                DEVPOS(7,27);DEVOUT(mcod_barra)
+                DEVPOS(8,27);DEVOUT(mref)
+                DEVPOS(9,27);DEVOUT(cons_merc[1,13])
+                DEVPOS(10,27);DEVOUT(cons_merc[1,14])
+                DEVPOS(11,27);DEVOUTPICT(cons_merc[1,22],'999.99')
+                DEVPOS(12,27);DEVOUTPICT(cons_merc[1,16],'9999.999')
+                DEVPOS(13,27);DEVOUTPICT(cons_merc[1,17],'9999.999')
+                DEVPOS(14,27);DEVOUTPICT(cons_merc[1,28],'9,999.99')
+                DEVPOS(15,27);DEVOUTPICT(cons_merc[1,29],'9,999.99')
+                DEVPOS(16,27);DEVOUTPICT(cons_merc[1,103])
+                DEVPOS(17,27);DEVOUT(mdisp)
+                DEVPOS(18,27);DEVOUT(mdescont)
+                DEVPOS(19,27);DEVOUT(mcodemp)
+                DEVPOS(20,27);DEVOUT(mtipo_merc)
+                DEVPOS(21,27);DEVOUT(mlivre_desc)
+                DEVPOS(22,27);DEVOUT(cons_merc[1,84])
+                DEVPOS(23,27);DEVOUTPICT(cons_merc[1,75],'999')
+                DEVPOS(24,27);DEVOUT(cons_merc[1,98])
+                DEVPOS(25,27);DEVOUTPICT(cons_merc[1,76],'999999')
+                DEVPOS(26,27);DEVOUTPICT(cons_merc[1,74],'999.999')
+                DEVPOS(27,27);DEVOUT(mlocal)
+                DEVPOS(28,27);DEVOUT(mbalanca)
+                DEVPOS(29,27);DEVOUTPICT(cons_merc[1,26],'999.99')
+                DEVPOS(30,27);DEVOUTPICT(cons_merc[1,27],'999.99')
+                DEVPOS(31,27);DEVOUTPICT(cons_merc[1,50],'999.99')
+                DEVPOS(32,27);DEVOUTPICT(cons_merc[1,80],'999.99')
+                DEVPOS(33,27);DEVOUTPICT(cons_merc[1,46],ALLTRIM(m_set[1,98]))
+                DEVPOS(34,27);DEVOUTPICT(cons_merc[1,47],'999.999')
+
+                DEVPOS( 9,86);DEVOUTPICT(cons_merc[1,81])
+                DEVPOS(10,86);DEVOUTPICT(cons_merc[1,91])
+                DEVPOS(11,86);DEVOUT(msittrib)
+                DEVPOS(12,86);DEVOUT(mnbm)
+                DEVPOS(13,86);DEVOUT(mprodepe)
+                DEVPOS(14,86);DEVOUT(cons_merc[1,66])
+                DEVPOS(15,86);DEVOUTPICT(cons_merc[1,62],'99.99')
+                DEVPOS(16,86);DEVOUTPICT(cons_merc[1,63],'999.99')
+                DEVPOS(17,86);DEVOUTPICT(cons_merc[1,65],'999.99')
+                DEVPOS(18,86);DEVOUT(cons_merc[1,67])
+                DEVPOS(22,86);DEVOUTPICT(cons_merc[1,110],'999.99')
+                DEVPOS(23,86);DEVOUTPICT(cons_merc[1,111],'999.99')
+                DEVPOS(24,86);DEVOUT(cons_merc[1,109])
+                DEVPOS(25,86);DEVOUT(cons_merc[1,108])
+                DEVPOS(26,86);DEVOUT(cons_merc[1,114])
+                IF cons_merc[1,71] = 'S';fato_desc('*');ENDIF
+                setcor(3)
+                DEVPOS(19,86);DEVOUT(cons_merc[1,71])
+                DEVPOS(20,86);DEVOUTPICT(cons_merc[1,72],'999.9999')
+                DEVPOS(21,86);DEVOUTPICT(cons_merc[1,64],'999.99')
+
+                DEVPOS(29,86);DEVOUTPICT(cons_merc[1,56],'99,999.99')
+                IF ver_nivel('CUSTOREAL','CUSTO REAL DAS MERCADORIAS *** CORRECAO/CONSULTA ***','15',nivel_acess,'*')
+                        setcor(3)
+                        DEVPOS(30,86);DEVOUTPICT(cons_merc[1,44],'99,999,999.99')
+                        DEVPOS(31,86);DEVOUTPICT(cons_merc[1,45],'99,999,999.99')
+                ENDIF
+                DEVPOS(32,86);DEVOUTPICT(mmetragem,'999.999')
+                DEVPOS(33,86);DEVOUTPICT(mpacote,'999.999')
+                DEVPOS(34,86);DEVOUTPICT(cons_merc[1,23],'99.99')
+                DEVPOS(35,86);DEVOUT(DTOC(cons_merc[1,33]))
+                DEVPOS(36,86);DEVOUT(DTOC(cons_merc[1,32]))
+                DEVPOS(41,27);DEVOUT(cons_merc[1,85])
+                DEVPOS(42,27);DEVOUT(cons_merc[1,86])
+                DEVPOS(43,27);DEVOUT(cons_merc[1,87])
+                DEVPOS(44,27);DEVOUT(cons_merc[1,88])
+                DEVPOS(45,27);DEVOUT(cons_merc[1,89])
+                setcor(1)
+                mcod_aux := cons_merc[1,2]
+                mcod_merc := VAL(cons_merc[1,8])
+                maltera := '*'
+                @ 0,27 GET mgrupo PICT '999' VALID ver_gru(@mgrupo,0,34,.F.)
+                READ
+                IF LASTKEY() = 27
+                        wvw_lclosewindow()
+                        RETURN NIL
+                ENDIF
+                setcor(3)
+                DEVPOS(0,27);DEVOUT(STRZERO(mgrupo,3))
+                setcor(1)
+                @ 1,27 GET msub_grupo PICT '99' VALID IF(EMPTY(msub_grupo),.F.,ver_sgru(mgrupo,@msub_grupo,1,34,.F.))
+                READ
+                IF LASTKEY() = 27 .OR. EMPTY(mgrupo) .OR. EMPTY(msub_grupo)
+                        LOOP
+                ENDIF
+		
+                setcor(3)
+                DEVPOS(1,27);DEVOUT(STRZERO(msub_grupo,2))
+                setcor(1)
+                @  3,27 GET mproduto PICT '@!' VALID IF(EMPTY(mproduto),.F.,.T.)
+                @  4,27 GET mdescri PICT '@S70!' VALID IF(EMPTY(mdescri),.F.,.T.)
+                //@  4,27 GET mdescri PICT '@!' VALID IF(EMPTY(mdescri),.F.,.T.)
+                @  5,27 GET mcod_forn PICT '9999' VALID ver_fab(@mcod_forn,5,34) .AND. IF((ver_serie() = '141410' .OR. ver_serie() = '141225' .OR. ver_serie() = '141254') .AND. EMPTY(mcod_forn),.F.,.T.)
+                READ
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+                mproduto := tira_acento(mproduto)
+                mdescri := tira_acento(mdescri)
+                IF UPDATED();maltera := '*';ENDIF
+                setcor(3)
+                DEVPOS(8,27);DEVOUT(STRZERO(mcod_forn,4))
+                setcor(1)
+                @  6,27 GET mcod_espe PICT '9999' VALID ver_espe(mcod_espe,6,34,,0)
+                @  7,27 GET mcod_barra PICT '99999999999999' VALID IF(mcod_aux = mcod_barra,.T.,vercodbarra(mcod_barra,,,'*'))
+                @  8,27 GET mref PICT '@!'
+                @ 10,27 GET munidade PICT '@!'
+                @ 11,27 GET mp_lucro PICT '999.99'
+                @ 12,27 GET mpeso_liq PICT '9999.999'
+                @ 13,27 GET mpeso PICT '9999.999'
+                @ 14,27 GET mest_min PICT '99,999.99'
+                @ 15,27 GET mest_max PICT '99,999.99'
+                @ 16,27 GET msld_neg PICT '@!' VALID msld_neg $ 'S,N'
+                @ 17,27 GET mdisp PICT '@!' VALID mdisp $ 'S,N'
+	        @ 18,27 GET mdescont PICT '@!' WHEN ver_nivel(mprg+'DESC_PROD','ALTERACAO DE PRODUTO *** DESCONTINUAR PRODUTO ***','1',nivel_acess,'*') VALID mdescont $ 'S,N'
+                @ 19,27 GET mcodemp PICT "999"   //VALID ver_emp(mcodemp,5,57,,'*') WHEN mmult_emp ='S'
+                @ 20,27 GET mtipo_merc PICT "9" VALID mtipo_merc $ '1,2,3,4,5' .AND. lim_get() WHEN men_get(7,62,'Digite [1] Produto - [2] Materia Prima - [3] Isumos - [4] Consumo - [5] Outros')
+                @ 21,27 GET mlivre_desc PICT '@!'
+                @ 22,27 GET mdolar PICT '@!' VALID mdolar $ 'S,N'
+                @ 23,27 GET mprazo PICT '999'
+                @ 24,27 GET mpocket PICT '@!' VALID mpocket $ 'S,N'
+                IF ver_serie() = '141254'
+                        @ 25,27 SAY mFatConv PICT '999999'
+                ELSE
+                        @ 25,27 GET mFatConv PICT '999999'
+                ENDIF
+                @ 26,27 GET mgramatura PICT '999.999'
+                @ 27,27 GET mlocal PICT '@!'
+                @ 28,27 GET mbalanca PICT '@!' VALID mbalanca $ 'S,N'
+                @ 29,27 GET mcomissao PICT '999.99'
+                @ 30,27 GET mcom_mont PICT '999.99'
+                @ 31,27 GET mvarejo PICT '999.99' WHEN m_set[1,5] = 'S'
+                @ 32,27 GET mdesc_merc PICT '999.99'
+                @ 33,27 GET mpr_ven PICT ALLTRIM(m_set[1,98])
+                @ 34,27 GET mpr_ven1 PICT ALLTRIM(m_set[1,98])
+
+                @  9,86 GET miat PICT '@!' VALID miat $ 'A,T'
+                @ 10,86 GET mippt PICT '@!' VALID mippt $ 'P,T'
+                READ
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+                msittrib := saccst(,msittrib)
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+                setcor(3)
+                DEVPOS(11,86);DEVOUT(msittrib)
+                setcor(1)
+                minsento := vercst(msittrib)
+                @ 12,86 GET mnbm
+                @ 13,86 GET mprodepe WHEN m_set[1,148] = 'S'
+                @ 14,86 GET mcod_clf PICT '99'          //VALID verclf(mcod_clf,15,75,,0)
+                @ 15,86 GET mbebida PICT '99.99'
+                @ 16,86 GET micm_sub PICT '999.99'
+                @ 17,86 GET mipi PICT '999.99'
+                @ 18,86 GET mcod_fis PICT '@!'
+                @ 19,86 GET mdesc_icm PICT '@!' VALID mdesc_icm $ 'S,N' .AND. IF(mdesc_icm = 'S',fato_desc(),.T.)       //.AND. lim_get() WHEN men_get(17,75,'Responda [S]im se esta MERCADORIA tem um desconto especial de ICMS na NOTA DE SAIDA')         //.AND. IF(misento = 'N' .AND. mdesc_icm = 'S',.F.,.T.)
+                READ
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+                IF mdesc_icm = 'N'
+                	mdesc_icm1 := 0
+                ENDIF
+		@ 20,86 GET micm_sub2 PICT '999.99' WHEN ver_serie() = '141206'
+		@ 22,86 GET cons_merc[1,110] PICT '999.99'
+		@ 23,86 GET cons_merc[1,111] PICT '999.99'
+		@ 24,86 GET cons_merc[1,109] PICT '9.999'
+		@ 25,86 GET cons_merc[1,108] PICT '9.999'
+		@ 26,86 GET cons_merc[1,114] PICT '9999999'
+
+                @ 32,86 GET mmetragem PICT '999.999'       //WHEN ver_serie() = '141235'
+                @ 33,86 GET mpacote PICT '999.999'         //WHEN ver_serie() = '141235'
+                @ 41,27 GET maplic0 PICT '@!'
+                @ 42,27 GET maplic1
+                @ 43,27 GET maplic2
+                @ 44,27 GET maplic3
+                @ 45,27 GET maplic4
+                READ
+                IF UPDATED();maltera := '*';ENDIF
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+                opcao := op_simnao('S','Confirma a Alteracao do PRODUTO:')
+                IF opcao = 'N'
+                        LOOP
+                ENDIF
+                AADD(m_merc,{' ',mcod_merc})
+                mlinha := mcod_barra+STRZERO(mcod_merc,5)+mproduto+munidade+STRZERO(cons_merc[1,46]*1000,13)+STRZERO(iat(mpr_ven)*100,14)+msittrib
+                ccomm := "UPDATE sacmerc SET empresa = "+sr_cdbvalue(mcodemp)
+                ccomm := ccomm + ",cod_barr  = "+sr_cdbvalue(mcod_barra                           )
+                ccomm := ccomm + ",ref       = "+sr_cdbvalue(mref                                 )
+                ccomm := ccomm + ",gru_sub   = "+sr_cdbvalue(STRZERO(mgrupo,3)+STRZERO(msub_grupo,2))
+                ccomm := ccomm + ",merc      = "+sr_cdbvalue(mproduto                             )
+                ccomm := ccomm + ",tipo_merc = "+sr_cdbvalue(mtipo_merc                           )
+                ccomm := ccomm + ",balanca   = "+sr_cdbvalue(mbalanca                             )
+                ccomm := ccomm + ",unidade   = "+sr_cdbvalue(munidade                             )
+                ccomm := ccomm + ",especie   = "+sr_cdbvalue(STRZERO(mcod_espe,4)                 )
+                ccomm := ccomm + ",metragem  = "+sr_cdbvalue(mmetragem                            )
+                ccomm := ccomm + ",pacote    = "+sr_cdbvalue(mpacote                              )
+                ccomm := ccomm + ",peso_liq  = "+sr_cdbvalue(mpeso_liq                            )
+                ccomm := ccomm + ",peso      = "+sr_cdbvalue(mpeso                                )
+                ccomm := ccomm + ",disp      = "+sr_cdbvalue(mdisp                                )
+                ccomm := ccomm + ",livre_desc= "+sr_cdbvalue(mlivre_desc                          )
+                ccomm := ccomm + ",p_lucro   = "+sr_cdbvalue(mp_lucro                             )
+                ccomm := ccomm + ",varejo    = "+sr_cdbvalue(mvarejo                              )
+                ccomm := ccomm + ",est_min   = "+sr_cdbvalue(mest_min                             )
+                ccomm := ccomm + ",est_max   = "+sr_cdbvalue(mest_max                             )
+                ccomm := ccomm + ",cod_fab   = "+sr_cdbvalue(STRZERO(mcod_forn,4)                 )
+                ccomm := ccomm + ",fabrica   = "+sr_cdbvalue(mfabrica                             )
+                ///IF ver_serie() # '141490' .AND. ver_serie() # '141491' .AND. ver_serie() # '141492' .AND. ver_serie() # '141493'
+                        ccomm := ccomm + ",pr_venda  = "+sr_cdbvalue(mpr_ven   )
+                        ccomm := ccomm + ",pr_venda1 = "+sr_cdbvalue(mpr_ven1  )
+                        ccomm := ccomm + ",pr_venda2 = "+sr_cdbvalue(mpr_venda2)
+                        ccomm := ccomm + ",pr_venda3 = "+sr_cdbvalue(mpr_venda3)
+                        ccomm := ccomm + ",pr_venda4 = "+sr_cdbvalue(mpr_venda4)
+                //ENDIF
+                ccomm := ccomm + ",isento    = "+sr_cdbvalue(misento                              )
+                ccomm := ccomm + ",comissao  = "+sr_cdbvalue(mcomissao                            )
+                ccomm := ccomm + ",com_mont  = "+sr_cdbvalue(mcom_mont                            )
+                ccomm := ccomm + ",promocao  = "+sr_cdbvalue(mpromocao                            )
+                ccomm := ccomm + ",bebida    = "+sr_cdbvalue(mbebida                              )
+                ccomm := ccomm + ",icm_sub   = "+sr_cdbvalue(micm_sub                             )
+                ccomm := ccomm + ",icm_sub2  = "+sr_cdbvalue(micm_sub2                            )
+                ccomm := ccomm + ",ipi       = "+sr_cdbvalue(mipi                                 )
+                ccomm := ccomm + ",cod_clf   = "+sr_cdbvalue(mcod_clf                             )
+                ccomm := ccomm + ",cod_fis   = "+sr_cdbvalue(mcod_fis                             )
+                ccomm := ccomm + ",sittrib   = "+sr_cdbvalue(msittrib                             )
+                ccomm := ccomm + ",nbm       = "+sr_cdbvalue(mnbm                                 )
+                ccomm := ccomm + ",prodepe   = "+sr_cdbvalue(mprodepe                             )
+                ccomm := ccomm + ",local     = "+sr_cdbvalue(mlocal                               )
+                ccomm := ccomm + ",gramatura = "+sr_cdbvalue(mgramatura                           )
+                ccomm := ccomm + ",prazo     = "+sr_cdbvalue(mprazo                               )
+                ccomm := ccomm + ",fatconv   = "+sr_cdbvalue(mfatconv                             )
+                ccomm := ccomm + ",desc_merc = "+sr_cdbvalue(mdesc_merc                           )
+                ccomm := ccomm + ",desc_icm  = "+sr_cdbvalue(mdesc_icm                            )
+                ccomm := ccomm + ",desc_icm1 = "+sr_cdbvalue(mdesc_icm1                           )                //ccomm := ccomm + ",ind_icms  = "+sr_cdbvalue( mind_icms                         )                //ccomm := ccomm + ",sit_trib  = "+sr_cdbvalue( msit_trib                         )
+                ccomm := ccomm + ",dolar     = "+sr_cdbvalue( mdolar                              )
+                ccomm := ccomm + ",aplic0    = "+sr_cdbvalue(maplic0                              )
+                ccomm := ccomm + ",aplic1    = "+sr_cdbvalue(maplic1                              )
+                ccomm := ccomm + ",aplic2    = "+sr_cdbvalue(maplic2                              )
+                ccomm := ccomm + ",aplic3    = "+sr_cdbvalue(maplic3                              )
+                ccomm := ccomm + ",aplic4    = "+sr_cdbvalue(maplic4                              )
+                ccomm := ccomm + ",pocket    = "+sr_cdbvalue(mpocket                              )
+                ccomm := ccomm + ",descri    = "+sr_cdbvalue(SUBSTR(mdescri,1,50)                 )
+                ccomm := ccomm + ",descri1   = "+sr_cdbvalue(SUBSTR(mdescri,51)                   )
+                ccomm := ccomm + ",sld_neg   = "+sr_cdbvalue(msld_neg                             )
+                ccomm := ccomm + ",descont   = "+sr_cdbvalue(mdescont                             )
+                ccomm := ccomm + ",iat       = "+sr_cdbvalue(miat                                 )
+                ccomm := ccomm + ",ippt      = "+sr_cdbvalue(mippt                                )
+                IF cons_merc[1,46] <> mpr_ven
+                        ccomm := ccomm + ",ul_alt_pr    = "+sr_cdbvalue(mdata_sis)
+                        ccomm := ccomm + ",opera_pr     = "+sr_cdbvalue(cod_operado)
+                ENDIF
+                IF maltera = '*'
+                        ccomm := ccomm + ",data_atu     = "+sr_cdbvalue(mdata_sis)
+                ENDIF
+                ccomm := ccomm + ",chv_cript      = "+sr_cdbvalue(criptografia(mlinha,'C'))
+                ccomm := ccomm + ",pis            = "+sr_cdbvalue(cons_merc[1,110])
+                ccomm := ccomm + ",confis         = "+sr_cdbvalue(cons_merc[1,111])
+                ccomm := ccomm + ",cfop_dent      = "+sr_cdbvalue(cons_merc[1,109])
+                ccomm := ccomm + ",cfop_fora      = "+sr_cdbvalue(cons_merc[1,108])
+                ccomm := ccomm + ",cest           = "+sr_cdbvalue(cons_merc[1,114])
+                ccomm := ccomm + " WHERE cod_merc = "+sr_cdbvalue(STRZERO(mcodigo,5))
+                sr_getconnection():exec(ccomm,,.f.)
+                aret:={}
+                sr_getconnection():exec('COMMIT',,.f.)
+                //IF  ver_serie() <> '141490'
+                        mcons_cam := {}
+                        sr_getconnection():exec("SELECT atu_prod FROM cam_dba",,.t.,@mcons_cam)
+                        IF SR_SetActiveConnection(nCnn1) > 0 .AND. mcons_cam[1,1] = 'S'
+                                sr_getconnection():exec(ccomm,,.f.)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                        ENDIF
+                        IF SR_SetActiveConnection(nCnn2) > 0 .AND. mcons_cam[1,1] = 'S'
+                                sr_getconnection():exec(ccomm,,.f.)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                        ENDIF
+                        SR_SetActiveConnection(nCnn)
+                //ENDIF
+                /*
+                IF mforn_aux <> mcod_forn .AND. ver_serie() = '141410'
+                        IF ! AbriArq('sacmov','mov');RETURN NIL;ENDIF
+                        SELE('mov');ORDSETFOCUS(2)
+                        IF mov->(DBSEEK(mcod_merc))
+                                mensagem('Aguarde um momento estar atualizando o arquivo de movimento...')
+                                WHILE ! EOF() .AND. mov->codigo = mcod_merc
+                                        BLOQREG()
+                                        mov->cod_fab := STRZERO(mcod_forn,4)
+                                        mov->fabrica := mfabrica
+                                        DBUNLOCK()
+                                        SKIP
+                                ENDDO
+                                DBCOMMITALL()
+                        ENDIF
+                        SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+                ENDIF
+                */
+                //GO point
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDDO
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************** f i m ************************************
+* FUNCAO P/ INFORMA O FATOR DE DESCONTO
+*****************************************
+FUNCTION fato_desc(mcons)
+*************************
+MEMVAR mdesc_icm1
+CLEAR GETS
+op_tela(17,57,19,77,' Fator Desconto ')
+DEVPOS(01,00);DEVOUT('Fator:')
+@ 01,COL()+1 GET mdesc_icm1 PICT '99.9999' VALID IF(EMPTY(mdesc_icm1),.F.,.T.)
+IF mcons = NIL
+        READ
+ELSE
+        INKEY(1)
+ENDIF
+CLEAR GETS
+wvw_lclosewindow()
+RETURN .T.

@@ -1,0 +1,238 @@
+*************************
+* ALTERACAO DE CONTAS DESPESAS E FORNECEDOR
+*************************
+FUNCTION sac141
+***************
+LOCAL MPRG:='SAC141',;
+      mfabrica,mendereco,mbairro,mcidade,muf,mcep,mcpostal,mtel1,mtel2,;
+      mfax,mcgc,minsc,mprazo_pag,mct_gerente,mct_vendedo,mct_fatura,;
+      mct_cobran,mlimite,mobs,mbanco,mcarteira,opcao,li,ci,lb,cb,;
+      mcodigo,mcpf,tela,lba,cba,point,memail,mobs1,mobs2,mobs3,mobs4,mobs5,mpocket,mfantasia,minsc_aux
+MEMVAR nivel_acess,getlist
+PRIVATE mcodconta,mcod_forn
+
+IF ! ver_nivel(mprg,'ALTERACAO DE FORNECEDOR/OUTROS','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+lba := 22
+cba := 78
+op_tela(00,00,24,89,'ALTERACAO DE FORNECEDOR/OUTRAS DESPESAS')
+WHILE .T.
+        *****************
+        SELE('forn');ORDSETFOCUS(1)
+        *****************
+        point := RECNO()
+        opcao := 'S'
+        mlimite := 0
+        mcarteira := mbanco := mpocket := SPACE(1)
+        muf := SPACE(2)
+        mcodigo := mcodconta := SPACE(4)
+        mcpostal := SPACE(6)
+        mprazo_pag := SPACE(8)
+        mcep := SPACE(9)
+        mcpf := SPACE(11)
+        mtel1 := mtel2 := mfax := mcgc := minsc := minsc_aux := SPACE(14)
+        mct_gerente := mct_vendedo := mct_fatura := mct_cobran := SPACE(15)
+        mbairro := mcidade := SPACE(20)
+        mendereco := SPACE(35)
+        mfabrica := memail := mfantasia := SPACE(40)
+        mobs := mobs1:= mobs2:= mobs3:= mobs4:= mobs5:= SPACE(60)
+        mensagem('Digite o Nome do Fabricante a ser Cadastrado - <ESC> p/Retornar')
+        DEVPOS(0,1);DEVOUT('Codigo....:')
+        DEVPOS(0,21);DEVOUT('Data Cadastro:')
+        DEVPOS(1,1);DEVOUT('R.Social..:')
+        DEVPOS(2,1);DEVOUT('Fantasia..:')
+        DEVPOS(3,1);DEVOUT('Tipo de Conta:')
+        DEVPOS(4,1);DEVOUT('CNPJ:')
+        DEVPOS(4,26);DEVOUT('Insc.:')
+
+        @ 5,0 TO 5,cba
+        janela(5,0,' INFORMACOES ','*','*')
+        DEVPOS(6,1);DEVOUT('Endereco..:')
+        DEVPOS(7,1);DEVOUT('Bairro....:')
+        DEVPOS(8,1);DEVOUT('Cidade....:')
+        DEVPOS(8,35);DEVOUT('UF...:')
+        DEVPOS(8,45);DEVOUT('CEP:')
+        DEVPOS(9,1);DEVOUT('Local.....:')
+        DEVPOS(9,21);DEVOUT('Email:')
+
+        DEVPOS(10,1);DEVOUT('Fone:')
+        DEVPOS(10,23);DEVOUT('Fone:')
+        DEVPOS(10,45);DEVOUT('Fax:')
+
+        DEVPOS(11,1);DEVOUT('Banco:')
+        DEVPOS(11,11);DEVOUT('Carteira:')
+        DEVPOS(11,24);DEVOUT('Prazo Pag.:')
+        DEVPOS(11,46);DEVOUT('Limite:')
+
+        DEVPOS(12,1);DEVOUT('Gerente..:')
+        DEVPOS(12,32);DEVOUT('Faturamento:')
+        DEVPOS(13,1);DEVOUT('Cobranca.:')
+        DEVPOS(13,32);DEVOUT('Vendedor...:')
+        DEVPOS(14,1);DEVOUT('Enviar p/APP...:')
+
+        DEVPOS(15,1);DEVOUT('Observacao.:')
+        mensagem('Preencha o restante do Campos - <ESC> p/Retornar')
+        mcod_forn := forn->cod_forn
+        mfabrica := forn->razao
+        mfantasia:= forn->fantasia
+        mcodconta := forn->tipo
+        mendereco := forn->endereco
+        mbairro := forn->bairro
+        mcidade := forn->cidade
+        muf := forn->uf
+        mcep := forn->cep
+        mcpostal := forn->cpostal
+        memail := forn->email
+        mtel1 := forn->tel1
+        mtel2 := forn->tel2
+        mfax := forn->fax
+        mcgc := forn->cgc
+        minsc := forn->insc
+        mcarteira := forn->carteira
+        mbanco := forn->banco
+        mprazo_pag := forn->prazo_pag
+        mct_gerente := forn->ct_gerente
+        mct_vendedo := forn->ct_vendedo
+        mct_fatura := forn->ct_fatura
+        mct_cobran := forn->ct_cobran
+        mlimite := forn->limite
+        mobs := forn->obs
+        mobs1:= forn->obs1
+        mobs2:= forn->obs2
+        mobs3:= forn->obs3
+        mobs4:= forn->obs4
+        mobs5:= forn->obs5
+        mpocket := forn->pocket
+	minsc_aux := SUBSTR(forn->insc,1,14)        
+	setcor(3)
+        DEVPOS(0,13);DEVOUT(mcod_forn)
+        DEVPOS(0,36);DEVOUT(forn->data_cad)
+        setcor(1)
+        VerDesp(mcodconta,3,22)
+        men_get(4,22,' ')
+        lim_get()
+        WVW_DrawBoxGet(,1,13,LEN(mfabrica))
+        WVW_DrawBoxGet(,3,16,LEN(mcodconta))
+        @ 1,13 GET mfabrica PICT '@!'
+        @ 2,13 GET mfantasia PICT '@!'
+        //@ 3,16 GET mcodconta PICT '@R 9.9.99' VALID IF(EMPTY(SUBSTR(mcodconta,3)),.F.,VerDesp(mcodconta,3,22))
+        @ 3,16 GET mcodconta PICT '9999' VALID VerDesp(mcodconta,3,22)
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        IF EMPTY(SUBSTR(mcodconta,3,2)) .AND. ! EMPTY(mcodconta)
+                atencao('Tipo de Conta nao e valida...')
+                LOOP
+        ENDIF
+        VerDesp(mcodconta,3,22)
+        @ 4,7 GET mcgc PICT '@@R 99.999.999/9999-99' VALID IF(forn->cgc <> mcgc,pesq_cgc(mcgc,'forn','*','forn'),pesq_cgc(mcgc,'forn'))
+        @ 4,33 GET minsc PICT '@!'
+
+        @ 6,13 GET mendereco PICT '@!'
+        @ 7,13 GET mbairro PICT '@!'
+        @ 8,13 GET mcidade PICT '@!'
+        @ 8,42 GET muf PICT '@!' VALID IF(EMPTY(muf),.F.,v_uf(muf))
+        @ 8,50 GET mcep PICT '99999-999'
+        @ 9,13 GET mcpostal PICT '999999'
+        @ 9,28 GET memail PICT '@S40' VALID lim_get() WHEN men_get(0,0,'Exemplo: sac@HTIsistemas.com.br;teste@hotmail.com (Separa os email por ponto e virgual ";" )')
+
+        @ 10,07 GET mtel1 PICT '@!'
+        @ 10,29 GET mtel2 PICT '@!'
+        @ 10,50 GET mfax PICT '@!'
+
+        @ 11,8 GET mbanco PICT '@!'
+        @ 11,21 GET mcarteira PICT '@!'
+        @ 11,36 GET mprazo_pag PICT '@!'
+        @ 11,54 GET mlimite PICT '9,999,999.99'
+
+        @ 12,12 GET mct_gerente PICT '@!'
+        @ 12,45 GET mct_fatura PICT '@!'
+        @ 13,12 GET mct_cobran PICT '@!'
+        @ 13,45 GET mct_vendedo PICT '@!'
+
+        @ 14,19 GET mpocket PICT '@!' VALID mpocket $ 'S,N'
+        @ 15,14 GET mobs
+        @ 16,14 GET mobs1
+        @ 17,14 GET mobs2
+        @ 18,14 GET mobs3
+        @ 19,14 GET mobs4
+        @ 20,14 GET mobs5
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        opcao := op_simnao('S','Confirma a Alteracao do FORNECEDOR:')
+        IF opcao = 'N'
+                LOOP
+        ENDIF
+        sr_begintransaction()
+                try
+                        ccomm := "UPDATE sacforn SET razao = "+sr_cdbvalue(mfabrica)+",fantasia  	= "+sr_cdbvalue(mfantasia)
+                        ccomm := ccomm + ",endereco  	= "+sr_cdbvalue(mendereco     )
+                        ccomm := ccomm + ",bairro 	= "+sr_cdbvalue(mbairro       )
+                        ccomm := ccomm + ",cidade 	= "+sr_cdbvalue(mcidade       )
+                        ccomm := ccomm + ",uf 	 	= "+sr_cdbvalue(muf         )
+                        ccomm := ccomm + ",tipo 	= "+sr_cdbvalue(mcodconta   )
+                        ccomm := ccomm + ",cep 	 	= "+sr_cdbvalue(mcep         )
+                        ccomm := ccomm + ",cpostal 	= "+sr_cdbvalue(mcpostal      )
+                        ccomm := ccomm + ",email     	= "+sr_cdbvalue(memail        )
+                        ccomm := ccomm + ",tel1 	= "+sr_cdbvalue(mtel1       )
+                        ccomm := ccomm + ",tel2 	= "+sr_cdbvalue(mtel2       )
+                        ccomm := ccomm + ",fax 	 	= "+sr_cdbvalue(mfax         )
+                        ccomm := ccomm + ",cgc 	 	= "+sr_cdbvalue(mcgc         )
+                        ccomm := ccomm + ",insc  	= "+sr_cdbvalue(minsc        )
+                        ccomm := ccomm + ",prazo_pag 	= "+sr_cdbvalue(mprazo_pag    )
+                        ccomm := ccomm + ",ct_gerente	= "+sr_cdbvalue(mct_gerente   )
+                        ccomm := ccomm + ",ct_fatura 	= "+sr_cdbvalue(mct_fatura    )
+                        ccomm := ccomm + ",ct_cobran 	= "+sr_cdbvalue(mct_cobran    )
+                        ccomm := ccomm + ",ct_vendedo	= "+sr_cdbvalue(mct_vendedo   )
+                        ccomm := ccomm + ",limite 	= "+sr_cdbvalue(mlimite       )
+                        ccomm := ccomm + ",carteira  	= "+sr_cdbvalue(mcarteira        )
+                        ccomm := ccomm + ",banco 	= "+sr_cdbvalue(mbanco       )
+                        ccomm := ccomm + ",obs 	 	= "+sr_cdbvalue(mobs         )
+                        ccomm := ccomm + ",obs1	 	= "+sr_cdbvalue(mobs1        )
+                        ccomm := ccomm + ",obs2	 	= "+sr_cdbvalue(mobs2        )
+                        ccomm := ccomm + ",obs3	 	= "+sr_cdbvalue(mobs3        )
+                        ccomm := ccomm + ",obs4	 	= "+sr_cdbvalue(mobs4        )
+                        ccomm := ccomm + ",obs5	 	= "+sr_cdbvalue(mobs5        )
+                        ccomm := ccomm + ",pocket	= "+sr_cdbvalue(mpocket      )
+                        ccomm := ccomm + " WHERE cod_forn = "+sr_cdbvalue(mcod_forn)
+                        sr_getconnection():exec(ccomm,,.f.)
+                        sr_committransaction()
+                catch e
+                        tracelog(valtoprg())
+                        sr_rollbacktransaction()
+                END
+        sr_endtransaction()
+        sr_getconnection():exec("COMMIT",,.f.)
+
+        IF mfabrica <> forn->razao
+	        sr_getconnection():exec("UPDATE sacmerc SET fabrica = "+sr_cdbvalue(mfabrica)+" WHERE cod_fab = "+sr_cdbvalue(mcod_forn),,.f.)
+        ENDIF
+        mcons_cam := {}
+        sr_getconnection():exec("SELECT atu_forn FROM cam_dba",,.t.,@mcons_cam)
+        IF LEN(mcons_cam) > 0
+                IF SR_SetActiveConnection(nCnn1) > 0 .AND. mcons_cam[1,1] = 'S'
+                        sr_getconnection():exec(ccomm,,.f.)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                ENDIF
+        ENDIF
+        SR_SetActiveConnection(nCnn)
+	IF minsc <> minsc_aux
+	        opcao := op_simnao('S','Deseja Atualizar a INSCRICAO no Movimento deste Fornecedor [S/n]:')
+       		IF opcao = 'S'
+			mensagem('Aguarde um momento ATUALIZANDO o Movimento deste Fornecedor...')
+               		ccomm := "UPDATE sactotnt SET insc_cli = "+sr_cdbvalue(minsc)+" WHERE cod_cli = "+sr_cdbvalue(mcod_forn)
+	                sr_getconnection():exec(ccomm,,.f.)
+	                sr_getconnection():exec('COMMIT',,.f.)
+
+	        ENDIF
+	ENDIF			
+
+        EXIT
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+********************************** f i m *******************************

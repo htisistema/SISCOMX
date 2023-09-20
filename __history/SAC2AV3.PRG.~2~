@@ -1,0 +1,153 @@
+************************************
+* ESTORNO DE PRODUTO NO ESTOQUE A.V.
+************************************
+MEMVAR getlist,nivel_acess,mdata_sis,cod_operado
+
+FUNCTION sac2av3
+***************
+LOCAL MPRG:='SAC2AV3'
+LOCAL opcao,tela,lci,cci,lba,cba,mnumero,mproduto:={},mercadoria:={},i
+
+PRIVATE mcliente,mcpf,mcgc
+
+IF ! ver_nivel(mprg,'ESTORNO DE PRODUTO NO ESTOQUE HAVER','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+IF ! AbriArq('sacsetup','set');RETURN NIL;ENDIF
+IF ! AbriArq('sacmov','mov');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('sacav','av');RETURN NIL;ENDIF
+
+lci = 14
+cci = 22
+lba = 17
+cba = 78
+tela = SAVESCREEN(01,00,24,79)
+WHILE .T.
+        exibi_prg(mprg)
+        SET INTEN ON
+        mensagem('Preencha os Campos - <ESC> p/Retornar ')
+        mcliente := SPACE(40)
+        mcpf := SPACE(11)
+        mcgc := SPACE(14)
+        mnumero := 0
+        opcao = 'S'
+        ASIZE(mproduto,0)
+        ASIZE(mercadoria,0)
+        setcor(3)
+        botao(lci,cci,lba,cba)
+        setcor(1)
+        janela(lci,cba,' Baixa do Estoque Haver ')
+        DEVPOS(lci+1,cci+2);DEVOUT('No.do Haver:')
+        DEVPOS(lci+1,cci+23);DEVOUT('Data:')
+        DEVPOS(lci+2,cci+2);DEVOUT('Cod.Cliente:')
+        @ lci+1,cci+15 GET mnumero PICT '999999'
+        READ
+        IF LASTKEY()=27
+                RESTSCREEN(01,00,24,79,tela)
+                RELEASE mcliente,mcpf,mcgc
+                RETURN NIL
+        ENDIF
+        IF EMPTY(mnumero)
+                LOOP
+        ENDIF
+        ***************
+        SELE('av');ORDSETFOCUS(1)
+        GO TOP
+        ***************
+
+        IF ! av->(DBSEEK(STRZERO(mnumero,6)))
+                atencao('Documento nao existe em nossos arquivos')
+                LOOP
+        ENDIF
+        IF av->baixa = '*'
+                atencao('Este documento ja foi BAIXADO')
+                LOOP
+        ENDIF
+        IF av->baixa = 'E'
+                atencao('Este documento foi ESTORNADO')
+                LOOP
+        ENDIF
+        setcor(3)
+        DEVPOS(lci+1,cci+29);DEVOUT(av->data)
+        DEVPOS(lci+2,cci+15);DEVOUT(av->cod_cli)
+        ver_cli(VAL(av->cod_cli),lci+2,cci+21)
+        setcor(1)
+        opcao := op_simnao('S','Confirma o Estorno do Documento:')
+        IF opcao = 'S'
+                WHILE av->numero = STRZERO(mnumero,6) .AND. ! EOF()
+                        IF ! BLOQREG()
+                                atencao('Nao foi possivel acessar o arquivo')
+                                LOOP
+                        ENDIF
+                        av->data_bai := mdata_sis
+                        av->baixa := 'E'
+                        AADD(mproduto,{av->cod_merc,av->quantd})
+                        DBUNLOCK()
+                        SKIP
+                ENDDO
+                DBCOMMITALL()
+                ***************
+                SELE('merc');ORDSETFOCUS(1)
+                GO TOP
+                ***************
+                i := 0
+                SR_BEGINTRANSACTION()
+                        FOR i = 1 TO LEN(mproduto)
+                                aret := {}
+                                sr_getconnection():exec("SELECT saldo_mer,saldo_av FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(mproduto[i,1]),,.t.,@aret)
+                                mlinha := aret[1,2]+aret[1,8]+aret[1,9]+aret[1,14]+STRZERO((aret[1,56] - mproduto[i,2])*1000,13)+STRZERO(iat(aret[1,46])*100,14)+aret[1,68]
+                                        sr_getconnection():exec("UPDATE sacmerc SET saldo_mer= "+sr_cdbvalue(aret[1,56] - mproduto[i,2])+;
+                                                              ",data_atu = "+sr_cdbvalue(mdata_sis)+;
+                                                              ",saldo_fis= "+sr_cdbvalue(aret[1,57] - IF(mcod_op = '01' .AND. mcredito = 'S',mproduto[i,2],0))+;
+                                                              " WHERE cod_merc = "+sr_cdbvalue(mproduto[i,1]),,.f.)
+                                        sr_getconnection():exec('INSERT INTO logproduto (data_sis,data,'+;
+                                                        'hora,cod_prod,quantd,saldo_ant,saldo_pos,cod_oper,prog,terminal,'+;
+                                                        'processo,ent_sai,SR_DELETED )'+;
+                                                        ' VALUES ('+;
+                                                        sr_cdbvalue(DATE())+','+; //1
+                                                        sr_cdbvalue(mdata_sis)+','+; //2
+                                                        sr_cdbvalue(TIME())+','+; //3
+                                                        sr_cdbvalue(mproduto[i,1])+','+; //4
+                                                        sr_cdbvalue(mproduto[i,2])+','+; //5
+                                                        sr_cdbvalue(aret[1,56])+','+; //6
+                                                        sr_cdbvalue(aret[1,56] - mproduto[i,2])+','+; //7
+                                                        sr_cdbvalue(cod_operado)+','+; //8
+                                                        sr_cdbvalue('SAC29')+','+; //9
+                                                        sr_cdbvalue(LEFT(NETNAME(),15))+','+; //12
+                                                        sr_cdbvalue('ESTORNO AV.: '+STRZERO(mnumero,6))+','+; //11
+                                                        sr_cdbvalue('S')+','+; //11
+                                                        sr_cdbvalue(' ')+')',,.f.)
+                                AADD(mercadoria,{merc->merc,merc->gru_sub})
+                        NEXT
+                        sr_committransaction()
+                SR_ENDTRANSACTION()
+                ***************
+                SELE('mov');ORDSETFOCUS(2)
+                ***************
+                i := 0
+                FOR i = 1 TO LEN(mproduto)
+                        IF ! ADIREG()
+                                atencao('Nao foi possivel bloquear o Registro !!!')
+                                LOOP
+                        ENDIF
+                        mov-> ent_sai := 'E'
+                        mov-> quantd := mproduto[i,2]
+                        mov-> data_s_e := mdata_sis
+                        mov-> gru_sub := mercadoria[i,2]
+                        mov-> codigo := mproduto[i,1]
+                        mov-> produto := mercadoria[i,1]
+                        mov-> documento := 'EST.HAVE'
+                        mov-> cod_vend := cod_operado
+                        DBUNLOCK()
+                NEXT
+                DBCOMMITALL()
+        ELSE
+                LOOP
+        ENDIF
+ENDDO
+RETURN NIL
+*********************** FIM ***************************
+

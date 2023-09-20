@@ -1,0 +1,9 @@
+[CODBARRA]
+FileType=VARYING
+Delimiter="
+Separator=;
+StartAtRow=1
+UseHeaderRow=0
+Field1=COD_BARR,CHAR,14,0,0
+Field2=DESCRICAO,CHAR,40,0,15
+Field3=PRECO,CHAR,7,0,56

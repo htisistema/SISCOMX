@@ -1,0 +1,176 @@
+*******************************************
+* EMISSAO DE RECIBOS PAGAMENTOS DA HTI
+*******************************************
+FUNCTION sacinrec()
+*******************
+LOCAL tela,lci,cci,opcao,mdocumento,mquantd,mvalor,i:=0,;
+      mobs1,mobs2,mobs3,mobs4,mobs5,mobs6,mdata1,mdata2,mcons_dupr
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mcod_vend:=0,mtip_term:='O',marq_html,;
+        mnbanco,mconta_c,magencia,mtipo_cob,mcarteira,macess_escr,mprev:='S',cfilename,mdia_prot,especie:='DUPL',q_ban
+
+lci := cci := 0
+opcao := ' '
+************************************
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+************************************
+mquantd := mvalor := 0
+mmulta   :=m_set[1,50]
+mjuros   :=m_set[1,51]
+op_tela(05,05,17,70,' Emissao de Boleto Bancario da HTI Sistemas')
+WHILE .T.
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+	especie:='DUPL'
+        mprev := 'S'
+	marq_html:='HTIBOLETO                     '
+        mdata1 := mdata2 := CTOD('  /  /  ')
+        mcod_vend := mcod_banco := mdia_prot := 0
+        limpa(00,00,30,100)
+        DEVPOS(lci+1,cci+1);DEVOUT('Data Inicial....:')
+        DEVPOS(lci+2,cci+1);DEVOUT('Data Final......:')
+        DEVPOS(lci+3,cci+1);DEVOUT('Codigo Operador.:')
+        DEVPOS(lci+4,cci+1);DEVOUT('Codigo Banco....:')
+        DEVPOS(lci+5,cci+1);DEVOUT('No.do Banco.....:')
+        DEVPOS(lci+6,cci+1);DEVOUT('Num.Agencia.....:')
+        DEVPOS(lci+7,cci+1);DEVOUT('Conta Corrente..:')
+        DEVPOS(lci+8,cci+1);DEVOUT('Tipo Cobranca...:')
+        DEVPOS(lci+9,cci+1);DEVOUT('Carteira........:')
+        DEVPOS(lci+10,cci+1);DEVOUT('Instrucoes......:')
+        DEVPOS(lci+12,cci+1);DEVOUT('Visualizar [S/N]:')
+
+        @ lci+1,cci+20 GET mdata1 VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ lci+2,cci+20 GET mdata2 VALID IF(mdata2<mdata1,.F.,.T.)
+        @ lci+3,cci+20 GET mcod_vend PICT '999' VALID ven(mcod_vend,lci+3,cci+25)
+        @ lci+4,cci+20 GET mcod_banco PICT "999"
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        q_ban := {}
+        sr_getconnection():exec("SELECT * FROM sacbanco WHERE cod_banco = "+sr_cdbvalue(STRZERO(mcod_banco,3)),,.t.,@q_ban)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(q_ban) = 0
+                atencao('Este Banco nao esta Cadastrado')
+                LOOP
+        ENDIF
+        mnbanco := STRZERO(VAL(q_ban[1,3]),3)
+        mconta_c := ALLTRIM(q_ban[1,11])+ALLTRIM(q_ban[1,5])+'-'+q_ban[1,9]
+        magencia := ALLTRIM(q_ban[1,4])+'-'+q_ban[1,10]
+        IF ! EMPTY(q_ban[1,7])
+                mtipo_cob := mcarteira := ALLTRIM(q_ban[1,7])
+        ELSE
+                mtipo_cob := mcarteira := '  '
+        ENDIF
+        macess_escr := ALLTRIM(q_ban[1,8])
+        setcor(3)
+        DEVPOS(lci+4,cci+20);DEVOUT(q_ban[1,2])
+        DEVPOS(lci+5,cci+20);DEVOUT(STRZERO(VAL(q_ban[1,3]),3))
+        DEVPOS(lci+6,cci+20);DEVOUT(magencia)
+        DEVPOS(lci+7,cci+20);DEVOUT(mconta_c)
+        DEVPOS(lci+8,cci+20);DEVOUT(mtipo_cob)
+        DEVPOS(lci+9,cci+20);DEVOUT(mcarteira)
+        setcor(1)
+
+	mprev := 'S'
+        //@ lci+8,cci+20 GET mtipo_cob PICT '99' VALID IF(EMPTY(mtipo_cob),.F.,.T.)
+        //@ lci+9,cci+20 GET mcarteira PICT '9' VALID IF(EMPTY(mcarteira),.F.,.T.)
+        //@ lci+10,cci+20 GET minstrucao
+        //@ lci+11,cci+20 GET minstrucao1
+        @ lci+12,cci+20 GET mprev PICT '@!' VALID mprev $ 'S,N'
+        READ
+        IF LASTKEY() = 27
+                fecha_tela()
+                RETURN NIL
+        ENDIF
+
+        opcao := op_simnao('S','Confirma o processamento [S/n]:')
+        IF opcao = 'N'
+                LOOP
+        ENDIF
+        mcons_dupr := {}
+        cComm  := "SELECT * FROM sacdupr WHERE venc  BETWEEN "+sr_cdbvalue(mdata1)+" AND "+sr_cdbvalue(mdata2)+" AND datpag IS NULL"
+        IF ! EMPTY(mcod_vend)
+                ccomm := ccomm + " AND vendedor = "+sr_cdbvalue(STRZERO(mcod_vend,3))
+        ENDIF
+        ccomm := ccomm + " ORDER BY fornec"
+        sr_getconnection():exec(ccomm,,.t.,@mcons_dupr)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(mcons_dupr) = 0
+                atencao('Nao existe documento neste periodo....')
+                LOOP
+        ENDIF
+/*
+	i:=0
+	FOR i = 1 TO LEN(mcons_dupr)
+        	minstrucao := ALLTRIM(m_set[1,52])+' '+SUBSTR(DTOC(mcons_dupr[i,11]),4,2)+'/'+SUBSTR(DTOC(mcons_dupr[i,11])+SPACE(65 - LEN(ALLTRIM(m_set[1,52]))),7,2)
+        	minstrucao1 := m_set[1,53]
+
+		n_documento := mcons_dupr[i,7]+SUBSTR(DTOC(mcons_dupr[i,11]),5,1)+SUBSTR(DTOC(mcons_dupr[i,11]),8,1)
+	        mnosso_num := n_documento
+	        cfilename:='bol.ini'
+        	mquantd := mvalor := y := 0
+*
+                //FOR y = 1 TO 2
+		        cons_cli := {}
+		        cComm  := "SELECT * FROM saccli WHERE cod_cli = "+sr_cdbvalue(mcons_dupr[i,7])
+		        sr_getconnection():exec(ccomm,,.t.,@cons_cli)
+			IF LEN(cons_cli) = 0
+				LOOP
+			ENDIF
+
+	                oIni = TIniFile():New(Default(cFilename, 'bol.ini'))
+
+        	        oIni:WriteString("CAB", "Banco",mnbanco)
+                	oIni:WriteString("CAB", "cImageLnk",m_indiv[1,39])
+	                oIni:WriteBool("CAB", "lBoleto",.T.)
+        	        oIni:WriteBool("CAB", "lRemessa",IF(mcarteira = '9',.T.,.F.))
+                	oIni:WriteBool("CAB", "lAnsi",.T.)
+	                oIni:WriteBool("CAB", "lPrint",.T.)
+
+        	        IF mprev = 'S'
+                	        oIni:WriteBool("CAB", "lPreview",.T.)
+	                ELSE
+        	                oIni:WriteBool("CAB", "lPreview",.F.)
+                	ENDIF
+
+	                oIni:WriteBool("CAB", "lPromptPrint",.T.)
+        	        oIni:WriteNumber("CAB", "nBolsPag",2)
+                	oIni:WriteString("CAB", "Cedente",RTRIM(m_set[1,129]))
+	                oIni:WriteString("CAB", "CedenteCNPJ",SUBSTR(m_set[1,123],1,14))
+        	        oIni:WriteString("CAB", "cNumCC",mconta_c)
+
+                	oIni:WriteString("CAB", "cNumAgencia",magencia)
+	                oIni:WriteString("CAB", "cCarteira",mcarteira)
+        	        oIni:WriteString("CAB", "EspecieTit", especie)
+                	oIni:WriteString("CAB", "cTipoCob", mtipo_cob)
+	                oIni:WriteNumber("CAB", "nMora", mjuros)
+        	        oIni:WriteNumber("CAB", "nMulta",mmulta)
+                	oIni:WriteNumber("CAB", "nDiasProt",mdia_prot)
+	                oIni:WriteString("CAB", "cDir", m_indiv[1,38])
+        	        oIni:WriteString("CAB", "cDirRemessa",m_indiv[1,38])
+	                oIni:WriteString("BOL1", "Sacado", cons_cli[1,2]+'-'+cons_cli[1,3]+IF(! EMPTY(cons_cli[1,4]),' - ('+SUBSTR(cons_cli[1,4],1,15)+')',''))
+                	oIni:WriteString("BOL1", "Endereco",cons_cli[1,21])
+                 	oIni:WriteString("BOL1", "Bairro", cons_cli[1,22])
+	                oIni:WriteString("BOL1", "Cidade", cons_cli[1,24])
+        	        oIni:WriteString("BOL1", "Estado", cons_cli[1,25])
+                	oIni:WriteString("BOL1", "CEP", cons_cli[1,26])
+	                oIni:WriteString("BOL1", "CNPJ",IF(! EMPTY(cons_cli[1,32]),cons_cli[1,32],cons_cli[1,34]))
+        	        oIni:WriteString("BOL1", "Instrucoes",minstrucao+' '+minstrucao1)
+
+                	oIni:WriteString("BOL1", "cNumDoc", n_documento)              // seu numero do documento
+	                oIni:WriteString("BOL1", "cNossoNumero", ALLTRIM(mnosso_num))     // numero do banco
+        	        oIni:WriteNumber("BOL1", "nValor", mcons_dupr[i,19])                // valor do boleto
+                	oIni:WriteDate("BOL1", "DtVenc",mcons_dupr[i,11])
+	                oIni:UpdateFile()
+        	        hboleto()
+                //NEXT
+                atencao('Foi impresso com sucesso....')
+        NEXT
+*/
+        fecha_tela()
+        RETURN NIL
+ENDDO

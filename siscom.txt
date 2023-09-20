@@ -1,0 +1,3 @@
+BEMAPED.PRG
+NÆo se pode copiar um arquivo nele mesmo.
+        0 arquivo(s) copiado(s).

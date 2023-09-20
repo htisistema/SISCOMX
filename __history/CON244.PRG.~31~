@@ -1,0 +1,1812 @@
+*** CON244.PRG: Consulta de Documentos (Receber)
+************************************************
+MEMVAR getlist,mdata_sis,nivel_acess
+
+FUNCTION con244(mcli,mtp_)
+**************************
+LOCAL msele,morder
+PRIVATE MPRG:='CON244',tela,tela1,mtipo,lba,cba,m_dup:={},m_pos:={},point,mdata1,;
+        mdata2,mteladata,mtot_dup,mvlr_dup,mtipo_doc,m_dup1:={},m_pos1:={},;
+        mdias_atras,mmulta,mjuros,mvlpago,mtot_juros,msub_tot,mtipo_dup,mcod_cartao,;
+        mcod_aux,mtot_ind,mvlr_ind,msub_ind,mjuros_ind,mtipo_con,mqtd_dias,mqtd_doc,;
+        mtip_pg:='  ',mloc_pg:=' ',marea:=SPACE(15),mbaix_parc,mop:='T',opcao,;
+        i:=0,mcam_arq:=' ',mcpfcnpj := ' ',mcli_spc := SPACE(5),mcam_cli:=' ',;
+        mcobra_fin,mtaxa_fin,;
+        mcliente,mcgc,mcpf,mcod_cli,mcod_forn,mcodemp:=SPACE(3),malias,mop_menu,mtp_cli,mtp_tp,;
+        f,pag,mtit,mtipo
+MEMVAR mmens
+mtp_tp := mtp_
+msele := SELE()
+morder := INDEXORD()
+
+IF mtp_ = NIL
+        IF ! ver_nivel(mprg,'CONTA A RECEBER (CONSULTA DE DOCUMENTO)','1345',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+        //malias := 'dupr'
+ELSE
+        IF ! ver_nivel(mprg,'CREDITO CLIENTE (CONSULTA DE DOCUMENTO)','1345',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+        //malias := 'cred'
+ENDIF
+IF mcli = NIL
+        IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+ELSE
+        mtp_cli := STRZERO(mcli,5)
+ENDIF
+*------------------------------------------------------------------------------------
+//IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+//IF ! AbriArq('saccheq','cheq');RETURN NIL;ENDIF
+//IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+//IF ! AbriArq('saccred','cred');RETURN NIL;ENDIF
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+IF ! AbriArq('sactipdc','tipdc');RETURN NIL;ENDIF
+//IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+*------------------------------------------------------------------------------------
+mmens := ' '
+*****************
+SELE('tipdc');ORDSETFOCUS(1)
+GO TOP
+*****************
+mmens := tipdc->tipo_doc+'-'+tipdc->descri
+SKIP
+WHILE ! EOF()
+        mmens := mmens + tipdc->tipo_doc+'-'+tipdc->descri
+        SKIP
+ENDDO
+lba := 40
+cba := 120
+set_key('cliente',,,'*')
+SET KEY 275 TO cons_doc()
+CLEAR GETS
+mop_menu := 0
+**************
+//SELE(malias);ORDSETFOCUS(4)
+***************
+op_tela(02,20,30,50,' FORMAS DE CONSULTAS '+IF(mtp_tp = NIL,'CONTA A RECEBER','CREDITO'),,'*')
+WHILE .T.
+	exibi_prg(mprg)
+        limpa(00,00,30,90)
+        setcor(1)
+        botao1(01,02,01+2,02+26)
+        botao1(01+4,02,01+6,02+26)
+        botao1(01+8,02,01+10,02+26)
+        botao1(01+12,02,01+14,02+26)
+        botao1(01+16,02,01+18,02+26)
+        botao1(01+20,02,01+22,02+26)
+        botao1(01+24,02,01+26,02+26)
+        @ 01+1,02+1 PROMPT  '         Emitidas        '
+        @ 01+5,02+1 PROMPT  '          Pagos          '
+        @ 01+9,02+1 PROMPT  '         Receber         '
+        @ 01+13,02+1 PROMPT '          Todas          '
+        @ 01+17,02+1 PROMPT '        Individual       '
+        @ 01+21,02+1 PROMPT ' Demonstrativo de Debito '
+        @ 01+25,02+1 PROMPT '    Cheque Devolvidos    '
+        SET INTEN ON
+        MENU TO mop_menu
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        c_con244()
+ENDDO
+SELE(msele);ORDSETFOCUS(morder)
+wvw_lclosewindow()
+RETURN NIL
+****************************** F I M ************************************
+FUNCTION c_con244
+*****************
+local nErr,nPos,aret:={},cComm, apCode,mdata_tran,mnome,mdocum,mcod_c,i:=0
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mcodemp:=SPACE(3),;
+        mqtd_rec,mtot_rec,mqtd_arec,mtot_arec,mcons_dupr:={},cons_cli:={}
+
+mtipo_imp := m_indiv[1,18]
+mqtd_dias := mqtd_doc := mtot_juros := msub_tot := mtot_dup := ;
+mvlr_dup := mcod_forn := mcod_cli := 0
+mtipo_dup := mloc_pg   := ' '
+mtip_pg := mtipo_doc := SPACE(2)
+mcod_cartao := SPACE(3)
+mcpf := SPACE(11)
+mcgc := SPACE(14)
+marea := SPACE(15)
+mcliente := SPACE(30)
+
+ASIZE(m_dup,0)
+ASIZE(m_pos,0)
+ASIZE(aret,0)
+IF mtp_cli <> NIL
+        mcod_cli := mtp_cli
+        op_tela(10,10,13,70,' CONSULTA '+IF(malias = 'dupr','CONTA A RECEBER','CREDITO'))
+        DEVPOS(01,00);DEVOUT('Cod.Empresa...:')
+        @ 01,16 GET mcodemp PICT '999' VALID ver_emp(mcodemp,01,22,,'*') WHEN mmult_emp = 'S'
+        READ
+        wvw_lclosewindow()
+ENDIF
+IF mop_menu = 1
+        mdata1 := m_set[1,138]  //mdata_sis - 30
+        mdata2 := mdata_sis
+        mtipo := 'E'
+ELSEIF mop_menu = 2
+        mdata1 := m_set[1,138]  //mdata_sis - 30
+        mdata2 := mdata_sis
+        mtipo := 'P'
+        mtipo_dup := op_simnao('N','So documentos com juros')
+ELSEIF mop_menu = 3
+        mdata1 := m_set[1,138]  //mdata_sis - 3000
+        mdata2 := mdata_sis + 365
+        mtipo := 'R'
+ELSEIF mop_menu = 7
+        mdata1 := m_set[1,138]  //mdata_sis - 1000
+        mdata2 := mdata_sis
+        mtipo := 'C'
+ELSEIF mop_menu = 4
+        mdata1 := m_set[1,138]  //mdata_sis  - 3000
+        mdata2 := mdata_sis + 365
+        mtipo := 'T'
+ELSEIF mop_menu = 5
+	exibi_prg(mprg)
+        //wvw_lclosewindow()
+        mdata1 := mdata2 := CTOD('  /  /  ')
+        mdata_tran:=CTOD('  /  /  ')
+        mnome:=SPACE(40)
+        mdocum:=SPACE(12)
+        IF mtp_cli <> NIL
+                mcod_cli := VAL(mtp_cli)
+        ELSE
+                mcod_cli := 0
+        ENDIF
+        op_tela(10,10,15,80,'Consulta de Documento')
+        DEVPOS(01,01);DEVOUT('Digite o Codigo Cliente:')
+        DEVPOS(02,01);DEVOUT('Digite o No.Documento..:')
+        DEVPOS(03,01);DEVOUT('Digite a Data..........:')
+        DEVPOS(04,01);DEVOUT('Digite Nome do Cliente.:')
+        @ 01,26 GET mcod_cli PICT '99999' VALID ver_cli(mcod_cli,01,32) .AND. lim_get() WHEN men_get(02,22,'Informe o Cod.do Cliente - <ENTER>p/todos - <F7>p/pesquisar')
+        //@ 01,26 GET mcod_cli PICT '@!KS5' VALID ver_cli(mcod_cli,01,32) .AND. lim_get() WHEN men_get(02,22,'Informe o Cod.do Cliente - <ENTER>p/todos - <F7>p/pesquisar')       // .AND. mtp_cli = NIL
+        @ 02,26 GET mdocum PICT '@!' //WHEN EMPTY(mcod_cli)
+        @ 03,26 GET mdata_tran  //WHEN EMPTY(mcod_cli) .AND. EMPTY(mdocum)
+        @ 04,26 GET mnome PICT '@!' WHEN  EMPTY(mcod_cli)       //.AND. EMPTY(mdocum) .AND.EMPTY(mdata_tran)
+        READ
+
+        IF EMPTY(mdocum) .AND. EMPTY(mcod_cli) .AND. EMPTY(mdata_tran) .AND. EMPTY(mnome)
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        mensagem('Aguarde um momento coletando dados para o relatorio...')
+        IF mtp_tp = NIL
+                cComm  := "SELECT * FROM sacdupr WHERE "
+        ELSE
+                cComm  := "SELECT * FROM saccred WHERE "
+        ENDIF
+        IF ! EMPTY(mdata_tran)
+                ccomm := ccomm + " datpag >= "+sr_cdbvalue(mdata_tran)
+        ENDIF
+        IF ! EMPTY(mnome)
+                IF ! EMPTY(mdata_tran)
+                        ccomm := ccomm + " AND "
+                ENDIF
+                ccomm := ccomm + " cliente LIKE "+sr_cdbvalue(ALLTRIM(mnome)+'%')
+                //ccomm := ccomm + " ORDER BY cliente,duplicata"
+        ENDIF
+        IF ! EMPTY(mdocum)
+                IF ! EMPTY(mnome) .OR. ! EMPTY(mdata_tran)
+                        ccomm := ccomm + " AND "
+                ENDIF
+                ccomm := ccomm + " duplicata LIKE "+sr_cdbvalue(ALLTRIM(mdocum)+'%')
+                //ccomm := ccomm + " ORDER BY duplicata,fornec"
+        ENDIF
+        IF ! EMPTY(mcod_cli)
+                IF ! EMPTY(mdocum) .OR. ! EMPTY(mnome) .OR. ! EMPTY(mdata_tran)
+                        ccomm := ccomm + " AND "
+                ENDIF
+                ccomm := ccomm + " fornec = "+sr_cdbvalue(mcod_cli)
+                //ccomm := ccomm + " ORDER BY fornec,duplicata"
+        ENDIF
+        IF ! EMPTY(mcodemp)
+                ccomm := ccomm + " AND  empresa = "+sr_cdbvalue(mcodemp)
+        ENDIF
+        //ccomm := ccomm + " ORDER BY duplicata,fornec"
+        mcons_dupr :={}
+        sr_getconnection():exec('COMMIT',,.f.)
+        sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+        IF LEN(mcons_dupr) = 0
+                atencao('Nao existe documento neste Periodo...')
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        i:=0
+        FOR i = 1 TO LEN(mcons_dupr)
+                prog_imp(i,DTOC(mcons_dupr[i,13]))
+                AADD(m_pos,mcons_dupr[i,65])
+                AADD(m_dup,'  '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],05);
+                +' '+DTOC(mcons_dupr[i,10])+' '+DTOC(mcons_dupr[i,11])+' '+DTOC(mcons_dupr[i,13])+' '+TRANSFORM(mcons_dupr[i,19],'999,999.99');
+                +' '+TRANSFORM(IF(! EMPTY(mcons_dupr[i,13]),mcons_dupr[i,13] - mcons_dupr[i,11],mdata_sis - mcons_dupr[i,11]),'9999');
+                +' '+mcons_dupr[i,30]+' '+mcons_dupr[i,25]+'  '+mcons_dupr[i,27]+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,1])
+                msub_tot := msub_tot + mcons_dupr[i,19]
+                mmulta := mjuros := 0
+                mdias_atras := mdata_sis-(mcons_dupr[i,11]+m_set[1,106])
+                IF ! EMPTY(mcons_dupr[i,13])
+                        IF  mcons_dupr[i,13] - mcons_dupr[i,11] > 0
+                                mqtd_dias := mqtd_dias + mcons_dupr[i,13] - mcons_dupr[i,11]
+                                mqtd_doc ++
+                        ENDIF
+                ELSEIF mdias_atras > 0
+                        mdias_atras := mdata_sis-mcons_dupr[i,11]
+                        mqtd_dias := mqtd_dias + mdias_atras
+                        mqtd_doc ++
+                        mmulta := mcons_dupr[i,19] * ((m_set[1,50])/100)
+                        mjuros := mjuros + (mcons_dupr[i,19] * ((mdias_atras*m_set[1,51])/100))
+                ENDIF
+                mtot_juros := mtot_juros + mmulta+mjuros
+                mvlr_dup := mvlr_dup + mcons_dupr[i,19] + mmulta + mjuros
+                mtot_dup ++
+        NEXT
+        wvw_lclosewindow()
+ELSEIF mop_menu = 6
+        con252(,'*',mcod_cli)
+        RETURN NIL
+ENDIF
+IF (mtp_cli = NIL .OR. mtipo = 'E') .AND. (mop_menu < 5 .OR. mop_menu > 5)
+	exibi_prg(mprg)
+        mbaix_parc := 'N'
+        IF mtp_cli <> NIL
+                mcod_cli := VAL(mtp_cli)
+        ELSE
+                mcod_cli := 0
+        ENDIF
+        op_tela(10,10,21,90,' CONSULTA '+IF(malias = 'dupr','CONTA A RECEBER','CREDITO'))
+        mensagem('Digite o periodo que deseja consultar - <ESC> p/retornar')
+        DEVPOS(00,00);DEVOUT('Cod.Empresa...:')
+        DEVPOS(01,00);DEVOUT('Cliente.......:')
+        DEVPOS(02,00);DEVOUT('Data Inicial..:')
+        DEVPOS(03,00);DEVOUT('Data Final....:')
+        DEVPOS(04,00);DEVOUT('Tipo Documento:')
+        DEVPOS(05,00);DEVOUT('Tipo Operacao.:')
+        DEVPOS(06,00);DEVOUT('Local Pagamen.:')
+        DEVPOS(07,00);DEVOUT('Area Cliente..:')
+        DEVPOS(08,00);DEVOUT('Doc.Baixa Parcial [S/C/N]:')
+        DEVPOS(09,00);DEVOUT('Cod.Fornecedor/Despesa...:')
+        @ 00,16 GET mcodemp PICT '999' VALID ver_emp(mcodemp,00,22,,'*') WHEN mmult_emp = 'S'
+        @ 01,16 GET mcod_cli PICT '99999' VALID ver_cli(mcod_cli,01,22) .AND. lim_get() WHEN men_get(02,22,'Informe o Cod.do Cliente - <ENTER>p/todos - <F7>p/pesquisar')
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        ver_cli(mcod_cli,13,33)
+        @ 02,16 GET mdata1 VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ 03,16 GET mdata2 VALID IF(mdata2 < mdata1,.F.,.T.)
+//        @ 04,16 GET mtipo_doc PICT '@!' VALID mtipo_doc $ 'CH,DU,CT,FI,RE,  ' .AND. lim_get() WHEN men_get(05,16,'Informe o tipo de Documento: <CH>eque, <DU>plicata, <CT>Cartao, <FI>nanciamento, <RE>cebimento Div. ou deixe em branco p/TODOS')
+        @ 04,16 GET mtipo_doc PICT '@!' VALID ver_tipdc(mtipo_doc,'*') .AND. lim_get() WHEN men_get(05,16,mmens)
+        @ 05,16 GET mtip_pg PICT '@!' VALID lim_get() WHEN men_get(06,16,'Informe o tipo de Operacao que foi feito este PAGAMENTO')
+        @ 06,16 GET mloc_pg PICT '@!' VALID mloc_pg $ 'M,C, ' .AND. lim_get() WHEN men_get(07,16,'Digite [M] pelo Movimento [C]aixa ou deixe em branco p/TODOS')
+        @ 07,16 GET marea PICT '@!' VALID lim_get() WHEN men_get(08,16,'Digite a AREA desejada ou deixe em branco p/TODOS')
+        @ 08,25 GET mbaix_parc PICT '@!' VALID mbaix_parc $ 'S,N,C' .AND. lim_get() WHEN men_get(09,16,'Digite [S]o os Doc.Baixado [C]om os Doc.Baixado [N]enhum Doc.Baixado')
+        @ 09,25 GET mcod_forn PICT '9999' VALID v_fornece(mcod_forn,10,30) WHEN mbaix_parc = 'S' .OR. mbaix_parc = 'C'
+        READ
+//        wvw_lclosewindow()
+        IF LASTKEY() = 27
+                wvw_lclosewindow()                
+                RETURN NIL
+        ENDIF
+        v_fornece(mcod_forn,21,42)
+        IF mtipo_doc = 'CT'
+                IF ! AbriArq('saccarta','car');RETURN NIL;ENDIF
+                mcod_cartao := SPACE(3)
+                op_tela(19,10,20,75,' Codigo do Cartao ')
+                @ 00,00 SAY "Codigo do Cartao:"
+                @ 00,19 GET mcod_cartao PICT '999' VALID ver_cartao(VAL(mcod_cartao),00,22)
+                READ
+                IF LASTKEY() = 27
+                        wvw_lclosewindow()
+                        RETURN NIL
+                ENDIF
+                opcao := op_simnao('S','Confirma o Cartao:')
+                wvw_lclosewindow()
+                IF opcao = 'N'
+                        RETURN NIL
+                ENDIF
+        ENDIF
+        IF mtipo_doc = 'FI'
+                IF ! AbriArq('sacfin','fin');RETURN NIL;ENDIF
+                mcod_cartao := SPACE(3)
+                op_tela(19,10,20,75," Vencer/Vencidas ")
+                @ 00,00 SAY "Codigo da Financeira:"
+                @ 00,22 GET mcod_cartao PICT '999' VALID IF(EMPTY(mcod_cartao),.T.,ver_finan(VAL(mcod_cartao),00,26))
+                READ
+                IF LASTKEY() = 27
+                        wvw_lclosewindow()
+                        RETURN NIL
+                ENDIF
+                opcao := op_simnao('S','Confirma a Financeira:')
+                wvw_lclosewindow()
+                IF opcao = 'N'
+                        RETURN NIL
+                ENDIF
+        ENDIF
+        opcao := op_simnao('S','Confirma o periodo [S/n]:')
+        //wvw_lclosewindow()
+        IF opcao = 'N'
+                wvw_lclosewindow()                
+                RETURN NIL
+        ENDIF
+        setcor(1)
+        mensagem('Aguarde um momento processando a consulta')
+        IF mtipo = 'P'
+                IF mtp_tp = NIL
+                        cComm  := "SELECT * FROM sacdupr "
+                ELSE
+                        cComm  := "SELECT * FROM saccred "
+                ENDIF
+                //cComm  := "SELECT  * FROM sacdupr"
+                cComm  := ccomm + " WHERE  datpag <= "+sr_cdbvalue(mdata2)+" AND  datpag >= "+sr_cdbvalue(mdata1)+" AND  pago <> 'T' AND  pago IS NOT NULL AND  datpag IS NOT NULL"
+                IF mbaix_parc = 'N'
+                        ccomm := ccomm + " AND  baix_parc IS NULL"
+                ENDIF
+                IF mbaix_parc = 'S'
+                        ccomm := ccomm + " AND  baix_parc IS NOT NULL"
+                ENDIF
+                IF ! EMPTY(mcod_forn)
+                        ccomm := ccomm + " AND  cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4))
+                ENDIF
+                IF ! EMPTY(mtip_pg)
+                        ccomm := ccomm + " AND  tip_pg = "+sr_cdbvalue(mtip_pg)
+                ENDIF
+                IF ! EMPTY(mloc_pg)
+                        ccomm := ccomm + " AND  mov_cx = "+sr_cdbvalue(mloc_pg)
+                ENDIF
+                IF ! EMPTY(mtipo_doc)
+                        ccomm := ccomm + " AND  tipo = "+sr_cdbvalue(mtipo_doc)
+                ENDIF
+                IF ! EMPTY(mcod_cartao)
+                        ccomm := ccomm + " AND  numero = "+sr_cdbvalue(mcod_cartao)
+                ENDIF
+                IF ! EMPTY(mcod_cli)
+                        ccomm := ccomm + " AND  fornec = "+sr_cdbvalue(mcod_cli)
+                ENDIF
+                IF ! EMPTY(mcodemp)
+                        ccomm := ccomm + " AND  empresa = "+sr_cdbvalue(mcodemp)
+                ENDIF
+                IF mtipo_dup = 'S'      //.AND. juros = 0
+                        ccomm := ccomm + " AND  juros IS NOT NULL"
+                ENDIF
+                ccomm := ccomm + " ORDER BY  datpag"    //, tipo, fornec"
+                mcons_dupr :={}
+                sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(mcons_dupr) = 0
+                        atencao('Nao existe documento neste Periodo...')
+*                        wvw_lclosewindow()
+                        RETURN NIL
+                ENDIF
+                i:=0
+                FOR i = 1 TO LEN(mcons_dupr)
+                        prog_imp(i,DTOC(mcons_dupr[i,13]))
+                        mcliente := SPACE(30)
+                        IF ! EMPTY(marea)
+                                ver_cli(mcons_dupr[i,7],,,'*')
+                                IF  marea <> cons_cli[1,8]
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        AADD(m_pos,mcons_dupr[i,65])
+                        AADD(m_dup,'  '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],14);
+                        +' '+DTOC(mcons_dupr[i,13])+' '+DTOC(mcons_dupr[i,11])+' '+TRANSFORM(mcons_dupr[i,20],'999,999.99');
+                        +' '+TRANSFORM(mcons_dupr[i,13] - mcons_dupr[i,11],'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,1])
+                        mtot_juros := mtot_juros + mcons_dupr[i,23]
+                        msub_tot := msub_tot + mcons_dupr[i,19]
+                        mvlr_dup := mvlr_dup + mcons_dupr[i,20]
+                        mtot_dup ++
+                NEXT
+        ELSEIF mtipo = 'R'
+                IF EMPTY(mcod_cli)
+                        mtipo_con := mensagem1('Escolha o tipo de consulta [A]NALITICO [S]INTETICO:','A','A,S')
+                ELSE
+                        mtipo_con := 'A'
+                ENDIF
+                IF mtipo_con = 'A'
+                        IF mtp_tp = NIL
+                                cComm  := "SELECT * FROM sacdupr "
+                        ELSE
+                                cComm  := "SELECT * FROM saccred "
+                        ENDIF
+                        cComm  := ccomm + " WHERE  venc <= "+sr_cdbvalue(mdata2)+" AND  venc >= "+sr_cdbvalue(mdata1)+" AND  datpag IS NULL"
+                        IF mbaix_parc = 'N'
+                                ccomm := ccomm + " AND  baix_parc IS NULL"
+                        ENDIF
+                        IF mbaix_parc = 'S'
+                                ccomm := ccomm + " AND  baix_parc IS NOT NULL"
+                        ENDIF
+                        IF ! EMPTY(mcod_forn)
+                                ccomm := ccomm + " AND  cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4))
+                        ENDIF
+                        IF ! EMPTY(mtip_pg)
+                                ccomm := ccomm + " AND  tip_pg = "+sr_cdbvalue(mtip_pg)
+                        ENDIF
+                        IF ! EMPTY(mcod_cli)
+                                ccomm := ccomm + " AND  fornec = "+sr_cdbvalue(mcod_cli)
+                        ENDIF
+                        IF ! EMPTY(mtipo_doc)
+                                ccomm := ccomm + " AND  tipo = "+sr_cdbvalue(mtipo_doc)
+                        ENDIF
+                        IF ! EMPTY(mcod_cartao)
+                                ccomm := ccomm + " AND  numero = "+sr_cdbvalue(mcod_cartao)
+                        ENDIF
+                        IF ! EMPTY(mloc_pg)
+                                ccomm := ccomm + " AND  mov_cx = "+sr_cdbvalue(mloc_pg)
+                        ENDIF
+                        IF ! EMPTY(mcodemp)
+                                ccomm := ccomm + " AND  empresa = "+sr_cdbvalue(mcodemp)
+                        ENDIF
+                        ccomm := ccomm + " ORDER BY  venc"      //, fornec, banco"
+                        mcons_dupr :={}
+                        sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(mcons_dupr) = 0
+                                atencao('Nao existe documento neste Periodo...')
+                                wvw_lclosewindow()
+                                RETURN NIL
+                        ENDIF
+                        i:=0
+                        FOR i = 1 TO LEN(mcons_dupr)
+                                prog_imp(i,DTOC(mcons_dupr[i,11]))
+                                IF ! EMPTY(marea)
+                                        ver_cli(mcons_dupr[i,7],,,'*')
+                                        IF  marea <> cons_cli[1,8]
+                                                LOOP
+                                        ENDIF
+                                ENDIF
+                                AADD(m_pos,mcons_dupr[i,65])
+                                AADD(m_dup,'  '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],14);
+                                +' '+DTOC(mcons_dupr[i,10])+' '+DTOC(mcons_dupr[i,11])+' '+TRANSFORM(mcons_dupr[i,19],'9,999,999.99');
+                                +' '+TRANSFORM(mdata_sis - mcons_dupr[i,11],'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,1])
+                                msub_tot := msub_tot + mcons_dupr[i,19]
+                                mmulta := mjuros := 0
+                                mdias_atras := mdata_sis-(mcons_dupr[i,11]+m_set[1,106])
+                                IF mdias_atras > 0
+                                        mdias_atras := mdata_sis-mcons_dupr[i,11]
+                                        mmulta := mcons_dupr[i,19] * ((m_set[1,50])/100)
+                                        mjuros := mjuros + (mcons_dupr[i,19] * ((mdias_atras*m_set[1,51])/100))
+                                ENDIF
+                                mtot_juros := mtot_juros + mmulta+mjuros
+                                mvlr_dup := mvlr_dup + mcons_dupr[i,19] + mmulta + mjuros
+                                mtot_dup ++
+                        NEXT
+                        IF SR_SetActiveConnection(nCnn1) > 0
+                                atencao(ccomm)
+                                mcons_dupr :={}
+                                sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                                IF LEN(mcons_dupr) > 0
+                                        i:=0
+                                        FOR i = 1 TO LEN(mcons_dupr)
+                                                prog_imp(i,DTOC(mcons_dupr[i,11]))
+                                                IF ! EMPTY(marea)
+                                                        ver_cli(mcons_dupr[i,7],,,'*')
+                                                        IF  marea <> cons_cli[1,8]
+                                                                LOOP
+                                                        ENDIF
+                                                ENDIF
+                                                AADD(m_pos,mcons_dupr[i,65])
+                                                AADD(m_dup,'* '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],14);
+                                                +' '+DTOC(mcons_dupr[i,10])+' '+DTOC(mcons_dupr[i,11])+' '+TRANSFORM(mcons_dupr[i,19],'9,999,999.99');
+                                                +' '+TRANSFORM(mdata_sis - mcons_dupr[i,11],'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,1])
+                                                msub_tot := msub_tot + mcons_dupr[i,19]
+                                                mmulta := mjuros := 0
+                                                mdias_atras := mdata_sis-(mcons_dupr[i,11]+m_set[1,106])
+                                                IF mdias_atras > 0
+                                                        mdias_atras := mdata_sis-mcons_dupr[i,11]
+                                                        mmulta := mcons_dupr[i,19] * ((m_set[1,50])/100)
+                                                        mjuros := mjuros + (mcons_dupr[i,19] * ((mdias_atras*m_set[1,51])/100))
+                                                ENDIF
+                                                mtot_juros := mtot_juros + mmulta+mjuros
+                                                mvlr_dup := mvlr_dup + mcons_dupr[i,19] + mmulta + mjuros
+                                                mtot_dup ++
+                                        NEXT
+
+                                ENDIF
+                                SR_SetActiveConnection(nCnn)
+                        ENDIF
+                        IF SR_SetActiveConnection(nCnn2) > 0
+                                mcons_dupr :={}
+                                sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                                IF LEN(mcons_dupr) > 0
+                                        i:=0
+                                        FOR i = 1 TO LEN(mcons_dupr)
+                                                prog_imp(i,DTOC(mcons_dupr[i,11]))
+                                                IF ! EMPTY(marea)
+                                                        ver_cli(mcons_dupr[i,7],,,'*')
+                                                        IF  marea <> cons_cli[1,8]
+                                                                LOOP
+                                                        ENDIF
+                                                ENDIF
+                                                AADD(m_pos,mcons_dupr[i,65])
+                                                AADD(m_dup,'* '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],14);
+                                                +' '+DTOC(mcons_dupr[i,10])+' '+DTOC(mcons_dupr[i,11])+' '+TRANSFORM(mcons_dupr[i,19],'9,999,999.99');
+                                                +' '+TRANSFORM(mdata_sis - mcons_dupr[i,11],'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,1])
+                                                msub_tot := msub_tot + mcons_dupr[i,19]
+                                                mmulta := mjuros := 0
+                                                mdias_atras := mdata_sis-(mcons_dupr[i,11]+m_set[1,106])
+                                                IF mdias_atras > 0
+                                                        mdias_atras := mdata_sis-mcons_dupr[i,11]
+                                                        mmulta := mcons_dupr[i,19] * ((m_set[1,50])/100)
+                                                        mjuros := mjuros + (mcons_dupr[i,19] * ((mdias_atras*m_set[1,51])/100))
+                                                ENDIF
+                                                mtot_juros := mtot_juros + mmulta+mjuros
+                                                mvlr_dup := mvlr_dup + mcons_dupr[i,19] + mmulta + mjuros
+                                                mtot_dup ++
+                                        NEXT
+
+                                ENDIF
+                                SR_SetActiveConnection(nCnn)
+                        ENDIF
+                ELSEIF mtipo_con = 'S'
+                        IF mtp_tp = NIL
+                                cComm  := "SELECT * FROM sacdupr "
+                        ELSE
+                                cComm  := "SELECT * FROM saccred "
+                        ENDIF
+                        //cComm  := "SELECT  * FROM sacdupr"
+                        cComm  := ccomm + " WHERE  venc <= "+sr_cdbvalue(mdata2)+" AND  venc >= "+sr_cdbvalue(mdata1)+" AND  datpag IS NULL"
+                        IF mbaix_parc = 'N'
+                                ccomm := ccomm + " AND  baix_parc IS NULL"
+                        ENDIF
+                        IF mbaix_parc = 'S'
+                                ccomm := ccomm + " AND  baix_parc IS NOT NULL"
+                        ENDIF
+                        IF ! EMPTY(mcod_forn)
+                                ccomm := ccomm + " AND  cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4))
+                        ENDIF
+                        IF ! EMPTY(mtip_pg)
+                                ccomm := ccomm + " AND  tip_pg = "+sr_cdbvalue(mtip_pg)
+                        ENDIF
+                        IF ! EMPTY(mcod_cli)
+                                ccomm := ccomm + " AND  fornec = "+sr_cdbvalue(mcod_cli)
+                        ENDIF
+                        IF ! EMPTY(mtipo_doc)
+                                ccomm := ccomm + " AND  tipo = "+sr_cdbvalue(mtipo_doc)
+                        ENDIF
+                        IF ! EMPTY(mcod_cartao)
+                                ccomm := ccomm + " AND  numero = "+sr_cdbvalue(mcod_cartao)
+                        ENDIF
+                        IF ! EMPTY(mloc_pg)
+                                ccomm := ccomm + " AND  mov_cx = "+sr_cdbvalue(mloc_pg)
+                        ENDIF
+                        IF ! EMPTY(mcodemp)
+                                ccomm := ccomm + " AND  empresa = "+sr_cdbvalue(mcodemp)
+                        ENDIF
+                        ccomm := ccomm + " ORDER BY  fornec, venc"
+                        mcons_dupr :={}
+                        sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(mcons_dupr) = 0
+                                atencao('Nao existe documento neste Periodo...')
+                                wvw_lclosewindow()
+                                RETURN NIL
+                        ENDIF
+                        i:=0
+                        FOR i = 1 TO LEN(mcons_dupr)
+                                prog_imp(i,DTOC(mcons_dupr[i,11]))
+                                mtot_ind := mvlr_ind := msub_ind := mjuros_ind := 0
+                                mcod_aux := mcons_dupr[i,7]
+                                WHILE i <= LEN(mcons_dupr) .AND. mcod_aux = mcons_dupr[i,7]
+                                        IF ! EMPTY(marea)
+                                                ver_cli(mcons_dupr[i,7],,,'*')
+                                                IF marea <> cons_cli[1,8]
+                                                        i++;LOOP
+                                                ENDIF
+                                        ENDIF
+                                        AADD(m_pos,mcons_dupr[i,65])
+                                        AADD(m_dup,'  '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],14);
+                                        +' '+DTOC(mcons_dupr[i,10])+' '+DTOC(mcons_dupr[i,11])+' '+TRANSFORM(mcons_dupr[i,19],'9,999,999.99');
+                                        +' '+TRANSFORM(mdata_sis - mcons_dupr[i,11],'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,1])
+                                        msub_tot := msub_tot + mcons_dupr[i,19]
+                                        mtot_dup ++
+                                        msub_ind := msub_ind + mcons_dupr[i,19]
+                                        mtot_ind ++
+                                        mmulta := mjuros := 0
+                                        mdias_atras := mdata_sis-(mcons_dupr[i,11]+m_set[1,106])
+                                        IF mdias_atras > 0
+                                                mdias_atras := mdata_sis-mcons_dupr[i,11]
+                                                mmulta := mcons_dupr[i,19] * ((m_set[1,50])/100)
+                                                mjuros := mjuros + (mcons_dupr[i,19] * ((mdias_atras*m_set[1,51])/100))
+                                        ENDIF
+                                        mtot_juros := mtot_juros + mmulta+mjuros
+                                        mjuros_ind := mjuros_ind + mmulta+mjuros
+                                        mvlr_dup := mvlr_dup + mcons_dupr[i,19] + mmulta + mjuros
+                                        mvlr_ind := mvlr_ind + mcons_dupr[i,19] + mmulta + mjuros
+                                        i++
+                                ENDDO
+                                IF ! EMPTY(mtot_ind)
+                                        AADD(m_pos,0)
+                                        AADD(m_dup,REPLI('-',77))
+                                        AADD(m_pos,0)
+                                        AADD(m_dup,'QUANTD: '+STRZERO(mtot_ind,6)+'  SUB-TOTAL:'+TRANSFORM(msub_ind,'999,999.99')+' JURO+MULTA:'+TRANSFORM(mjuros_ind,'999,999.99')+' TOTAL:'+TRANSFORM(mvlr_ind,'9,999,999.99'))
+                                        AADD(m_pos,0)
+                                        AADD(m_dup,REPLI('-',77))
+                                        mtot_ind := mvlr_ind := msub_ind := mjuros_ind := 0
+                                ENDIF
+                        NEXT
+                        IF SR_SetActiveConnection(nCnn1) > 0
+                                IF cam_dba[1,8] = 'S'
+                                        mcons_dupr :={}
+                                        sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+                                        IF LEN(mcons_dupr) > 0
+                                                i:=0
+                                                FOR i = 1 TO LEN(mcons_dupr)
+                                                        prog_imp(i,DTOC(mcons_dupr[i,11]))
+                                                        mtot_ind := mvlr_ind := msub_ind := mjuros_ind := 0
+                                                        mcod_aux := mcons_dupr[i,7]
+                                                        WHILE i <= LEN(mcons_dupr) .AND. mcod_aux = mcons_dupr[i,7]
+                                                                IF ! EMPTY(marea)
+                                                                        ver_cli(mcons_dupr[i,7],,,'*')
+                                                                        IF marea <> cons_cli[1,8]
+                                                                                i++;LOOP
+                                                                        ENDIF
+                                                                ENDIF
+                                                                AADD(m_pos,mcons_dupr[i,65])
+                                                                AADD(m_dup,'* '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],14);
+                                                                +' '+DTOC(mcons_dupr[i,10])+' '+DTOC(mcons_dupr[i,11])+' '+TRANSFORM(mcons_dupr[i,19],'9,999,999.99');
+                                                                +' '+TRANSFORM(mdata_sis - mcons_dupr[i,11],'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,1])
+                                                                msub_tot := msub_tot + mcons_dupr[i,19]
+                                                                mtot_dup ++
+                                                                msub_ind := msub_ind + mcons_dupr[i,19]
+                                                                mtot_ind ++
+                                                                mmulta := mjuros := 0
+                                                                mdias_atras := mdata_sis-(mcons_dupr[i,11]+m_set[1,106])
+                                                                IF mdias_atras > 0
+                                                                        mdias_atras := mdata_sis-mcons_dupr[i,11]
+                                                                        mmulta := mcons_dupr[i,19] * ((m_set[1,50])/100)
+                                                                        mjuros := mjuros + (mcons_dupr[i,19] * ((mdias_atras*m_set[1,51])/100))
+                                                                ENDIF
+                                                                mtot_juros := mtot_juros + mmulta+mjuros
+                                                                mjuros_ind := mjuros_ind + mmulta+mjuros
+                                                                mvlr_dup := mvlr_dup + mcons_dupr[i,19] + mmulta + mjuros
+                                                                mvlr_ind := mvlr_ind + mcons_dupr[i,19] + mmulta + mjuros
+                                                                i++
+                                                        ENDDO
+                                                        IF ! EMPTY(mtot_ind)
+                                                                AADD(m_pos,0)
+                                                                AADD(m_dup,REPLI('-',77))
+                                                                AADD(m_pos,0)
+                                                                AADD(m_dup,'QUANTD: '+STRZERO(mtot_ind,6)+'  SUB-TOTAL:'+TRANSFORM(msub_ind,'999,999.99')+' JURO+MULTA:'+TRANSFORM(mjuros_ind,'999,999.99')+' TOTAL:'+TRANSFORM(mvlr_ind,'9,999,999.99'))
+                                                                AADD(m_pos,0)
+                                                                AADD(m_dup,REPLI('-',77))
+                                                                mtot_ind := mvlr_ind := msub_ind := mjuros_ind := 0
+                                                        ENDIF
+                                                NEXT
+                                        ENDIF
+                                ENDIF
+                                SR_SetActiveConnection(nCnn)
+                        ENDIF
+                        IF SR_SetActiveConnection(nCnn2) > 0
+                                IF cam_dba[2,8] = 'S'
+                                        mcons_dupr :={}
+                                        sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+                                        IF LEN(mcons_dupr) > 0
+                                                i:=0
+                                                FOR i = 1 TO LEN(mcons_dupr)
+                                                        prog_imp(i,DTOC(mcons_dupr[i,11]))
+                                                        mtot_ind := mvlr_ind := msub_ind := mjuros_ind := 0
+                                                        mcod_aux := mcons_dupr[i,7]
+                                                        WHILE i <= LEN(mcons_dupr) .AND. mcod_aux = mcons_dupr[i,7]
+                                                                IF ! EMPTY(marea)
+                                                                        ver_cli(mcons_dupr[i,7],,,'*')
+                                                                        IF marea <> cons_cli[1,8]
+                                                                                i++;LOOP
+                                                                        ENDIF
+                                                                ENDIF
+                                                                AADD(m_pos,mcons_dupr[i,65])
+                                                                AADD(m_dup,'* '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],14);
+                                                                +' '+DTOC(mcons_dupr[i,10])+' '+DTOC(mcons_dupr[i,11])+' '+TRANSFORM(mcons_dupr[i,19],'9,999,999.99');
+                                                                +' '+TRANSFORM(mdata_sis - mcons_dupr[i,11],'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,1])
+                                                                msub_tot := msub_tot + mcons_dupr[i,19]
+                                                                mtot_dup ++
+                                                                msub_ind := msub_ind + mcons_dupr[i,19]
+                                                                mtot_ind ++
+                                                                mmulta := mjuros := 0
+                                                                mdias_atras := mdata_sis-(mcons_dupr[i,11]+m_set[1,106])
+                                                                IF mdias_atras > 0
+                                                                        mdias_atras := mdata_sis-mcons_dupr[i,11]
+                                                                        mmulta := mcons_dupr[i,19] * ((m_set[1,50])/100)
+                                                                        mjuros := mjuros + (mcons_dupr[i,19] * ((mdias_atras*m_set[1,51])/100))
+                                                                ENDIF
+                                                                mtot_juros := mtot_juros + mmulta+mjuros
+                                                                mjuros_ind := mjuros_ind + mmulta+mjuros
+                                                                mvlr_dup := mvlr_dup + mcons_dupr[i,19] + mmulta + mjuros
+                                                                mvlr_ind := mvlr_ind + mcons_dupr[i,19] + mmulta + mjuros
+                                                                i++
+                                                        ENDDO
+                                                        IF ! EMPTY(mtot_ind)
+                                                                AADD(m_pos,0)
+                                                                AADD(m_dup,REPLI('-',77))
+                                                                AADD(m_pos,0)
+                                                                AADD(m_dup,'QUANTD: '+STRZERO(mtot_ind,6)+'  SUB-TOTAL:'+TRANSFORM(msub_ind,'999,999.99')+' JURO+MULTA:'+TRANSFORM(mjuros_ind,'999,999.99')+' TOTAL:'+TRANSFORM(mvlr_ind,'9,999,999.99'))
+                                                                AADD(m_pos,0)
+                                                                AADD(m_dup,REPLI('-',77))
+                                                                mtot_ind := mvlr_ind := msub_ind := mjuros_ind := 0
+                                                        ENDIF
+                                                NEXT
+                                        ENDIF
+                                ENDIF
+                                SR_SetActiveConnection(nCnn)
+                        ENDIF
+
+                ENDIF
+        ELSEIF mtipo = 'T'
+                IF EMPTY(mcod_cli)
+                        mtipo_con := mensagem1('Escolha o tipo de consulta [A]NALITICO [S]INTETICO:','A','A,S')
+                ELSE
+                        mtipo_con := 'A'
+                ENDIF
+                IF mtipo_con = 'A'
+                        IF mtp_tp = NIL
+                                cComm  := "SELECT * FROM sacdupr "
+                        ELSE
+                                cComm  := "SELECT * FROM saccred "
+                        ENDIF
+                        //cComm  := "SELECT  * FROM sacdupr"
+                        //cComm  := ccomm + " WHERE  venc <= "+sr_cdbvalue(mdata2)+" AND  venc >= "+sr_cdbvalue(mdata1)+" AND ( pago <> 'T' OR  pago IS NULL)"
+                        //cComm  := ccomm + " WHERE  venc <= "+sr_cdbvalue(mdata2)+" AND  venc >= "+sr_cdbvalue(mdata1)+" AND (NOT pago = 'T' OR pago IS NULL)"
+                        cComm  := ccomm + " WHERE fornec IS NOT NULL"
+                        IF mbaix_parc = 'N'
+                                ccomm := ccomm + " AND  baix_parc IS NULL"
+                        ENDIF
+                        IF mbaix_parc = 'S'
+                                ccomm := ccomm + " AND  baix_parc IS NOT NULL"
+                        ENDIF
+                        IF ! EMPTY(mcod_forn)
+                                ccomm := ccomm + " AND  cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4))
+                        ENDIF
+                        IF ! EMPTY(mtip_pg)
+                                ccomm := ccomm + " AND  tip_pg = "+sr_cdbvalue(mtip_pg)
+                        ENDIF
+                        IF ! EMPTY(mcod_cli)
+                                ccomm := ccomm + " AND  fornec = "+sr_cdbvalue(mcod_cli)
+                        ENDIF
+                        IF ! EMPTY(mtipo_doc)
+                                ccomm := ccomm + " AND  tipo = "+sr_cdbvalue(mtipo_doc)
+                        ENDIF
+                        IF ! EMPTY(mcod_cartao)
+                                ccomm := ccomm + " AND  numero = "+sr_cdbvalue(mcod_cartao)
+                        ENDIF
+                        IF ! EMPTY(mloc_pg)
+                                ccomm := ccomm + " AND  mov_cx = "+sr_cdbvalue(mloc_pg)
+                        ENDIF
+                        IF ! EMPTY(mcodemp)
+                                ccomm := ccomm + " AND  empresa = "+sr_cdbvalue(mcodemp)
+                        ENDIF
+                        ccomm := ccomm + " ORDER BY  venc ASC"
+                        //ccomm := ccomm + " ORDER BY  venc, fornec, banco, duplicata"
+                        mcons_dupr :={}
+                        sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(mcons_dupr) = 0
+                                atencao('Nao existe documento neste Periodo...')
+                                wvw_lclosewindow()
+                                RETURN NIL
+                        ENDIF
+                        i:=0
+                        FOR i = 1 TO LEN(mcons_dupr)
+                                prog_imp(i,DTOC(mcons_dupr[i,11]))
+                                IF ! EMPTY(marea)
+                                        ver_cli(mcons_dupr[i,7],,,'*')
+                                        IF  marea <> cons_cli[1,8]
+                                                LOOP
+                                        ENDIF
+                                ENDIF
+                                AADD(m_pos,mcons_dupr[i,65])
+                                AADD(m_dup,'  '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],06);
+                                +' '+DTOC(mcons_dupr[i,10])+' '+DTOC(mcons_dupr[i,11])+' '+DTOC(mcons_dupr[i,13])+' '+mcons_dupr[i,25]+' '+TRANSFORM(mcons_dupr[i,19],'999,999.99');
+                                +' '+TRANSFORM(IF(! EMPTY(mcons_dupr[i,13]),mcons_dupr[i,13] - mcons_dupr[i,11],mdata_sis - mcons_dupr[i,11]),'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,1])
+                                msub_tot := msub_tot + mcons_dupr[i,19]
+                                mmulta := mjuros := 0
+                                mdias_atras := mdata_sis-(mcons_dupr[i,11]+m_set[1,106])
+                                IF mdias_atras > 0
+                                        mdias_atras := mdata_sis-mcons_dupr[i,11]
+                                        mqtd_dias := mqtd_dias + mdias_atras
+                                        mqtd_doc ++
+                                        mmulta := mcons_dupr[i,19] * ((m_set[1,50])/100)
+                                        mjuros := mjuros + (mcons_dupr[i,19] * ((mdias_atras*m_set[1,51])/100))
+                                ENDIF
+                                mtot_juros := mtot_juros + mmulta+mjuros
+                                mvlr_dup := mvlr_dup + mcons_dupr[i,19] + mmulta + mjuros
+                                mtot_dup ++
+                        NEXT
+                ELSEIF mtipo_con = 'S'
+                        IF mtp_tp = NIL
+                                cComm  := "SELECT * FROM sacdupr "
+                        ELSE
+                                cComm  := "SELECT * FROM saccred "
+                        ENDIF
+                        //cComm  := "SELECT  * FROM sacdupr"
+                        cComm  := ccomm + " WHERE  venc <= "+sr_cdbvalue(mdata2)+" AND  venc >= "+sr_cdbvalue(mdata1)+" AND (NOT pago = 'T' OR  pago IS NULL)"
+                        IF mbaix_parc = 'N'
+                                ccomm := ccomm + " AND  baix_parc IS NULL"
+                        ENDIF
+                        IF mbaix_parc = 'S'
+                                ccomm := ccomm + " AND  baix_parc IS NOT NULL"
+                        ENDIF
+                        IF ! EMPTY(mcod_forn)
+                                ccomm := ccomm + " AND  cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4))
+                        ENDIF
+                        IF ! EMPTY(mtip_pg)
+                                ccomm := ccomm + " AND  tip_pg = "+sr_cdbvalue(mtip_pg)
+                        ENDIF
+                        IF ! EMPTY(mcod_cli)
+                                ccomm := ccomm + " AND  fornec = "+sr_cdbvalue(mcod_cli)
+                        ENDIF
+                        IF ! EMPTY(mtipo_doc)
+                                ccomm := ccomm + " AND  tipo = "+sr_cdbvalue(mtipo_doc)
+                        ENDIF
+                        IF ! EMPTY(mcod_cartao)
+                                ccomm := ccomm + " AND  numero = "+sr_cdbvalue(mcod_cartao)
+                        ENDIF
+                        IF ! EMPTY(mloc_pg)
+                                ccomm := ccomm + " AND  mov_cx = "+sr_cdbvalue(mloc_pg)
+                        ENDIF
+                        IF ! EMPTY(mcodemp)
+                                ccomm := ccomm + " AND  empresa = "+sr_cdbvalue(mcodemp)
+                        ENDIF
+                        ccomm := ccomm + " ORDER BY  fornec, pago, venc"
+                        mcons_dupr :={}
+                        sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(mcons_dupr) = 0
+                                atencao('Nao existe documento neste Periodo...')
+                                wvw_lclosewindow()
+                                RETURN NIL
+                        ENDIF
+                        i:=0
+                        FOR i = 1 TO LEN(mcons_dupr)
+                                mtot_ind := mvlr_ind := msub_ind := mjuros_ind := 0
+                                mcod_aux := mcons_dupr[i,7]
+                                WHILE i <= LEN(mcons_dupr) .AND. mcod_aux = mcons_dupr[i,7]
+                                        prog_imp(i,DTOC(mcons_dupr[i,11]))
+                                        IF ! EMPTY(marea)
+                                                ver_cli(mcons_dupr[i,7],,,'*')
+                                                IF  marea <> cons_cli[1,8]
+                                                        i++;LOOP
+                                                ENDIF
+                                        ENDIF
+                                        AADD(m_pos,mcons_dupr[i,65])
+                                        AADD(m_dup,'  '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],08);
+                                        +' '+DTOC(mcons_dupr[i,10])+' '+DTOC(mcons_dupr[i,11])+' '+DTOC(mcons_dupr[i,13])+' '+TRANSFORM(mcons_dupr[i,19],'9,999,999.99');
+                                        +' '+TRANSFORM(IF(! EMPTY(mcons_dupr[i,13]),mcons_dupr[i,13] - mcons_dupr[i,11],mdata_sis - mcons_dupr[i,11]),'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,1])
+                                        msub_tot := msub_tot + mcons_dupr[i,19]
+                                        mtot_dup ++
+                                        msub_ind := msub_ind + mcons_dupr[i,19]
+                                        mtot_ind ++
+                                        mmulta := mjuros := 0
+                                        mdias_atras := mdata_sis-(mcons_dupr[i,11]+m_set[1,106])
+                                        IF mdias_atras > 0
+                                                mdias_atras := mdata_sis-mcons_dupr[i,11]
+                                                mmulta := mcons_dupr[i,19] * ((m_set[1,50])/100)
+                                                mjuros := mjuros + (mcons_dupr[i,19] * ((mdias_atras*m_set[1,51])/100))
+                                        ENDIF
+                                        mtot_juros := mtot_juros + mmulta+mjuros
+                                        mjuros_ind := mjuros_ind + mmulta+mjuros
+                                        mvlr_dup := mvlr_dup + mcons_dupr[i,19] + mmulta + mjuros
+                                        mvlr_ind := mvlr_ind + mcons_dupr[i,19] + mmulta + mjuros
+                                ENDDO
+                                IF ! EMPTY(mtot_ind)
+                                        AADD(m_pos,0)
+                                        AADD(m_dup,REPLI('-',77))
+                                        AADD(m_pos,0)
+                                        AADD(m_dup,'QUANTD: '+STRZERO(mtot_ind,6)+'  SUB-TOTAL:'+TRANSFORM(msub_ind,'999,999.99')+' JURO+MULTA:'+TRANSFORM(mjuros_ind,'999,999.99')+' TOTAL:'+TRANSFORM(mvlr_ind,'9,999,999.99'))
+                                        AADD(m_pos,0)
+                                        AADD(m_dup,REPLI('-',77))
+                                        mtot_ind := mvlr_ind := msub_ind := mjuros_ind := 0
+                                ENDIF
+                        NEXT
+                ENDIF
+        ELSEIF mtipo = 'E'
+                IF mtp_tp = NIL
+                        cComm  := "SELECT * FROM sacdupr "
+                ELSE
+                        cComm  := "SELECT * FROM saccred "
+                ENDIF
+                //cComm  := "SELECT  * FROM sacdupr"
+                cComm  := ccomm + " WHERE  emissao <= "+sr_cdbvalue(mdata2)+" AND  emissao >= "+sr_cdbvalue(mdata1)+" AND ( pago <> 'T' OR  pago IS NULL)"
+                IF mbaix_parc = 'N'
+                        ccomm := ccomm + " AND  baix_parc IS NULL"
+                ENDIF
+                IF mbaix_parc = 'S'
+                        ccomm := ccomm + " AND  baix_parc IS NOT NULL"
+                ENDIF
+                IF ! EMPTY(mcod_forn)
+                        ccomm := ccomm + " AND  cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4))
+                ENDIF
+                IF ! EMPTY(mtip_pg)
+                        ccomm := ccomm + " AND  tip_pg = "+sr_cdbvalue(mtip_pg)
+                ENDIF
+                IF ! EMPTY(mcod_cli)
+                        ccomm := ccomm + " AND  fornec = "+sr_cdbvalue(mcod_cli)
+                ENDIF
+                IF ! EMPTY(mtipo_doc)
+                        ccomm := ccomm + " AND  tipo = "+sr_cdbvalue(mtipo_doc)
+                ENDIF
+                IF ! EMPTY(mcod_cartao)
+                        ccomm := ccomm + " AND  numero = "+sr_cdbvalue(mcod_cartao)
+                ENDIF
+                IF ! EMPTY(mloc_pg)
+                        ccomm := ccomm + " AND  mov_cx = "+sr_cdbvalue(mloc_pg)
+                ENDIF
+                IF ! EMPTY(mcodemp)
+                        ccomm := ccomm + " AND  empresa = "+sr_cdbvalue(mcodemp)
+                ENDIF
+                ccomm := ccomm + " ORDER BY  emissao, fornec, banco"
+                mcons_dupr :={}
+                sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(mcons_dupr) = 0
+                        atencao('Nao existe documento neste Periodo...')
+                        wvw_lclosewindow()
+                        RETURN NIL
+                ENDIF
+                i:=0
+                FOR i = 1 TO LEN(mcons_dupr)
+                        prog_imp(i,DTOC(mcons_dupr[i,11]))
+                        IF ! EMPTY(marea)
+                                ver_cli(mcons_dupr[i,7],,,'*')
+                                IF marea <> cons_cli[1,8]
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        AADD(m_pos,mcons_dupr[i,65])
+                        AADD(m_dup,'  '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],14);
+                        +' '+DTOC(mcons_dupr[i,10])+' '+DTOC(mcons_dupr[i,11])+' '+TRANSFORM(mcons_dupr[i,19],'9,999,999.99');
+                        +' '+TRANSFORM(IF(! EMPTY(mcons_dupr[i,13]),mcons_dupr[i,13] - mcons_dupr[i,11],mdata_sis - mcons_dupr[i,11]),'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,1])
+                        msub_tot := msub_tot + mcons_dupr[i,19]
+                        mmulta := mjuros := 0
+                        mdias_atras := mdata_sis-(mcons_dupr[i,11]+m_set[1,106])
+                        IF mdias_atras > 0
+                                mdias_atras := mdata_sis-mcons_dupr[i,11]
+                                mmulta := mcons_dupr[i,19] * ((m_set[1,50])/100)
+                                mjuros := mjuros + (mcons_dupr[i,19] * ((mdias_atras*m_set[1,51])/100))
+                        ENDIF
+                        mtot_juros := mtot_juros + mmulta+mjuros
+                        mvlr_dup := mvlr_dup + mcons_dupr[i,19] + mmulta + mjuros
+                        mtot_dup ++
+                NEXT
+        ENDIF
+        wvw_lclosewindow()
+ELSEIF mop_menu < 5 .OR. mop_menu > 5
+        //wvw_lclosewindow()
+        mensagem('Aguarde um momento processando a consulta')
+        mtipo_doc := 'GE'
+        IF mtipo = 'P'
+                IF mtp_tp = NIL
+                        cComm  := "SELECT  * FROM sacdupr WHERE  fornec = "+sr_cdbvalue(mtp_cli)+" AND NOT pago = 'T' AND  pago IS NOT NULL AND datpag IS NOT NULL"
+                ELSE
+                        cComm  := "SELECT  * FROM saccred WHERE  fornec = "+sr_cdbvalue(mtp_cli)+" AND NOT pago = 'T' AND  pago IS NOT NULL AND datpag IS NOT NULL"
+                ENDIF
+                //cComm  := "SELECT  * FROM sacdupr WHERE  fornec = "+sr_cdbvalue(mtp_cli)+" AND  pago <> 'T' AND  pago IS NOT NULL AND  datpag IS NOT NULL"
+                IF mtipo_dup = 'S'
+                        ccomm := ccomm + " AND  juros IS NOT NULL"
+                ENDIF
+                IF ! EMPTY(mcodemp)
+                        ccomm := ccomm + " AND  empresa = "+sr_cdbvalue(mcodemp)
+                ENDIF
+                ccomm := ccomm + " ORDER BY venc"
+                mcons_dupr :={}
+                sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(mcons_dupr) = 0
+                        atencao('Nao existe documento neste Periodo...')
+                        RETURN NIL
+                ENDIF
+                i:=0
+                FOR i = 1 TO LEN(mcons_dupr)
+                        prog_imp(i,DTOC(mcons_dupr[i,13]))
+                        mcliente := SPACE(30)
+                        IF ! EMPTY(marea)
+                                ver_cli(mcons_dupr[i,7],,,'*')
+                                IF marea <> cons_cli[1,8]
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        AADD(m_pos,mcons_dupr[i,65])
+                        AADD(m_dup,'  '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],14);
+                        +' '+DTOC(mcons_dupr[i,13])+' '+DTOC(mcons_dupr[i,11])+' '+TRANSFORM(mcons_dupr[i,20],'999,999.99');
+                        +' '+TRANSFORM(mcons_dupr[i,13] - mcons_dupr[i,11],'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,25]+' '+mcons_dupr[i,1])
+                        mvlr_dup := mvlr_dup + mcons_dupr[i,20]
+                        msub_tot := msub_tot + mcons_dupr[i,19]
+                        mtot_juros := mtot_juros + mcons_dupr[i,23]
+                        mtot_dup ++
+                NEXT
+        ELSEIF mtipo = 'T'
+                IF mtp_tp = NIL
+                        cComm  := "SELECT  * FROM sacdupr WHERE  fornec = "+sr_cdbvalue(mtp_cli)        //+" AND NOT pago = 'T'"   //OR pago IS NULL)"
+                ELSE
+                        cComm  := "SELECT  * FROM saccred WHERE  fornec = "+sr_cdbvalue(mtp_cli)        //+" AND NOT pago = 'T'"   //OR pago IS NULL)"
+                ENDIF
+                IF ! EMPTY(mcodemp)
+                        ccomm := ccomm + " AND  empresa = "+sr_cdbvalue(mcodemp)
+                ENDIF
+                //ccomm := ccomm + " ORDER BY  fornec, venc, duplicata"
+                ccomm := ccomm + " ORDER BY  datpag ASC,venc ASC"
+                mcons_dupr :={}
+                sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(mcons_dupr) = 0
+                        atencao('Nao existe documento neste Periodo...')
+                        RETURN NIL
+                ENDIF
+                i:=0
+                FOR i = 1 TO LEN(mcons_dupr)
+                        prog_imp(i,DTOC(mcons_dupr[i,11]))
+                        AADD(m_pos,mcons_dupr[i,65])
+                        AADD(m_dup,'  '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],05);
+                        +' '+DTOC(mcons_dupr[i,10])+' '+DTOC(mcons_dupr[i,11])+' '+DTOC(mcons_dupr[i,13])+' '+mcons_dupr[i,25]+' '+TRANSFORM(mcons_dupr[i,19],'999,999.99');
+                        +' '+TRANSFORM(IF(! EMPTY(mcons_dupr[i,13]),mcons_dupr[i,13] - mcons_dupr[i,11],mdata_sis - mcons_dupr[i,11]),'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ');
+                        +' '+mcons_dupr[i,30]+' '+mcons_dupr[i,1])
+                        msub_tot := msub_tot + mcons_dupr[i,19]
+                        mmulta := mjuros := 0
+                        mdias_atras := mdata_sis-(mcons_dupr[i,11]+m_set[1,106])
+                        IF ! EMPTY(mcons_dupr[i,13])
+                                IF  mcons_dupr[i,13] - mcons_dupr[i,11] > 0
+                                        mqtd_dias := mqtd_dias + mcons_dupr[i,13] - mcons_dupr[i,11]
+                                        mqtd_doc ++
+                                ENDIF
+                        ELSEIF mdias_atras > 0
+                                mdias_atras := mdata_sis-mcons_dupr[i,11]
+                                mqtd_dias := mqtd_dias + mdias_atras
+                                mqtd_doc ++
+                                mmulta := mcons_dupr[i,19] * ((m_set[1,50])/100)
+                                mjuros := mjuros + (mcons_dupr[i,19] * ((mdias_atras*m_set[1,51])/100))
+                        ENDIF
+                        mtot_juros := mtot_juros + mmulta+mjuros
+                        mvlr_dup := mvlr_dup + mcons_dupr[i,19] + mmulta + mjuros
+                        mtot_dup ++
+                NEXT
+        ELSEIF mtipo = 'R' .OR. mtipo = 'C'
+                IF mtp_tp = NIL
+                        cComm  := "SELECT  * FROM sacdupr WHERE  fornec = "+sr_cdbvalue(mtp_cli)+" AND  datpag IS NULL"
+                ELSE
+                        cComm  := "SELECT  * FROM saccred WHERE  fornec = "+sr_cdbvalue(mtp_cli)+" AND  datpag IS NULL"
+                ENDIF
+                IF mtipo = 'C'
+                        ccomm := ccomm + " AND  data_fund IS NOT NULL"
+                ENDIF
+                IF ! EMPTY(mcodemp)
+                        ccomm := ccomm + " AND  empresa = "+sr_cdbvalue(mcodemp)
+                ENDIF
+                ccomm := ccomm + " ORDER BY venc"
+                mcons_dupr :={}
+                sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(mcons_dupr) = 0
+                        atencao('Nao existe documento neste Periodo...')
+                        RETURN NIL
+                ENDIF
+                i:=0
+                FOR i = 1 TO LEN(mcons_dupr)
+                        prog_imp(i,DTOC(mcons_dupr[i,11]))
+                        mcliente := SPACE(30)
+                        //ver_cli(VAL(mcons_dupr[i,7]),,,'*')
+                        AADD(m_pos,mcons_dupr[i,65])
+                        AADD(m_dup,'  '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],14);
+                        +' '+DTOC(mcons_dupr[i,10])+' '+DTOC(mcons_dupr[i,11])+' '+TRANSFORM(mcons_dupr[i,19],'999,999.99');
+                        +' '+TRANSFORM(mdata_sis - mcons_dupr[i,11],'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,25]+' '+mcons_dupr[i,1])
+                        msub_tot := msub_tot + mcons_dupr[i,19]
+                        mtot_dup ++
+                        mmulta := mjuros := 0
+                        mdias_atras := mdata_sis-(mcons_dupr[i,11]+m_set[1,106])
+                        IF mdias_atras > 0
+                                mdias_atras := mdata_sis-mcons_dupr[i,11]
+                                mmulta := mcons_dupr[i,19] * ((m_set[1,50])/100)
+                                mjuros := mjuros + (mcons_dupr[i,19] * ((mdias_atras*m_set[1,51])/100))
+                        ENDIF
+                        mtot_juros := mtot_juros + mmulta+mjuros
+                        mvlr_dup := mvlr_dup + mcons_dupr[i,19] + mmulta + mjuros
+                NEXT
+                IF SR_SetActiveConnection(nCnn1) > 0
+                        IF cam_dba[1,8] = 'S'
+                                mcons_dupr :={}
+                                sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                                IF LEN(mcons_dupr) > 0
+                                        i:=0
+                                        FOR i = 1 TO LEN(mcons_dupr)
+                                                prog_imp(i,DTOC(mcons_dupr[i,11]))
+                                                mcliente := SPACE(30)
+                                                //ver_cli(VAL(mcons_dupr[i,7]),,,'*')
+                                                AADD(m_pos,mcons_dupr[i,65])
+                                                AADD(m_dup,'* '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],14);
+                                                +' '+DTOC(mcons_dupr[i,10])+' '+DTOC(mcons_dupr[i,11])+' '+TRANSFORM(mcons_dupr[i,19],'999,999.99');
+                                                +' '+TRANSFORM(mdata_sis - mcons_dupr[i,11],'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,25]+' '+mcons_dupr[i,1])
+                                                msub_tot := msub_tot + mcons_dupr[i,19]
+                                                mtot_dup ++
+                                                mmulta := mjuros := 0
+                                                mdias_atras := mdata_sis-(mcons_dupr[i,11]+m_set[1,106])
+                                                IF mdias_atras > 0
+                                                        mdias_atras := mdata_sis-mcons_dupr[i,11]
+                                                        mmulta := mcons_dupr[i,19] * ((m_set[1,50])/100)
+                                                        mjuros := mjuros + (mcons_dupr[i,19] * ((mdias_atras*m_set[1,51])/100))
+                                                ENDIF
+                                                mtot_juros := mtot_juros + mmulta+mjuros
+                                                mvlr_dup := mvlr_dup + mcons_dupr[i,19] + mmulta + mjuros
+                                        NEXT
+                                ENDIF
+                        ENDIF
+                        SR_SetActiveConnection(nCnn)
+                ENDIF
+                IF SR_SetActiveConnection(nCnn2) > 0
+                        IF cam_dba[2,8] = 'S'
+                                mcons_dupr :={}
+                                sr_getconnection():exec(ccomm,,.t.,mcons_dupr)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                                IF LEN(mcons_dupr) > 0
+                                        i:=0
+                                        FOR i = 1 TO LEN(mcons_dupr)
+                                                prog_imp(i,DTOC(mcons_dupr[i,11]))
+                                                mcliente := SPACE(30)
+                                                //ver_cli(VAL(mcons_dupr[i,7]),,,'*')
+                                                AADD(m_pos,mcons_dupr[i,65])
+                                                AADD(m_dup,'* '+mcons_dupr[i,2]+mcons_dupr[i,4]+mcons_dupr[i,28]+' '+mcons_dupr[i,16]+' '+mcons_dupr[i,26]+' '+STR(mcons_dupr[i,7],5)+'-'+LEFT(mcons_dupr[i,8],14);
+                                                +' '+DTOC(mcons_dupr[i,10])+' '+DTOC(mcons_dupr[i,11])+' '+TRANSFORM(mcons_dupr[i,19],'999,999.99');
+                                                +' '+TRANSFORM(mdata_sis - mcons_dupr[i,11],'9999')+' '+IF(! EMPTY(mcons_dupr[i,43]),'S/F','   ')+' '+mcons_dupr[i,25]+' '+mcons_dupr[i,1])
+                                                msub_tot := msub_tot + mcons_dupr[i,19]
+                                                mtot_dup ++
+                                                mmulta := mjuros := 0
+                                                mdias_atras := mdata_sis-(mcons_dupr[i,11]+m_set[1,106])
+                                                IF mdias_atras > 0
+                                                        mdias_atras := mdata_sis-mcons_dupr[i,11]
+                                                        mmulta := mcons_dupr[i,19] * ((m_set[1,50])/100)
+                                                        mjuros := mjuros + (mcons_dupr[i,19] * ((mdias_atras*m_set[1,51])/100))
+                                                ENDIF
+                                                mtot_juros := mtot_juros + mmulta+mjuros
+                                                mvlr_dup := mvlr_dup + mcons_dupr[i,19] + mmulta + mjuros
+                                        NEXT
+                                ENDIF
+                        ENDIF
+                        SR_SetActiveConnection(nCnn)
+                ENDIF
+        ENDIF
+ENDIF
+mensagem('Aguarde um momento processando a consulta')
+IF LEN(m_dup) = 0
+        atencao('Nao existe movimento neste periodo !!!')
+        RETURN NIL
+ENDIF
+IF mop_menu = 1
+        op_tela(00,00,42,120,' CONSULTA '+IF(mtp_tp = NIL,'CONTA A RECEBER','CREDITO')+' - E M I T I D A S  -  Periodo:'+DTOC(mdata1)+' a '+DTOC(mdata2),'*',1)
+        setcor(3)
+        DEVPOS(0,1);DEVOUT('Documento')
+        DEVPOS(0,15);DEVOUT('Op')
+        DEVPOS(0,26);DEVOUT('Cliente')
+        DEVPOS(0,46);DEVOUT('Emissao')
+        DEVPOS(0,57);DEVOUT('Venc.')
+        DEVPOS(0,65);DEVOUT('Valor rec.')
+        DEVPOS(0,76);DEVOUT('Dias')
+        DEVPOS(0,86);DEVOUT('Emp')
+ELSEIF mop_menu = 2
+        op_tela(00,00,42,120,' CONSULTA '+IF(mtp_tp = NIL,'CONTA A RECEBER','CREDITO')+' - P A G A S   -  Periodo:'+DTOC(mdata1)+' a '+DTOC(mdata2),'*',1)
+        setcor(3)
+        DEVPOS(0,1);DEVOUT('Documento')
+        DEVPOS(0,15);DEVOUT('Op')
+        DEVPOS(0,26);DEVOUT('Cliente')
+        DEVPOS(0,45);DEVOUT('Dta.Pag.')
+        DEVPOS(0,57);DEVOUT('Venc.')
+        DEVPOS(0,63);DEVOUT('Valor pago')
+        DEVPOS(0,74);DEVOUT('Dias')
+        DEVPOS(0,85);DEVOUT('Emp')
+ELSEIF mop_menu = 3
+        op_tela(00,00,42,120,' CONSULTA '+IF(mtp_tp = NIL,'CONTA A RECEBER','CREDITO')+' - A  R E C E B E R  -  Periodo:'+DTOC(mdata1)+' a '+DTOC(mdata2),'*',1)
+        setcor(3)
+        DEVPOS(0,1);DEVOUT('Documento')
+        DEVPOS(0,15);DEVOUT('Op')
+        DEVPOS(0,26);DEVOUT('Cliente')
+        DEVPOS(0,46);DEVOUT('Emissao')
+        DEVPOS(0,56);DEVOUT('Venc.')
+        DEVPOS(0,63);DEVOUT('Valor rec.')
+        DEVPOS(0,74);DEVOUT('Dias')
+        DEVPOS(0,85);DEVOUT('Emp')
+ELSEIF mop_menu = 7
+        op_tela(00,00,42,120,' CONSULTA '+IF(mtp_tp = NIL,'CONTA A RECEBER','CREDITO')+' - CHEQUE DEVOLVIDO  -  Periodo:'+DTOC(mdata1)+' a '+DTOC(mdata2),'*',1)
+        setcor(3)
+        DEVPOS(0,1);DEVOUT('Documento')
+        DEVPOS(0,15);DEVOUT('Op')
+        DEVPOS(0,26);DEVOUT('Cliente')
+        DEVPOS(0,40);DEVOUT('Dta.Pag.')
+        DEVPOS(0,50);DEVOUT('Venc.')
+        DEVPOS(0,60);DEVOUT('Valor rec.')
+        DEVPOS(0,74);DEVOUT('Dias')
+        DEVPOS(0,80);DEVOUT('Emp')
+ELSEIF mop_menu = 4
+        op_tela(00,00,42,120,' CONSULTA '+IF(mtp_tp = NIL,'CONTA A RECEBER','CREDITO')+' - T O D A S  -  Periodo:'+DTOC(mdata1)+' a '+DTOC(mdata2),'*',1)
+        setcor(3)
+        DEVPOS(0,1);DEVOUT('Documento')
+        DEVPOS(0,26);DEVOUT('Cliente')
+        DEVPOS(0,37);DEVOUT('Emissao')
+        DEVPOS(0,47);DEVOUT('Venc.')
+        DEVPOS(0,54);DEVOUT('Dta.Pag.')
+        DEVPOS(0,70);DEVOUT('Valor')
+        DEVPOS(0,76);DEVOUT('Dias')
+        DEVPOS(0,85);DEVOUT('Vnd')
+        DEVPOS(0,89);DEVOUT('Emp.')
+ELSE
+        op_tela(00,00,42,120,'CONSULTA DE DOCUMENTOS '+IF(mtp_tp = NIL,'CONTA A RECEBER','CREDITO')+'  -  Periodo:'+DTOC(mdata1)+' a '+DTOC(mdata2),,1)
+        setcor(3)
+        DEVPOS(0,1);DEVOUT('Documento')
+        DEVPOS(0,16);DEVOUT('Op')
+        DEVPOS(0,24);DEVOUT('Cliente')
+        DEVPOS(0,36);DEVOUT(' Emissao')
+        DEVPOS(0,COL()+1);DEVOUT('   Venc.')
+        DEVPOS(0,COL()+1);DEVOUT('Pag/Trf.')
+        DEVPOS(0,COL()+1);DEVOUT('     Valor')
+        DEVPOS(0,COL()+1);DEVOUT('Dias')
+        DEVPOS(0,COL()+1);DEVOUT('Ven')
+        DEVPOS(0,COL()+1);DEVOUT('Pg')
+        DEVPOS(0,COL()+1);DEVOUT('Bx')
+        DEVPOS(0,COL()+3);DEVOUT('Emp')
+ENDIF
+setcor(1)
+WHILE .T.
+        @ 1,0 TO 1,cba
+        *** RESUMO DA CONSULTA ***                                                                                                                                                       
+        @ lba-2,0 TO lba-2,cba
+        DEVPOS(lba-1,02);DEVOUT('Qtd.:')                                                                                                                                                 
+        DEVPOS(lba-1,14);DEVOUT('Sub Total:')                                                                                                                                            
+        DEVPOS(lba-1,38);DEVOUT('Jur+multa:')                                                                                                                                            
+        DEVPOS(lba-1,59);DEVOUT('Total:')                                                                                                                                                
+        setcor(3)                                                                                                                                                                        
+        DEVPOS(lba-1,07);DEVOUT(STRZERO(mtot_dup,6))
+        DEVPOS(lba-1,24);DEVOUT(TRANSFORM(msub_tot,'99,999,999.99'))
+        DEVPOS(lba-1,48);DEVOUT(TRANSFORM(mtot_juros,'999,999.99'))
+        DEVPOS(lba-1,65);DEVOUT(TRANSFORM(mvlr_dup,'99,999,999.99'))
+        DEVPOS(lba,1);DEVOUT('Media Dias de Atraso: '+TRANSFORM(mqtd_dias / mqtd_doc,'99,999.99')+' - Qtd.de Documentos: '+TRANSFORM(mqtd_doc,'99,999.99'))
+        setcor(1)
+        CLEAR TYPEAHEAD
+        mensagem("<ESC> Retorna  -  <ENTER> p/Resumo" )
+        point := ACHOICE(2,-0,lba-3,cba,m_dup,,,point)
+        DO CASE
+                CASE LASTKEY()=27
+                        wvw_lclosewindow()
+                        RETURN NIL
+                CASE LASTKEY() = 13
+                        IF (m_pos[point] = 0) .OR. (SUBSTR(m_dup[point],1,1) <> ' ' .AND. SUBSTR(m_dup[point],1,2) <> 'FI')
+                                atencao('Este Documento nao pode ser consultado porque e da FILIAL')
+                                LOOP
+                        ENDIF
+                        cons_cli:={}
+                        sr_getconnection():exec("SELECT nome FROM saccli WHERE cod_cli = "+sr_cdbvalue(mcons_dupr[point,7]),,.t.,@cons_cli)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(cons_cli) = 0
+                                AADD(cons_cli,'')
+                        ENDIF
+
+                        mdias_atras := mmulta := mjuros := mvlpago := 0
+                        IF mtp_tp = NIL
+                                mdias_atras := mdata_sis - mcons_dupr[point,11]
+                                IF mdias_atras > 0
+                                        mmulta := mcons_dupr[point,19] * ((m_set[1,50])/100)
+                                        mjuros := mjuros + (mcons_dupr[point,19] * ((mdias_atras*m_set[1,51])/100))
+                                ENDIF
+                                mvlpago=mcons_dupr[point,19]+mjuros+mmulta
+                                op_tela(01,10,29,90,' Codigo da Empresa:'+mcons_dupr[point,1]+' ')
+                                DEVPOS(01,01);DEVOUT('Cliente.............:')
+                                DEVPOS(02,01);DEVOUT('Nome Fantasia.......:')
+                                DEVPOS(03,01);DEVOUT('Banco...............:')
+                                DEVPOS(03,27);DEVOUT('Agencia:')
+                                DEVPOS(03,51);DEVOUT('C/C:')
+                                DEVPOS(04,01);DEVOUT('No.da Documento ....:')
+                                DEVPOS(04,40);DEVOUT('Tipo Operacao:')
+                                DEVPOS(04,58);DEVOUT('No.:')
+                                DEVPOS(05,01);DEVOUT('Data Emissao........:')
+                                DEVPOS(06,01);DEVOUT('Data Vencimento.....:')
+                                DEVPOS(07,01);DEVOUT('Vlr.Bruto Documento.:')
+                                DEVPOS(08,01);DEVOUT('Vlr. Documento ...R$:')
+
+                                DEVPOS(15,01);DEVOUT('No.do Pedido........:')
+                                DEVPOS(15,32);DEVOUT('Operador:')
+                                DEVPOS(15,46);DEVOUT('Vendedor:')
+                                DEVPOS(16,01);DEVOUT('Correntista.........:')
+                                DEVPOS(17,01);DEVOUT('OBS.Incl.:')
+                                DEVPOS(18,01);DEVOUT('BAIXA PARCIAL')
+                                DEVPOS(19,01);DEVOUT('Cod.Fornecedor/Despesa:')
+                                DEVPOS(20,01);DEVOUT('Data da Baixa Parcial.:')
+                                DEVPOS(20,40);DEVOUT('Operador:')
+                                DEVPOS(21,01);DEVOUT('OBS.Baixa:')
+                                setcor(3)
+                                DEVPOS(01,23);DEVOUT(STR(mcons_dupr[point,7],5)+'-'+mcons_dupr[point,8])
+                                DEVPOS(02,23);DEVOUT(cons_cli[1,1])
+                                DEVPOS(03,23);DEVOUT(mcons_dupr[point,3])
+                                DEVPOS(03,36);DEVOUT(mcons_dupr[point,17])
+                                DEVPOS(03,56);DEVOUT(mcons_dupr[point,18])
+                                DEVPOS(04,23);DEVOUT(mcons_dupr[point,2]+mcons_dupr[point,4])
+                                DEVPOS(04,55);DEVOUT(mcons_dupr[point,26])
+                                DEVPOS(04,63);DEVOUT(mcons_dupr[point,29])
+                                DEVPOS(05,23);DEVOUT(DTOC(mcons_dupr[point,10]))
+                                DEVPOS(06,23);DEVOUT(DTOC(mcons_dupr[point,11]))
+                                DEVPOS(07,23);DEVOUT(TRANSFORM(mcons_dupr[point,5],'9,999,999.99'))
+                                DEVPOS(08,23);DEVOUT(TRANSFORM(mcons_dupr[point,19],'9,999,999.99'))
+                                DEVPOS(08,COL()+1);DEVOUT(mcons_dupr[point,28])
+                                IF ! EMPTY(mcons_dupr[point,43])
+                                        botao(07,40,11,78,,' Cheque Devolvido ')
+                                        DEVPOS(08,41);DEVOUT('Data....:')
+                                        DEVPOS(09,41);DEVOUT('Operador:')
+                                        DEVPOS(10,41);DEVOUT('Motivo..:')
+                                        setcor(3)
+                                        DEVPOS(08,51);DEVOUT(mcons_dupr[point,43])
+                                        DEVPOS(09,51);DEVOUT(mcons_dupr[point,45])
+                                        DEVPOS(10,51);DEVOUT(mcons_dupr[point,44])
+                                ENDIF
+                                DEVPOS(15,23);DEVOUT(mcons_dupr[point,31])
+                                DEVPOS(15,42);DEVOUT(mcons_dupr[point,35])
+                                DEVPOS(15,56);DEVOUT(mcons_dupr[point,30])
+                                DEVPOS(16,23);DEVOUT(mcons_dupr[point,48])
+                                DEVPOS(17,11);DEVOUT(mcons_dupr[point,47])
+                                DEVPOS(19,25);DEVOUT(mcons_dupr[point,39])
+                                DEVPOS(20,25);DEVOUT(mcons_dupr[point,41])
+                                DEVPOS(20,50);DEVOUT(mcons_dupr[point,42])
+                                DEVPOS(21,11);DEVOUT(mcons_dupr[point,46])
+                                v_fornece(VAL(mcons_dupr[point,39]),20,30)
+                                IF mcons_dupr[point,27] = 'C'
+                                        DEVPOS(13,48);DEVOUT('CAIXA')
+                                ELSEIF mcons_dupr[point,27] = 'M'
+                                        DEVPOS(13,48);DEVOUT('MOVIMENTO')
+                                ENDIF
+                                IF ! EMPTY(mcons_dupr[point,13]) .OR. mcons_dupr[point,25] <> ' '
+                                        setcor(1)
+                                        DEVPOS(09,01);DEVOUT('Data Pagamento .....:')
+                                        DEVPOS(09,33);DEVOUT('Processamento:')
+                                        DEVPOS(10,01);DEVOUT('Pago efetuado Com...:')
+                                        DEVPOS(11,01);DEVOUT('Juros Pago .......R$:')
+                                        DEVPOS(12,01);DEVOUT('Desconto .........R$:')
+                                        DEVPOS(13,01);DEVOUT('Valor Pago .......R$:')
+                                        DEVPOS(13,37);DEVOUT('Tipo Baixa:')
+                                        DEVPOS(14,01);DEVOUT('Local Pagamento.....:')
+                                        setcor(3)
+                                        DEVPOS(09,23);DEVOUT(DTOC(mcons_dupr[point,13]))
+                                        DEVPOS(09,48);DEVOUT(DTOC(mcons_dupr[point,15]))
+                                        DEVPOS(10,23);DEVOUT(STRZERO(mcons_dupr[point,13]-mcons_dupr[point,11],3)+' Dias.')
+                                        DEVPOS(11,23);DEVOUT(TRANSFORM(mcons_dupr[point,23],'9,999,999.99'))
+                                        DEVPOS(12,23);DEVOUT(TRANSFORM(mcons_dupr[point,22],'9,999,999.99'))
+                                        DEVPOS(13,23);DEVOUT(TRANSFORM(mcons_dupr[point,20],'9,999,999.99'))
+/*
+                                        IF mcons_dupr[point,27] = 'C'
+                                                DEVPOS(13,48);DEVOUT('CAIXA')
+                                        ELSEIF mcons_dupr[point,27] = 'M'
+                                                DEVPOS(13,48);DEVOUT('MOVIMENTO')
+                                        ENDIF
+*/
+                                        DEVPOS(14,23);DEVOUT(mcons_dupr[point,16])
+                                ELSE
+                                        setcor(1)
+                                        DEVPOS(09,01);DEVOUT('Prazo estipulado....:')
+                                        DEVPOS(11,01);DEVOUT('Vlr. Multa+Juros..R$:')
+                                        DEVPOS(12,01);DEVOUT('Vlr. a Pagar......R$:')
+                                        DEVPOS(13,01);DEVOUT('Local Pagamento.....:')
+                                        IF mdata_sis<mcons_dupr[point,11]
+                                                setcor(1)
+                                                DEVPOS(10,01);DEVOUT('Faltam p/ Vencimento:')
+                                                setcor(3)
+                                                DEVPOS(10,23);DEVOUT(STRZERO(mcons_dupr[point,11]-mdata_sis,3)+' Dias.')
+                                        ELSE
+                                                setcor(1)
+                                                DEVPOS(10,01);DEVOUT('Atrazo do vencimento:')
+                                                setcor(3)
+                                                DEVPOS(10,23);DEVOUT(STRZERO(mdata_sis-mcons_dupr[point,11],3)+' Dias.')
+                                        ENDIF
+                                        setcor(3)
+                                        DEVPOS(09,23);DEVOUT(STRZERO(mcons_dupr[point,11]-mcons_dupr[point,10],3)+' Dias.')
+                                        DEVPOS(11,23);DEVOUT(TRANSFORM(mmulta+mjuros,'9,999,999.99'))
+                                        DEVPOS(12,23);DEVOUT(TRANSFORM(mvlpago,'9,999,999.99'))
+                                        DEVPOS(13,23);DEVOUT(mcons_dupr[point,16])
+                                ENDIF
+                        ELSE
+                                mdias_atras := mdata_sis-mcons_dupr[point,11]
+                                IF mdias_atras > 0
+                                        mmulta := mcons_dupr[point,19] * ((m_set[1,50])/100)
+                                        mjuros := mjuros + (mcons_dupr[point,19] * ((mdias_atras*m_set[1,51])/100))
+                                ENDIF
+                                mvlpago=mcons_dupr[point,19]+mjuros+mmulta
+                                op_tela(01,10,30,90,' Codigo da Empresa:'+mcons_dupr[point,1]+' ')
+                                DEVPOS(01,01);DEVOUT('Cliente.............:')
+                                DEVPOS(02,01);DEVOUT('Nome Fantasia.......:')
+                                DEVPOS(03,01);DEVOUT('Banco...............:')
+                                DEVPOS(03,27);DEVOUT('Agencia:')
+                                DEVPOS(03,51);DEVOUT('C/C:')
+                                DEVPOS(04,01);DEVOUT('No.do Documento ....:')
+                                DEVPOS(04,40);DEVOUT('Tipo Operacao:')
+                                DEVPOS(04,58);DEVOUT('No.:')
+                                DEVPOS(05,01);DEVOUT('Data Emissao........:')
+                                DEVPOS(06,01);DEVOUT('Data Vencimento.....:')
+                                DEVPOS(07,01);DEVOUT('Vlr.Bruto Documento.:')
+                                DEVPOS(08,01);DEVOUT('Vlr. Documento ...R$:')
+                                IF ! EMPTY(mcons_dupr[point,43])
+                                        botao(07,40,11,78,,' Cheque Devolvido ')
+                                        DEVPOS(08,41);DEVOUT('Data....:')
+                                        DEVPOS(09,41);DEVOUT('Operador:')
+                                        DEVPOS(10,41);DEVOUT('Motivo..:')
+                                        setcor(3)
+                                        DEVPOS(08,51);DEVOUT(mcons_dupr[point,43])
+                                        DEVPOS(09,51);DEVOUT(mcons_dupr[point,45])
+                                        DEVPOS(10,51);DEVOUT(mcons_dupr[point,44])
+                                ENDIF
+
+
+                                DEVPOS(15,01);DEVOUT('No.do Pedido........:')
+                                DEVPOS(15,32);DEVOUT('Operador:')
+                                DEVPOS(15,46);DEVOUT('Vendedor:')
+                                DEVPOS(16,01);DEVOUT('Correntista.........:')
+                                DEVPOS(17,01);DEVOUT('OBS.Incl.:')
+                                DEVPOS(18,01);DEVOUT('BAIXA PARCIAL')
+                                DEVPOS(19,01);DEVOUT('Cod.Fornecedor/Despesa:')
+                                DEVPOS(20,01);DEVOUT('Data da Baixa Parcial.:')
+                                DEVPOS(21,40);DEVOUT('Operador:')
+                                DEVPOS(22,01);DEVOUT('OBS.Baixa:')
+                                setcor(3)
+                                DEVPOS(01,23);DEVOUT(STR(mcons_dupr[point,7],5)+'-'+mcons_dupr[point,8])
+                                DEVPOS(02,23);DEVOUT(cons_cli[1,1])
+                                DEVPOS(03,23);DEVOUT(mcons_dupr[point,3])
+                                DEVPOS(03,36);DEVOUT(mcons_dupr[point,17])
+                                DEVPOS(03,56);DEVOUT(mcons_dupr[point,18])
+                                DEVPOS(04,23);DEVOUT(mcons_dupr[point,2]+mcons_dupr[point,4])
+                                DEVPOS(04,55);DEVOUT(mcons_dupr[point,26])
+                                DEVPOS(04,63);DEVOUT(mcons_dupr[point,29])
+                                DEVPOS(05,23);DEVOUT(DTOC(mcons_dupr[point,10]))
+                                DEVPOS(06,23);DEVOUT(DTOC(mcons_dupr[point,11]))
+                                DEVPOS(07,23);DEVOUT(TRANSFORM(mcons_dupr[point,5],'9,999,999.99'))
+                                DEVPOS(08,23);DEVOUT(TRANSFORM(mcons_dupr[point,19],'9,999,999.99'))
+                                DEVPOS(08,COL()+1);DEVOUT(mcons_dupr[point,28])
+
+                                DEVPOS(15,23);DEVOUT(mcons_dupr[point,31])
+                                DEVPOS(15,42);DEVOUT(mcons_dupr[point,35])
+                                DEVPOS(15,56);DEVOUT(mcons_dupr[point,30])
+                                DEVPOS(16,23);DEVOUT(mcons_dupr[point,48])
+                                DEVPOS(17,11);DEVOUT(mcons_dupr[point,47])
+                                DEVPOS(19,25);DEVOUT(mcons_dupr[point,39])
+                                DEVPOS(20,25);DEVOUT(mcons_dupr[point,41])
+                                DEVPOS(20,50);DEVOUT(mcons_dupr[point,42])
+                                DEVPOS(21,11);DEVOUT(mcons_dupr[point,46])
+                                v_fornece(VAL(mcons_dupr[point,39]),20,30)
+                                IF mcons_dupr[point,27] = 'C'
+                                        DEVPOS(13,48);DEVOUT('CAIXA')
+                                ELSEIF mcons_dupr[point,27] = 'M'
+                                        DEVPOS(13,48);DEVOUT('MOVIMENTO')
+                                ENDIF
+                                IF ! EMPTY(mcons_dupr[point,13]) .OR. mcons_dupr[point,25] <> ' '
+                                        setcor(1)
+                                        DEVPOS(09,01);DEVOUT('Data Pagamento .....:')
+                                        DEVPOS(09,33);DEVOUT('Processamento:')
+                                        DEVPOS(10,01);DEVOUT('Pago efetuado Com...:')
+                                        DEVPOS(11,01);DEVOUT('Juros Pago .......R$:')
+                                        DEVPOS(12,01);DEVOUT('Desconto .........R$:')
+                                        DEVPOS(13,01);DEVOUT('Valor Pago .......R$:')
+                                        DEVPOS(13,37);DEVOUT('Tipo Baixa:')
+                                        DEVPOS(14,01);DEVOUT('Local Pagamento.....:')
+                                        setcor(3)
+                                        DEVPOS(09,23);DEVOUT(DTOC(mcons_dupr[point,13]))
+                                        DEVPOS(09,48);DEVOUT(DTOC(mcons_dupr[point,15]))
+                                        DEVPOS(10,23);DEVOUT(STRZERO(mcons_dupr[point,13]-mcons_dupr[point,11],3)+' Dias.')
+                                        DEVPOS(11,23);DEVOUT(TRANSFORM(mcons_dupr[point,23],'9,999,999.99'))
+                                        DEVPOS(12,23);DEVOUT(TRANSFORM(mcons_dupr[point,22],'9,999,999.99'))
+                                        DEVPOS(13,23);DEVOUT(TRANSFORM(mcons_dupr[point,20],'9,999,999.99'))
+                                        DEVPOS(14,23);DEVOUT(mcons_dupr[point,16])
+                                ELSE
+                                        setcor(1)
+                                        DEVPOS(09,01);DEVOUT('Prazo estipulado....:')
+                                        DEVPOS(11,01);DEVOUT('Vlr. Multa+Juros..R$:')
+                                        DEVPOS(12,01);DEVOUT('Vlr. a Pagar......R$:')
+                                        DEVPOS(13,01);DEVOUT('Local Pagamento.....:')
+                                        IF mdata_sis<mcons_dupr[point,11]
+                                                setcor(1)
+                                                DEVPOS(10,01);DEVOUT('Faltam p/ Vencimento:')
+                                                setcor(3)
+                                                DEVPOS(10,23);DEVOUT(STRZERO(mcons_dupr[point,11]-mdata_sis,3)+' Dias.')
+                                        ELSE
+                                                setcor(1)
+                                                DEVPOS(10,01);DEVOUT('Atrazo do vencimento:')
+                                                setcor(3)
+                                                DEVPOS(10,23);DEVOUT(STRZERO(mdata_sis-mcons_dupr[point,11],3)+' Dias.')
+                                        ENDIF
+                                        setcor(3)
+                                        DEVPOS(09,23);DEVOUT(STRZERO(mcons_dupr[point,11]-mcons_dupr[point,10],3)+' Dias.')
+                                        DEVPOS(11,23);DEVOUT(TRANSFORM(mmulta+mjuros,'9,999,999.99'))
+                                        DEVPOS(12,23);DEVOUT(TRANSFORM(mvlpago,'9,999,999.99'))
+                                        DEVPOS(13,23);DEVOUT(mcons_dupr[point,16])
+                                ENDIF
+                        ENDIF
+                        setcor(1)
+                        mensagem('Pressione [P]-Visualizar Processo - [D]etalhe do Documento - [1]Visualizar Pedido - [I]mprimir Resumo')
+                        t:=' '
+                        @ 50,00 GET t
+                        READ
+                        wvw_lclosewindow()
+                        IF LASTKEY() = 80 .OR. LASTKEY() = 112 // P - PROCESSO
+                                op_tela(20,15,26,80,' Processo do Documento No.:'+mcons_dupr[point,2]+mcons_dupr[point,4])
+                                setcor(3)
+                                DEVPOS(01,01);DEVOUT(mcons_dupr[point,58])
+                                DEVPOS(02,01);DEVOUT(mcons_dupr[point,59])
+                                DEVPOS(03,01);DEVOUT(mcons_dupr[point,60])
+                                DEVPOS(04,01);DEVOUT(mcons_dupr[point,61])
+                                DEVPOS(05,01);DEVOUT(mcons_dupr[point,62])
+                                setcor(1)
+                                mensagem('Pressione qualquer tecla p/retornar')
+                                t:=' '
+                                @ 50,00 GET t
+                                READ
+                                wvw_lclosewindow()
+                        ELSEIF LASTKEY() = 73 .OR. LASTKEY() = 105 // R - IMPRIMIR RESUMO
+                                IF ! imp_arq('RES_DOC.REL','R')
+                                        LOOP
+                                ENDIF
+                                mpag:=1
+                                mtit := 'RESUMO DE DOCUMENTO'
+                                mtipo:=''
+                                cabecalho(mpag,mtit,mtipo)
+                                DEVPOS(PROW()+1,0);DEVOUT('Cliente.............:'+STR(mcons_dupr[point,7],5)+'-'+mcons_dupr[point,8])
+                                DEVPOS(PROW()+1,0);DEVOUT('Banco...............:'+mcons_dupr[point,3]+' - Agencia:'+mcons_dupr[point,17]+' - C/C:'+mcons_dupr[point,18])
+                                DEVPOS(PROW()+1,0);DEVOUT('No.do Documento ....:'+mcons_dupr[point,2]+mcons_dupr[point,4]+' - No.:'+mcons_dupr[point,29])
+                                DEVPOS(PROW()+1,0);DEVOUT('Data Emissao........:'+DTOC(mcons_dupr[point,10]))
+                                DEVPOS(PROW()+1,0);DEVOUT('Data Vencimento.....:'+DTOC(mcons_dupr[point,11]))
+                                DEVPOS(PROW()+1,0);DEVOUT('Vlr.Bruto Documento.:'+TRANSFORM(mcons_dupr[point,5],'9,999,999.99'))
+                                DEVPOS(PROW()+1,0);DEVOUT('Vlr. Documento ...R$:'+TRANSFORM(mcons_dupr[point,19],'9,999,999.99')+'  '+mcons_dupr[point,28])
+
+                                IF ! EMPTY(mcons_dupr[point,13]) .OR. mcons_dupr[point,25] <> ' '
+                                        DEVPOS(PROW()+1,0);DEVOUT('Data Pagamento .....:'+DTOC(mcons_dupr[point,13])+' - Processamento:'+DTOC(mcons_dupr[point,15]))
+                                        DEVPOS(PROW()+1,0);DEVOUT('Pago efetuado Com...:'+STRZERO(mcons_dupr[point,13]-mcons_dupr[point,11],3)+' Dias.')
+                                        DEVPOS(PROW()+1,0);DEVOUT('Juros Pago .......R$:'+TRANSFORM(mcons_dupr[point,23],'9,999,999.99'))
+                                        DEVPOS(PROW()+1,0);DEVOUT('Desconto .........R$:'+TRANSFORM(mcons_dupr[point,22],'9,999,999.99'))
+                                        DEVPOS(PROW()+1,0);DEVOUT('Valor Pago .......R$:'+TRANSFORM(mcons_dupr[point,20],'9,999,999.99')+' - Tipo Baixa:'+IF(mcons_dupr[point,27] = 'C','CAIXA','MOVIMENTO'))
+                                        DEVPOS(PROW()+1,0);DEVOUT('Local Pagamento.....:'+mcons_dupr[point,16])
+                                ELSE
+                                        DEVPOS(PROW()+1,0);DEVOUT('Prazo estipulado....:'+STRZERO(mcons_dupr[point,11]-mcons_dupr[point,10],3)+' Dias.')
+                                        IF mdata_sis<mcons_dupr[point,11]
+                                                DEVPOS(PROW()+1,0);DEVOUT('Faltam p/ Vencimento:'+STRZERO(mcons_dupr[point,11]-mdata_sis,3)+' Dias.')
+                                        ELSE
+                                                DEVPOS(PROW()+1,0);DEVOUT('Atrazo do vencimento:'+STRZERO(mdata_sis-mcons_dupr[point,11],3)+' Dias.')
+                                        ENDIF
+                                        DEVPOS(PROW()+1,0);DEVOUT('Vlr. Multa+Juros..R$:'+TRANSFORM(mmulta+mjuros,'9,999,999.99'))
+                                        DEVPOS(PROW()+1,0);DEVOUT('Vlr. a Pagar......R$:'+TRANSFORM(mvlpago,'9,999,999.99'))
+                                        DEVPOS(PROW()+1,0);DEVOUT('Local Pagamento.....:'+mcons_dupr[point,16])
+                                ENDIF
+
+                                DEVPOS(PROW()+1,0);DEVOUT('No.do Pedido........:'+mcons_dupr[point,31]+' - Operador:'+mcons_dupr[point,35]+' - Vendedor:'+mcons_dupr[point,30])
+                                DEVPOS(PROW()+1,0);DEVOUT('Correntista.........:'+mcons_dupr[point,48])
+                                DEVPOS(PROW()+1,0);DEVOUT('OBS.Incl.:'+mcons_dupr[point,46])
+                                DEVPOS(PROW()+1,0);DEVOUT('OBS.Baixa:'+mcons_dupr[point,47])
+                                DEVPOS(PROW()+1,0);DEVOUT('Cod.Fornecedor/Despesa:'+mcons_dupr[point,39]+' -')
+                                v_fornece(VAL(mcons_dupr[point,39]),PROW(),PCOL()+1)
+                                DEVPOS(PROW()+1,0);DEVOUT('Data da Baixa Parcial.:'+DTOC(mcons_dupr[point,41])+' - Operador:'+mcons_dupr[point,42])
+
+                                IF ! EMPTY(mcons_dupr[point,43])
+                                        DEVPOS(PROW()+1,0);DEVOUT('*****  C H E Q U E    S E M   F U N D O *****')
+                                        DEVPOS(PROW()+1,0);DEVOUT('Data....:'+DTOC(mcons_dupr[point,43]))
+                                        DEVPOS(PROW()+1,0);DEVOUT('Operador:'+mcons_dupr[point,45])
+                                        DEVPOS(PROW()+1,0);DEVOUT('Motivo..:'+mcons_dupr[point,44])
+                                ENDIF
+                                SETPRC(00,00)
+                                SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+
+                                conf_impressao('RES_DOC.REL')
+                        ELSEIF LASTKEY() = 49 // 1- PEDIDO
+                                IF EMPTY(mcons_dupr[point,31])
+                                	atencao('Nao existe pedido neste Documento....')
+                                	LOOP
+                                ENDIF
+				sac5ped1(mcons_dupr[point,31])
+                        ELSEIF LASTKEY() = 68 .OR. LASTKEY() = 100
+                                ASIZE(m_dup1,0)
+                                ASIZE(m_pos1,0)
+                                IF mcons_dupr[point,25] = 'T' .OR. mcons_dupr[point,28] = '*'
+                                        CLEAR GETS
+                                        op_tela(00,00,30,95,' Resumo do DOCUMENTO: '+mcons_dupr[point,2]+mcons_dupr[point,4])
+                                        DEVPOS(1,1);DEVOUT('Documento')
+                                        DEVPOS(1,15);DEVOUT('Cliente')
+                                        DEVPOS(1,37);DEVOUT('Emissao')
+                                        DEVPOS(1,47);DEVOUT('Venc.')
+                                        DEVPOS(1,54);DEVOUT('Dta.Pag.')
+                                        DEVPOS(1,67);DEVOUT('Valor')
+                                        DEVPOS(1,75);DEVOUT('Vend')
+                                        @ 2,0 TO 2,100
+                                        ASIZE(m_pos1,0)
+                                        ASIZE(m_dup1,0)
+                                        mtipo_doc := mcons_dupr[point,2]
+                                        IF mcons_dupr[point,25] = 'T'
+                                                cComm  := "SELECT * FROM sacdupr WHERE (doc_tran = "+sr_cdbvalue(mcons_dupr[point,2]+mcons_dupr[point,4])
+                                                ccomm := ccomm + " OR (duplicata = "+sr_cdbvalue(mcons_dupr[point,4])+" AND pago = 'B'))"
+                                                ccomm := ccomm + " AND fornec = "+sr_cdbvalue(mcons_dupr[point,7])
+                                                ccomm := ccomm + " ORDER BY duplicata ASC"
+                                                aret:={}
+                                                sr_getconnection():exec(ccomm,,.t.,@aret)
+                                                sr_getconnection():exec('COMMIT',,.f.)
+                                                IF LEN(aret) = 0
+                                                        atencao('Nao foi encontrado nenhum Documento TRANSFERIDO')
+                                                        wvw_lclosewindow()
+                                                        LOOP
+                                                ENDIF
+                                                i:=0
+                                                FOR i = 1 TO LEN(aret)
+                                                        AADD(m_pos1,i)
+                                                        AADD(m_dup1,aret[i,2]+aret[i,4]+aret[i,28]+' '+aret[i,26]+' '+STR(aret[i,7],5)+'-'+LEFT(aret[i,8],10);
+                                                            +' '+DTOC(aret[i,10])+' '+DTOC(aret[i,11])+' '+DTOC(aret[i,13])+' '+TRANSFORM(aret[i,19],'9,999,999.99');
+                                                            +' '+aret[i,30]+' '+aret[i,37])
+                                                NEXT
+                                        ELSE
+                                                cComm  := "SELECT * FROM sacdupr WHERE duplicata = "+sr_cdbvalue(mcons_dupr[point,4])
+                                                ccomm := ccomm + " AND fornec = "+sr_cdbvalue(mcons_dupr[point,7])
+                                                ccomm := ccomm + " ORDER BY doc_tran,tipo"
+                                                aret:={}
+                                                sr_getconnection():exec(ccomm,,.t.,@aret)
+                                                sr_getconnection():exec('COMMIT',,.f.)
+                                                IF LEN(aret) = 0
+                                                        atencao('Nao foi encontrado nenhum Documento TRANSFERIDO')
+                                                        wvw_lclosewindow()
+                                                        LOOP
+                                                ENDIF
+                                                i:=0
+                                                FOR i = 1 TO LEN(aret)
+                                                        AADD(m_pos1,i)
+                                                        AADD(m_dup1,aret[i,2]+aret[i,4]+aret[i,28]+' '+aret[i,26]+' '+STR(aret[i,7],5)+'-'+LEFT(aret[i,8],10);
+                                                            +' '+DTOC(aret[i,10])+' '+DTOC(aret[i,11])+' '+DTOC(aret[i,13])+' '+TRANSFORM(aret[i,19],'9,999,999.99');
+                                                            +' '+aret[i,30]+' '+aret[i,37])
+                                                NEXT
+                                        ENDIF
+                                        WHILE .T.
+                                                CLEAR TYPEAHEAD
+                                                mensagem("<ESC> Retorna e Imprimir  -  <ENTER> p/Resumo" )
+                                                point := ACHOICE(3,0,lba-3,cba,m_dup1,,,point)
+                                                DO CASE
+                                                        CASE LASTKEY()=27
+                                                                opcao := 'S'
+                                                                opcao := op_simnao('S','Deseja Imprimir o Detalhe do Documento:')
+                                                                IF opcao = 'S'
+                                                                        mqtd_rec := mtot_rec := mqtd_arec := mtot_arec := ;
+                                                                        pag := f := 0
+                                                                        IF ! imp_arq('DETA_DOC.REL','R');LOOP;ENDIF
+                                                                        mtit := 'Detalhe do Documento'
+                                                                        FOR f = 1 TO LEN(aret)
+                                                                                prog_imp(f)
+                                                                                IF pag=0 .OR. PROW()>=59
+                                                                                        pag=pag+1
+                                                                                        IF pag>1
+                                                                                                EJECT
+                                                                                        ENDIF
+                                                                                        cabecalho(pag,mtit,mtipo,mprg)
+                                                                                        imprt(mtipo_imp,'N')
+                                                                                        DEVPOS(PROW()+1,00);DEVOUT('Cliente............: '+STR(aret[1,7],5)+' - '+aret[1,8])
+                                                                                        DEVPOS(PROW()+1,00);DEVOUT('Resumo do DOCUMENTO: '+mcons_dupr[point,2]+mcons_dupr[point,4])
+                                                                                        DEVPOS(PROW()+1,00);DEVOUT(REPLICATE("=",80))
+                                                                                        DEVPOS(PROW()+1,00);DEVOUT('Documento           Emissao    Venc. Dta.Pag.        Valor Vend')
+                                                                                        DEVPOS(PROW()+1,00);DEVOUT(REPLICATE("=",80))
+                                                                                ENDIF
+                                                                                DEVPOS(PROW()+1,00);DEVOUT(aret[f,2]+aret[f,4]+aret[f,28]+' '+aret[f,26]+' '+DTOC(aret[f,10])+' '+DTOC(aret[f,11])+' '+DTOC(aret[f,13])+' '+TRANSFORM(aret[f,19],'9,999,999.99')+'  '+aret[f,30])
+                                                                                IF ! EMPTY(aret[f,13])
+                                                                                        mqtd_rec := mqtd_rec + 1
+                                                                                        mtot_rec := mtot_rec + aret[f,19]
+                                                                                ELSE
+                                                                                        mqtd_arec := mqtd_arec + 1
+                                                                                        mtot_arec := mtot_arec + aret[f,19]
+                                                                                ENDIF
+                                                                        NEXT
+                                                                        DEVPOS(PROW()+2,00);DEVOUT('*******   R E S U M O   D O S   D O C U M E N T O S   *******')
+                                                                        DEVPOS(PROW()+1,00);DEVOUT('Total RECEBIDOS - Quantidade: '+TRANSFORM(mqtd_rec,'999,999')+' -  Valor: '+TRANSFORM(mtot_rec,'9,999,999.99'))
+                                                                        DEVPOS(PROW()+1,00);DEVOUT('Total A RECEBER - Quantidade: '+TRANSFORM(mqtd_arec,'999,999')+' -  Valor: '+TRANSFORM(mtot_arec,'9,999,999.99'))
+                                                                        DEVPOS(PROW()+1,00);DEVOUT('                              -------           ------------')
+                                                                        DEVPOS(PROW()+1,00);DEVOUT('Total GERAL     - Quantidade: '+TRANSFORM(mqtd_arec+mqtd_rec,'999,999')+' -  Valor: '+TRANSFORM(mtot_arec+mtot_rec,'9,999,999.99'))
+
+                                                                        SETPRC(00,00)
+                                                                        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                                                                        conf_impressao('DETA_DOC.REL')
+                                                                ENDIF
+                                                                EXIT
+                                                        CASE LASTKEY() = 13
+                                                                IF m_pos1[point] = 0
+                                                                        LOOP
+                                                                ENDIF
+                                                                op_tela(01,00,30,79,' Codigo da Empresa: '+aret[point,1]+'  ')
+                                                                DEVPOS(01,01);DEVOUT('Cliente.............:')
+                                                                DEVPOS(02,01);DEVOUT('Nome Fantasia.......:')
+                                                                DEVPOS(03,01);DEVOUT('Banco...............:')
+                                                                DEVPOS(03,27);DEVOUT('Agencia:')
+                                                                DEVPOS(03,51);DEVOUT('C/C:')
+                                                                DEVPOS(04,01);DEVOUT('No.da Documento ....:')
+                                                                DEVPOS(04,40);DEVOUT('Tipo Operacao:')
+                                                                DEVPOS(05,01);DEVOUT('Data Emissao........:')
+                                                                DEVPOS(06,01);DEVOUT('Data Vencimento.....:')
+                                                                DEVPOS(07,01);DEVOUT('Vlr.Bruto Documento.:')
+                                                                DEVPOS(08,01);DEVOUT('Vlr. Documento ...R$:')
+
+
+                                                                DEVPOS(15,01);DEVOUT('No.do Pedido........:')
+                                                                DEVPOS(15,32);DEVOUT('Operador:')
+                                                                DEVPOS(15,46);DEVOUT('Vendedor:')
+                                                                DEVPOS(16,01);DEVOUT('Correntista.........:')
+                                                                DEVPOS(17,01);DEVOUT('OBS.Incl.:')
+                                                                DEVPOS(18,01);DEVOUT('BAIXA PARCIAL')
+                                                                DEVPOS(19,01);DEVOUT('Cod.Fornecedor/Despesa:')
+                                                                DEVPOS(20,01);DEVOUT('Data da Baixa Parcial.:')
+                                                                DEVPOS(20,39);DEVOUT('Operador:')
+                                                                DEVPOS(21,01);DEVOUT('OBS.Baixa:')
+
+                                                                setcor(3)
+                                                                DEVPOS(01,23);DEVOUT(STR(aret[point,7],5)+'-'+aret[point,8])
+                                                                DEVPOS(03,21);DEVOUT(aret[point,3])
+                                                                DEVPOS(03,36);DEVOUT(aret[point,17])
+                                                                DEVPOS(03,56);DEVOUT(aret[point,18])
+                                                                DEVPOS(04,23);DEVOUT(aret[point,2]+aret[point,4])
+                                                                DEVPOS(04,55);DEVOUT(aret[point,26])
+                                                                DEVPOS(05,23);DEVOUT(DTOC(aret[point,10]))
+                                                                DEVPOS(06,23);DEVOUT(DTOC(aret[point,11]))
+                                                                DEVPOS(07,23);DEVOUT(TRANSFORM(aret[point,5],'9,999,999.99'))
+                                                                DEVPOS(08,23);DEVOUT(TRANSFORM(aret[point,19],'9,999,999.99'))
+                                                                DEVPOS(08,COL()+1);DEVOUT(aret[point,28])
+
+                                                                DEVPOS(15,23);DEVOUT(aret[point,31])
+                                                                DEVPOS(15,42);DEVOUT(aret[point,35])
+                                                                DEVPOS(15,56);DEVOUT(aret[point,30])
+                                                                DEVPOS(16,23);DEVOUT(aret[point,48])
+                                                                DEVPOS(17,12);DEVOUT(aret[point,47])
+                                                                DEVPOS(19,25);DEVOUT(aret[point,39])
+                                                                DEVPOS(20,25);DEVOUT(aret[point,41])
+                                                                DEVPOS(20,49);DEVOUT(aret[point,42])
+                                                                DEVPOS(21,12);DEVOUT(aret[point,46])
+                                                                v_fornece(VAL(aret[point,39]),20,30)
+                                                                IF aret[point,27] = 'C'
+                                                                        DEVPOS(13,48);DEVOUT('CAIXA')
+                                                                ELSEIF aret[point,27] = 'M'
+                                                                        DEVPOS(13,48);DEVOUT('MOVIMENTO')
+                                                                ENDIF
+                                                                IF ! EMPTY(aret[point,13]) .OR. aret[point,25] <> ' '
+                                                                        setcor(1)
+                                                                        DEVPOS(09,01);DEVOUT('Data Pagamento .....:')
+                                                                        DEVPOS(10,01);DEVOUT('Pago efetuado Com...:')
+                                                                        DEVPOS(11,01);DEVOUT('Juros Pago .......R$:')
+                                                                        //DEVPOS(12,01);DEVOUT('Desconto .........R$:')
+                                                                        DEVPOS(13,01);DEVOUT('Valor Pago .......R$:')
+                                                                        DEVPOS(13,37);DEVOUT('Tipo Baixa:')
+                                                                        DEVPOS(14,01);DEVOUT('Local Pagamento.....:')
+                                                                        setcor(3)
+                                                                        DEVPOS(09,23);DEVOUT(DTOC(aret[point,13]))
+                                                                        DEVPOS(10,23);DEVOUT(STRZERO(aret[point,13]-aret[point,11],3)+' Dias.')
+                                                                        DEVPOS(11,23);DEVOUT(TRANSFORM(aret[point,23],'9,999,999.99'))
+                                                                        //DEVPOS(12,23);DEVOUT(TRANSFORM((mali)->desc,'9,999,999.99'))
+                                                                        DEVPOS(13,23);DEVOUT(TRANSFORM(aret[point,20],'9,999,999.99'))
+                                                                        DEVPOS(14,23);DEVOUT(aret[point,16])
+                                                                ELSE
+                                                                        setcor(1)
+                                                                        DEVPOS(09,01);DEVOUT('Prazo estipulado....:')
+                                                                        DEVPOS(11,01);DEVOUT('Vlr. Multa+Juros..R$:')
+                                                                        DEVPOS(12,01);DEVOUT('Vlr. a Pagar......R$:')
+                                                                        DEVPOS(13,01);DEVOUT('Local Pagamento.....:')
+                                                                        IF mdata_sis<aret[point,11]
+                                                                                setcor(1)
+                                                                                DEVPOS(10,01);DEVOUT('Faltam p/ Vencimento:')
+                                                                                setcor(3)
+                                                                                DEVPOS(10,23);DEVOUT(STRZERO(aret[point,11]-mdata_sis,3)+' Dias.')
+                                                                        ELSE
+                                                                                setcor(1)
+                                                                                DEVPOS(10,01);DEVOUT('Atrazo do vencimento:')
+                                                                                setcor(3)
+                                                                                DEVPOS(10,23);DEVOUT(STRZERO(mdata_sis-aret[point,11],3)+' Dias.')
+                                                                        ENDIF
+                                                                        setcor(3)
+                                                                        DEVPOS(09,23);DEVOUT(STRZERO(aret[point,11]-aret[point,10],3)+' Dias.')
+                                                                        DEVPOS(13,23);DEVOUT(aret[point,16])
+                                                                ENDIF
+                                                                setcor(1)
+                                                                mensagem('Pressione qualquer tecla p/retornar')
+                                                                t:=' '
+                                                                @ 50,00 get t
+                                                                READ
+                                                                wvw_lclosewindow()
+                                                                LOOP
+                                                ENDCASE
+                                        ENDDO
+                                        wvw_lclosewindow()
+
+                                ELSE
+                                        atencao('Este Documento nao tem Detalhes (*** Nao foi pago por conta *** ou *** Foi transformado em outros documentos ***)')
+                                ENDIF
+                        ENDIF
+        ENDCASE
+ENDDO
+RETURN NIL
+******************************* FIM **************************************8
+
+

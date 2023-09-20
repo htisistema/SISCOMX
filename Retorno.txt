@@ -1,0 +1,73 @@
+          EDUCADORA JORGE ABRAO LTDA
+  AV.ENG.DOMINGOS FERREIRA,22153.ANDAR SL302
+      BOA VIAGEM-RECIFE/PE. CEP:51020-030
+CNPJ:11.111.111/1111-11  
+IE:111.111.111         
+IM:11.111              
+07/11/2011 16:12:13                   COO:000218
+ LEITURA MEMÓRIA FISCAL 
+         DATA: 01/11/2011 a 07/11/2011
+Contador Geral de Operação Não-Fiscal:    000053
+Contador de Reduções Z:                     0007
+Contador de Reinício de Operação:            001
+Contador de Fita-detalhe:                 000000
+               REINÍCIO OPERAÇÃO                
+CRO                       DATA       HORA
+001#                    27/10/2011 09:10:49 
+             IMPRESSÃO FITA DETALHE             
+CFD    DATA       HORA       COOi   COOf
+CNPJ:
+                    USUÁRIOS                    
+Usuário:0001    CRO:001     27/10/2011 09:10:49 
+CNPJ: 11.111.111/1111-11  
+IE: 111.111.111         
+IM: 11.111              
+GT:                                    39.838,68
+                REDUÇõES DIÁRIAS                
+                  Usuário:0001
+CRZ   CRO   COO                 DATA     HORA
+                     VENDA BRUTA DIÁRIA ( R$)
+DT=desconto ICMS           DS=desconto ISSQN
+AT=acréscimo ICMS          AS=acréscimo ISSQN
+CT=canc.ICMS               CS=canc. ISSQN
+ON=operação não-fiscal
+0007  001   000194          07/11/2011 14:32:41 
+                            R$          4.076,00
+I1=4076,00 ON=1656,00 
+0006  001   000169          04/11/2011 08:16:18 
+                            R$          5.917,32
+CT=1396,00 01T17,00%=27,06 02T12,00%=220,00 F1=287,04 I1=3987,22 ON=15,00 
+0005  001   000144          03/11/2011 10:04:51 
+                            R$          5.191,04
+DT=3,10 AT=0,50 AS=2,00 CT=2584,34 01T17,00%=14,90 02T12,00%=32,00 F1=30,00 I1=2493,50 N1=26,20 03S05,00%=7,00 ON=90,15 
+0004  001   000067          01/11/2011 09:01:05 
+                            R$            343,50
+CT=43,00 01T17,00%=67,00 02T12,00%=64,50 F1=30,00 I1=36,00 N1=48,00 03S05,00%=55,00 
+
+Total do mês 11 de 2011
+Venda Bruta ( R$)                      15.527,86
+DT=3,10 AT=0,50 AS=2,00 CT=4023,34 T12,00%=316,50 T17,00%=108,96 F1=347,04 I1=10592,72 N1=74,20 S05,00%=62,00 ON=1761,15 
+
+Número de Reduções Restantes:               3341
+                  DADOS GERAIS                  
+                SOFTWARE BÁSICO                 
+01.00.02                    17/10/2011 09:38:30V
+MOEDA:  R                   27/10/2011 09:10:48 
+QUANTIDADE: 03              27/10/2011 09:10:49 
+VALOR UNITÁRIO: 03          27/10/2011 09:10:49 
+MFD:
+392204112100092515  
+
+CODIFICAÇÃO GT
+a partir de 27/10/2011 09:10:48 
+0=Q, 1=W, 2=E, 3=R, 4=T, 5=Y, 6=U, 7=I, 8=O, 9=P
+4GR64FR8 CA#L7KMQ 95RTAQ%8 4GR437P1 69TD36BI92MGBEMATECH MP-4000 TH FI ECF-IF
+VERSÃO:01.00.02 ECF:001 LJ:0001
+QQQQQQQQQQQRPOROUO 07/11/2011 16:12:17 
+FAB:BE091110100011276198                     
+
+
+
+
+
+EAD348DE78B2E875BEDB2D81A7D56A17113A3205DE33CAB47677DDECDA0AFAF7364C0BF067009B0DC44D763A4B0DA9A15397308B1B663EA7C61E3648D99DB68E4EA1D84CCB4EA80E77BED6386C3862EF19ECD51445E7803D33769FBCA2B6F045D2AE299227E433384A5C14CF1988AB2A194619FBE63AD14D9F01797FA8C615130BA

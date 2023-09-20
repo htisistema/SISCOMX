@@ -1,0 +1,18 @@
+Error BASE/1094  Error de argumento: ROUND
+Funcoes: ->ROUND(0)
+Funcoes: HRBFUN.PRG->IAT(10124)
+Funcoes: sac23pd1.prg->SAC23PD1(3065)
+Funcoes: SAC00.PRG->SAC0(1434)
+Funcoes: SACROT1.PRG->SENHA(824)
+Funcoes: SISCOM.PRG->MAIN(1127)
+************************************************************************************************************************
+Data e Hora........: 03/12/22 - 12:42:14
+Empresa............: DOCE GOSTO MAIS
+Sistema/Atualizacao: .: SISCOM :. Sistema Automacao Comercial - v22.12.01
+Usuario do Sistema.: 999
+Nome do Executavel.: C:\HELIO\siachb\SISCOM.EXE
+Nome do Micro......: HELIO1 - Nome Terminal: helio
+Memoria Disponivel.: 2097151 - Espaço em Disco....: 126348922880
+Pasta de Diretorio.: HELIO\siachb
+Sistema Operacional: Windows NT Professional 6.02.9200
+Caminho do Banco...: localhost:C:\HELIO\SIACHB\SISCOM.GDB

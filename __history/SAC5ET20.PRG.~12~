@@ -1,0 +1,463 @@
+******************************************************
+* ETIQUETA DE CODIGO DE BARRA IMPRESSORA "ARGOX" E BEETLE
+******************************************************
+MEMVAR getlist
+
+FUNCTION sac5et20
+*****************
+LOCAL mprg:='SAC5ET20',;
+      lci,cci,lba,cba,opcao,bar,texto,qtde,wemp,mtipo:=SPACE(1),enter,;
+      mpreco,edescri,edescri1,ecodi,mtip_term,descri,cont,fim,;
+      mlin_cod,mlin_cod1,mlin_cod2,mlin_desc,mlin_desc1,mlin_desc2,mlin_pre,;
+      mlin_obs,mobs,mlinhas,mforma_pg:=1,mparcela:=0,mletra:=' ',op_opcao:=0,;
+      mcod_bc1:=0,mpreco1:=0,mpreco2:=0,munidade,munidade1,mdescri,cons_merc:={},mimp_preco:='N',mcab:='',mcab1:='',mtam:=''
+
+PRIVATE mcod_bc,mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mcodemp:=SPACE(3),imp_arq
+
+enter=chr(13)
+lci := cci := 0
+lba := 13
+cba := 90
+mtip_term := m_cfg[2]
+exibi_prg(mprg)
+mtipo:= 'G'
+mobs := SPACE(50)
+mlinhas := '0030'
+wemp    := memp_resa+SPACE(50 - LEN(memp_resa))
+op_tela(0,0,16,90,' Emissao Etiquetas de Codigo de Barra ARGOX ')
+op_opcao := 0
+WHILE .T.
+        DESCRI=SPACE(48)
+*        WDATA=DTOC(date())
+        FIM=.F.
+        op_opcao := 0
+        mletra := ' '
+        mcab  := 'Troca somente com essa etiqueta'
+        mcab1 := '  no produto em ate 15 dias    '
+        mtam  := '   '
+        op_tela(10,10,18,38,' Tipos de Etiquetas')
+        mensagem('Escolha a Opcao ou <ESC>p/Retornar')
+        mcod_bc := mcod_bc1 := SPACE(14)
+        CONT := qtde := 0
+        setcor(1)
+        @ 00,00 PROMPT ' Etiqueta GONDOLA Grande     '
+        @ 01,00 PROMPT ' Etiqueta GONDOLA Promocao   '
+        @ 02,00 PROMPT ' Etiqueta PEQUENA SEM Espaco '
+        @ 03,00 PROMPT ' Etiqueta PEQUENA COM Espaco '
+        @ 04,00 PROMPT ' Etiqueta PROMOCAO Grande   '
+        @ 05,00 PROMPT ' Etiqueta s/Cod.Barra 2 Cod. '
+        @ 06,00 PROMPT ' Etiqueta GONDOLA Pequenas   '
+        @ 07,00 PROMPT ' Etiqueta GONDOLA Media      '
+        @ 08,00 PROMPT ' Etiqueta para ROUPAS        '
+        MENU TO op_opcao
+        wvw_lclosewindow()
+        IF LASTKEY()=27
+                EXIT
+        ENDIF
+        @ lci+1,cci+1 SAY "Codigo do Produto:" GET mcod_bc PICT '@!'     //VALID ver_cod(mcod_bc,lci+1,COL()+1)
+        READ
+        cons_merc := {}
+        IF LEN(ALLTRIM(mcod_bc)) > 5
+                ccomm := "SELECT * FROM sacmerc WHERE cod_barr = "+sr_cdbvalue(mcod_bc)
+        ELSE
+                ccomm := "SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(STRZERO(VAL(mcod_bc),5))
+        ENDIF
+        sr_getconnection():exec(ccomm,,.t.,@cons_merc)
+        IF LEN(cons_merc) = 0
+                atencao('Produto nao encontrado no arquivo....')
+                LOOP
+        ENDIF
+        IF EMPTY(cons_merc[1,2])
+                atencao('Este Produto estar sem codigo de barra, Nao pode ser impresso !!!')
+                LOOP
+        ENDIF
+        IF (op_opcao = 2 .OR. op_opcao = 5) .AND. cons_merc[1,23] = 0
+                atencao('Este Produto NAO estar em PROMOCAO !!!')
+        ELSEIF cons_merc[1,23] > 0 .AND. op_opcao # 2 .AND. op_opcao # 5
+                atencao('Este Produto estar em PROMOCAO !!!')
+        ENDIF
+
+        setcor(3)
+        DEVPOS(lci+1,cci+34);DEVOUT(cons_merc[1,9])
+        setcor(1)
+        mcod_bc := VAL(cons_merc[1,8])
+        mpreco1 := 0
+        IF cons_merc[1,23] > 0
+                //mpreco1 := iat(cons_merc[1,46] - (cons_merc[1,46] * (cons_merc[1,23] / 100)),m_set[1,103])
+                mpreco1 := iat(cons_merc[1,46],m_set[1,103]) - iat((cons_merc[1,46] * (cons_merc[1,23] / 100)),m_set[1,103])
+                mpreco2 := iat(cons_merc[1,46],m_set[1,103])
+                mdescri  := cons_merc[1,9]+' *'
+        ELSE
+                mpreco1 := iat(cons_merc[1,46],m_set[1,103])
+                mpreco2 := iat(cons_merc[1,46],m_set[1,103])
+                mdescri  := cons_merc[1,9]                               
+        ENDIF
+        munidade := cons_merc[1,14]
+        @ lci+2,cci+1 SAY "Codigo do Produto 2 ..........:" GET mcod_bc1 PICT '@!' WHEN op_opcao = 6   //VALID ver_cod(mcod_bc1,lci+2,COL()+1) WHEN op_opcao = 6
+        READ
+        IF ! EMPTY(mcod_bc1)
+                cons_merc := {}
+                IF LEN(mcod_bc1) > 5
+                        ccomm := "SELECT * FROM sacmerc WHERE cod_barr = "+sr_cdbvalue(mcod_bc1)
+                ELSE
+                        ccomm := "SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(STRZERO(VAL(mcod_bc1),5))
+                ENDIF
+                sr_getconnection():exec(ccomm,,.t.,@cons_merc)
+                IF LEN(cons_merc) = 0
+                        atencao('Produto nao encontrado no arquivo....')
+                        LOOP
+                ENDIF
+                setcor(3)
+                DEVPOS(lci+1,cci+34);DEVOUT(cons_merc[1,9])
+                setcor(1)
+                mpreco2 := cons_merc[1,46]
+                munidade1 := cons_merc[1,14]
+        ENDIF
+        IF LASTKEY()=27
+                EXIT
+        ENDIF
+        IF EMPTY(cons_merc[1,2])
+                atencao('Este Produto estar sem codigo de barra, Nao pode ser impresso !!!')
+                //LOOP
+        ENDIF
+        IF op_opcao = 1
+                mlin_pre := '132400000000200'
+                mlin_cod := '1F6303000100015'
+                mlin_desc:= '131100000700015'
+                mlin_obs := '121100000000015'
+                Edescri := cons_merc[1,8]+'-'+cons_merc[1,9]
+                mpreco  := 'R$ '+ALLTRIM(TRANSFORM(mpreco1,'@E 999,999.99'))
+                Ecodi   := ALLTRIM(cons_merc[1,2])
+        ELSEIF op_opcao = 2
+                mlin_desc:= '121200000800015'
+                mlin_cod := '1F6203000300015'
+                //mlin_obs := '131100000600150'
+                //mlin_pre := '122300000200150'
+                Edescri := cons_merc[1,8]+'-'+cons_merc[1,9]
+                mpreco  := 'R$ '+ALLTRIM(TRANSFORM(mpreco2,'@E 999,999.99'))
+                Ecodi   := ALLTRIM(cons_merc[1,2])
+                mobs := 'S/JUROS    '
+        ELSEIF op_opcao = 3
+                mlin_cod  := '1F4202000100004'
+                mlin_cod1 := '1F4202000100110'
+                mlin_cod2 := '1F4202000100217'
+                mlin_desc := '110000000400004'
+                mlin_desc1:= '110000000400112'
+                mlin_desc2:= '110000000400219'
+        ELSEIF op_opcao = 4
+                mlin_cod  := '1F4202000100002'
+                mlin_cod1 := '1F4202000100120'
+                mlin_cod2 := '1F4202000100240'
+                mlin_desc := '110000000400002'
+                mlin_desc1:= '110000000400122'
+                mlin_desc2:= '110000000400240'
+        ELSEIF op_opcao = 5
+                mlin_desc:= '131100003400015'
+                mlin_pre := '142500002000050'
+                mlin_obs := '133000001600250'
+                mlin_cod := '1F6306000400015'
+                Edescri := cons_merc[1,8]+'-'+cons_merc[1,9]
+                mpreco  := ALLTRIM(TRANSFORM(mpreco2,'@E 999,999.99'))
+                Ecodi   := ALLTRIM(cons_merc[1,2])
+        ELSEIF op_opcao = 6
+                mlin_desc := '131000000800005'
+                mlin_desc1:= '131100000400005'
+                mlin_desc2:= '131100000100005'
+                mlin_pre  := '122300000400150'
+                mlin_obs  := '141100000100160'
+                Edescri  := STRZERO(mcod_bc,5)+'-'+mdescri
+                Edescri1 := 'COD.:'+STRZERO(mcod_bc,5)
+                Edescri2 := 'COD.:'+STRZERO(mcod_bc1,5)
+                mpreco  := 'R$ '+ALLTRIM(TRANSFORM(mpreco1,'@E 99,999.99'))+' '+munidade
+                mobs    := 'R$ '+ALLTRIM(TRANSFORM(mpreco2,'@E 99,999.99'))+' '+munidade1
+        ELSEIF op_opcao = 7
+                mlin_desc:= '110000000900005'
+                mlin_cod := '1F6203000400015'
+                mlin_pre := '122300000000010'
+                Edescri := cons_merc[1,8]+'-'+cons_merc[1,9]
+                mpreco  := 'R$ '+ALLTRIM(TRANSFORM(cons_merc[1,46],'@E 99,999.99'))
+                Ecodi   := ALLTRIM(cons_merc[1,2])
+        ELSEIF op_opcao = 8
+                mlin_desc := '110000000800020'
+                mlin_desc1:= '110000000800190'
+                mlin_cod  := '1F6203000300020'
+                mlin_cod1 := '1F6203000300200'
+                mlin_pre  := '122300000000020'
+                mlin_pre1 := '122300000000200'
+                Edescri   := cons_merc[1,8]+'-'+SUBSTR(cons_merc[1,9],1,28)
+                Edescr1   := '      '+SUBSTR(cons_merc[1,9],29)
+                mpreco    := 'R$ '+ALLTRIM(TRANSFORM(cons_merc[1,46],'@E 99,999.99'))
+                Ecodi     := ALLTRIM(cons_merc[1,2])
+        ENDIF
+        @ lci+3,cci+1 SAY "PRECO..........:" GET mpreco WHEN op_opcao = 2
+        @ lci+3,COL()+2 SAY "Tipo Letra [P]equena [G]rande:" GET mletra PICT '@!' VALID mletra $ 'P,G' WHEN op_opcao = 2
+        @ lci+4,cci+1 SAY "Forma Pagamento:" GET mforma_pg PICT '99' WHEN op_opcao = 2
+        READ
+        IF LASTKEY()=27
+                EXIT
+        ENDIF
+        IF op_opcao = 2
+                        //mlin_pre := '122300000200150' //g em baixo
+                        //mlin_obs := '122300000200150' //g em baixo
+                        //mlin_pre := '122300000600150' //g em cima
+                        //mlin_obs := '122300000600150' //g em cima
+                        //mlin_pre := '131100000200150' //p em baixo
+                        //mlin_obs := '131100000200150' //p em baixo
+                        //mlin_pre := '131100000600150' //p em cima
+                        //mlin_obs := '131100000600150' //p em cima
+
+                IF mletra = 'P'
+                        mlin_obs := '122300000200150' //g em baixo
+                        mlin_pre := '131100000600150' //p em cima
+                ELSE
+                        mlin_obs := '131100000600150' //p em cima
+                        mlin_pre := '122300000200150' //g em baixo
+                ENDIF
+        ENDIF
+
+*       @ lci+9,cci+1 SAY "Linha de Comando Codigo.:" GET mlin_cod
+*       @ lci+10,cci+1 SAY "Linha de Comando Codigo1:" GET mlin_cod1 WHEN mtipo= 'P'
+*       @ lci+11,cci+1 SAY "Linha de Comando Codigo2:" GET mlin_cod2 WHEN mtipo= 'P'
+*       @ lci+12,cci+1 SAY "Linha de Comando Descr..:" GET mlin_desc
+*       @ lci+13,cci+1 SAY "Linha de Comando Descr.1:" GET mlin_desc1 WHEN mtipo= 'P'
+*       @ lci+14,cci+1 SAY "Linha de Comando Descr.2:" GET mlin_desc2 WHEN mtipo= 'P'
+*       @ lci+15,cci+1 SAY "Linha de Comando Preco..:" GET mlin_pre WHEN mtipo= 'G' .OR. mtipo = 'R' .OR. mtipo = 'Q'
+*       @ lci+16,cci+1 SAY "Linha de Comando OBS....:" GET mlin_obs WHEN mtipo= 'G' .OR. mtipo = 'R' .OR. mtipo = 'Q'
+*       @ lci+17,cci+1 SAY "Qtd.Linhas..............:" GET mlinhas PICT '9999'
+        IF mforma_pg > 1
+                mparcela := cons_merc[1,46] / mforma_pg
+        ENDIF
+        @ lci+5,cci+1 SAY "Valor Parcelado:" GET mparcela WHEN op_opcao = 2
+        READ
+        IF LASTKEY()=27
+                LOOP
+        ENDIF
+        IF  op_opcao = 2
+                IF mparcela > 0
+                        mobs := STRZERO(mforma_pg)+' x '+ALLTRIM(TRANSFORM(mparcela,'999,999.99'))+' '+mobs
+                ELSEIF mforma_pg > 1
+                        mobs := STRZERO(mforma_pg)+' x '+mobs
+                ELSEIF cons_merc[1,23] > 0
+                        mobs := 'POR R$: '+ALLTRIM(TRANSFORM(mpreco1,'999,999.99'))
+                ELSE
+                        mobs := '                 '
+                ENDIF
+        ENDIF
+        @ lci+6,cci+1 SAY "OBS.:" GET mobs WHEN op_opcao = 2
+        @ lci+7,cci+1 SAY "Imprimir Preco [S/N]....:" GET mimp_preco PICT "@!" VALID mimp_preco $ 'S,N' WHEN op_opcao = 8
+        @ lci+8,cci+1 SAY "Tamanho................ :" GET mtam PICT "@!" WHEN op_opcao = 9
+        @ lci+9,cci+1 SAY "Quantidade de Etiquetas :" GET qtde PICT "99999" VALID IF(EMPTY(qtde),.F.,.T.)
+        READ
+        IF LASTKEY()=27
+                LOOP
+        ENDIF
+        opcao := op_simnao('S','Confirma a Impressao:')
+        IF opcao = 'N'
+                LOOP
+        ENDIF
+        //IF ! imp_arq('ETIQUETA.REL','E')
+        //        LOOP
+        //ENDIF
+        //SET PRINT TO 'LPT1'
+        //SET PRINT TO 'COM1'
+        //SET DEVICE TO PRINT
+        //ELSEIF mimp_tipo = 1 .AND. ALLTRIM(m_indiv[1,2]) $ 'LPT1,LPT2,LPT3,LPT4,LPT5'
+/*
+                SET DEVI TO PRINT
+                SET PRINT ON
+                SET PRINT TO (ALLTRIM(m_indiv[1,2]))
+*/
+        //ELSE
+                SET DEVI TO PRINT
+                SET PRINT ON
+                imp_arq := ALLTRIM(m_indiv[1,5])+'HTI.REL'
+                SET PRINT TO (imp_arq)
+        //ENDIF
+
+
+        IF op_opcao = 3 .OR. op_opcao = 4
+                Edescri := SUBSTR(cons_merc[1,8]+'-'+cons_merc[1,9],1,22)
+                Edescri1:= SUBSTR(cons_merc[1,8]+'-'+cons_merc[1,9],23,18)
+                Ecodi   := ALLTRIM(cons_merc[1,2])
+                @ 00,00 say chr(2)+'qA' + enter
+*               @ 00,00 say chr(2)+'c'+mlinhas + enter
+*               @ 00,00 say chr(2)+'e'     + enter
+*               @ 00,00 say chr(2)+'KI508' + enter
+*               @ 00,00 say chr(2)+'O0220' + enter
+*               @ 00,00 say chr(2)+'f220'  + enter
+*               @ 00,00 say chr(2)+'KW0394' + enter
+*               @ 00,00 say chr(2)+'KI00'   + enter
+                @ 00,00 say chr(2)+'V0'     + enter
+                @ 00,00 say chr(2)+'L'      + enter
+                @ 00,00 say 'H11'    + enter
+                @ 00,00 say 'PA'     + enter
+                @ 00,00 say 'A2'     + enter
+                @ 00,00 say 'D11'    + enter
+*                            1 223 000 0100 0200
+*                                  tam altu. margem
+                @ 00,00 say mlin_desc+Edescri+ enter
+                @ 00,00 say mlin_desc1+Edescri+ enter
+                @ 00,00 say mlin_desc2+Edescri+ enter
+                IF ! EMPTY(ecodi)
+                        @ 00,00 say mlin_cod+Ecodi+ enter
+                        @ 00,00 say mlin_cod1+Ecodi+ enter
+                        @ 00,00 say mlin_cod2+Ecodi+ enter
+                ENDIF
+                @ 00,00 say 'Q'+STRZERO(qtde,4)+ enter
+                @ 00,00 say 'E'+ enter
+                //SET PRINT TO
+                //SET DEVICE TO screen
+        ELSEIF op_opcao = 6
+                @ 00,00 say chr(2)+'qA'    + enter
+*               @ 00,00 say chr(2)+'c'+mlinhas + enter
+                @ 00,00 say chr(2)+'e'     + enter
+                @ 00,00 say chr(2)+'KI508' + enter
+                @ 00,00 say chr(2)+'O0220' + enter
+                @ 00,00 say chr(2)+'f220'  + enter
+                @ 00,00 say chr(2)+'KW0394' + enter
+                @ 00,00 say chr(2)+'KI00'   + enter
+                @ 00,00 say chr(2)+'V0'     + enter
+                @ 00,00 say chr(2)+'L'      + enter
+                @ 00,00 say 'H11'    + enter
+                @ 00,00 say 'PA'     + enter
+                @ 00,00 say 'A2'     + enter
+                @ 00,00 say 'D11'    + enter
+*                            1 223 000 0100 0200
+                @ 00,00 say mlin_desc+Edescri+ enter
+                @ 00,00 say mlin_desc1+Edescri1+ enter
+                @ 00,00 say mlin_desc2+Edescri2+ enter
+                @ 00,00 say mlin_pre+mpreco+ enter
+                @ 00,00 say mlin_obs+mobs+ enter
+                @ 00,00 say 'Q'+STRZERO(qtde,4)+ enter
+                @ 00,00 say 'E'     + enter
+        ELSEIF op_opcao = 8
+                @ 00,00 say chr(2)+'qA' + enter
+                @ 00,00 say chr(2)+'V0'     + enter
+                @ 00,00 say chr(2)+'L'      + enter
+                @ 00,00 say 'H11'    + enter
+                @ 00,00 say 'PA'     + enter
+                @ 00,00 say 'A2'     + enter
+                @ 00,00 say 'D11'    + enter
+*                            1 223 000 0100 0200
+*                                  tam altu. margem
+                @ 00,00 say mlin_desc+Edescri+ enter
+                @ 00,00 say mlin_desc1+Edescri+ enter
+                IF ! EMPTY(ecodi)
+                        @ 00,00 say mlin_cod+Ecodi+ enter
+                        @ 00,00 say mlin_cod1+Ecodi+ enter
+                ENDIF
+                IF mimp_preco = 'S'
+                        @ 00,00 say mlin_pre+mpreco+ enter
+                        @ 00,00 say mlin_pre1+mpreco+ enter
+                ENDIF
+                @ 00,00 say 'Q'+STRZERO(qtde,4)+ enter
+                @ 00,00 say 'E'+ enter
+                //SET PRINT TO
+                //SET DEVICE TO screen
+        ELSEIF op_opcao = 9
+                Edescri := SUBSTR(cons_merc[1,8]+'-'+cons_merc[1,9],1,22)
+                Edescri1:= SUBSTR(cons_merc[1,8]+'-'+cons_merc[1,9],23,18)
+                Ecodi   := ALLTRIM(cons_merc[1,2])
+                @ 00,00 say chr(2)+'qA' + enter
+                @ 00,00 say chr(2)+'V0'     + enter
+                @ 00,00 say chr(2)+'L'      + enter
+                @ 00,00 say 'H11'    + enter
+                @ 00,00 say 'PA'     + enter
+                @ 00,00 say 'A2'     + enter
+                @ 00,00 say 'D11'    + enter
+*                            1 223 000 0100 0200
+*                                  tam altu. margem
+                @ 00,00 say '101200001900020'+mcab+ enter
+                @ 00,00 say '101200001900155'+mcab+ enter
+                @ 00,00 say '101200001900295'+mcab+ enter
+
+                @ 00,00 say '101200001820020'+mcab1+ enter
+                @ 00,00 say '101200001820155'+mcab1+ enter
+                @ 00,00 say '101200001820295'+mcab1+ enter
+
+                SET CENTURY ON
+                @ 00,00 say '101200001720050'+DTOC(mdata_sis)+ enter
+                @ 00,00 say '101200001720190'+DTOC(mdata_sis)+ enter
+                @ 00,00 say '101200001720330'+DTOC(mdata_sis)+ enter
+                SET CENTURY OFF
+
+                @ 00,00 say '120000001550001'+Edescri+ enter
+                @ 00,00 say '120000001550140'+Edescri+ enter
+                @ 00,00 say '120000001550280'+Edescri+ enter
+
+                @ 00,00 say '130000001350020'+'TAM:'+mtam+ enter
+                @ 00,00 say '130000001350160'+'TAM:'+mtam+ enter
+                @ 00,00 say '130000001350300'+'TAM:'+mtam+ enter
+
+                @ 00,00 say '120000001200002'+'ITEM CHAVE:'+ALLTRIM(cons_merc[1,6])+ enter
+                @ 00,00 say '120000001200140'+'ITEM CHAVE:'+ALLTRIM(cons_merc[1,6])+ enter
+                @ 00,00 say '120000001200280'+'ITEM CHAVE:'+ALLTRIM(cons_merc[1,6])+ enter
+
+                @ 00,00 say '1F4203000750002'+Ecodi+ enter
+                @ 00,00 say '1F4203000750140'+Ecodi+ enter
+                @ 00,00 say '1F4203000750280'+Ecodi+ enter
+
+                @ 00,00 say '141200000200002'+'R$:'+ALLTRIM(TRANSFORM(cons_merc[1,46],'@E 999,999.99'))+ enter
+                @ 00,00 say '141200000200140'+'R$:'+ALLTRIM(TRANSFORM(cons_merc[1,46],'@E 999,999.99'))+ enter
+                @ 00,00 say '141200000200280'+'R$:'+ALLTRIM(TRANSFORM(cons_merc[1,46],'@E 999,999.99'))+ enter
+
+                @ 00,00 say 'Q'+STRZERO(qtde,4)+ enter
+                @ 00,00 say 'E'+ enter
+                //SET PRINT TO
+                //SET DEVICE TO screen
+        ELSE
+                @ 00,00 say chr(2)+'qA'    + enter
+*               @ 00,00 say chr(2)+'c'+mlinhas + enter
+                @ 00,00 say chr(2)+'e'     + enter
+                @ 00,00 say chr(2)+'KI508' + enter
+                @ 00,00 say chr(2)+'O0220' + enter
+                @ 00,00 say chr(2)+'f220'  + enter
+                @ 00,00 say chr(2)+'KW0394' + enter
+                @ 00,00 say chr(2)+'KI00'   + enter
+                @ 00,00 say chr(2)+'V0'     + enter
+                @ 00,00 say chr(2)+'L'      + enter
+                @ 00,00 say 'H10'    + enter
+                @ 00,00 say 'PA'     + enter
+                @ 00,00 say 'A2'     + enter
+                @ 00,00 say 'D11'    + enter
+*                            1 223 000 0100 0200
+                @ 00,00 say mlin_desc+Edescri+ enter
+                IF ! EMPTY(ecodi)
+                        @ 00,00 say mlin_cod+Ecodi+ enter
+                ENDIF
+                IF op_opcao = 5
+                        @ 00,00 say mlin_pre+mpreco+ enter
+                        @ 00,00 say mlin_obs+cons_merc[1,14]+ enter
+                ELSEIF op_opcao = 2
+                        @ 00,00 say mlin_pre+mpreco+ enter
+                        @ 00,00 say mlin_obs+mobs+ enter
+
+                ELSE
+                        @ 00,00 say mlin_pre+mpreco+ enter
+                ENDIF
+                @ 00,00 say 'Q'+STRZERO(qtde,4)+ enter
+                @ 00,00 say 'E'     + enter
+        ENDIF
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        /*
+        //ELSEIF ! EMPTY(m_indiv[1,17]) .AND. mporta_imp = 'R'   //IMPRESSAO DOS RELATORIOS
+                MYRUN("DOSPRINTER /SEL'"+ALLTRIM(m_indiv[1,17])+"' /DEL "+ALLTRIM(IF(LEN(m_indiv)>0,m_indiv[1,5],mdefcam_imp))+'HTI.REL')
+        //ELSEIF ! EMPTY(m_indiv[1,20]) .AND. mporta_imp = 'R'   //IMPRESSAO DAS DUPLICATAS
+                MYRUN("DOSPRINTER /SEL'"+ALLTRIM(m_indiv[1,20])+"' /DEL "+ALLTRIM(IF(LEN(m_indiv)>0,m_indiv[1,5],mdefcam_imp))+'HTI.REL')
+        //ELSEIF ! EMPTY(m_indiv[1,24]) .AND. mporta_imp = 'R'   //IMPRESSAO DE BOLETOS
+                MYRUN("DOSPRINTER /SEL'"+ALLTRIM(m_indiv[1,24])+"' /DEL "+ALLTRIM(IF(LEN(m_indiv)>0,m_indiv[1,5],mdefcam_imp))+'HTI.REL')
+        //ELSE
+                IF mtp_impre = 2 //mtipo_imp = 'M'
+                        MYRUN('DOSPRINTER /SEL /DEL '+ALLTRIM(m_indiv[1,5])+'HTI.REL')
+                ELSE
+        */
+                        MYRUN('DOSPRINTER /RAW /DEL '+ALLTRIM(IF(LEN(m_indiv)>0,m_indiv[1,5],mdefcam_imp))+'HTI.REL')
+                //ENDIF
+        //ENDIF
+
+        //conf_impressao('ETIQUETA.REL')
+        limpa(lci,cci,lba,cba)
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+

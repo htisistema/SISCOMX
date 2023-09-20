@@ -1,0 +1,308 @@
+******************************************
+* LISTAGEM MOVIMENTO GERAL RESUMO P/GRUPO
+******************************************
+MEMVAR getlist,nivel_acess,mdata_sis
+
+FUNCTION sac527
+**************
+LOCAL MPRG:='SAC527',mtitulo:='RELATORIO DE MOVIMENTO PRODUTO RESUMO GERAL',;
+      lba,cba,opcao,i,mtecla,mdata1,mdata2,;
+      mcod_ven,mgrupo,mcod_for,mcod_cli,mtipo_cons,muf,;
+      m_grupo:={},m_auxgrupo:={},mtipo_op,ali,mtot_qtd,mtot_vlr,mcod_ope,mponto,;
+      mtot_cus:=0,aret:={},aret1:={},cons_mov := {},msintetico:=' ',mitem_zero:='N',mordem:=' '
+
+PRIVATE mtraco,mtit,mtipo,mpag,mcodemp:=SPACE(3)
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+IF ! ver_nivel(mprg,mtitulo,'15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+mtraco := REPLI('=',137)
+
+lba := 11
+cba := 70
+*----------------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('SACCLI','CLI');RETURN NIL;ENDIF
+IF ! AbriArq('sacmovnt','movnt');RETURN NIL;ENDIF
+IF ! AbriArq('sacmov','mov');RETURN NIL;ENDIF
+IF ! AbriArq('sacforn','forn');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*----------------------------------------------------------------------------
+mtipo_imp := m_indiv[1,18]
+op_tela(10,10,23,80,mtitulo)
+WHILE .T.
+        exibi_prg(mprg)
+        ASIZE(m_grupo,0)
+        ASIZE(m_auxgrupo,0)
+        mdata1 := mdata_sis - 30
+        mdata2 := mdata_sis
+        mgrupo := mcod_ven := mcod_ope := mcod_for := mcod_cli := mtot_qtd :=;
+        mtot_vlr := mtot_cus := 0
+        mtipo_cons := 'V'
+        muf := SPACE(2)
+	mordem := 'A'
+	mtipo_op := '04'
+	msintetico := 'G'
+	mitem_zero:='N'
+        mensagem('Preencha os Campos - <ESC>p/Abandonar')
+        DEVPOS(0,2);DEVOUT('Codigo Empresa...:')
+        DEVPOS(1,2);DEVOUT('Data Inicial.....:')
+        DEVPOS(2,2);DEVOUT('Data Final.......:')
+        DEVPOS(3,2);DEVOUT('Grupo............:')
+        DEVPOS(4,2);DEVOUT('Codigo Vendedor..:')
+        DEVPOS(5,2);DEVOUT('Codigo Operador..:')
+        DEVPOS(6,2);DEVOUT('Codigo Fornecedor:')
+        DEVPOS(7,2);DEVOUT('Codigo Cliente...:')
+        DEVPOS(8,2);DEVOUT('Tipo Preco [V]enda [C]usto.............................:')
+        DEVPOS(9,2);DEVOUT('Sigla do Estado desejado...............................:')
+        DEVPOS(10,2);DEVOUT('Sintetico p/[G]rupo [S]ub-grupo [F]ornecedor [V]endedor:')
+        DEVPOS(11,2);DEVOUT('Imprimir Item SEM MOVIMENTO [S]im [N]ao................:')
+        DEVPOS(12,2);DEVOUT('Ordem de Imp. [C]odigo [A]lfa. [V]lr.Venda [P]ercentual:')
+        DEVPOS(13,2);DEVOUT('Tipo de Operacao desejada..............................:')
+
+        @ 0,21 GET mcodemp PICT "999" VALID ver_emp(mcodemp,0,25,,'*') WHEN mmult_emp = 'S'
+        @ 1,21 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ 2,21 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+        @ 3,21 GET mgrupo PICT '999' VALID IF(EMPTY(mgrupo),.T.,ver_gru(@mgrupo,3,26,.F.))
+        @ 4,21 GET mcod_ven PICT '999' VALID IF(EMPTY(mcod_ven),.T.,ven(mcod_ven,4,26))
+        @ 5,21 GET mcod_ope PICT '999' VALID IF(EMPTY(mcod_ope),.T.,ven(mcod_ope,5,26))
+        @ 6,21 GET mcod_for PICT '9999' VALID IF(EMPTY(mcod_for),.T.,v_fornece(mcod_for,6,26))
+        @ 7,21 GET mcod_cli PICT '99999' VALID ver_cli(mcod_cli,7,27)
+        @ 8,59 GET mtipo_cons PICT '@!' VALID mtipo_cons $ 'V,C'
+        @ 9,59 GET muf PICT '@!' VALID  lim_get() .AND. v_uf(muf) WHEN men_get(10,30,'Digite a Sigla do Estado que desja ou deixe em BRANCO para imprimir todos')
+        @ 10,59 GET msintetico PICT '@!' VALID  msintetico $ 'G,S,F,V'
+        @ 11,59 GET mitem_zero PICT '@!' VALID  mitem_zero $ 'S,N'
+        @ 12,59 GET mordem PICT '@!' VALID  mordem $ 'C,A,V,P'
+        @ 13,59 GET mtipo_op PICT '@!' VALID  mtipo_op $ '01,04'
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        mensagem('Aguarde um momento coletando dados p/o relatorio')
+        aret:={}
+	IF msintetico = 'G' .OR. msintetico = 'S'
+	        sr_getconnection():exec("SELECT gru_sub,merc FROM sacgrupo",,.t.,@aret)
+	ELSEIF msintetico = 'F'
+	        sr_getconnection():exec("SELECT cod_forn,razao FROM sacforn",,.t.,@aret)
+	ELSEIF msintetico = 'V'
+	        sr_getconnection():exec("SELECT scod_op,snome FROM insopera",,.t.,@aret)
+	ENDIF
+        IF LEN(aret) = 0
+		atencao('Nao existe nenhum Registro...')
+                LOOP
+        ENDIF
+
+	i := 0
+	FOR i = 1 TO LEN(aret)
+		IF msintetico = 'G'
+	                //IF LEN(ALLTRIM(aret[i,1])) > 3
+	                IF ! EMPTY(SUBSTR(aret[i,1],4,2))
+        	                LOOP
+                	ENDIF
+		ELSEIF msintetico = 'S'
+	                //IF LEN(ALLTRIM(aret[i,1])) = 3
+	                IF EMPTY(SUBSTR(aret[i,1],4,2))
+        	                LOOP
+                	ENDIF
+                ENDIF
+                AADD(m_grupo,aret[i,1])
+                AADD(m_auxgrupo,{aret[i,2],0,0,0,0,aret[i,1]})
+        NEXT
+	IF msintetico = 'G' 
+	        AADD(m_grupo,'00000')
+        	AADD(m_auxgrupo,{'G R U P O  NAO ENCONTRADO',0,0,0,0,'00000'})
+	ELSEIF msintetico = 'S'
+	        AADD(m_grupo,'00000')
+        	AADD(m_auxgrupo,{'S U B - G R U P O  NAO ENCONTRADO',0,0,0,0,'00000'})
+	ELSEIF msintetico = 'F'
+	        AADD(m_grupo,'0000')
+        	AADD(m_auxgrupo,{'F O R N E C E D O R  NAO ENCONTRADO',0,0,0,0,'0000'})
+	ELSEIF msintetico = 'V'
+	        AADD(m_grupo,'000')
+        	AADD(m_auxgrupo,{'V E N D E D O R   NAO ENCONTRADO',0,0,0,0,'000'})
+	ENDIF
+	
+        mensagem('Aguarde o Coletando dados p/ impressao...')
+        ************************************************************
+        IF mtipo_op = '04'
+                cComm  := "SELECT * FROM sacmov WHERE data_s_e >= "+sr_cdbvalue(mdata1)+" AND data_s_e <= "+sr_cdbvalue(mdata2)		//+"AND NOT ent_sai = 'E' AND documento NOT LIKE 'TR%' AND cancel IS NULL"
+        ELSE
+                cComm  := "SELECT * FROM sacmovnt WHERE data_s_e >= "+sr_cdbvalue(mdata1)+" AND data_s_e <= "+sr_cdbvalue(mdata2)	//+"AND NOT ent_sai = 'E' AND documento NOT LIKE 'TR%' AND cancel IS NULL"
+        ENDIF
+        cComm  := ccomm + " AND tipo = '02' AND cancel IS NULL AND ent_sai = 'S' AND devolucao IS NULL AND documento NOT LIKE 'BL%'"
+        IF mtipo_cons = 'C'
+                ccomm := ccomm + " AND vl_vend > 0 OR vl_fatura > 0"
+        ENDIF
+        IF mtipo_op = '04'
+                ccomm := ccomm + " AND NOT tipo = '03'"
+        ENDIF
+        IF ! EMPTY(mgrupo)
+                ccomm := ccomm + " AND gru_sub LIKE "+sr_cdbvalue(STRZERO(mgrupo,3)+"%")
+        ENDIF
+        IF ! EMPTY(mcod_for)
+                ccomm := ccomm + " AND cod_fab = "+sr_cdbvalue(STRZERO(mcod_for,4))
+        ENDIF
+        IF ! EMPTY(mcod_cli)
+                ccomm := ccomm + " AND cod_cli = "+sr_cdbvalue(mcod_cli)
+        ENDIF
+        IF ! EMPTY(mcod_ven)
+                ccomm := ccomm + " AND cod_vend = "+sr_cdbvalue(STRZERO(mcod_ven,3))
+        ENDIF
+        IF ! EMPTY(mcod_ope)
+                ccomm := ccomm + " AND cod_oper = "+sr_cdbvalue(STRZERO(mcod_ope,3))
+        ENDIF
+        IF ! EMPTY(mcodemp)
+                ccomm := ccomm + " AND empresa = "+sr_cdbvalue(mcodemp)
+        ENDIF
+        ccomm := ccomm + " ORDER BY data_s_e,ent_sai,num_ped,documento"
+	cons_mov := {}
+        sr_getconnection():exec(ccomm,,.t.,@cons_mov)
+        IF LEN(cons_mov) = 0
+                atencao('Nao existe movimento neste Periodo')
+        ENDIF
+	i:=0
+	FOR i = 1 TO LEN(cons_mov)
+                prog_imp(i,DTOC(cons_mov[i,16])+' - '+cons_mov[i,10])
+		IF msintetico = 'G' .OR. msintetico = 'S'
+	                aret:={}
+        	        sr_getconnection():exec("SELECT gru_sub FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(cons_mov[i,10]),,.t.,@aret)
+                	IF LEN(aret) = 0
+				mcod_produto := '00000'
+	                ELSE
+	                	mcod_produto := aret[1,1]
+			ENDIF
+	       	ENDIF
+                IF ! EMPTY(muf)
+                        aret1:={}
+                        sr_getconnection():exec("SELECT uf FROM saccli WHERE cod_cli = "+sr_cdbvalue(cons_mov[i,36]),,.t.,@aret1)
+                        IF LEN(aret1) > 0 .AND. aret1[1,1] <> muf
+                                LOOP
+                        ENDIF
+                ENDIF
+                mponto :=0
+		IF msintetico = 'G'
+	                mponto := ASCAN(m_grupo,SUBSTR(mcod_produto,1,3))
+	       	ELSEIF msintetico = 'S'
+	                mponto := ASCAN(m_grupo,mcod_produto)
+	       	ELSEIF msintetico = 'F'
+	                mponto := ASCAN(m_grupo,cons_mov[i,13])
+	       	ELSEIF msintetico = 'V'
+	                mponto := ASCAN(m_grupo,cons_mov[i,28])
+		ENDIF
+                IF mponto > 0
+                        m_auxgrupo[mponto,2]:=m_auxgrupo[mponto,2] + cons_mov[i,19]
+                        mtot_qtd := mtot_qtd +cons_mov[i,19]
+                        mtot_vlr := mtot_vlr + (cons_mov[i,19] * cons_mov[i,23])
+                        mtot_cus := mtot_cus + (cons_mov[i,19] * cons_mov[i,25])
+                        m_auxgrupo[mponto,3]:=m_auxgrupo[mponto,3] + (cons_mov[i,23] * cons_mov[i,19])
+                        m_auxgrupo[mponto,4]:=m_auxgrupo[mponto,4] + (cons_mov[i,25] * cons_mov[i,19])
+		ELSE
+                        m_auxgrupo[LEN(m_grupo),2]:=m_auxgrupo[LEN(m_grupo),2] + cons_mov[i,19]
+                        mtot_qtd := mtot_qtd +cons_mov[i,19]
+                        mtot_vlr := mtot_vlr + (cons_mov[i,19] * cons_mov[i,23])
+                        mtot_cus := mtot_cus + (cons_mov[i,19] * cons_mov[i,25])
+                        m_auxgrupo[LEN(m_grupo),3]:=m_auxgrupo[LEN(m_grupo),3] + (cons_mov[i,23] * cons_mov[i,19])
+                        m_auxgrupo[LEN(m_grupo),4]:=m_auxgrupo[LEN(m_grupo),4] + (cons_mov[i,25] * cons_mov[i,19])
+                ENDIF
+        NEXT
+	i:=0
+	FOR i = 1 TO LEN(m_auxgrupo)
+		m_auxgrupo[i,5] := ((m_auxgrupo[i,3]-m_auxgrupo[i,4])/m_auxgrupo[i,3])*100	
+	NEXT
+        mpag := 0
+	IF msintetico = 'G'
+                mtit = 'Listagem (RESUMO GERAL P/GRUPO)'
+	ELSEIF msintetico = 'S'
+	       	mtit = 'Listagem (RESUMO GERAL P/SUB-GRUPO)'
+	ELSEIF msintetico = 'F'
+	       	mtit = 'Listagem (RESUMO GERAL P/FORNECEDOR)'
+	ELSE
+	       	mtit = 'Listagem (RESUMO GERAL P/VENDEDOR)'
+	ENDIF
+
+        IF ! EMPTY(mcod_ven)
+                mtit = mtit + ' - Vend.Cod.: '+STRZERO(mcod_ven,3)
+        ENDIF
+        IF mtipo_cons = 'V'
+                mtit := mtit+' Preco VENDA'
+        ELSE
+                mtit := mtit+' Preco CUSTO'
+        ENDIF
+        IF ! EMPTY(muf)
+                mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)+' do Estado: '+muf
+        ELSE
+                mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)
+        ENDIF
+
+	ASORT(m_auxgrupo,,,{|x,y| x[5] < y[5]})
+        
+        marq := 'RES_MOV.REL'
+        ******************************
+        IF ! imp_arq('RES_MOV.REL','R')
+                LOOP
+        ENDIF
+	i:=0
+        FOR i = 1 TO LEN(m_auxgrupo)
+                IF mpag = 0 .OR. PROW() >= 59
+                        mpag ++
+                        IF mpag > 1
+                                EJECT
+                        ENDIF
+                        cabecalho(mpag,mtit,mtipo,mprg)
+                        imprt(mtipo_imp,'C')
+		       	IF msintetico = 'S' .OR. msintetico = 'G'
+			       	IF msintetico = 'S'
+		                        DEVPOS(PROW()+1,00);DEVOUT(' Sub')
+	        	       	ENDIF
+                        	DEVPOS(PROW()+1,00);DEVOUT('Grupo')
+	                        DEVPOS(PROW(),07);DEVOUT('Descricao')
+                        ELSE
+                        	DEVPOS(PROW()+1,00);DEVOUT('Cod.')
+	                        DEVPOS(PROW(),07);DEVOUT('Nome')
+			ENDIF
+                        DEVPOS(PROW(),52);DEVOUT('Quantd.')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('  Valor Total')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('(%)Tot.')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('    Lucro R$')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('Lucro %')
+
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                ENDIF
+        	IF mitem_zero = 'N' .AND. EMPTY(m_auxgrupo[i,2])
+        		LOOP
+        	ENDIF
+	        IF ! EMPTY(mgrupo) .AND. STRZERO(mgrupo,3)+'  ' <> m_grupo[i]
+                        LOOP
+                ENDIF
+                //DEVPOS(PROW()+1,00);DEVOUT(m_grupo[i])
+                DEVPOS(PROW()+1,00);DEVOUT(m_auxgrupo[i,6])
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(m_auxgrupo[i,1])
+                DEVPOS(PROW(),49);DEVOUTPICT(m_auxgrupo[i,2],'999,999.99')
+                DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(m_auxgrupo[i,3],'99,999,999.99')
+                //DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(m_auxgrupo[i,4],'99,999,999.99')  // CUSTO
+                DEVPOS(PROW(),PCOL()+2);DEVOUTPICT((m_auxgrupo[i,3]/mtot_vlr)*100,'9999.99')
+                DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(m_auxgrupo[i,3]-m_auxgrupo[i,4],'9,999,999.99')
+                //DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(((m_auxgrupo[i,3]-m_auxgrupo[i,4])/m_auxgrupo[i,3])*100,'999.99')
+                DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(m_auxgrupo[i,5],'999.99')
+        NEXT
+        DEVPOS(PROW()+1,47);DEVOUT('------------')
+        DEVPOS(PROW(),61);DEVOUT('-------------')
+        DEVPOS(PROW(),84);DEVOUT('-------------')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT('-------')
+        DEVPOS(PROW()+1,00);DEVOUT('TOTAL GERAL DOS GRUPOS:')
+        DEVPOS(PROW(),47);DEVOUTPICT(mtot_qtd,'9,999,999.99')
+        DEVPOS(PROW(),61);DEVOUTPICT(mtot_vlr,'99,999,999.99')
+        DEVPOS(PROW(),84);DEVOUTPICT(mtot_vlr-mtot_cus,'99,999,999.99')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(((mtot_vlr-mtot_cus)/mtot_vlr)*100,'9999.99')
+        EJECT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao(marq)
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*************************** F I M ************************
+

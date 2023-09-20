@@ -1,0 +1,174 @@
+************************************
+* RELATORIO DE ARQUIVOS LOG'S
+* 16.06.2005
+************************************
+FUNCTION saclog2
+****************
+
+LOCAL mprg:='SACLOG2',mtitulo:="RELATORIO ARQUIVO DE LOG'S",;
+      lba:=20,cba:=75,mopcao,i:=0,;
+      mdata1,mdata2,mcod_merc,mcod_oper,mcod_aut,mtipo,mtit,mpag:=0,;
+      mtraco:=REPLI('=',132),mtraco1:=REPLI('-',132),mlinha:=' ',cons_log:={},ccomm:=''
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+IF ! ver_nivel(mprg,mtitulo,'1',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+*---------------------------------------------
+CLOSE ALL
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+*---------------------------------------------
+op_tela(14,10,20,75,mtitulo)
+WHILE .T.
+        mdata1:=mdata2:=CTOD('  /  /  ')
+        mcod_oper := mcod_aut  := mcod_merc := i := 0
+        mtit := 'RELATORIO DO ARQUIVO DE LOG'
+        exibi_prg(mprg)
+        DEVPOS(1,1);DEVOUT('Data Inicial...:')
+        DEVPOS(2,1);DEVOUT('Data Final.....:')
+        DEVPOS(3,1);DEVOUT('Cod.Operador...:')
+        DEVPOS(4,1);DEVOUT('Cod.Autorizacao:')
+        DEVPOS(5,1);DEVOUT('Codigo Produto.:')
+        @ 1,18 GET mdata1 VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ 2,18 GET mdata2 VALID IF(mdata2<mdata1,.F.,.T.)
+        @ 3,18 GET mcod_oper PICT '999' VALID ven(mcod_oper,3,22)
+        @ 4,18 GET mcod_aut PICT '999' VALID ven(mcod_aut,4,22)
+        @ 5,18 GET mcod_merc PICT '99999' VALID IF(EMPTY(mcod_merc),.T.,ver_cod(mcod_merc,5,24))
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        mopcao := op_simnao('S','Comfirma os dados:')
+        IF mopcao = 'N'
+                LOOP
+        ENDIF
+        cons_log := {}
+        ccomm := "SELECT * FROM saclog WHERE data >= "+sr_cdbvalue(mdata1)+" AND data <= "+sr_cdbvalue(mdata2)
+        IF ! EMPTY(mcod_oper)
+                cComm  := ccomm + " AND cod_oper = "+sr_cdbvalue(STRZERO(mcod_oper,3))
+                mtit := mtit + ' - Operador: '+STRZERO(mcod_oper,3)
+        ENDIF
+        IF ! EMPTY(mcod_aut)
+                cComm  := ccomm + " AND aut_oper = "+sr_cdbvalue(STRZERO(mcod_aut,3))
+                mtit := mtit + ' - Autorizado por: '+STRZERO(mcod_aut,3)
+        ENDIF
+        IF ! EMPTY(mcod_merc)
+                cComm  := ccomm + " AND cod_prod = "+sr_cdbvalue(mcod_merc)
+                mtit := mtit + ' - Produto: '+mcod_merc
+        ENDIF
+        cComm  := ccomm + " ORDER BY data,sr_recno"
+        sr_getconnection():exec(ccomm,,.t.,@cons_log)
+        IF LEN(cons_log) = 0
+                atencao('Nao existe movimento neste periodo !!!')
+                LOOP
+        ENDIF
+        IF ! imp_arq('REL_LOG.REL','R');LOOP;ENDIF
+        mtipo := 'Periodo de '+DTOC(mdata1)+' a '+DTOC(mdata2)
+        pag=1
+        cabecalho(pag,mtit,mtipo,mprg)
+        imprt(mtipo_imp,'C')
+        DEVPOS(PROW()+1,00);DEVOUT('  Data  ')
+        DEVPOS(PROW(),PCOL()+2);DEVOUT('Data Sis')
+        DEVPOS(PROW(),PCOL()+2);DEVOUT('  Hora  ')
+        DEVPOS(PROW(),PCOL()+2);DEVOUT('   Tipo   ')
+        DEVPOS(PROW(),PCOL()+2);DEVOUT('Aut')
+        DEVPOS(PROW(),PCOl()+2);DEVOUT('Ope')
+        DEVPOS(PROW(),PCOL()+2);DEVOUT('Descricao '+SPACE(50))
+        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        i:=0
+        FOR i = 1 TO LEN(cons_log)
+                prog_imp(i,DTOC(cons_log[i,2]))
+                IF pag=0 .OR. PROW()>=59
+                        pag=pag+1
+                        IF pag>1
+                                EJECT
+                        ENDIF
+                        cabecalho(pag,mtit,mtipo,mprg)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT('  Data  ')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('Data Sis')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('  Hora  ')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('   Tipo   ')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('Aut')
+                        DEVPOS(PROW(),PCOl()+2);DEVOUT('Ope')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUT('Descricao '+SPACE(50))
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+
+                ENDIF
+                mlinha := ' '
+                DEVPOS(PROW()+1,00);DEVOUT(cons_log[i,2])
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(cons_log[i,1])
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(cons_log[i,3])
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(cons_log[i,4])
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(cons_log[i,5])
+                DEVPOS(PROW(),PCOl()+2);DEVOUT(cons_log[i,6])
+                DEVPOS(PROW(),PCOL()+2);DEVOUT(cons_log[i,19])
+                IF ! EMPTY(cons_log[i,7])
+                        mlinha:='*'
+                        DEVPOS(PROW()+1,0);DEVOUT('Vend.:'+cons_log[i,7])
+                ENDIF
+                IF ! EMPTY(cons_log[i,8])
+                        IF EMPTY(mlinha)
+                                mlinha:='*'
+                                DEVPOS(PROW()+1,0);DEVOUT('Cli.:'+cons_log[i,8])
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('Cli.:'+cons_log[i,8])
+                        ENDIF
+                ENDIF
+                IF ! EMPTY(cons_log[i,9])
+                        IF EMPTY(mlinha)
+                                mlinha:='*'
+                                DEVPOS(PROW()+1,0);DEVOUT('Forn.:'+cons_log[i,9])
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('Forn.:'+cons_log[i,9])
+                        ENDIF
+                ENDIF
+                IF ! EMPTY(cons_log[i,10])
+                        IF EMPTY(mlinha)
+                                mlinha:='*'
+                                DEVPOS(PROW()+1,0);DEVOUT('Prod.:'+cons_log[i,10])
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('Prod.:'+cons_log[i,10])
+                        ENDIF
+                ENDIF
+                IF ! EMPTY(cons_log[i,11])
+                        IF EMPTY(mlinha)
+                                mlinha:='*'
+                                DEVPOS(PROW()+1,0);DEVOUT('Doc.:'+cons_log[i,11])
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('Doc.:'+cons_log[i,11])
+                        ENDIF
+                ENDIF
+                IF ! EMPTY(cons_log[i,12])
+                        IF EMPTY(mlinha)
+                                mlinha:='*'
+                                DEVPOS(PROW()+1,0);DEVOUT('Qtd.Ant.:'+TRANSFORM(cons_log[i,12],'99,999.99')+' - Qtd.Pos.:'+TRANSFORM(cons_log[i,13],'99,999.99'))
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('Qtd.Ant.:'+TRANSFORM(cons_log[i,12],'99,999.99')+' - Qtd.Pos.:'+TRANSFORM(cons_log[i,13],'99,999.99'))
+                        ENDIF
+                ENDIF
+                IF ! EMPTY(cons_log[i,14])
+                        IF EMPTY(mlinha)
+                                mlinha:='*'
+                                DEVPOS(PROW()+1,0);DEVOUT('Vlr.Ant.:'+TRANSFORM(cons_log[i,14],'99,999.99')+' - Vlr.Pos.:'+TRANSFORM(cons_log[i,15],'99,999.99'))
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('Vlr.Ant.:'+TRANSFORM(cons_log[i,14],'99,999.99')+' - Vlr.Pos.:'+TRANSFORM(cons_log[i,15],'99,999.99'))
+                        ENDIF
+                ENDIF
+                IF ! EMPTY(cons_log[i,16])
+                        IF EMPTY(mlinha)
+                                mlinha:='*'
+                                DEVPOS(PROW()+1,0);DEVOUT('Venc.Ant.:'+DTOC(cons_log[i,16])+' - Venc.Pos.:'+DTOC(cons_log[i,17]))
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+2);DEVOUT('Venc.Ant.:'+DTOC(cons_log[i,16])+' - Venc.Pos.:'+DTOC(cons_log[i,17]))
+                        ENDIF
+                ENDIF
+                DEVPOS(PROW()+1,00);DEVOUT(mtraco1)
+        NEXT
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('REL_LOG.REL')
+ENDDO
+wvw_lclosewindow()
+RETURN NIL

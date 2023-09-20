@@ -1,0 +1,4 @@
+ECHO OFF
+E:
+CD\SISCOM
+XCOPY C:\HELIO\SIACHB\*.PRG  /r /y /d

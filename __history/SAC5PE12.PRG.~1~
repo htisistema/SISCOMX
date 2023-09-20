@@ -1,0 +1,378 @@
+*****************************************************
+* LISTAGEM RESUMO DE MOVIMENTO PELO PEDIDO (RESUMO)
+****************************************************
+MEMVAR getlist,nivel_acess,mdata_sis
+
+FUNCTION sac5pe12
+**************
+LOCAL MPRG:='SAC5PE12',;
+      tela,lci,cci,lba,cba,opcao,mtot_ped,mtot_dia,mtot_geral,;
+      mnum_ped,mdat_ped,msit,mopcao,mtot_vol,mcancel,mtp,;
+      mcodvend,mvendedor,mcod_oper,mtot_peso:=0,mproducao:=' ',malt_ope,;
+      mcod_ope,mdat_pag,mtip_cons:=' ',mexp:='  ',mpdata,mvlr_ped:=0,;
+      mped_vol:=0,mped_peso:=0,mped_itens:=0,mpoint:=0,mqtd_itens:=0,;
+      mtot_itens:=0,mqtd_ped:=0,mhora,mnota:=' ',m_uf:={},i:=0,mrec,msele,morde,;
+      mso_exp:=' ',msint:='A',m_pedidos:={},x,y,mordem:='3',mtot_ipi:=0
+
+PRIVATE mcod_vend,mcod_cli,mcli_ven:='N',mdata_dia,;
+        mtraco,telaprint,mtit,mtipo,mpag,mcliente,mcgc,mcpf,mdata1,mdata2,muf,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),marq_ali,mcodcli,mcodemp:=SPACE(3),;
+        mcod_forn:=0
+
+IF ! ver_nivel(mprg,'RELATORIO PEDIDOS RESUMO DOS ESTADOS','1456',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+mtraco := REPLI('=',132)
+
+lci := cci := 0
+lba := 20
+cba := 78
+*----------------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('sactotnt','totnt');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+IF ! AbriArq('sacmov','mov');RETURN NIL;ENDIF
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('sacorcam','orcam');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+*----------------------------------------------------------------------------
+op_tela(lci,cci,lba+2,cba,'RELATORIO PEDIDOS RESUMO DOS ESTADOS')
+WHILE .T.
+        mtipo_imp := m_indiv[1,18]
+        ASIZE(m_uf,0)
+        AADD(m_uf,{'AC',0,0});AADD(m_uf,{'AL',0,0});AADD(m_uf,{'AP',0,0});AADD(m_uf,{'AM',0,0})
+        AADD(m_uf,{'BA',0,0});AADD(m_uf,{'CE',0,0});AADD(m_uf,{'ES',0,0});AADD(m_uf,{'GO',0,0})
+        AADD(m_uf,{'MA',0,0});AADD(m_uf,{'MT',0,0});AADD(m_uf,{'MS',0,0});AADD(m_uf,{'MG',0,0})
+        AADD(m_uf,{'PA',0,0});AADD(m_uf,{'PB',0,0});AADD(m_uf,{'PR',0,0});AADD(m_uf,{'PE',0,0})
+        AADD(m_uf,{'PI',0,0});AADD(m_uf,{'RN',0,0});AADD(m_uf,{'RS',0,0});AADD(m_uf,{'RR',0,0})
+        AADD(m_uf,{'RO',0,0});AADD(m_uf,{'RJ',0,0});AADD(m_uf,{'SC',0,0});AADD(m_uf,{'SE',0,0})
+        AADD(m_uf,{'SP',0,0});AADD(m_uf,{'TO',0,0});AADD(m_uf,{'DF',0,0})
+        mdata1 := mdata2 := mdata_sis
+        mcancel := SPACE(1)
+        mtp := 'E'
+        mcod_vend := mcod_ope := mcod_cli := mcod_forn := ;
+        mvlr_ped := mqtd_itens:=mqtd_ped := mtot_itens := ;
+        opcao := 0
+        muf := SPACE(2)
+        mproducao := SPACE(1)
+        mcodemp    := SPACE(3)
+        mso_exp    := 'N'
+        mensagem('Preencha os Campos - <ESC>p/Abandonar')
+        DEVPOS(lci+1,cci+2);DEVOUT('Tipo Consulta.[P]edidos ou [O]rcamento:')
+        DEVPOS(lci+2,cci+2);DEVOUT('Cod.da Empresa.:')
+        DEVPOS(lci+3,cci+2);DEVOUT('Cod. Cliente...:')
+        DEVPOS(lci+4,cci+2);DEVOUT('Cod. Vendedor..:')
+        DEVPOS(lci+5,cci+2);DEVOUT('Cod. Operador..:')
+        DEVPOS(lci+6,cci+2);DEVOUT('Cod. Fabricante:')
+        DEVPOS(lci+7,cci+2);DEVOUT('Sigla do Estado que Deseja..........:')
+        DEVPOS(lci+8,cci+2);DEVOUT('Vendedor Relacionado c/Cliente [s/N]:')
+        DEVPOS(lci+9,cci+2);DEVOUT('Pedido c/Vlr.Acima de R$............:')
+        DEVPOS(lci+10,cci+2);DEVOUT('Pedido c/Qtd. de Itens Acima de.....:')
+        DEVPOS(lci+11,cci+2);DEVOUT('Data Inicial...:')
+        DEVPOS(lci+12,cci+2);DEVOUT('Data Final.....:')
+*       DEVPOS(lci+13,cci+2);DEVOUT('Tipo de Relatorio [R]esumo [E]xtrato:')
+        DEVPOS(lci+14,cci+2);DEVOUT('So os PEDIDOS EXPEDIDOS [s/N].......:')
+        DEVPOS(lci+17,cci+2);DEVOUT('Estado Processado...................:')
+        DEVPOS(lci+18,cci+2);DEVOUT('Registro Processado.................:')
+        DEVPOS(lci+19,cci+2);DEVOUT('DATA Processada.....................:')
+        @ lci+16,cci+2 SAY ' Aberto '
+        @ lci+16,cci+11 SAY ' Pagos '
+        @ lci+16,cci+19 SAY ' Geral '
+        @ lci+16,cci+27 SAY ' Alterados '
+        IF ver_serie() = '141287'
+                DEVPOS(lci+19,cci+2);DEVOUT('[P]roducao [N]ao Produto ou Branco..:')
+        ENDIF
+        setcor(1)
+        @ lci+1,cci+43 GET mtip_cons pict "@!" VALID mtip_cons $ 'P,O'
+        @ lci+2,cci+19 GET mcodemp PICT "999" VALID ver_emp(mcodemp,lci+2,cci+23,,'*') WHEN mmult_emp ='S'
+        @ lci+3,cci+19 GET mcod_cli pict "99999" VALID ver_cli(mcod_cli,lci+3,cci+23) WHEN mcod_vend = 0
+        @ lci+4,cci+19 GET mcod_vend pict "999" VALID ven(mcod_vend,lci+4,cci+23) WHEN EMPTY(mcod_cli)
+        @ lci+5,cci+19 GET mcod_ope pict "999" VALID ven(mcod_ope,lci+5,cci+23) WHEN EMPTY(mcod_cli)
+        @ lci+6,cci+19 GET mcod_forn PICT '9999' VALID v_fornece(mcod_forn,lci+6,cci+24)
+        @ lci+7,cci+40 GET muf PICT '@!' VALID IF(muf='TD',.T.,v_uf(muf)) .AND. lim_get() WHEN men_get(lci+8,cci+40,'Digite a Sigla do Estado que deseja - [TD] p/imprimir SINTETICO ou deixe em BRANCO para imprimir todos')
+        @ lci+8,cci+40 GET mcli_ven PICT '@!' VALID mcli_ven $ 'S,N' WHEN ! EMPTY(mcod_vend)
+        @ lci+9,cci+40 GET mvlr_ped PICT '9,999,999.99'
+        @ lci+10,cci+40 GET mqtd_itens PICT '9,999.99'
+        @ lci+11,cci+19 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ lci+12,cci+19 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+        @ lci+14,cci+40 GET mso_exp PICT '@!' VALID mso_exp $ 'S,N'
+        @ lci+19,cci+40 GET mproducao PICT '@!' VALID mproducao $ 'P,N, ' WHEN ver_serie() = '141287'
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        IF mtip_cons = 'P'
+                marq_ali := 'ped_s'
+        ELSE
+                marq_ali := 'orcam'
+        ENDIF
+        IF mtip_cons = 'P'
+                setcor(9)
+                @ lci+16,cci+2 PROMPT '  Aberto ' MESSAGE '** Listagem de Pedidos em Aberto - <ESC> Retornar **'
+                @ lci+16,cci+11 PROMPT '  Pagos ' MESSAGE '** Listagem de Pedidos Pagos - <ESC> Retornar **'
+                @ lci+16,cci+19 PROMPT '  Geral ' MESSAGE '** Listagem de Pedidos em Geral (Aberto e Pagos) - <ESC> Retornar **'
+                @ lci+16,cci+27 PROMPT ' A Lterados ' MESSAGE '** Listagem de Pedidos Alterados - <ESC> Retornar **'
+                SET INTEN ON
+                MENU TO opcao
+                setcor(1)
+        ELSE
+                opcao := 3
+        ENDIF
+        msint := 'A'
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        ****************
+        SELE(marq_ali);ORDSETFOCUS(2)
+        GO TOP
+        ****************
+        IF opcao = 1
+                mtit = 'Movimento de Pedido (ABERTO)'
+        ELSEIF opcao = 2
+                mtit = 'Movimento de Pedido (PAGOS)'
+                mtp := mensagem1('Opcoes pela [E]missao ou [P]agamento: ','E','E,P')
+                IF mtp = 'E'
+                        mtit = mtit + ' p/Emissao'
+                ELSE
+                        mtit = mtit + ' p/Data Pagemnto'
+                        ****************
+                        SELE(marq_ali);ORDSETFOCUS(5)
+                        GO TOP
+                        ****************
+                ENDIF
+        ELSEIF opcao = 3
+                mtit = 'Movimento de Pedido (GERAL)'
+        ELSEIF opcao = 4
+                mtit = 'Movimento de Pedido (ALTERADOS)'
+        ENDIF
+        IF ! EMPTY(mcodemp)
+                mtit := mtit + ' - Empresa: '+mcodemp
+        ENDIF
+        mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)+' do Estado: '
+
+        IF LASTKEY() = 27;LOOP;ENDIF
+
+        (marq_ali)->(DBSEEK(DTOS(mdata1),.T.))
+        marq := 'RES_PED.REL'
+        IF ! imp_arq('RES_PED.REL','R');LOOP;ENDIF
+        msele:=SELE();morde:=INDEXORD()
+        mrec := RECNO()
+        i:=0
+        FOR i = 1 TO LEN(m_uf)
+                SETPOS(lci+17,cci+40);DISPOUT(m_uf[i,1])
+                ****************
+                SELE('cli');ORDSETFOCUS(11)
+                GO TOP
+                ****************
+                IF ! cli->(DBSEEK(m_uf[i,1]))
+                        LOOP
+                ENDIF
+                SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+                GO mrec
+                mpag = 1
+                mtot_vol := mtot_dia := mtot_ped := mtot_geral := ;
+                mtot_itens := mqtd_ped := mtot_ipi := 0
+                mdata_dia := (marq_ali)->pdat_ped
+                mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)+' do Estado: '+m_uf[i,1]
+                mpdata := (marq_ali)->pdat_ped
+                IF mtp = 'P'
+                        mpdata := (marq_ali)->pdatapag
+                ENDIF
+                WHILE mpdata <= mdata2 .AND. ! EOF()
+                        prog_imp(RECNO())
+                        SETPOS(lci+18,cci+40);DISPOUT(STRZERO(RECNO(),6))
+                        SETPOS(lci+19,cci+40);DISPOUT(DTOC(mpdata))
+                        IF opcao = 4
+                                IF (! EMPTY(mproducao) .AND. mproducao <> (marq_ali)->pproducao);
+                                   .OR. (! EMPTY(mcod_vend) .AND. STRZERO(mcod_vend,3) <> (marq_ali)->pcod_vend);
+                                   .OR. (! EMPTY(mcod_ope) .AND. STRZERO(mcod_ope,3) <> (marq_ali)->palt_ope);
+                                   .OR. (! EMPTY(mcod_cli) .AND. (marq_ali)->pcod_cli<>mcod_cli);
+                                   .OR. (! EMPTY(mcodemp) .AND. mcodemp <> (marq_ali)->pempresa);
+                                   .OR. (mso_exp='S' .AND. EMPTY((marq_ali)->pexpedi))
+                                         SKIP
+                                        mpdata := (marq_ali)->pdat_ped
+                                        IF mtp = 'P'
+                                                mpdata := (marq_ali)->pdatapag
+                                        ENDIF
+                                        LOOP
+                                ENDIF
+                        ELSE
+                                IF (! EMPTY(mproducao) .AND. mproducao <> (marq_ali)->pproducao);
+                                   .OR. (! EMPTY(mcod_vend) .AND. STRZERO(mcod_vend,3) <> (marq_ali)->pcod_vend);
+                                   .OR. (! EMPTY(mcod_ope) .AND. STRZERO(mcod_ope,3) <> (marq_ali)->pcod_oper);
+                                   .OR. (! EMPTY(mcod_cli) .AND. (marq_ali)->pcod_cli<>mcod_cli);
+                                   .OR. (! EMPTY(mcodemp) .AND. mcodemp <> (marq_ali)->pempresa);
+                                   .OR. (mso_exp='S' .AND. EMPTY((marq_ali)->pexpedi))
+                                        SKIP
+                                        mpdata := (marq_ali)->pdat_ped
+                                        IF mtp = 'P'
+                                                mpdata := (marq_ali)->pdatapag
+                                        ENDIF
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        ver_cli(VAL((marq_ali)->pcod_cli),,,1)
+                        IF mcli_ven = 'S' .AND. cli->codvend <> STRZERO(mcod_vend,3)
+                                SKIP
+                                mpdata := (marq_ali)->pdat_ped
+                                IF mtp = 'P'
+                                        mpdata := (marq_ali)->pdatapag
+                                ENDIF
+                                LOOP
+                        ENDIF
+                        IF ! EMPTY(m_uf[i,1])
+                                IF ! ver_cli(VAL((marq_ali)->pcod_cli),,,1);
+                                   .OR. m_uf[i,1] <> cli->uf
+                                        SKIP
+                                        mpdata := (marq_ali)->pdat_ped
+                                        IF mtp = 'P'
+                                                mpdata := (marq_ali)->pdatapag
+                                        ENDIF
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        IF ! EMPTY(mcod_cli) .AND. (marq_ali)->pcod_cli<>mcod_cli
+                                SKIP
+                                mpdata := (marq_ali)->pdat_ped
+                                IF mtp = 'P'
+                                        mpdata := (marq_ali)->pdatapag
+                                ENDIF
+                                LOOP
+                        ENDIF
+                        IF opcao = 1 .AND. ((marq_ali)->ppag = 'C' .OR. (marq_ali)->ppag <> ' ')
+                                SKIP
+                                mpdata := (marq_ali)->pdat_ped
+                                IF mtp = 'P'
+                                        mpdata := (marq_ali)->pdatapag
+                                ENDIF
+                                LOOP
+                        ELSEIF opcao = 2 .AND. ((marq_ali)->ppag = 'C' .OR. (marq_ali)->ppag <> '*')
+                                SKIP
+                                mpdata := (marq_ali)->pdat_ped
+                                IF mtp = 'P'
+                                        mpdata := (marq_ali)->pdatapag
+                                ENDIF
+                                LOOP
+                        ELSEIF opcao = 5 .AND. (marq_ali)->ppag <> 'C'
+                                SKIP
+                                mpdata := (marq_ali)->pdat_ped
+                                IF mtp = 'P'
+                                        mpdata := (marq_ali)->pdatapag
+                                ENDIF
+                                LOOP
+                        ENDIF
+                        IF mdata_dia <> (marq_ali)->pdat_ped .AND. mtot_dia > 0
+                                mdata_dia := (marq_ali)->pdat_ped
+                                mtot_dia := 0
+                        ENDIF
+                        mdat_ped := (marq_ali)->pdat_ped
+                        mdat_pag := (marq_ali)->pdatapag
+                        mcodcli := VAL((marq_ali)->pcod_cli)
+                        mnum_ped := (marq_ali)->pnum_ped
+                        mcodvend := (marq_ali)->pcod_vend
+                        mvendedor := (marq_ali)->pvendedor
+                        mcod_oper := (marq_ali)->pcod_oper
+                        malt_ope  := (marq_ali)->palt_ope
+                        mhora     := (marq_ali)->phora
+                        IF (marq_ali)->ppag = '*'
+                                msit := DTOC(mdat_pag)
+*                               msit := 'pago'
+                        ELSEIF (marq_ali)->ppag = 'C'
+                                msit := 'cancel. '
+                        ELSE
+                                msit := 'aberto  '
+                        ENDIF
+                        IF (marq_ali)->pentreg = '*'
+                                msit := msit+' - entregue'
+                        ELSE
+                                msit := msit+' - nao entr'
+                        ENDIF
+                        IF (marq_ali)->pexpedi = '*'
+                                mexp := 'OK'
+                        ELSE
+                                mexp := '  '
+                        ENDIF
+                        mped_vol := mped_peso := mped_itens := ;
+                        mtot_ped := mtot_ipi := 0
+                        mpoint := RECNO()
+                        IF ! EMPTY(mvlr_ped) .OR. ! EMPTY(mqtd_itens)
+                                WHILE mnum_ped = (marq_ali)->pnum_ped .AND. ! EOF()     //.AND. ! EMPTY(mvlr_ped) .AND. ! EMPTY(mqtd_itens)
+                                        prog_imp(RECNO())
+                                        IF ! EMPTY(mcod_forn) .AND. (marq_ali)->pcod_fab <> STRZERO(mcod_forn,4);SKIP;LOOP;ENDIF
+                                        mtot_ipi := mtot_ipi + (((marq_ali)->pquantd * (marq_ali)->pvlr_fat) * ((marq_ali)->pipi/100))
+                                        mtot_ped := mtot_ped + ((marq_ali)->pquantd * (marq_ali)->pvlr_fat)
+                                        mped_vol := mped_vol + (marq_ali)->pquantd
+                                        mped_peso := mped_peso + ((marq_ali)->ppeso*(marq_ali)->pquantd)
+                                        mped_itens ++
+                                        SKIP
+                                ENDDO
+                                mtot_ped := mtot_ped + mtot_ipi
+                        ENDIF
+*                       IF (mtot_ped < mvlr_ped .AND. ! EMPTY(mvlr_ped)) .OR. (msit = 'cancel.' .AND. ! EMPTY(mvlr_ped))
+                        IF ! EMPTY(mvlr_ped) .AND. (mtot_ped < mvlr_ped .OR. msit = 'cancel.')
+                                LOOP
+                        ENDIF
+                        IF ! EMPTY(mqtd_itens) .AND. (mped_itens < mqtd_itens .OR. msit = 'cancel.')
+                                LOOP
+                        ENDIF
+                        GO mpoint
+                        ver_cli(mcodcli,,,1)
+                        mtot_ipi := mtot_ped := 0
+                        WHILE mnum_ped = (marq_ali)->pnum_ped .AND. ! EOF()
+                                prog_imp(RECNO())
+                                IF ! EMPTY(mcod_forn) .AND. (marq_ali)->pcod_fab <> STRZERO(mcod_forn,4);SKIP;LOOP;ENDIF
+                                mtot_ped := mtot_ped + ((marq_ali)->pquantd * (marq_ali)->pvlr_fat)
+                                mtot_ipi := mtot_ipi + (((marq_ali)->pquantd * (marq_ali)->pvlr_fat) * ((marq_ali)->pipi/100))
+                                mtot_itens ++
+                                IF msit <> 'cancel.'
+                                        mtot_vol := mtot_vol + (marq_ali)->pquantd
+                                        mtot_peso := mtot_peso + ((marq_ali)->ppeso*(marq_ali)->pquantd)
+                                ENDIF
+                                SKIP
+                                mpdata := (marq_ali)->pdat_ped
+                                IF mtp = 'P'
+                                        mpdata := (marq_ali)->pdatapag
+                                ENDIF
+                        ENDDO
+                        mtot_ped := mtot_ped + mtot_ipi
+                        IF msit = 'cancel.'
+                                mtot_ped := 0
+                        ELSE
+                                mtot_dia := mtot_dia + mtot_ped
+                                mtot_geral := mtot_geral + mtot_ped
+                        ENDIF
+                        mqtd_ped ++
+                        m_uf[i,2] := m_uf[i,2] + 1
+                        m_uf[i,3] := m_uf[i,3] + mtot_ped
+                ENDDO
+        NEXT
+        mpag:=1
+        mtipo = 'De '+DTOC(mdata1)+' ate '+DTOC(mdata2)
+        cabecalho(mpag,mtit,mtipo)
+        DEVPOS(PROW()+1,00);DEVOUT(PADC('RESUMO DOS ESTADOS',80))
+        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        mtot_ipi := mtot_ped := mtot_geral := i:=0
+        FOR i = 1 TO LEN(m_uf)
+                IF EMPTY(m_uf[i,2]) .AND. EMPTY(m_uf[i,3])
+                        LOOP
+                ENDIF
+                mtot_ped := mtot_ped + m_uf[i,2]
+                mtot_geral := mtot_geral + m_uf[i,3]
+        NEXT
+        FOR i = 1 TO LEN(m_uf)
+                IF EMPTY(m_uf[i,2]) .AND. EMPTY(m_uf[i,3])
+                        LOOP
+                ENDIF
+                DEVPOS(PROW()+1,00);DEVOUT('Sigla do Estado: '+m_uf[i,1]+'  Qtd.: '+TRANSFORM(m_uf[i,2],'9,999,999')+'  Total R$: '+TRANSFORM(m_uf[i,3],'999,999,999.99')+'  Media R$: '+TRANSFORM(m_uf[i,3]/m_uf[i,2],'999,999,999.99')+'  % do Geral: '+TRANSFORM((m_uf[i,3]/mtot_geral)*100,'9,999.9999'))
+        NEXT
+        DEVPOS(PROW()+1,00);DEVOUT('                            ---------            --------------            --------------')
+        DEVPOS(PROW()+1,00);DEVOUT('TOTAL GERAL....:     Qtd.: '+TRANSFORM(mtot_ped,'9,999,999')+'  Total R$: '+TRANSFORM(mtot_geral,'999,999,999.99')+'  Media R$: '+TRANSFORM(mtot_geral/mtot_ped,'999,999,999.99'))
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('RES_PED.REL')
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+************************
+

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?><soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><nfeRetAutorizacaoLoteResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeRetAutorizacao"><retConsReciNFe versao="3.10" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_18.02.08.145</verAplic>
+<nRec>261180000341109</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF><dhRecbto>2018-03-19T17:32:01-03:00</dhRecbto>
+ <protNFe versao="3.10"><infProt Id="NFe1"><tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_18.02.08.145</verAplic>
+<chNFe>26180324494200000106550010000002081000002080</chNFe>
+<dhRecbto>2018-03-19T17:32:01-03:00</dhRecbto><nProt>126180000060010</nProt>
+<digVal>qQuJPLO3WK9i2KNwfLoM0k6xVwY=</digVal><cStat>100</cStat>
+<xMotivo>Autorizado o uso da NF-e</xMotivo>
+</infProt></protNFe></retConsReciNFe></nfeRetAutorizacaoLoteResult></soapenv:Body></soapenv:Envelope>

@@ -1,0 +1,21 @@
+Error BASE/1003  No existe la variable: TELA
+Funcoes: SAC5ET21.000->SAC5ET21(86)
+Funcoes: SAC5ETQ1.PRG->SAC5ETQ1(53)
+Funcoes: SAC5ETQ.PRG->SAC5ETQ(36)
+Funcoes: SAC00.PRG->AFTERINKEY(2329)
+Funcoes: SAC00.PRG->(b)SAC0(1381)
+Funcoes: ->INKEY(0)
+Funcoes: SAC00.PRG->SAC0(1411)
+Funcoes: SACROT1.PRG->SENHA(821)
+Funcoes: SISCOM.PRG->MAIN(1375)
+************************************************************************************************************************
+Data e Hora........: 30/09/22 - 11:44:33
+Empresa............: DOCE GOSTO MAIS
+Sistema/Atualizacao: .: SISCOM :. Sistema Automacao Comercial - v22.09.30
+Usuario do Sistema.: 999
+Nome do Executavel.: C:\HELIO\siachb\SISCOM.EXE
+Nome do Micro......: CASA-PC - Nome Terminal: CASA
+Memoria Disponivel.: 4194303 - Espaço em Disco....: 316831973376
+Pasta de Diretorio.: HELIO\siachb
+Sistema Operacional: Windows NT Professional 6.01.7600
+Caminho do Banco...: localhost:C:\HELIO\SIACHB\SISCOM.GDB

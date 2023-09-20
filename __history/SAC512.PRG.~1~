@@ -1,0 +1,272 @@
+*************************************
+* TABELA DE PRECOS MANUAL
+*************************************
+MEMVAR getlist,nivel_acess,mend_firm,mcid_firm,mfone_firm,mcgc_firm
+
+FUNCTION sac512
+***************
+LOCAL MPRG:='SAC512',mtitulo:='TABELA DE PRECO MANUAL',;
+      lci,cci,lba,cba,lc,cc,lb,cb,tela1,opcao,;
+      mvalor1,mvalor2,mvalor3,i,f,mperc1,mperc2,m_codigo:={},mponto
+
+PRIVATE mt_imp,mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),;
+        m_merc:={},mcod_merc,f4
+
+IF ! ver_nivel(mprg,mtitulo,'15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+lci := 14
+cci := 01
+lba := 22
+cba := 79
+lc := 01
+cc := 01
+lb := 15
+cb := 79
+CLOSE ALL
+set_key('merc',,,,'*')
+SET KEY -9 TO tab_manu          // neste mesmo PRG. <F10>Tecla
+*------------------------------------------------------------
+IF ! AbriArq('sacsetup','set');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+*------------------------------------------------------------
+op_tela(00,00,24,79,mtitulo)
+WHILE .T.
+        mtipo_imp := m_indiv[1,18]
+        //mperc1 := m_set[1,41]
+        //mperc2 := m_set[1,42]
+        ***************
+        SELE('merc');ORDSETFOCUS(1)
+        ***************
+        opcao := 'S'
+        ASIZE(m_merc,0)
+        botao(lc,cc,lb,cb,,' Mercadoria Solicitadas ')
+        botao(lci,cci,lba,cba)
+        DEVPOS(lci+1,cci+1);DEVOUT('Com Saldo e Unidade [C/S]:')
+        @ lci+2,cci+1 TO lci+2,cba-1
+        janela(lci+2,cba,' Solicitar Mercadoria ','*')
+        DEVPOS(lci+3,cci+1);DEVOUT('Cod.mercadoria:')
+        DEVPOS(lci+5,cci+1);DEVOUT('Preco 1:')
+        DEVPOS(lci+6,cci+1);DEVOUT('Preco 2:')
+        DEVPOS(lci+7,cci+1);DEVOUT('Preco 3:')
+        mt_imp := ' '
+        @ lci+1,cci+27 GET mt_imp PICT '@!' VALID mt_imp $ 'C,S' .AND. lim_get() WHEN men_get(lci+2,cci+30,'Digite [C] Tabela c/saldo e unidade (letras pequenas) [S] sem saldo (letras normais) ("CAMPO-OBRIGATORIO")')
+        READ
+        IF LASTKEY() = 27
+                RELEASE mt_imp,m_merc:={}
+                SET KEY -9 TO
+                EXIT
+        ENDIF
+        WHILE INKEY() <> -9
+                mensagem('Digite o Cod.da Mercadoria  <F10>p/Finalizar Tabela  <ESC>abandonar')
+                botao(lc,cc,lb,cb,,' Mercadoria Solicitadas ')
+                f=0
+                i=1
+                WHILE  i <= LEN(m_merc)
+                        IF m_merc[i,1] = 0 .OR. m_merc[i,1] = NIL
+                                i++
+                                LOOP
+                        ENDIF
+                        setcor(3)
+                        @ lc+1+f,cc+1 SAY STRZERO(m_merc[i,1],5)
+                        @ lc+1+f,cc+07 SAY m_merc[i,2]
+                        setcor(1)
+                        IF f > 09
+                                SCROLL(lc+1,cc+1,lb-1,cb-1,1)
+                                i++
+                        ELSE
+                                i++
+                                f++
+                        ENDIF
+                ENDDO
+                mcod_merc := mvalor1 := mvalor2 := mvalor3 := 0
+                @ lci+3,cci+17 GET mcod_merc PICT '99999' VALID IF(EMPTY(mcod_merc),.F.,.T.)
+                READ
+                IF LASTKEY() = 27
+                        EXIT
+                ENDIF
+                IF f4 = '*'
+                        lim_get()
+                ENDIF
+                mponto := ASCAN(m_codigo,mcod_merc)
+                IF mponto > 0
+                        opcao := mensagem1('Deseja [A]lterar ou [E]xcluir:',' ','A,E')
+                        IF LASTKEY() = 27
+                                LOOP
+                        ENDIF
+                        IF opcao = 'A'
+                                mvalor1 := m_merc[mponto,5]
+                                mvalor2 := m_merc[mponto,6]
+                                mvalor3 := m_merc[mponto,7]
+                                setcor(3)
+                                DEVPOS(lci+4,cci+1);DEVOUT(m_merc[mponto,2])
+                                setcor(1)
+                        ELSE
+                                m_codigo[mponto] := m_merc[mponto,1] := 0
+                                m_merc[mponto,2] := SPACE(40)
+                                m_merc[mponto,3] := '  '
+                                m_merc[mponto,4] := m_merc[mponto,5] := ;
+                                m_merc[mponto,6] := m_merc[mponto,7] := 0
+                                LOOP
+                        ENDIF
+
+                ELSE
+                        IF ! merc->(DBSEEK(mcod_merc))
+                                atencao('Codigo nao encontrado no arquivo')
+                                LOOP
+                        ENDIF
+                        mvalor1 := merc->pr_venda
+                        /*
+                        IF mperc1 = 0
+                                mvalor2 := 0
+                        ELSE
+                                mvalor2 := merc->pr_venda * (mperc1/100+1)
+                        ENDIF
+                        IF mperc2 = 0
+                                mvalor3 := 0
+                        ELSE
+                                mvalor3 := merc->pr_venda * (mperc2/100+1)
+                        ENDIF
+                        */
+                        setcor(3)
+                        DEVPOS(lci+4,cci+1);DEVOUT(merc->merc)
+                        setcor(1)
+                ENDIF
+                @ lci+5,cci+10 GET mvalor1 PICT ALLTRIM(m_set[1,98])
+                @ lci+6,cci+10 GET mvalor2 PICT ALLTRIM(m_set[1,98])
+                @ lci+7,cci+10 GET mvalor3 PICT ALLTRIM(m_set[1,98])
+                READ
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+                opcao := op_simnao('S','Confirma a Inclusao da mercadoria:')
+                IF opcao = 'N'
+                        LOOP
+                ENDIF
+                IF mponto > 0
+                        m_merc[mponto,5] := mvalor1
+                        m_merc[mponto,6] := mvalor2
+                        m_merc[mponto,7] := mvalor3
+                        DEVPOS(lci+4,cci+1);DEVOUT(SPACE(40))
+                ELSE
+                        AADD(m_codigo,mcod_merc)
+                        AADD(m_merc,{mcod_merc,merc->merc,merc->unidade,merc->saldo_mer,mvalor1,mvalor2,mvalor3})
+                        DEVPOS(lci+4,cci+1);DEVOUT(SPACE(40))
+                ENDIF
+        ENDDO
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+***************************** F I M ********************************************
+**********************************
+* IMPRIMI A TABELA DE PRECO MANUAL
+**********************************
+
+FUNCTION tab_manu
+*****************
+
+LOCAL mtraco,mpag,mquantd,i,opcao,x,y,mtit,mtipo,mprg := 'SAC512'
+MEMVAR m_merc,mt_imp,mimp_tipo
+
+mtraco := REPLI('-',80)
+mpag := 0
+i=0
+mquantd := 1
+CLEAR GETS
+mquantd := mensagem2('Digite a Quantidade de Copias que deseja:',mquantd,'999',,'N')
+IF LASTKEY() = 27
+        RETURN NIL
+ENDIF
+opcao := op_simnao('S','Confirma a impressao:')
+ASORT(m_merc,,,{|x,y| x[2] < y[2]})
+IF ! imp_arq('TAB_MANU.REL','R')
+        RETURN NIL
+ENDIF
+mtit := 'Tabela de Precos (Parcial)'
+mtipo := 'por Ordem Alfabetica'
+IF mt_imp = 'C'
+        i := 0
+        FOR i = 1 TO LEN(m_merc)
+                IF mpag = 0 .OR. PROW() >= 59
+                        mpag ++
+                        IF mpag > 1
+                                EJECT
+                        ENDIF
+                        cabecalho(mpag,mtit,mtipo,mprg)
+                        imprt(mt_imp,'C')
+                        DEVPOS(PROW()+1,01);DEVOUT('Cod.')
+                        DEVPOS(PROW(),08);DEVOUT('Descricao')
+                        DEVPOS(PROW(),50);DEVOUT('UN')
+                        DEVPOS(PROW(),61);DEVOUT('Saldo')
+                        DEVPOS(PROW(),76);DEVOUT('Preco 1')
+                        DEVPOS(PROW(),101);DEVOUT('Preco 2')
+                        DEVPOS(PROW(),126);DEVOUT('Preco 3')
+                        imprt(mt_imp,'N')
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                ENDIF
+                IF m_merc[i,1] = 0 .OR. m_merc[i,1] = NIL
+                        LOOP
+                ENDIF
+                imprt(mt_imp,'C')
+                DEVPOS(PROW()+1,00);DEVOUT(STRZERO(m_merc[i,1],5))
+                DEVPOS(PROW(),07);DEVOUT(m_merc[i,2])
+                DEVPOS(PROW(),49);DEVOUT(m_merc[i,3])
+                DEVPOS(PROW(),57);DEVOUT(TRANSFORM(m_merc[i,4],ALLTRIM(m_set[1,99])))
+                DEVPOS(PROW(),70);DEVOUTPICT(m_merc[i,5],ALLTRIM(m_set[1,98]))
+                DEVPOS(PROW(),95);DEVOUTPICT(m_merc[i,6],ALLTRIM(m_set[1,98]))
+                DEVPOS(PROW(),120);DEVOUTPICT(m_merc[i,7],ALLTRIM(m_set[1,98]))
+        NEXT
+        DEVPOS(60,00);DEVOUT(mtraco)
+        imprt(mt_imp,'C',1)
+        DEVPOS(61,00);DEVOUT(PADC(mend_firm+' - '+mcid_firm+' - Fone: '+mfone_firm,132))
+ELSE
+        i := 0
+        FOR i = 1 TO LEN(m_merc)
+                INKEY(.1)
+                IF LASTKEY() = 27
+                        EXIT
+                ENDIF
+                IF mpag = 0 .OR. PROW() >= 59
+                        mpag ++
+                        IF mpag > 1
+                                EJECT
+                        ENDIF
+                        cabecalho(mpag,mtit,mtipo,mprg)
+                        imprt(mt_imp,'N')
+                        DEVPOS(PROW()+1,01);DEVOUT('Cod.')
+                        DEVPOS(PROW(),06);DEVOUT('Descricao')
+                        DEVPOS(PROW(),50);DEVOUT('Preco 1')
+                        DEVPOS(PROW(),61);DEVOUT('Preco 2')
+                        DEVPOS(PROW(),72);DEVOUT('Preco 3')
+                        imprt(mt_imp,'N')
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                ENDIF
+                IF m_merc[i,1] = 0 .OR. m_merc[i,1] = NIL
+                        LOOP
+                ENDIF
+                imprt(mt_imp,'N')
+                DEVPOS(PROW()+1,00);DEVOUT(STRZERO(m_merc[i,1],5))
+                DEVPOS(PROW(),06);DEVOUT(m_merc[i,2])
+                DEVPOS(PROW(),47);DEVOUTPICT(m_merc[i,5],ALLTRIM(m_set[1,98]))
+                DEVPOS(PROW(),58);DEVOUTPICT(m_merc[i,6],ALLTRIM(m_set[1,98]))
+                DEVPOS(PROW(),69);DEVOUTPICT(m_merc[i,7],ALLTRIM(m_set[1,98]))
+        NEXT
+        DEVPOS(60,00);DEVOUT(mtraco)
+        imprt(mt_imp,'C')
+        DEVPOS(61,00);DEVOUT(PADC(mend_firm+' - '+mcid_firm+' - Fone: '+mfone_firm,132))
+ENDIF
+imprt(mt_imp,'N')
+EJECT
+SET DEVICE TO SCREEN;SET PRINT TO
+conf_impressao('TAB_MANU.REL')
+/*
+IF mimp_tipo = 2
+        lertexto('TAB_MANU.REL')
+ELSEIF mtipo_imp = 'D'
+        
+ELSE
+        MYRUN('DOSPRINTER /RAW /DEL '+ALLTRIM(m_indiv[1,5])+'HTI.REL')
+ENDIF
+*/
+RETURN NIL

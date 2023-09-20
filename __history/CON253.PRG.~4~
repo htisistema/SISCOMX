@@ -1,0 +1,653 @@
+MEMVAR getlist,nivel_acess,mdata_sis,cod_operado
+***
+*** CON253.PRG: TRANFERENCIA de Duplicatas (Receber) e CONSULTA DE DUPLICATA COM JUROS
+**************************************************************************************
+FUNCTION con253(cx,mconsulta)
+*****************************
+LOCAL MPRG:='CON253',;
+      tela,lin,mtipo,mduplicata,mnumero,mvendedor,mtip_cli,mcliente,memissao,;
+      mvenc,mbanco,magencia,mc_c,mvalor:=0,mcomissao,m_dupr:={},m_pos:={},;
+      mat_dup:={},i:=0,mvalor_dup,mtotal_doc:=0,mcont_doc:=0,mttipo,mtnum_banco,;
+      mtagencia,mtc_c,mtduplicata,mtvenc,mtemissao,mtvalor,mtbanco,mtcorrente,;
+      mtobs,;
+      la,ca,tela1,point,opcao,lc,cc,lb,cb,;
+      mtot_valor,mpos_ini,mcpfcnpj,m_alt:={},aret:={},cons_cx:={}
+
+PRIVATE mnum_ped,mcod_cli,mdesc_cart:=0,mprazo_cart,mcartao,mcodemp:=SPACE(3),;
+        mdias_atras:=0,mmulta:=0,mjuros:=0,mmulta_juro:=0,cons_cli:={}
+
+IF mconsulta <> NIL
+        IF ! ver_nivel(mprg+'C','CONTA A RECEBER (CONSULTA DE JUROS NO DOCUMENTO)','15',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+ELSE
+        IF ! ver_nivel(mprg,'CONTA A RECEBER (TRANSFERENCIA DE DOCUMENTO)','15',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+ENDIF
+cc := 02
+lb := 30
+cb := 78
+
+la := 22
+ca := 79
+/*
+li := 05
+ci := 29
+la := 22
+ca := 79
+*/
+lin=1
+mcod_cli := 0
+mduplicata := SPACE(12)
+*------------------------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('sacfin','fin');RETURN NIL;ENDIF
+IF ! AbriArq('saccaixa','caix');RETURN NIL;ENDIF
+IF ! AbriArq('saccarta','car');RETURN NIL;ENDIF
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('saccheq','cheq');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+*------------------------------------------------------------------------------------
+IF mconsulta <> NIL
+        op_tela(00,00,31,80," Contas a Receber - CONSULTA DE JUROS NO DOCUMENTO ")
+ELSE
+        op_tela(00,00,31,80," Contas a Receber - TRANSFERENCA DOCUMENTOS ")
+ENDIF
+WHILE .T.
+        exibi_prg(mprg)
+        limpa(00,00,31,80)
+        mcpfcnpj := SPACE(14)
+        ASIZE(mat_dup,0)
+        *****************
+        SELE('dupr');ORDSETFOCUS(1)
+        *****************
+        @ 9,cc TO 9,cb
+        DEVPOS(1,cc+1);DEVOUT('Tipo do Documento........:')
+        DEVPOS(2,cc+1);DEVOUT('Numero...................:')
+        DEVPOS(3,cc+1);DEVOUT('Numero Documento.........:')
+        DEVPOS(4,cc+1);DEVOUT('Codigo Cliente...........:')
+        DEVPOS(5,cc+1);DEVOUT('Data Emissao.............:')
+        DEVPOS(6,cc+1);DEVOUT('Data Vencimento..........:')
+        DEVPOS(7,cc+1);DEVOUT('Valor Documento..........:')
+        DEVPOS(7,cc+35);DEVOUT('Multa + Juros:')
+        DEVPOS(8,cc+1);DEVOUT('Numero Pedido............:')
+
+        DEVPOS(10,cc+1);DEVOUT('Tipo Documentos........:')
+        DEVPOS(11,cc+1);DEVOUT('No.Banco/Cod.Cartao....:')
+        DEVPOS(11,cc+31);DEVOUT('Agencia:')
+        DEVPOS(11,cc+50);DEVOUT('C/C:')
+        DEVPOS(12,cc+1);DEVOUT('Numero Documentos......:')
+        DEVPOS(13,cc+1);DEVOUT('Data de Emissao........:')
+        DEVPOS(13,cc+39);DEVOUT('Vencimento:')
+        DEVPOS(14,cc+1);DEVOUT('Valor Documento R$.....:')
+        DEVPOS(14,cc+41);DEVOUT('Pag.[C]arteria [B]anco:')
+        DEVPOS(15,cc+1);DEVOUT('Correntista:')
+        DEVPOS(15,cc+52);DEVOUT('CPF/CNPJ:')
+        DEVPOS(16,cc+1);DEVOUT('OBS.:')
+        @ 17,cc TO 17,cb
+        @ 28,cc TO 28,cb
+        DEVPOS(18,cc+1);DEVOUT('Documento        Emissao  Vencim.      Valor')
+        DEVPOS(29,cc+1);DEVOUT('Valor Processado:')
+        DEVPOS(29,cc+35);DEVOUT('Multa + Juros:')
+        DEVPOS(29,cc+62);DEVOUT('Dias:')
+        DEVPOS(30,cc+1);DEVOUT('Valor Restante..:')
+        Mensagem('Digite o Tipo e Numero do Documento. [ESC] Abandona.')
+        mcliente := SPACE(40)
+        mtipo := SPACE(2)
+        mduplicata := SPACE(12)
+        mnumero := SPACE(3)
+        mmulta_juro:=0
+        @ 1,cc+28 GET mtipo PICT '@!' VALID ver_tipdc(mtipo,'*')
+        @ 2,cc+28 GET mnumero PICT '@!' WHEN mtipo <> 'DU' .AND. ! EMPTY(mtipo)
+        @ 3,cc+28 GET mduplicata PICT '@!' WHEN ! EMPTY(mtipo)
+        READ
+        IF LASTKEY()=27         // .OR. mduplicata := SPACE(12)
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        IF EMPTY(mtipo) .AND. EMPTY(mnumero) .OR. EMPTY(mduplicata)
+                @ 4,cc+28 GET mcod_cli PICT '99999' VALID ver_cli(mcod_cli,4,cc+35)
+                READ
+                IF LASTKEY() = 27
+                        LOOP
+                ENDIF
+                mcod_cli := cli->cod_cli
+                tela1 := SAVESCREEN(01,00,24,79)
+                mtotal_doc := mcont_doc := 0
+                m_dupr := {}
+                m_pos  := {}
+                aret:={}
+                sr_getconnection():exec("SELECT * FROM sacdupr WHERE fornec = "+sr_cdbvalue(mcod_cli)+" AND datpag IS NULL ORDER BY tipo,duplicata,venc",,.t.,@aret)
+                IF LEN(aret) = 0
+                        atencao('Nao existe nenhum Documento a ser baixado')
+                        LOOP
+                ENDIF
+                i:=0
+                FOR i = 1 TO LEN(aret)
+                        //AADD(m_dupr,' '+aret[i,2]+' '+aret[i,4]+' '+aret[i,26]+'  '+aret[i,3]+'   '+DTOC(aret[i,11])+'   '+TRANSFORM(aret[i,19],'999,999.99')+' '+aret[i,28]+'  '+aret[i,39]+' '+DTOC(aret[i,41]))
+                        AADD(m_dupr,' '+aret[i,2]+' '+aret[i,4]+'  '+aret[i,3]+'   '+DTOC(aret[i,11])+'   '+TRANSFORM(aret[i,19],'999,999.99')+' '+aret[i,28]+' '+IF(! EMPTY(aret[i,43]),'S/F','   '))
+                        AADD(m_pos,aret[i,65])
+                        mcont_doc ++
+                        mtotal_doc := mtotal_doc + aret[i,19]
+                NEXT
+                mensagem('<ESC> Retorna  -  <ENTER> p/Confirmar')
+                op_tela(05,10,27,70)
+                setcor(3)
+                DEVPOS(1,01);DEVOUT('Documento')
+                DEVPOS(1,16);DEVOUT(' No.')
+                DEVPOS(1,22);DEVOUT('Vencimento')
+                DEVPOS(1,39);DEVOUT('Valor')
+                @ 2,1 TO 2,ca-1
+                @ la-2,1 TO la-2,ca-1
+                DEVPOS(la-1,1);DEVOUT('Quantidade:')
+                DEVPOS(la-1,24);DEVOUT('Total:')
+                setcor(1)
+                DEVPOS(la-1,13);DEVOUT(STRZERO(mcont_doc,4))
+                DEVPOS(la-1,31);DEVOUT(TRANSFORM(mtotal_doc,'9,999,999.99'))
+                point := ACHOICE(3,1,la-3,ca-1,m_dupr,,,point)
+                DO CASE
+                        CASE LASTKEY()=27
+                                wvw_lclosewindow()
+                                LOOP
+                        CASE LASTKEY() = 13
+                                wvw_lclosewindow()
+                                //GO m_pos[point]
+                                aret:={}
+                                sr_getconnection():exec("SELECT * FROM sacdupr WHERE sr_recno = "+sr_cdbvalue(m_pos[point]),,.t.,@aret)
+                                IF LEN(aret) = 0
+                                        atencao('Nao existe nenhum Documento a ser baixado')
+                                        LOOP
+                                ENDIF
+
+                                cons_ped:={}
+                                sr_getconnection():exec("SELECT pdatapag FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(aret[1,31]),,.t.,@cons_ped)
+                                IF LEN(cons_ped) > 0
+                                        IF cons_ped[1,1] = mdata_sis
+                                                atencao('Este Documento nao pode ser TRANSFERIDO pois o pedido foi recebido nesta data....')
+                                                LOOP
+                                        ENDIF
+                                ENDIF
+
+                                mcodemp    := aret[1,1]
+                                mtipo      := aret[1,2]
+                                mnumero    := aret[1,3]
+                                mduplicata := aret[1,4]
+                                mtip_cli   := aret[1,6]
+                                mcliente   := aret[1,8]
+                                memissao   := aret[1,10]
+                                mvenc      := aret[1,11]
+                                mbanco     := aret[1,16]
+                                magencia   := aret[1,17]
+                                mc_c       := aret[1,18]
+                                mvalor     := aret[1,19]
+                                mvendedor  := aret[1,30]
+                                mcomissao  := aret[1,32]
+                                mnum_ped   := aret[1,31]
+                                mvalor_dup := aret[1,5]
+                                setcor(3)
+                                @ 1,cc+28 SAY mtipo
+                                @ 2,cc+28 SAY mnumero
+                                @ 3,cc+28 SAY mduplicata+aret[1,28]
+                                @ 4,cc+35 SAY mcliente
+                                @ 5,cc+28 SAY memissao
+                                @ 6,cc+28 SAY mvenc
+                                @ 7,cc+28 SAY mvalor PICT "99,999,999.99"
+                                @ 8,cc+28 SAY mnum_ped
+                                setcor(1)
+                                opcao := op_simnao('S','Confirma a operacao:')
+                                IF opcao = 'N'
+                                        LOOP
+                                ENDIF
+
+                ENDCASE
+        ELSE
+                aret:={}
+                sr_getconnection():exec("SELECT * FROM sacdupr WHERE tipo = "+sr_cdbvalue(mtipo)+" AND numero = "+sr_cdbvalue(mnumero)+" AND duplicata = "+sr_cdbvalue(mduplicata),,.t.,@aret)
+                IF LEN(aret) = 0
+                        atencao('Documento nao Cadastrado ou Documento PAGO !!!')
+                        LOOP
+                ENDIF
+                RESTSCREEN(01,00,24,79,tela1)
+                mcodemp    := aret[1,1]
+                mtipo      := aret[1,2]
+                mnumero    := aret[1,3]
+                mduplicata := aret[1,4]
+                mtip_cli   := aret[1,6]
+                mcod_cli   := aret[1,7]
+                mcliente   := aret[1,8]
+                memissao   := aret[1,10]
+                mvenc      := aret[1,11]
+                mbanco     := aret[1,16]
+                magencia   := aret[1,17]
+                mc_c       := aret[1,18]
+                mvalor     := aret[1,19]
+                mvendedor  := aret[1,30]
+                mcomissao  := aret[1,32]
+                mnum_ped   := aret[1,31]
+                mvalor_dup := aret[1,5]
+
+                setcor(3)
+                @ 1,cc+28 SAY mtipo
+                @ 2,cc+28 SAY mnumero
+                @ 3,cc+28 SAY mduplicata+aret[1,28]
+                @ 4,cc+35 SAY mcliente
+                @ 5,cc+28 SAY memissao
+                @ 6,cc+28 SAY mvenc
+                @ 7,cc+28 SAY mvalor PICT "99,999,999.99"
+                @ 8,cc+28 SAY mnum_ped
+                setcor(1)
+                opcao := op_simnao('S','Confirma a operacao:')
+                IF opcao = 'N'
+                        LOOP
+                ENDIF
+        ENDIF
+        m_alt = {}
+        mpos_ini := aret[1,65]
+        mTnum_banco := mtot_valor := mmulta_juro:=0
+        mTtipo := SPACE(2)
+        mTagencia := SPACE(8)
+        mTc_c := SPACE(13)
+        mTcorrente := SPACE(35)
+        mvenc_ant := aret[1,11]
+        WHILE mvalor+mmulta_juro > mtot_valor
+                setcor(3)
+                DEVPOS(7,cc+50);DEVOUT(TRANSFORM(mmulta_juro,'999,999.99'))
+                DEVPOS(29,cc+19);DEVOUT(TRANSFORM(mtot_valor,'999,999.99'))
+                DEVPOS(29,cc+50);DEVOUT(TRANSFORM(mmulta_juro,'999,999.99'))
+                DEVPOS(29,cc+68);DEVOUT(TRANSFORM(mdias_atras,'999,999'))
+                DEVPOS(30,cc+19);DEVOUT(TRANSFORM((mvalor+mmulta_juro) - mtot_valor,'999,999.99'))
+                setcor(1)
+                IF mtot_valor > mvalor+mmulta_juro
+                        atencao('Valor Digitado estar MAIOR que o valor da Duplicata Inicial - Digite tudo novamente')
+                        mtot_valor := 0
+                        ASIZE(mat_dup,0)
+                        ASIZE(m_alt,0)
+                ENDIF
+                mTduplicata=SPACE(12)
+                mTemissao=mdata_sis
+                mTvenc := CTOD("  /  /  ")
+                mTbanco := 'C'
+                mTobs := 'Transf.:  - Documento:'+mtipo+mduplicata
+                mTvalor := mdesc_cart := mprazo_cart:= 0
+                mcartao := SPACE(20)
+                Mensagem('Digite o Numero da Duplicata. [ESC] Abandona.')
+                @ 10,cc+27 GET mTtipo PICT '@!' VALID IF(mTtipo='CT',lim_get() .AND. limpa(3,cc+32,3,cb-1),ver_tipdc(mttipo,'*') .AND. lim_get()) .AND. mttipo # 'DU' WHEN mconsulta = NIL .AND. men_get(11,cc+25,'Informe o tipo de documento <DU>duplicata <CH>cheques <CT>cartao <FI>financiamento <RE>recebimento <DN>Dinheiro')
+                READ
+                IF mttipo = 'DN'
+                        mtduplicata := mduplicata
+                ENDIF
+                IF mTtipo='CT'
+                        DEVPOS(11,cc+1);DEVOUT('Codigo do Cartao.......:')
+                        DEVPOS(11,cc+31);DEVOUT('        ')
+                        DEVPOS(11,cc+50);DEVOUT('    ')
+                ELSE
+                        DEVPOS(11,cc+1);DEVOUT('No.Banco/Cod.Cartao....:')
+                        DEVPOS(11,cc+31);DEVOUT('Agencia:')
+                        DEVPOS(11,cc+50);DEVOUT('C/C:')
+                ENDIF
+
+                @ 11,cc+27 GET mTnum_banco PICT '999' VALID IF(mTtipo='CT',ver_cartao(mTnum_banco,11,cc+31),.T.) WHEN mconsulta = NIL .AND.  mTtipo <> 'DU' .AND. mttipo <> 'DN'
+                @ 11,cc+41 GET mTagencia PICT '@!' WHEN mconsulta = NIL .AND. mTtipo = 'CH'
+                @ 11,cc+56 GET mTc_c PICT '@!' WHEN mconsulta = NIL .AND. mTtipo = 'CH'
+                @ 12,cc+27 GET mTduplicata PICT '@!' WHEN mconsulta = NIL .AND. mttipo <> 'DN'
+                READ
+                IF LASTKEY()=27
+                        EXIT
+                ENDIF
+                Mensagem('Complete os Dados. [ESC] Abandona.')
+                IF  mconsulta = NIL
+                        IF mTtipo = 'CH'
+                                qtd_chq(mcod_cli,STRZERO(mTnum_banco,3),mTagencia,mTc_c)
+                        ENDIF
+                        cons_dupr:={}
+                        IF mTnum_banco = 0
+                                sr_getconnection():exec("SELECT duplicata FROM sacdupr WHERE fornec = "+sr_cdbvalue(mcod_cli)+" AND tipo = "+sr_cdbvalue(mTtipo)+" AND duplicata = "+sr_cdbvalue(mTduplicata)+" AND (pago IS NULL OR pago = ' ')",,.t.,@cons_dupr)
+                        ELSE
+                                sr_getconnection():exec("SELECT duplicata FROM sacdupr WHERE fornec = "+sr_cdbvalue(mcod_cli)+" AND tipo = "+sr_cdbvalue(mTtipo)+" AND numero = "+sr_cdbvalue(STRZERO(mTnum_banco,3))+" AND duplicata = "+sr_cdbvalue(mTduplicata)+" AND (pago IS NULL OR pago = ' ')",,.t.,@cons_dupr)
+                        ENDIF
+                        IF LEN(cons_dupr) > 0
+                                IF mTtipo = 'CH'
+                                        atencao('Este Cheque ja existe esta em ABERTO !')
+                                ELSEIF mTtipo = 'DU'
+                                        atencao('Esta Duplicata ja existe esta em ABERTO !')
+                                ELSEIF mTtipo = 'FI'
+                                        atencao('Esta fianaciamento ja existe esta em ABERTO!')
+                                ELSEIF mTtipo = 'CT'
+                                        atencao('Este Cartao ja existe esta em ABERTO !')
+                                ELSE
+                                        atencao('Este DOCUMENTO ja existe esta em ABERTO !')
+                                ENDIF
+                                opcao := op_simnao('N','Deseja Incluir mesmo assim ? [S/n]:')
+                                IF LASTKEY() = 27 .OR. opcao = "N"
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        cons_dupr:={}
+                        IF mTnum_banco = 0
+                                sr_getconnection():exec("SELECT duplicata FROM sacdupr WHERE fornec = "+sr_cdbvalue(mcod_cli)+" AND tipo = "+sr_cdbvalue(mTtipo)+" AND duplicata = "+sr_cdbvalue(mTduplicata)+" AND pago = 'B'",,.t.,@cons_dupr)
+                        ELSE
+                                sr_getconnection():exec("SELECT duplicata FROM sacdupr WHERE fornec = "+sr_cdbvalue(mcod_cli)+" AND tipo = "+sr_cdbvalue(mTtipo)+" AND numero = "+sr_cdbvalue(STRZERO(mTnum_banco,3))+" AND duplicata = "+sr_cdbvalue(mTduplicata)+" AND pago = 'B'",,.t.,@cons_dupr)
+                        ENDIF
+                        IF LEN(cons_dupr) > 0
+                                IF mTtipo = 'CH'
+                                        atencao('Este Cheque ja existe e ja foi PAGO !')
+                                ELSEIF mTtipo = 'DU'
+                                        atencao('Esta Duplicata ja existe e ja foi PAGA !')
+                                ELSEIF mTtipo = 'FI'
+                                        atencao('Esta Financiamento ja existe e ja foi PAGO !')
+                                ELSEIF mTtipo = 'CT'
+                                        atencao('Este Cartao ja existe e ja foi PAGO !')
+                                ELSE
+                                        atencao('Este Cartao ja existe e ja foi PAGO !')
+                                ENDIF
+                                opcao := op_simnao('N','Deseja Incluir mesmo assim ? [S/n]:')
+                                IF LASTKEY() = 27 .OR. opcao = "N"
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                        IF LASTKEY()=27
+                                wvw_lclosewindow()
+                                RETURN NIL
+                        ENDIF
+                        IF mttipo = 'DN'
+                                mTvenc    := mdata_sis
+                                mTemissao := mdata_sis
+                        ELSE
+                                mTvenc    := mvenc
+                                mTemissao := memissao
+                        ENDIF
+                ELSE
+                        mTvenc    := mdata_sis
+                        mTemissao := mdata_sis
+                ENDIF
+                mTvalor := mvalor - mtot_valor
+                mTbanco := 'C'
+                mcpfcnpj :=SPACE(14)
+                @ 13,cc+27 GET mTemissao WHEN mconsulta = NIL .AND. mttipo <> 'DN'
+                @ 13,cc+52 GET mTvenc VALID IF(mtvenc < mdata_sis,.F.,.T.) WHEN mttipo <> 'DN'
+                READ
+                IF LASTKEY()=27
+                        EXIT
+                ENDIF
+                mdias_atras := mmulta := mjuros :=0
+                IF mtvenc < mvenc_ant
+                        atencao('A Data de Vencimento do documento estar menor que a Data de Vencimento do Documento Anterior...')
+                ENDIF
+                mdias_atras := mjuros := mmulta := 0
+                IF dupr->conta = '*'
+                        mdias_atras := mTvenc-mvenc_ant
+                ELSEIF m_set[1,106] <= (mTvenc-mvenc_ant) .AND. mtvenc > mdata_sis .OR. mvenc_ant < mtvenc
+                        mdias_atras := mTvenc-mvenc_ant
+                ENDIF
+                IF mdias_atras > 0
+                        mmulta := iat(mTvalor * ((m_set[1,50])/100),2)
+                        mjuros := iat((mTvalor * ((mdias_atras*m_set[1,51])/100)),2)
+                ENDIF
+                mmulta_juro := mmulta_juro + iat((mjuros+mmulta),2)
+                setcor(3)
+                DEVPOS(7,cc+50);DEVOUT(TRANSFORM(mmulta_juro,'999,999.99'))
+                DEVPOS(29,cc+50);DEVOUT(TRANSFORM(mmulta_juro,'999,999.99'))
+                DEVPOS(29,cc+68);DEVOUT(TRANSFORM(mdias_atras,'999,999'))
+                DEVPOS(30,cc+19);DEVOUT(TRANSFORM((mvalor+mmulta_juro) - mtot_valor,'999,999.99'))
+                setcor(1)
+*               mtvalor := mtvalor + mmulta_juro
+                mtvalor := 0
+                @ 14,cc+27 GET mTvalor PICT "9,999,999.99" VALID mTvalor>0 WHEN  mconsulta = NIL
+                READ
+                IF LASTKEY()=27
+                        EXIT
+                ENDIF
+                IF mconsulta = NIL
+                        @ 14,cc+65 GET mTbanco PICT "@!" VALID mTbanco $ 'C,B' .AND. lim_get() WHEN mTtipo <> 'DN' .AND. men_get(15,cc+23,'Digite [C] para pagamento em CARTEIRA [B] para pagamento em BANCO')
+                        @ 15,cc+15 GET mTcorrente PICT "@!" WHEN mttipo <> 'DN'
+                        @ 15,cc+61 GET mcpfcnpj PICT '99999999999999' VALID chq_corre(mcpfcnpj)  WHEN mttipo <> 'DN'
+                        @ 16,cc+07 GET mTobs
+                        READ
+                        IF LASTKEY() = 27
+                                LOOP
+                        ENDIF
+                        opcao := op_simnao('S','Confirma os Dados ? [S/n]:')
+                        IF opcao = "N"
+                                LOOP
+                        ENDIF
+                        AADD(mat_dup,{mTtipo,mTnum_banco,mTagencia,mTc_c,mTduplicata,;
+                                      mTemissao,mTvenc,mTvalor,mTbanco,mTcorrente,;
+                                      mTobs})
+                        AADD(m_alt,mTtipo+' '+mTduplicata+' '+DTOC(mTemissao)+' '+DTOC(mTvenc)+' '+TRANSFORM(mTvalor,'999,999.99')+' '+mTbanco)
+                        mtot_valor := mtot_valor + mTvalor
+                        IF mtvenc > mvenc
+                                mvenc_ant := mTvenc
+                        ENDIF
+                        setcor(3)
+                        limpa(19,cc+1,27,cb-1)
+                        f := i := 0
+                        FOR i = 1 TO LEN(m_alt)
+                                DEVPOS(18+f,cc+1);DEVOUT(m_alt[i])
+                                IF i > 4
+                                        SCROLL(19,cc+1,lb-1,cb-1,1)
+                                ELSE
+                                        f++
+                                ENDIF
+                        NEXT
+                        setcor(1)
+                ELSE
+                        mmulta_juro := mdias_atras := mjuros := mmulta := 0
+                        mensagem('Pressione qualquer tecla para continuar ou <ESC>p/Abandonar')
+                        INKEY(0)
+                        IF LASTKEY()=27
+                                EXIT
+                        ENDIF
+                        LOOP
+                ENDIF
+        ENDDO
+        IF mconsulta <> NIL
+                LOOP
+        ENDIF
+        IF mmulta_juro > 0
+                IF mensagem1('Deseja cobrar Multa e Juros de R$ '+TRANSFORM(mmulta_juro,'999,999.99')+':','S','S,N') = 'S'
+                        mvalor := mvalor + mmulta_juro
+                ELSE
+                        IF ! aut_sen('Senha de autorizacao p/dispensa o JUROS e MULTA do documento:','LIB_MULTAJURO')
+                                LOOP
+                        ENDIF
+
+                ENDIF
+        ENDIF
+        IF mvalor > mtot_valor
+                atencao('Valor Digitado menor que o Documento')
+        ENDIF
+        IF mtot_valor > mvalor + mmulta_juro
+                opcao := mensagem1('Os Documentos Incluidos estar MAIOR que o do DOCUMENTO PRINCIPAL, deseja Prossegir com o processo mesmo assim:','N','S,N')
+                IF opcao = 'N' .OR. LASTKEY() = 27
+                        LOOP
+                ENDIF
+        ENDIF
+
+        opcao := op_simnao('S','Confirma o processamento dos Dados ? [S/n]:')
+        IF opcao = 'N'
+                LOOP
+        ENDIF
+        IF ! BLOQREG()
+                atencao('Nao estar sendo possivel bloquear o registro')
+                LOOP
+        ENDIF
+        mTobs := 'Transf.: '
+        i := 0
+        FOR i = 1 TO LEN(mat_dup)
+                mTobs := mTobs + mat_dup[i,1]+mat_dup[i,5]+'-'
+        NEXT
+        ccomm := "UPDATE sacdupr SET datpag = "+sr_cdbvalue(mdata_sis)+", vlpago = "+sr_cdbvalue(aret[1,19])
+        ccomm := ccomm + ",pago = 'T', obs = "+sr_cdbvalue(SUBSTR(mTobs,1,60))+", dat_tran = "+sr_cdbvalue(mdata_sis)
+        ccomm := ccomm + " WHERE sr_recno = "+sr_cdbvalue(mpos_ini)
+        sr_getconnection():exec(ccomm,,.f.)
+        sr_getconnection():exec('COMMIT',,.f.)
+
+        /*
+        GO mpos_ini
+        BLOQREG()
+        dupr->datpag := mdata_sis
+        dupr->vlpago := dupr->valor
+        dupr->pago := "T"
+        dupr->obs := mTobs
+        dupr->dat_tran := mdata_sis
+        DBCOMMIT()
+        DBUNLOCK()
+        */
+        i := 0
+        FOR i = 1 TO LEN(mat_dup)
+                *****************
+                SELE('dupr');ORDSETFOCUS(1)
+                *****************
+                IF ! ADIREG()
+                        atencao('Nao foi possivel adicionar o registro')
+                        LOOP
+                ENDIF
+                dupr->empresa := mcodemp
+                dupr->tipo := mat_dup[i,1]
+                IF EMPTY(mat_dup[i,2])
+                        dupr->numero := SPACE(3)
+                ELSE
+                        dupr->numero := STRZERO(mat_dup[i,2],3)
+                ENDIF
+                dupr-> agencia := mat_dup[i,3]
+                dupr-> c_c := mat_dup[i,4]
+                dupr-> duplicata := mat_dup[i,5]
+                dupr-> emissao := mat_dup[i,6]
+                dupr-> venc := mat_dup[i,7]
+                dupr-> valor_dup := mvalor_dup
+                dupr-> tip_cli := mtip_cli
+                dupr-> fornec := mcod_cli
+                dupr-> cliente := mcliente
+                IF mat_dup[i,1] = 'CT'
+                        dupr-> valor := mat_dup[i,8] - (mat_dup[i,8] * (mdesc_cart/100))
+                ELSE
+                        dupr-> valor := mat_dup[i,8]
+                ENDIF
+                dupr-> pago := " "
+                dupr-> vendedor := mvendedor
+                dupr-> num_ped := mnum_ped
+                dupr-> banco := mat_dup[i,9]
+                dupr-> comissao := mcomissao
+                dupr-> corrente := mat_dup[i,10]
+                dupr-> obs      := mat_dup[i,11]
+                dupr-> doc_tran := mtipo+ALLTRIM(mduplicata)
+                dupr-> dat_tran := mdata_sis
+                IF mat_dup[i,6] = mat_dup[i,7] .OR. mat_dup[i,1] = 'DN'
+                        opcao := op_simnao('S','Deseja fazer a BAIXA deste documento agora [S/n]:')
+                        IF opcao = 'S'
+                                dupr->datpag := mat_dup[i,7]
+                                dupr->vlpago := mat_dup[i,8]
+                                dupr->pago := "B"
+                                dupr->banco := 'C'
+                        ELSE
+                                LOOP
+                        ENDIF
+                ENDIF
+                dupr-> operador := cod_operado
+                DBCOMMIT()
+                DBUNLOCK()
+                IF cx <> NIL
+                        cons_cx:={}
+                        sr_getconnection():exec("SELECT * FROM saccaixa WHERE tipo = "+sr_cdbvalue(mtipo)+" AND documento = "+sr_cdbvalue(mduplicata)+" AND cod_cli = "+sr_cdbvalue(mcod_cli),,.t.,@cons_cx)
+                        IF LEN(cons_cx) > 0
+                                        mnota := cons_cx[1,4]
+                                        mtipo_comp := cons_cx[1,11]
+                                        mcod_vend := cons_cx[1,15]
+                                        mdescri1  := cons_cx[1,13]
+                                        mdescri2  := cons_cx[1,14]
+                                        sr_getconnection():exec("UPDATE saccaixa SET op_pg = 'P' WHERE tipo = "+sr_cdbvalue(mtipo)+" AND documento = "+sr_cdbvalue(mduplicata)+" AND cod_cli = "+sr_cdbvalue(mcod_cli),,.f.)
+                                        /*
+                                        IF BLOQREG()
+                                                caix->op_pg := 'P'
+                                                DBCOMMIT()
+                                                DBUNLOCK()
+                                        ENDIF
+                                        */
+                        ENDIF
+                        ******************
+                        SELE('caix');ORDSETFOCUS(3)
+                        //GO TOP
+                        *****************
+                        /*
+                                IF caix->(DBSEEK(mtipo + mduplicata + mcod_cli))
+                                        mnota := caix->nota
+                                        mtipo_comp := caix->tipo_comp
+                                        mcod_vend := caix->cod_vend
+                                        mdescri1  := caix->descri1
+                                        mdescri2  := caix->descri2
+                                        IF BLOQREG()
+                                                caix->op_pg := 'P'
+                                                DBCOMMIT()
+                                                DBUNLOCK()
+                                        ENDIF
+                                ENDIF
+                        */
+                        IF ADIREG()
+                                mdescri1 := 'TRANSF. '+mtipo+mduplicata+' Vlr:'+TRANSFORM(mvalor,'999,999.99')
+                                mdescri2 := ' P/DOC:'+mat_dup[i,1]+mat_dup[i,5]
+                                caix->empresa := mcodemp
+                                caix->tipo := mat_dup[i,1]
+                                caix->nota := 'DOC.PG  '
+                                caix->num_dup := mat_dup[i,5]
+                                caix->num_ban := STRZERO(mat_dup[i,2],3)
+                                caix->documento := mat_dup[i,5]
+                                caix->data := mdata_sis
+                                caix->descri1:= mdescri1
+                                caix->descri2:= mdescri2
+                                caix->venci := mat_dup[i,7]
+                                caix->valor := mat_dup[i,8]
+                                caix->cod_cli := mcod_cli
+                                caix->cod_vend := mvendedor
+                                caix->cod_opera := cod_operado
+                                caix->pg := '*'
+                                caix->op_pg := 'P'
+                                caix->valor_com := mat_dup[i,8]
+                                caix->hora     := TIME()
+                                caix->tp_mov   := 'T'
+                                DBCOMMIT()
+                                DBUNLOCK()
+                        ELSE
+                                atencao('Nao foi possivel acessar o Arquivo !!!')
+                                LOOP
+                        ENDIF
+                ENDIF
+        NEXT
+        *****************
+        SELE('dupr');ORDSETFOCUS(1)
+        *****************
+        IF mvalor > mtot_valor
+                IF ! ADIREG()
+                        atencao('Nao foi possivel adicionar o registro')
+                        LOOP
+                ENDIF
+                dupr->empresa := mcodemp
+                dupr->tipo := mtipo
+                dupr->numero := mnumero
+                dupr->agencia := magencia
+                dupr->c_c := mc_c
+                dupr->duplicata := mduplicata
+                dupr->emissao := memissao
+                dupr->venc := mvenc
+                dupr->valor_dup := mvalor_dup
+                dupr->tip_cli := mtip_cli
+                dupr->fornec := mcod_cli
+                dupr->cliente := mcliente
+                dupr->valor := mvalor - mtot_valor
+                dupr->pago := " "
+                dupr->vendedor := mvendedor
+                dupr->num_ped := mnum_ped
+                dupr->banco := mbanco
+                dupr->comissao := mcomissao
+                dupr->obs      := SUBSTR(mTobs,1,60)
+                dupr->operador := cod_operado
+                dupr->conta := 'T'
+                dupr->dat_tran := mdata_sis
+                DBCOMMIT()
+                DBUNLOCK()
+        ENDIF
+ENDDO
+wvw_lclosewindow()
+RETURN NIL

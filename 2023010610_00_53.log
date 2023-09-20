@@ -1,0 +1,20 @@
+Error BASE/1003  No existe la variable: MTIPO
+Funcoes: CON416.PRG->CON416(94)
+Funcoes: CON41.PRG->CON41(47)
+Funcoes: SAC00.PRG->AFTERINKEY(2347)
+Funcoes: SAC00.PRG->(b)SAC0(1404)
+Funcoes: ->INKEY(0)
+Funcoes: SAC00.PRG->SAC0(1434)
+Funcoes: SACROT1.PRG->SENHA(824)
+Funcoes: SISCOM.PRG->MAIN(1129)
+************************************************************************************************************************
+Data e Hora........: 06/01/23 - 10:00:53
+Empresa............: DOCE GOSTO MAIS
+Sistema/Atualizacao: .: SISCOM :. Sistema Automacao Comercial - v23.01.05
+Usuario do Sistema.: 999
+Nome do Executavel.: C:\HELIO\siachb\SISCOM.EXE
+Nome do Micro......: HELIO1 - Nome Terminal: helio
+Memoria Disponivel.: 2097151 - Espaço em Disco....: 111891693568
+Pasta de Diretorio.: HELIO\siachb
+Sistema Operacional: Windows NT Professional 6.02.9200
+Caminho do Banco...: localhost:C:\HELIO\SIACHB\SISCOM.GDB

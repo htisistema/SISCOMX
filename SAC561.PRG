@@ -1,0 +1,325 @@
+******************************
+* RELATORIO DE CHEQUES S/FUNDO
+******************************
+MEMVAR getlist,mdata_sis,nivel_acess
+
+FUNCTION sac561
+**************
+LOCAL MPRG:='SAC561',mtitulo:='RELATORIO DE CHEQUES SEM FUNDOS',;
+      lci,cci,lba,cba,tela,mcod_ven,opcao,mtot_cheq,mpag,mtit,mtipo,;
+      mtraco,mmulta,mjuros,mdias_atras,mtot_juros,mjuros_ind,mtot_vlr,mtipo_cons,;
+      mtp_orde:=1,mcod_ope,mdata1,mdata2,mopcao,mreg
+
+PRIVATE mcliente,mcpf,mcgc,mcorrent,mcod_cli,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mcodemp:=SPACE(3),;
+        cons_cheq:={},i:=0,cons_cli:={}
+
+IF ! ver_nivel(mprg,mtitulo,'15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+lci := cci := 0
+lba := 08
+cba := 70
+
+li := ci := 0
+lb := 18
+cb := 70
+
+mtraco := REPLI('=',137)
+*-----------------------------------------------------
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+//
+IF ! AbriArq('saccheq','cheq');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+*-----------------------------------------------------
+op_tela(10,20,16,42,mtitulo)
+WHILE .T.
+        mtipo_imp := m_indiv[1,18]
+        mcod_cli := mcod_ven := mcod_ope := 0
+        mopcao := 'S'
+        mtipo_cons := SPACE(1)
+        mdata1 := mdata2 := CTOD('  /  /  ')
+        mcorrent := 'N'
+        mensagem('Escolha a Opcao que deseja')
+        setcor(10)
+        @ li,ci PROMPT ' 1 - Cod.Cliente       '
+        @ li+1,ci PROMPT ' 2 - No.Banco          '
+        @ li+2,ci PROMPT ' 3 - Data Inclusao     '
+        @ li+3,ci PROMPT ' 4 - Vendedor          '
+        @ li+4,ci PROMPT ' 5 - No.Cheques        '
+        @ li+5,ci PROMPT ' 6 - Data Resolvido    '
+        @ li+6,ci PROMPT ' 7 - Resumo p/Vendedor '
+        SET INTEN ON
+        MENU TO mtp_orde
+        setcor(1)
+        IF LASTKEY()=27
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+
+        op_tela(lci,cci,lba+2,cba,' Cheques s/fundos ')
+        DEVPOS(lci+1,cci+2);DEVOUT('Codigo Empresa....:')
+        DEVPOS(lci+2,cci+2);DEVOUT('Data inicial......:')
+        DEVPOS(lci+2,cci+35);DEVOUT('Final:')
+        DEVPOS(lci+3,cci+2);DEVOUT('Codigo do Vendedor:')
+        DEVPOS(lci+4,cci+2);DEVOUT('Codigo do Operador:')
+        DEVPOS(lci+5,cci+2);DEVOUT('Codigo do Cliente.:')
+        DEVPOS(lci+6,cci+2);DEVOUT('[R]esolvido [N]ao Revol. [G]eral:')
+        DEVPOS(lci+7,cci+2);DEVOUT('Imprimir correntista [S]im [N]ao:')
+        //mtp_orde := 1
+        IF mtp_orde = 7
+                cheq_res()
+                wvw_lclosewindow()
+                LOOP
+        ENDIF
+        @ lci+1,cci+22 GET mcodemp PICT '999' VALID ver_emp(mcodemp,lci+1,cci+26,,'*') WHEN mmult_emp = 'S'
+        @ lci+2,cci+22 GET mdata1 VALID IF(EMPTY(mdata1),.F.,.T.) //WHEN mtp_orde = 3 .OR. mtp_orde = 6 .OR. mtp_orde = 4
+        @ lci+2,cci+42 GET mdata2 VALID IF(mdata2<mdata1,.F.,.T.) WHEN ! EMPTY(mdata1)
+        @ lci+3,cci+22 GET mcod_ven PICT '999' VALID ven(mcod_ven,lci+3,cci+26)
+        @ lci+4,cci+22 GET mcod_ope PICT '999' VALID ven(mcod_ope,lci+4,cci+26)
+        @ lci+5,cci+22 GET mcod_cli PICT '99999' VALID ver_cli(mcod_cli,lci+5,cci+28)    
+        @ lci+6,cci+36 GET mtipo_cons PICT '@!' VALID mtipo_cons $ 'R,N,G'
+        @ lci+7,cci+36 GET mcorrent PICT '@!' VALID mcorrent $ 'S,N'
+        READ
+        IF LASTKEY() = 27
+                wvw_lclosewindow()
+                LOOP
+        ENDIF
+        mtipo := 'G E R A L'
+        IF ! EMPTY(mcod_cli)
+                mtipo := 'Cliente: '+STR(mcod_cli,5)+'-'+cons_cli[1,3]
+        ENDIF
+        cons_cheq := {}
+        cComm  := "SELECT * FROM saccheq "
+        IF mtp_orde = 1 .OR. mtp_orde = 2 .OR. mtp_orde = 3 .OR. mtp_orde = 5
+                ccomm := ccomm + "WHERE data_cheq >= "+sr_cdbvalue(mdata1)+" AND data_cheq <= "+sr_cdbvalue(mdata2)
+        ELSEIF mtp_orde = 6
+                ccomm := ccomm + "WHERE data_ok >= "+sr_cdbvalue(mdata1)+" AND data_ok <= "+sr_cdbvalue(mdata2)
+        ELSEIF mtp_orde = 7 .OR. mtp_orde = 4
+                ccomm := ccomm + "WHERE data_fund  BETWEEN "+sr_cdbvalue(mdata1)+" AND "+sr_cdbvalue(mdata2)
+        ENDIF
+        IF ! EMPTY(mcod_cli)            //.AND. mov->cod_cli <> mcod_cli);
+                cComm  := ccomm + " AND cod_cli = "+sr_cdbvalue(mcod_cli)
+        ENDIF
+        IF ! EMPTY(mcod_ope)            //.AND. STRZERO(mcod_ope,3) <> mov->cod_oper);
+                cComm  := ccomm + " AND cod_opera = "+sr_cdbvalue(STRZERO(mcod_ope,3))
+        ENDIF
+        IF ! EMPTY(mcod_ven)            //.AND. STRZERO(mcod_ven,3) <> mov->cod_vend);
+                mtipo := 'Vendedor: '+STRZERO(mcod_ven,3)+'-'+sen->snome
+                cComm  := ccomm + " AND cod_vend = "+sr_cdbvalue(STRZERO(mcod_ven,3))
+        ENDIF
+        IF ! EMPTY(mcodemp)
+                cComm  := ccomm + " AND empresa = "+sr_cdbvalue(mcodemp)
+        ENDIF
+        IF mtipo_cons = 'N'
+                cComm  := ccomm + " AND (ok = ' ' OR ok IS NULL)"
+        ENDIF
+        IF mtipo_cons = 'R'
+                cComm  := ccomm + " AND ok = '*'"
+        ENDIF
+        IF mtp_orde = 1
+                ccomm := ccomm + " ORDER BY cod_cli,data_fund"
+        ELSEIF mtp_orde = 2
+                ccomm := ccomm + " ORDER BY num_ban,num_cheq,valor_cheq"
+        ELSEIF mtp_orde = 3
+                ccomm := ccomm + " ORDER BY data_cheq,data_fund,cod_cli"
+        ELSEIF mtp_orde = 4
+                ccomm := ccomm + " ORDER BY cod_vend,cod_cli"
+        ELSEIF mtp_orde = 5
+                ccomm := ccomm + " ORDER BY num_cheq,cod_cli"
+        ELSEIF mtp_orde = 6
+                ccomm := ccomm + " ORDER BY data_ok,cod_cli"
+        ELSE
+                ccomm := ccomm + " ORDER BY data_fund,cod_vend"
+        ENDIF
+        //atencao(ccomm)
+        sr_getconnection():exec(ccomm,,.t.,@cons_cheq)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(cons_cheq) = 0
+                atencao('Nao existe movimento neste Periodo')
+        ENDIF
+/*
+        IF ! EMPTY(mcod_ven)
+                *****************
+                SELE('cheq');ORDSETFOCUS(4)
+                GO TOP
+                *****************
+
+                SEEK STRZERO(mcod_ven,3)
+                mtipo := 'Vendedor: '+STRZERO(mcod_ven,3)+'-'+sen->snome
+        ELSE
+                *****************
+                SELE('cheq');ORDSETFOCUS(mtp_orde)
+                GO TOP
+                *****************
+        ENDIF
+*/
+        IF ! EMPTY(mcod_ope)
+                mtipo := 'Oper.: '+STRZERO(mcod_ope,3)+'-'+sen->snome
+        ENDIF
+/*
+        IF mtp_orde = 3 .OR. mtp_orde = 6   // .OR. mtp_orde = '7'
+               cheq->(DBSEEK(DTOS(mdata1),.T.))
+               IF EOF()
+                       atencao('Nao existe movimento neste periodo !!!')
+               ENDIF
+        ENDIF
+*/
+        mmulta := mjuros := mdias_atras := mtot_juros := mjuros_ind := ;
+        mtot_vlr := mtot_vlr := mtot_cheq := mpag := 0
+        mtipo_imp := m_indiv[1,18]
+        mtit := 'Relatorio de Cheques Sem Fundo '
+        IF ! EMPTY(mcodemp)
+                mtit := mtit + '- Cod.Empresa: '+mcodemp
+        ENDIF
+        IF ! imp_arq('CHEQ_SF.REL','R')
+                LOOP
+        ENDIF
+        i := 0
+        FOR i = 1 TO LEN(cons_cheq)
+                prog_imp(i)
+                IF mpag = 0 .OR. PROW() >= 56
+                        mpag ++
+                        IF mpag > 1
+                                EJECT
+                        ENDIF
+                        cabecalho(mpag,mtit,mtipo,mprg,mcodemp)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT('Emissao ')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Devolv. ')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('NF/PD   ')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Bco')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('No.Cheque  ')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Vlr.Cheque')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('    Juros')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Tot.Recebe')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Motivo              ')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Codigo do Cliente     ')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Ven')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Ope')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('  Data OK.')
+                        IF mcorrent = 'S'
+                                DEVPOS(PROW()+1,00);DEVOUT('                                                                                               ')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Correntista           ')
+                        ENDIF
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                ENDIF
+/*
+                IF (mtp_orde = 3 .AND. cheq->data_cheq > mdata2);
+                   .OR. (mtp_orde = 6 .AND. cheq->data_ok > mdata2);
+                   .OR. (mtp_orde = 7 .AND. cheq->data_fund > mdata2);
+                   .OR. (mtp_orde = 4 .AND. cheq->data_fund > mdata2)
+                        EXIT
+                ENDIF
+                IF (mtipo_cons = 'N' .AND. cheq->ok = '*');
+                   .OR. (mtipo_cons = 'R' .AND. cheq->ok = ' ');
+                   .OR. (! EMPTY(mcod_ope) .AND. STRZERO(mcod_ope,3) <> cheq->cod_opera);
+                   .OR. (! EMPTY(mcod_ven) .AND. STRZERO(mcod_ven,3) <> cheq->cod_vend);
+                   .OR. (! EMPTY(mcod_cli) .AND. mcod_cli <> cheq->cod_cli);
+                   .OR. (! EMPTY(mcodemp) .AND. cheq->empresa <> mcodemp)
+                        SKIP;LOOP
+                ENDIF
+*/
+
+                imprt(mtipo_imp,'C')
+                DEVPOS(PROW()+1,00);DEVOUT(cons_cheq[i,4])
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_cheq[i,2])
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_cheq[i,3])
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_cheq[i,6])
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_cheq[i,7])
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_cheq[i,20])
+                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_cheq[i,9],'99,999.99')
+                mmulta := mjuros := 0
+                IF mtp_orde = 6
+                        mtot_vlr := mtot_vlr + cons_cheq[i,19]
+                        IF cons_cheq[i,19] > cons_cheq[i,9]
+                                mtot_juros := mtot_juros + (cons_cheq[i,19] - cons_cheq[i,9])
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_cheq[i,19] - cons_cheq[i,9],'99,999.99')
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(0,'99,999.99')
+                        ENDIF
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_cheq[i,19],'99,999.99')
+                ELSE
+                        mdias_atras := mdata_sis-cons_cheq[i,4]
+                        IF mdias_atras > 0
+                                mmulta := cons_cheq[i,9] * ((m_set[1,50])/100)
+                                mjuros := mjuros + (cons_cheq[i,9] * ((mdias_atras*m_set[1,51])/100))
+                        ENDIF
+                        mtot_juros := mtot_juros + mmulta+mjuros
+                        mjuros_ind := mjuros_ind + mmulta+mjuros
+                        mtot_vlr := mtot_vlr + cons_cheq[i,9]+mmulta+mjuros
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mmulta+mjuros,'99,999.99')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_cheq[i,9]+mmulta+mjuros,'99,999.99')
+                ENDIF
+                DEVPOS(PROW(),PCOl()+1);DEVOUT(LEFT(cons_cheq[i,10],20))
+                DEVPOS(PROW(),PCOl()+1);DEVOUT(cons_cheq[i,12]+'-')
+                ver_cli(VAL(cons_cheq[i,12]),,,'*')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(LEFT(mcliente,15))
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_cheq[i,11])
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_cheq[i,15])
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_cheq[i,17])
+                DEVPOS(PROW(),PCOL()+1);DEVOUT(cons_cheq[i,18])
+                IF mcorrent = 'S'
+                        DEVPOS(PROW()+1,00);DEVOUT('                                                                                               '+cons_cheq[i,13])
+                ENDIF
+                IF ! EMPTY(cons_cheq[i,21])
+                        DEVPOS(PROW()+1,00);DEVOUT('OBSERVACAO: '+cons_cheq[i,21])
+                ENDIF
+                mtot_cheq ++
+*               mtot_vlr := mtot_vlr + cons_cheq[i,19]
+                *****************
+*               SELE('cheq');ORDSETFOCUS(mtp_orde)
+*               GO mreg
+                *****************
+                SKIP
+        NEXT
+        IF mpag = 0 .OR. PROW() >= 54
+                IF mpag > 0
+                        EJECT
+                ENDIF
+                mpag ++
+                cabecalho(mpag,mtit,,mprg,mcodemp)
+                imprt(mtipo_imp,'C')
+                DEVPOS(PROW()+1,00);DEVOUT('Emissao ')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('Devolv. ')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('NF/PD   ')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('Bco')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('No.Cheque  ')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('Vlr.Cheque')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('    Juros')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('Tot.Recebe')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('Motivo              ')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('Codigo do Cliente     ')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('Ven')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('Ope')
+                DEVPOS(PROW(),PCOL()+1);DEVOUT('  Data OK.')
+                DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        ENDIF
+        DEVPOS(PROW()+2,00);DEVOUT('Quantidade de Cheques:')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT(STRZERO(mtot_cheq,6))
+        DEVPOS(PROW()+1,00);DEVOUT('Total de Cheques R$..:')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtot_vlr,'99,999,999.99')
+        DEVPOS(PROW()+1,00);DEVOUT('Total de Juros R$....:')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtot_juros,'99,999,999.99')
+        DEVPOS(PROW()+1,00);DEVOUT('                       -------------')
+        DEVPOS(PROW()+1,00);DEVOUT('Total de Geral R$....:')
+        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mtot_vlr+mtot_juros,'99,999,999.99')
+        DEVPOS(PROW()+2,00);DEVOUT(time())
+        imprt(mtipo_imp,'N')
+        EJECT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('CHEQ_SF.REL')
+        /*
+        IF mimp_tipo = 2
+                lertexto('CHEQ_SF.REL')
+        ELSEIF mtipo_imp = 'D'
+                
+        ELSE
+                MYRUN('DOSPRINTER /RAW /DEL '+ALLTRIM(m_indiv[1,5])+'HTI.REL')
+        ENDIF
+        */
+        wvw_lclosewindow()
+ENDDO
+RETURN NIL

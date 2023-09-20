@@ -1,0 +1,376 @@
+* FUNCAO P/IMPRIMIR PEDIDO FORMULARIO
+*************************************
+FUNCTION formula_APP(mdup_2,m_ava,mtipo_pag,mtp_email)
+***************************************************
+LOCAL mcod_vend,mpeso_liq:=0,mpeso_brut:=0,mtot_ipi:=0,mpagina,;
+      imppedido:={},cons_merc:={},cons_cli:={},mc_dup:=0,cons_finan:={},cons_emp := {}
+PRIVATE mtraco,i,mtot_prazo:=0,mtot_itens:=0,opcao,mtot_volume:=0,mimppedido:={},mtipo_ped:=1
+
+mtraco := REPLI(CHR(223),80)
+i := 0
+mpagina := 54
+IF mtp_email # NIL
+        mquantd := 1
+        mtipo_imp := 'M'
+ENDIF
+IF mquantd > 0
+        IF ! imp_arq('PD'+STRZERO(mnum_ped,6)+'.REL','T')
+                CLEAR GETS
+                SET KEY -8 TO
+                RETURN NIL
+        ENDIF
+        SETPRC(00,00)
+        imppedido:={}
+        IF ali = 'ped_s'        //.OR. ali = 'q_ped_s'
+                cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                IF m_set[1,174] = 'A'
+                        cComm := cComm + ' ORDER BY pmerc'
+                ELSEIF m_set[1,174] = 'C'
+                        cComm := cComm + ' ORDER BY pcod_merc'
+                ENDIF
+        ELSE
+                cComm  := "SELECT * FROM sacorcam WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6))
+                IF m_set[1,174] = 'A'
+                        cComm := cComm + ' ORDER BY pmerc'
+                ELSEIF m_set[1,174] = 'C'
+                        cComm := cComm + ' ORDER BY pcod_merc'
+                ENDIF
+        ENDIF
+        sr_getconnection():exec(ccomm,,.t.,@imppedido)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(imppedido) = 0
+        	atencao('Nao foi encontrado este PEDIDO/ORCAMENTO No.:'+STRZERO(mnum_ped,6))
+                SET DEVICE TO SCREEN;SET PRINT TO;SET PRINT OFF
+                RETURN NIL
+        ENDIF
+        FOR i = 1 TO mquantd
+                mcod_vend := imppedido[1,32]
+                mtabela := ''
+                IF i = mquantd .AND. i > 1
+                        opcao := op_simnao('S','Imprimir a 2a.VIA de impressao [S/n]:')
+                        IF opcao = 'N'
+                                EXIT
+                        ENDIF
+                ENDIF
+                mtot_prazo := mt_pedido := mtot_desc := mtot_quant := ;
+                mperc := mdesconto := mtot_ipi := mtot_volume := 0
+                imprt(mtipo_imp,'N')
+                //IF m_set[1,22] = 'S'
+                        imprt(mtipo_imp,'N+')
+                        imprt(mtipo_imp,'W1')
+                        DEVPOS(PROW(),00);DEVOUT(memp_resa)
+                        imprt(mtipo_imp,'N-')
+                        imprt(mtipo_imp,'W0')
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(ALLTRIM(m_set[1,132])+', '+ALLTRIM(m_set[1,160])+'-'+ALLTRIM(m_set[1,161])+'-'+ALLTRIM(m_set[1,133])+'-'+ALLTRIM(m_set[1,134])+'-'+ALLTRIM(m_set[1,19])+' - Fone: '+m_set[1,136])
+                        imprt(mtipo_imp,'N')
+                        @ PROW()+1,00 SAY mtraco
+                //ENDIF
+                imprt(mtipo_imp,'N')
+                imprt(mtipo_imp,'E')
+                @ PROW()+1,5 SAY 'RELATORIO DE VENDAS No.: '+STRZERO(mnum_ped,6)+'           PEDIDO DO APP No.: '+imppedido[1,94]
+                imprt(mtipo_imp,'N')
+                @ PROW()+1,00 SAY mtraco
+                imprt(mtipo_imp,'C')
+                @ PROW()+1,00 SAY 'Emissao:'
+                @ PROW(),PCOL()+1 SAY imppedido[1,4]
+                @ PROW(),PCOL()+2 SAY 'Hora:'
+                @ PROW(),PCOL()+1 SAY imppedido[1,47]
+                @ PROW(),PCOL()+2 SAY 'Ope:'
+                @ PROW(),PCOL() SAY imppedido[1,34]
+                imprt(mtipo_imp,'N')
+                imprt(mtipo_imp,'N+')
+                @ PROW(),30 SAY 'Cod.:'
+                @ PROW(),PCOL()+1 SAY imppedido[1,32]
+                IF m_set[1,81] = 'S'
+                        @ PROW(),PCOL()+2 SAY imppedido[1,33]
+                ENDIF
+                imprt(mtipo_imp,'N-')
+                imprt(mtipo_imp,'C')
+                IF mimp_tipo <> 2
+                        imprt(mtipo_imp,'C')
+                ENDIF
+                @ PROW(),00 SAY PADL(mvia+'  T:'+ALLTRIM(imppedido[1,3])+IF(mquantd > 1,' C-'+STRZERO(i,2),''),132)
+                imprt(mtipo_imp,'N')
+                IF ! EMPTY(imppedido[1,23])
+                        cons_cli:={}
+                        sr_getconnection():exec("SELECT cod_cli,razao,cgc,insc,cpf,nome,comprado,endereco,bairro,cidade,uf,tel1,cep,rota,tel2,numero,complemento,rota1 FROM saccli WHERE cod_cli = "+sr_cdbvalue(imppedido[1,23]),,.t.,@cons_cli)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        @ PROW()+1,00 SAY 'Cliente: '+STR(cons_cli[1,1],5)+' '+cons_cli[1,6]
+                        imprt(mtipo_imp,'C')
+                        IF m_set[1,39] = 'S'
+                                IF cons_cli[1,3] <> SPACE(14)
+                                       @ PROW(),90 SAY 'CNPJ:'
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_cli[1,3],'@@R 99.999.999/9999-99')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('-IE: '+cons_cli[1,4])
+                                ELSEIF cons_cli[1,5] <> SPACE(11)
+                                        @ PROW(),90 SAY 'CPF:'
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_cli[1,5],'@@R 999.999.999-99')
+                                ENDIF
+                                @ PROW()+1,00 SAY 'Razao Social: '+cons_cli[1,2]
+                                @ PROW(),PCOL()+3 SAY 'Responsavel: '+cons_cli[1,7]
+                                @ PROW(),PCOL()+2 SAY '   - Fone:'+cons_cli[1,15]
+                                @ PROW()+1,00 SAY 'End.: '+ALLTRIM(cons_cli[1,8])+', '+ALLTRIM(cons_cli[1,16])+' - '+ALLTRIM(cons_cli[1,17])+' - '+ALLTRIM(cons_cli[1,9])+' - '+ALLTRIM(cons_cli[1,10])+' - '+ALLTRIM(cons_cli[1,11])+' - Fone:'+ALLTRIM(cons_cli[1,12])+' - CEP.:'+cons_cli[1,13]
+                                IF ! EMPTY(cons_cli[1,14])
+                                        imprt(mtipo_imp,'N+')
+                                        @ PROW()+1,00 SAY 'Rota: '+RTRIM(cons_cli[1,14])
+                                        IF ! EMPTY(cons_cli[1,18])
+                                                @ PROW()+1,00 SAY '      '+RTRIM(cons_cli[1,18])
+                                        ENDIF
+                                        imprt(mtipo_imp,'N-')
+                                        imprt(mtipo_imp,'C')
+                                ENDIF
+                        ENDIF
+                        imprt(mtipo_imp,'N')
+                ENDIF
+                imprt(mtipo_imp,'N')
+                @ PROW()+1,00 SAY mtraco
+                @ PROW()+1,00 SAY 'Codigo'
+                @ PROW(),PCOL()+1 SAY 'Descricao                              '
+                @ PROW(),PCOL()+2 SAY '   Quantd.'
+                @ PROW(),PCOL()+1 SAY 'Vlr. Venda'
+                @ PROW(),PCOL()+1 SAY '     Total'
+                //imprt(mtipo_imp,'C')
+                @ PROW()+1,00 SAY mtraco
+                mdesconto := mtot_volume := y:=0
+                FOR y = 1 TO LEN(imppedido)
+                        imprt(mtipo_imp,'N')
+                        cons_merc:={}
+                        sr_getconnection():exec("SELECT cod_barr,ref,cod_fab,fabrica,pr_venda,local FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(imppedido[y,6]),,.t.,@cons_merc)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(cons_merc) = 0
+                                atencao('Nao foi possivel encontrar este PRODUTO: '+imppedido[y,6]+' no arquivo de mercadoria. (PODE TER SIDO EXCLUIDA)')
+                                LOOP
+                        ENDIF
+                        //ver_cod(VAL(imppedido[y,6]),,,,0,'*')
+                        @ PROW()+1,00 SAY imppedido[y,6]
+                        @ PROW(),PCOL()+2 SAY imppedido[y,7]
+                        //@ PROW(),PCOL()+2 SAY imppedido[y,92]
+                        //@ PROW(),PCOL()+1 SAY cons_merc[1,6]
+                        //@ PROW(),PCOL()+3 SAY imppedido[y,8]
+                        @ PROW(),PCOL()+2 SAY imppedido[y,14] PICT '9,999.999'   //unidade(imppedido[y,8],'*')
+                        @ PROW(),PCOL()+1 SAY imppedido[y,18] PICT '999,999.99' //ALLTRIM(m_set[1,98])
+                        mcust_real = iat(imppedido[y,14]) * iat(imppedido[y,18])
+                        mt_pedido := mt_pedido + (imppedido[y,14]*iat(imppedido[y,18]) - mdesconto)
+                	IF ! EMPTY(imppedido[y,55])
+                         	mtot_prazo := iat(mtot_prazo) + iat(mcust_real)
+                        	mprazo_aux := iat(imppedido[y,55])
+	                ENDIF
+                        @ PROW(),PCOL()+1 SAY iat(mcust_real,2) PICT '999,999.99'       //ALLTRIM(m_set[1,98])
+                        mtot_volume := mtot_volume + imppedido[y,14]
+                        imprt(mtipo_imp,'C')
+                        mpeso_brut := mpeso_brut + (imppedido[y,11] * imppedido[y,14])
+                        mpeso_liq := mpeso_liq + (imppedido[y,12] * imppedido[y,14])
+                        mtot_desc := mtot_desc + mdesconto
+*                       mtot_quant = mtot_quant + imppedido[y,14]
+                        mtot_itens ++
+                        IF PROW() >= mpagina .AND. STRZERO(mnum_ped,6) = imppedido[y,2] .AND. ! EOF()
+                                imprt(mtipo_imp,'N')
+                                @ PROW()+1,00 SAY mtraco
+                                IF imppedido[1,45] = 'AV'
+                                        @ PROW()+1,00 SAY 'Pagamento AVISTA'
+                                        @ PROW(),00 SAY '          AVISTA'
+                                ELSEIF imppedido[1,45] = 'AP'
+                                        @ PROW()+1,00 SAY 'Pagamento APRAZO  -  Condicao do pagamento: '+SUBSTR(imppedido[1,43],1,1)+' mais '+SUBSTR(imppedido[1,43],2,2)+' Prazo de '+SUBSTR(imppedido[1,44],3,3)+' Dias'
+                                ENDIF
+                                @ PROW()+1,00 SAY mtraco
+                                SETPRC(00,00)
+                                EJECT
+                                IF m_set[1,22] = 'S'
+                                        IF mmult_emp = 'N'
+                                                imprt(mtipo_imp,'E')
+                                                DEVPOS(PROW(),00);DEVOUT(memp_resa)
+                                                imprt(mtipo_imp,'C')
+                                                DEVPOS(PROW()+1,00);DEVOUT(RTRIM(m_set[1,132])+', '+RTRIM(m_set[1,160])+'-'+RTRIM(m_set[1,161])+'-'+RTRIM(m_set[1,133])+'-'+RTRIM(m_set[1,134])+'-'+RTRIM(m_set[1,19])+' - Fone: '+m_set[1,136])
+                                        ELSE
+                                                ver_emp(imppedido[y,1])
+                                                imprt(mtipo_imp,'E')
+                                                DEVPOS(PROW(),00);DEVOUT(ALLTRIM(IF(cons_emp[1,9] = 'F',cons_emp[1,8],cons_emp[1,7])))
+                                                IF SUBSTR(cons_emp[1,4],1,2) = '* '
+                                                        imprt(mtipo_imp,'N')
+                                                        DEVPOS(PROW()+1,00);DEVOUT(cons_emp[1,4])
+                                                ENDIF
+                                                imprt(mtipo_imp,'C')
+                                                DEVPOS(PROW()+1,00);DEVOUT(RTRIM(cons_emp[1,10])+'-'+RTRIM(cons_emp[1,11])+'-'+RTRIM(cons_emp[1,12])+'-'+RTRIM(cons_emp[1,14])+' - Fone: '+cons_emp[1,15])
+                                        ENDIF
+                                        imprt(mtipo_imp,'N')
+                                        @ PROW()+1,00 SAY mtraco
+                                ENDIF
+                                @ PROW()+1,10 SAY '  '
+                                imprt(mtipo_imp,'E')
+                                @ PROW(),10 SAY IF(ali='orcam',ALLTRIM(m_set[1,24]),ALLTRIM(m_set[1,23]))+' '+STRZERO(mnum_ped,6)
+                                imprt(mtipo_imp,'N')
+                                IF ! EMPTY(imppedido[1,23])
+                                        @ PROW()+1,00 SAY 'Cliente:'
+                                        @ PROW(),PCOL()+1 SAY imppedido[1,23]
+                                        @ PROW(),PCOL()+1 SAY mnome_cli
+                                        @ PROW()+1,00 SAY 'Emissao:'
+                                ELSE
+                                        @ PROW()+1,00 SAY 'Emissao:'
+                                ENDIF
+                                @ PROW(),10 SAY mdata
+                                @ PROW(),20 SAY 'Hora:'
+                                @ PROW(),26 SAY mhora
+                                @ PROW(),37 SAY 'Cod.:'
+                                @ PROW(),43 SAY imppedido[1,32]
+                                IF m_set[1,81] = 'S'
+                                        @ PROW(),47 SAY imppedido[1,33]
+                                ENDIF
+                                @ PROW(),00 SAY PADL('continuacao',80)
+                                imprt(mtipo_imp,'N')
+                                @ PROW()+1,00 SAY mtraco
+                                @ PROW()+1,00 SAY 'Codigo'
+                                @ PROW(),PCOL()+2 SAY 'Descricao                              '
+                                @ PROW(),PCOL()+2 SAY '   Quantd.'
+                                @ PROW(),PCOL()+1 SAY 'Vlr. Venda'
+                                @ PROW(),PCOL()+2 SAY 'Valor Total'
+                                @ PROW()+1,00 SAY mtraco
+                        ENDIF
+                NEXT
+                imprt(mtipo_imp,'N')
+                imprt(mtipo_imp,'N+')
+                //imprt(mtipo_imp,'W1')
+                @ 55,00 SAY 'OBSERVACAO'
+                @ PROW()+1,00 SAY ALLTRIM(imppedido[1,86])+imppedido[1,87]
+                @ PROW()+1,00 SAY ALLTRIM(imppedido[1,88])+imppedido[1,89]
+                imprt(mtipo_imp,'N-')
+                //imprt(mtipo_imp,'W0')
+                imprt(mtipo_imp,'N')
+                @ PROW()+1,00 SAY mtraco
+                imprt(mtipo_imp,'C')
+                @ PROW()+1,00 SAY 'Volumes:'
+                @ PROW(),PCOL()+1 SAY STRZERO(mtot_volume,6)
+                @ PROW(),PCOL()+2 SAY 'Qtd.Itens:'
+                @ PROW(),PCOL()+1 SAY STRZERO(mtot_itens,6)
+                /*
+                @ PROW(),PCOL()+2 SAY 'Sub-total:'
+                @ PROW(),PCOL()+1 SAY mt_pedido PICT '99,999,999.99'
+                @ PROW(),PCOL()+2 SAY 'Desconto:'
+                @ PROW(),PCOL()+1 SAY mtot_desc PICT ALLTRIM(m_set[1,98])
+                @ PROW(),PCOL()+2 SAY '    '
+                @ PROW(),PCOL()+1 SAY '          '
+                */
+                imprt(mtipo_imp,'N')
+                @ PROW(),55 SAY 'Total Nota:'
+                mcust_real = (iat(mt_pedido) + iat(mtot_desc))
+                @ PROW(),PCOL()+1 SAY ALLTRIM(TRANSFORM(iat(mcust_real + iat(mtot_ipi,2),2),'99,999,999.99'))
+                imprt(mtipo_imp,'C')
+                @ PROW()+1,00 SAY REPLI('-',132)
+                IF EMPTY(mtipo_pag)
+                        IF VAL(SUBSTR(imppedido[1,43],2)) = 0
+                        //IF imppedido[1,45] = 'AV'
+                                @ PROW()+1,00 SAY 'Pagamento AVISTA'
+                                @ PROW(),00 SAY '          AVISTA'
+                                IF SUBSTR(imppedido[1,44],1,2) = 'CH'
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUT('-  Modo de Pagamento: CHEQUE')
+                                ELSEIF SUBSTR(imppedido[1,44],1,2) = 'DN'
+                                        DEVPOS(PROW(),PCOL()+2);DEVOUT('-  Modo de Pagamento: DINHEIRO')
+                                ENDIF
+                        ELSE
+                                //IF mcartao = '*' .AND. ver_serie() = '141440'
+                                //        @ PROW()+1,00 SAY 'Pagamento APRAZO'
+                                //        DEVPOS(PROW(),PCOL()+2);DEVOUT('Modo de Pagamento: CARTAO')
+                                IF SUBSTR(imppedido[1,44],1,2) = 'CH' .OR. SUBSTR(imppedido[1,44],1,2) = 'DU' .OR. SUBSTR(imppedido[1,44],1,2) = 'CT'
+                                        IF SUBSTR(imppedido[1,44],1,2) = 'CH'
+                                                @ PROW()+1,00 SAY 'CHEQUES'
+                                        ELSEIF SUBSTR(imppedido[1,44],1,2) = 'DU'
+                                                @ PROW()+1,00 SAY 'DUPLICATAS'
+                                        ELSE
+                                                @ PROW()+1,00 SAY 'CARTAO'
+                                        ENDIF
+                                        @ PROW(),PCOL()+1 SAY ' APRAZO: '+SUBSTR(imppedido[1,43],1,1)+' + '+SUBSTR(imppedido[1,43],2,2)+' p/ '+IF(! EMPTY(m_dia[1]),STRZERO(m_dia[1],3),'')+IF(! EMPTY(m_dia[2]),' + '+STRZERO(m_dia[2],3),'')+IF(! EMPTY(m_dia[3]),' + '+STRZERO(m_dia[3],3),'')+IF(! EMPTY(m_dia[4]),' + '+STRZERO(m_dia[4],3),'')+IF(! EMPTY(m_dia[5]),' + '+STRZERO(m_dia[5],3),'')+IF(! EMPTY(m_dia[6]),' + '+STRZERO(m_dia[6],3),'')+IF(! EMPTY(m_dia[7]),' + '+STRZERO(m_dia[7],3),'')+;
+                                                                              IF(! EMPTY(m_dia[8]),' + '+STRZERO(m_dia[8],3),'')+IF(! EMPTY(m_dia[9]),' + '+STRZERO(m_dia[9],3),'')+IF(! EMPTY(m_dia[10]),' + '+STRZERO(m_dia[10],3),'')+IF(! EMPTY(m_dia[11]),' + '+STRZERO(m_dia[11],3),'')+IF(! EMPTY(m_dia[12]),' + '+STRZERO(m_dia[12],3),'')+IF(! EMPTY(m_dia[13]),' + '+STRZERO(m_dia[13],3),'')+IF(! EMPTY(m_dia[14]),' + '+STRZERO(m_dia[14],3),'')+IF(! EMPTY(m_dia[15]),' + '+STRZERO(m_dia[15],3),'')+' Dias'
+                                        IF VAL(SUBSTR(imppedido[1,43],1,1)) = 1
+                                                DEVPOS(PROW()+1,00);DEVOUT('Valor da Entrada R$:'+TRANSFORM(mvlr_ent,'99,999.99'))
+                                        ENDIF
+                                        IF ! EMPTY(mtot_prazo)
+                                                DEVPOS(PROW()+1,00);DEVOUT('Venc. :'+DTOC(mdata+mprazo_aux))
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('- R$:'+TRANSFORM(mtot_prazo,'999,999.99'))
+                                        ENDIF
+                                        IF VAL(SUBSTR(imppedido[1,43],2)) >= 2
+                                                mc_dup := f := 0
+                                                FOR mc_dup = 1 TO VAL(SUBSTR(imppedido[1,43],2,2))
+                                                        IF f = 0
+                                                                DEVPOS(PROW()+1,00);DEVOUT('')
+                                                        ENDIF
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Venc.'+ALLTRIM(STR(mc_dup))+':'+DTOC(mdata+m_dia[mc_dup]))
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('- R$:'+TRANSFORM((((mcust_real+mtot_ipi)-mvlr_ent-mtot_prazo)/VAL(SUBSTR(imppedido[1,43],2,2))),'999,999.99'))
+                                                        f ++
+                                                        IF f = 4
+                                                                f = 0
+                                                        ENDIF
+                                                NEXT
+                                        ELSE
+                                                IF mcust_real-mvlr_ent-mtot_prazo > 0
+                                                        @ PROW()+1,00 SAY 'Venc.1:'+DTOC(mdata+m_dia[1])
+                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('- R$:'+TRANSFORM((mcust_real+mtot_ipi)-mvlr_ent-mtot_prazo,'999,999.99'))
+                                                ENDIF
+                                        ENDIF
+                                ELSEIF SUBSTR(imppedido[1,44],1,2) = 'FI'
+                                        cons_finan :={}
+                                        sr_getconnection():exec("SELECT * FROM sacfin WHERE cod_fin = "+sr_cdbvalue(STRZERO(mcod_fin,3)),,.t.,@cons_finan)
+                                        sr_getconnection():exec('COMMIT',,.f.)
+                                        @ PROW()+1,00 SAY 'Pag. APRAZO'
+                                        IF LEN(cons_finan) = 0
+                                                DEVPOS(PROW(),PCOL()+2);DEVOUT('Modo: FINANCIAMENTO - '+STRZERO(mcod_fin,3)+'-     - Condicao: ')
+                                        ELSE
+                                                DEVPOS(PROW(),PCOL()+2);DEVOUT('Modo: FINANCIAMENTO - '+STRZERO(mcod_fin,3)+'-'+cons_finan[1,2]+' - Condicao: ')
+                                        ENDIF
+                                        DEVPOS(PROW(),PCOL());DEVOUTPICT(mtipo_fin,'@R 9+99')
+                                        IF mvlr_ent > 0
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('- Entrada R$:')
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvlr_ent,'99,999.99')
+                                        ENDIF
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('- Prestacao R$:')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(mvalor_pres,'99,999.99')
+                                ENDIF
+                        ENDIF
+                ELSE
+                        cons_caixa := {}
+                        sr_getconnection():exec("SELECT * FROM saccaixa WHERE nota = "+sr_cdbvalue('PD'+STRZERO(mnum_ped,6)),,.t.,@cons_caixa)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        i := 0
+                        FOR i = 1 TO LEN(cons_caixa)
+                                IF cons_caixa[i,2] = 'DN'
+                                        DEVPOS(PROW()+1,00);DEVOUT('Dinheiro R$..: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99'))
+                                ELSEIF cons_caixa[i,2] = 'CR'
+                                        DEVPOS(PROW()+1,00);DEVOUT('Credito R$...: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99'))
+                                ELSEIF cons_caixa[i,2] = 'CH'
+                                        DEVPOS(PROW()+1,00);DEVOUT('Cheque R$....: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99')+' Bco: '+cons_caixa[i,6]+' No.: '+cons_caixa[i,8]+' Venc.: '+DTOC(cons_caixa[i,9]))
+                                ELSEIF cons_caixa[i,2] = 'DU'
+                                        DEVPOS(PROW()+1,00);DEVOUT('Duplicata R$.: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99')+' No.: '+cons_caixa[i,8]+IF(cons_caixa[i,20] = '*',' Pag..: ',' Venc.: ')+DTOC(cons_caixa[i,9]))
+                                ELSEIF cons_caixa[i,2] = 'FI'
+                                        DEVPOS(PROW()+1,00);DEVOUT('Financeira R$: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99')+' No.: '+cons_caixa[i,8]+' Venc.: '+DTOC(cons_caixa[i,9]))
+                                ELSEIF cons_caixa[i,2] = 'CT'
+                                        DEVPOS(PROW()+1,00);DEVOUT('Cartao R$....: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99')+' Cod.: '+cons_caixa[i,7]+' Doc.: '+cons_caixa[i,8]+' Venc.: '+DTOC(cons_caixa[i,9]))
+                                ELSEIF cons_caixa[i,2] = 'CA'
+                                        DEVPOS(PROW()+1,00);DEVOUT('PEDIDO CANCELADO PELO OPERADOR COD.: '+cons_caixa[i,17])
+                                ELSEIF cons_caixa[i,2] = 'ES'
+                                        DEVPOS(PROW()+1,00);DEVOUT(cons_caixa[i,13]+'-'+cons_caixa[i,14])
+                                ELSE
+                                        LOOP
+                                ENDIF
+                        NEXT
+                ENDIF
+                imprt(mtipo_imp,'N')
+                @ PROW()+1,00 SAY mtraco
+                @ PROW()+1,00 SAY 'recebi a mercadoria em ____/____/____     Nome:______________________________'
+                @ PROW()+2,00 SAY mtraco
+                //IF m_set[1,22] = 'S'
+                //        @ PROW()+1,00 SAY PADL('HTI Sistemas - f.:(81)'+mfone_HTI,132)
+                //ENDIF
+                imprt(mtipo_imp,'N')
+                IF mquantd > 1
+                        imprt(mtipo_imp,'N',1)
+                ENDIF
+                SETPRC(00,00)
+                EJECT
+                imprt(mtipo_imp,'N')
+                imprt(mtipo_imp,'P6')
+        NEXT
+        f = 0
+        SET DEVICE TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('PD'+STRZERO(mnum_ped,6)+'.REL',,,'T')
+ENDIF
+RETURN NIL
+**************************** F I M *************************************

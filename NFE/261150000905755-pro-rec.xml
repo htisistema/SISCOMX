@@ -1,0 +1,13 @@
+<retConsReciNFe versao="3.10" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_12.01.00.083</verAplic>
+<nRec>261150000905755</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF><dhRecbto>2015-09-28T14:35:11-03:00</dhRecbto>
+ <protNFe versao="3.10"><infProt Id="NFe1"><tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_12.01.00.083</verAplic>
+<chNFe>26150911156983000176550010000000101000000103</chNFe>
+<dhRecbto>2015-09-28T14:35:12-03:00</dhRecbto><cStat>229</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: IE do emitente n&#xE3;o informada</xMotivo>
+</infProt></protNFe></retConsReciNFe>

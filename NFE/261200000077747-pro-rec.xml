@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><retConsReciNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_24.00.07.211</verAplic>
+<nRec>261200000077747</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF><dhRecbto>2020-03-02T17:07:27-03:00</dhRecbto>
+ <protNFe versao="4.00"><infProt Id="NFe1"><tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_24.00.07.211</verAplic>
+<chNFe>26200324494200000106550010000010221048262151</chNFe>
+<dhRecbto>2020-03-02T17:07:27-03:00</dhRecbto><cStat>532</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: Total do ICMS difere do somat&#xF3;rio dos itens</xMotivo>
+</infProt></protNFe></retConsReciNFe>

@@ -1,0 +1,87 @@
+* MENU DE RELATORIO DE PEDIDO
+***********************************
+FUNCTION sac5ped
+****************
+LOCAL MPRG:='SAC5PED',;
+      opcao,lci,cci,lba,cba,tela,tel
+
+lci := cci := 00
+lba := 14
+cba := 25
+op_tela(05,20,22,50,'Relatorio de Pedido ')
+WHILE .T.
+        exibi_prg(mprg)
+        setcor(1)
+        @ lci,cci   PROMPT '  0-> 2a.Via do Pedido         '
+        @ lci+1,cci PROMPT '  1-> Movimento Pedido         '
+        @ lci+2,cci PROMPT '  2-> Movimento Produto        '
+        @ lci+3,cci PROMPT '  3-> Romaneio  Cargas         '
+        @ lci+4,cci PROMPT '  4-> Cliente/Pedido           '
+        @ lci+5,cci PROMPT '  5-> Pedido / Entrega         '
+        @ lci+6,cci PROMPT '  6-> Pedido / Envelope        '
+        @ lci+7,cci PROMPT '  7-> Montagem                 '
+        @ lci+8,cci PROMPT '  8-> Mov.Pedido/Especie       '
+        @ lci+9,cci PROMPT '  9-> Resumo de Produto        '
+        @ lci+10,cci PROMPT '  A-> Vendas a Menor          '
+        @ lci+11,cci PROMPT '  B-> Ultimo No.Pedido         '
+        @ lci+12,cci PROMPT '  C-> Resumo dos Estados       '
+        @ lci+13,cci PROMPT '  D-> Movimento Orcamento      '
+        @ lci+14,cci PROMPT '  E-> Estatistica Pedidos      '
+        @ lci+15,cci PROMPT '  F-> Classificao dos Produtos '
+        @ lci+16,cci PROMPT '  G-> Previsao de Entrega      '
+        @ lci+17,cci PROMPT '  H-> Comissao pelo Pedido     '
+        MENU TO opcao
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        DO CASE
+                CASE opcao = 1
+                        sac5ped1()      // 2A.VIA
+                CASE opcao = 2
+                        sac5ped2()      // MOVIMENTO PEDIDO
+                CASE opcao = 3
+                        sac5ped3()      // MOVIMENTO PRODUTO
+                CASE opcao = 4
+                        sac5rom()      // ROMANEIO DE CARGA
+                CASE opcao = 5
+                        sac5ped5()      // CLIENTE/PEDIDO
+                CASE opcao = 6
+                        sac5ped6()      // PEDIDO ENTREGUE
+                CASE opcao = 7
+                        sac5ped9()      // PEDIDO ENVELOPE
+                CASE opcao = 8
+                        sac5ped8()      // MONTAGEM
+                CASE opcao = 9
+                        sac5p10()      // MOV.PEDIDO P/ESPECIE
+                CASE opcao = 10
+                        sac5p11()      // MOV.PEDIDO RESUMO GERAL
+                CASE opcao = 11
+                        sac5pe10()      // REL.VENDAS A MENOR
+                CASE opcao = 12
+                        IF ! AbriArq('SACNOPED','NOPED');RETURN NIL;ENDIF
+                        op_tela(00,00,02,40)
+                        DEVPOS(00,00);DEVOUT('Data do Ultimo Pedido:')
+                        DEVPOS(01,00);DEVOUT('No. do Ultimo Pedido :')
+                        setcor(3)
+                        DEVPOS(00,23);DEVOUT(noped->data_ped)
+                        DEVPOS(01,23);DEVOUT(noped->numero)
+                        setcor(1)
+                        INKEY(0)
+                        wvw_lclosewindow()
+                CASE opcao = 13
+                        sac5pe12()      // REL.RESUMO DOS ESTADOS
+                CASE opcao = 14
+                        sac5orc2()      // REL.MOVIMENTO DE ORCAMENTO
+                CASE opcao = 15
+                        sac5pe14()      // REL.MOVIMENTO DE ORCAMENTO
+                CASE opcao = 16
+                        sac5pe15()      // CLASSIFICAO DOS PRODUTOS
+                CASE opcao = 17
+                        sac5ped10()      // PREVISAO DE ENTREGA
+                CASE opcao = 18
+                        sac5com1(1)      // COMISSAO PELO PEDIDOS
+        ENDCASE
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************************** F I M ************************************

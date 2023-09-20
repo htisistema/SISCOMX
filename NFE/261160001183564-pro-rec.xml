@@ -1,0 +1,13 @@
+<retConsReciNFe versao="3.10" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_15.08.00.112</verAplic>
+<nRec>261160001183564</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF><dhRecbto>2016-12-12T17:18:00-03:00</dhRecbto>
+ <protNFe versao="3.10"><infProt Id="NFe1"><tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_15.08.00.112</verAplic>
+<chNFe>26161211156983000176550010000000151000000150</chNFe>
+<dhRecbto>2016-12-12T17:18:00-03:00</dhRecbto><cStat>213</cStat>
+<xMotivo>Rejei&#xE7;&#xE3;o: CNPJ do Emitente n&#xE3;o confere com CNPJ do Certificado Digital</xMotivo>
+</infProt></protNFe></retConsReciNFe>

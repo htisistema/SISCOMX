@@ -1,0 +1,602 @@
+FUNCTION autorizacao(mserie)
+****************************
+IF ! EMPTY(ALLTRIM(m_set[1,123]))
+        mserie := SUBSTR(ALLTRIM(m_set[1,123]),15,6)
+ENDIF
+//atencao(SUBSTR(ALLTRIM(m_set[1,123]),1,14)+m_qp+SUBSTR(m_set[1,180],14,6)+SUBSTR(m_set[1,180],6,8))
+IF SUBSTR(ALLTRIM(m_set[1,123]),1,14) = SUBSTR(m_set[1,180],14,5)+SUBSTR(m_set[1,180],6,8)
+        RETURN .T.
+ENDIF
+//atencao(mserie)
+/*
+              24494200000106
+21864 40400490200612
+141628
+
+     08191711000100
+1164410100890011017
+
+*/
+//atencao(mserie+m_qp+SUBSTR(m_set[1,180],14,1)+SUBSTR(m_set[1,180],11,1)+SUBSTR(m_set[1,180],6,1)+SUBSTR(m_set[1,180],12,1)+SUBSTR(m_set[1,180],8,1)+SUBSTR(m_set[1,180],19,1)+SUBSTR(m_set[1,180],16,1)+SUBSTR(m_set[1,180],15,1)+SUBSTR(m_set[1,180],7,1)+SUBSTR(m_set[1,180],9,1)+SUBSTR(m_set[1,180],13,1)+SUBSTR(m_set[1,180],18,1)+SUBSTR(m_set[1,180],10,1)+SUBSTR(m_set[1,180],17,1)+'1'+SUBSTR(m_set[1,180],5,1)+SUBSTR(m_set[1,180],2,1)+SUBSTR(m_set[1,180],4,1)+SUBSTR(m_set[1,180],1,1)+SUBSTR(m_set[1,180],3,1))
+//IF SUBSTR(mserie,15) = '1'+SUBSTR(m_set[1,180],5,1)+SUBSTR(m_set[1,180],2,1)+SUBSTR(m_set[1,180],4,1)+SUBSTR(m_set[1,180],1,1)+SUBSTR(m_set[1,180],3,1)
+//IF SUBSTR(mserie,15) $ '1'+SUBSTR(m_set[1,180],5,1)+SUBSTR(m_set[1,180],2,1)+SUBSTR(m_set[1,180],4,1)+SUBSTR(m_set[1,180],1,1)+SUBSTR(m_set[1,180],3,1)
+//ATENCAO(mserie+m_qp+'1'+SUBSTR(m_set[1,180],4,1)+SUBSTR(m_set[1,180],2,1)+SUBSTR(m_set[1,180],5,1)+SUBSTR(m_set[1,180],3,1)+SUBSTR(m_set[1,180],1,1))
+IF mserie = '1'+SUBSTR(m_set[1,180],4,1)+SUBSTR(m_set[1,180],2,1)+SUBSTR(m_set[1,180],5,1)+SUBSTR(m_set[1,180],3,1)+SUBSTR(m_set[1,180],1,1)
+        RETURN .T.
+ENDIF
+IF mserie      = '02702271000114975976'; // HTI
+   .OR. mserie = '02702271000114682110'; // HTI
+   .OR. mserie = '11156983000176682110'; // HTI
+   .OR. mserie = '11156983000176975976'; // HTI
+   .OR. mserie = '07068238000106141302'; // TREVO DISTRIB                       = 4   01.02.2001
+   .OR. mserie = '08793358000120141338'; // DOCE PRAEIRA                        = 6   30.01.2003
+   .OR. mserie = '12423658000195141535'; // DOCE PRAEIRA II                     =     03.12.2010
+   .OR. mserie = '08191711000100141416'; // K9 CONSTRU. novo                    = 14  03.10.2006
+   .OR. mserie = '27963434000143141416'; // K9 CONSTRU.                         =     03.10.2006
+   .OR. mserie = '01384203000191141490'; // KI-PRECO MOVEIS (B.J)               = 45  05.05.2009
+   .OR. mserie = '08208868000274141491'; // KI-PRECO MOVEIS (GAZIN)             = 46  05.05.2009
+   .OR. mserie = '01384203000272141492'; // KI-PRECO MOVEIS (S.BENTO)           = 47  05.05.2009
+   .OR. mserie = '08208868000193141492'; // KI-PRECO MOVEIS (S.BENTO) NOVA      = 47  05.05.2009
+   .OR. mserie = '08208868000193141493'; // KI-PRECO MOVEIS (BREJO)             = 48  05.05.2009
+   .OR. mserie = '12003768000106141533'; // CASA GONZAGAO (JAI)                 = 58  08.11.2010
+   .OR. mserie = '12336734000125141542'; // DOCE GOSTO MAIS                     = 61  03.02.2011
+   .OR. mserie = '02649278000110141559'; // HENRIQUE FERRAGENS                  = 70  25.01.2012
+   .OR. mserie = '02078888000100141579'; // PANELA DE BARRO (B.JARDIM)          = 88  21.08.2012
+   .OR. mserie = '14601759000134141580'; // M F DISTRIBUIDORA (P.AFONS0)        = 89  04.12.2012
+   .OR. mserie = '18135157000190141590'; // NOSSA CASA (TACAIMBO)               = 96  29.05.2013
+   .OR. mserie = '07068238000289141592'; // DEPOSITO TREVO DISTRIBUIDORA        = 98  16.11.2013
+   .OR. mserie = '12423658000276141596'; // DOCES PRAEIRA (DP) (CARPINA)        = 102 26.06.2014
+   .OR. mserie = '70180666000154141599'; // CASA MOVEIS BELO JARDIM (BREJO)     = 103 25.08.2014
+   .OR. mserie = '08208868000355141600'; // KI-PRECO MOVEIS (B.J) Est.1         = 104 05.05.2009
+   .OR. mserie = '01384203000353141601'; // KI-PRECO MOVEIS (B.J) Est.2         = 105 05.05.2009
+   .OR. mserie = '09223494000148141603'; // NICA MANIA MODAS                    = 107 12.05.2015
+   .OR. mserie = '10015553000171141604'; // C R CAMPOS                          = 108 12.05.2015
+   .OR. mserie = '09347613000174141605'; // NICA MANIA CALCADOS                 = 109 15.05.2015
+   .OR. mserie = '07068238000440141607'; // TREVO DIST GALPAO DOBRO             = 109 09.01.2016
+   .OR. mserie = '19173224000123141608'; // CONVENIENCIA POSTO CEAKA CARUARU    = 109 05.05.2016
+   .OR. mserie = '17808819000182141464'; // GENILSON AUTO                       = 25  11.08.2008   GERA
+   .OR. mserie = '03093999000159141292'; // FARMACIA PERMANET TACAIMBO          = 3   09.02.2000
+   .OR. mserie = '03726794000163141242'; // TAMARINDO                           = 5   02423980000160
+   .OR. mserie = '05281333000150141387'; // ESQUINA CONS                        = 8   21.07.2005
+   .OR. mserie = '01182547000118141405'; // NADO FERRAG                         = 12  30.05.2006
+   .OR. mserie = '04807919000142141486'; // KELLY MOVEIS(MARAIAL)               = 41  12.03.2009
+   .OR. mserie = '41100298000270141487'; // KELLY MOVEIS(JAQUEIRA)              = 42  12.03.2009
+   .OR. mserie = '41100298000199141540'; // KELLY MOVEIS (QUIPAPA)              = 60  14.01.2011
+   .OR. mserie = '09509605000187141573'; // AQUARELA CONSTRUCAO(B.JARD)         = 83  08.05.2012
+   .OR. mserie = '07456793000105141561'; // AQUASHOW - CAXANGA                  = 72  25.01.2012
+   .OR. mserie = '11214725000107141565'; // BELO VIDROS                         = 75  29.02.2012
+   .OR. mserie = '04459862000138141569'; // AQUASHOW -  ABDIAS CARVALHO         = 79  25.01.2012
+   .OR. mserie = '04399186000154141570'; // MADEREIRA MAE RAINHA                = 80  11.04.2012
+   .OR. mserie = '04273624000133141595'; // RENATO EQUIPADORA  (CARPINA)        = 101 28.05.2014
+   .OR. mserie = '02605279000162141609'; // SAPATO E CIA  BREJO M DEUS          = 109 05.05.2016
+   .OR. mserie = '24494200000106141610'; // HTI FILIAL                          = 109 05.05.2016
+   .OR. mserie = '07068238000521141614'  // TREVO LOJA                          = 109 21.10.2016
+   //.OR. mserie = '                    '  // NOVA EMP.    =
+        RETURN .T.
+ELSE
+        RETURN .F.
+ENDIF
+RETURN NIL
+/*
+   .OR. mserie = '02604522000128141447'; // DOCE GOSTO MAIS                     = 20  17.12.2007
+   .OR. mserie = '10345955000134141465'; // BELO TECIDO                         = 26  29.10.2008
+   .OR. mserie = '06149499000180141394'; // IMPACTO TACAIMBO                    = 9   02.01.2006
+   .OR. mserie = '16887329000156141606'; // ARCO IRIS TINTAS AFOGADOS           = 109 08.01.2016
+   .OR. mserie = '11323171000178141578'; // CARPINA MARMORE (CARPINA)           = 87  20.07.2012
+   .OR. mserie = '22101104000125141594'; // CAMOCIM FERRAGENS                   = 100 25.03.2014
+   .OR. mserie = '06017590000141141511'; // MERCADINHO BEZERRA ESP.SANTO        = 53  03.12.2009
+   .OR. mserie = '11793558000198141448'; // W.T. DA SILVA (taciana)             = 21  17.01.2008
+   .OR. mserie = '19887329000156141460'; // ARCO IRIS TINTAS (ZETINTAS)         = 23  18.06.2008
+   .OR. mserie = '12424066000198141536'; // CONSTRUIR COM.MAT.CONSTR.           = 44  06.12.2010
+   .OR. mserie = '06958998000118141584'; // CONSTRUTORA DECA(TACAIMBO)          = 92  25.02.2013
+   .OR. mserie = '18249940000184141591'; // WJ MOVEIS  (ITAPISSUMA)             = 97  12.06.2013
+   .OR. mserie = '21682918000138141593'; // BOTECO SEU BELO                     = 106 26.12.2015
+   .OR. mserie = '08939407000190141520'; // CAMPEATA (TACAIMBO)                 = 56  16.04.2010
+   .OR. mserie = '20846139000168141611'; // MERCADAO DAS CARNES                 = 109 05.05.2016
+   .OR. mserie = '12046199000178141613'; // CRISTAL PLACAS                      = 109 05.05.2016
+   .OR. mserie = '08821355000234141597'; // FRIPAL FRIGORIFICO(J.PESSOA)        = 103 02.07.2014
+   .OR. mserie = '05681651000108141598'; // TC COUROS   A (BEZERRO)ADRIA        = 103 08.08.2014
+   .OR. mserie = '05764088000131141000'; // ILAB                                =     26.03.2004
+   .OR. mserie = '09303348000122141251'; // PALACIO FOGAO PB (SAULO)            = 1
+   .OR. mserie = '12594594000195141307'; // FIO DE CABELO                       = 2   24.04.2001
+   .OR. mserie = '24349383000176141472'; // CEREL CERAMICA                      =     12.01.2009
+   .OR. mserie = '06230901000156141302'; // ceramica Campo alagre               =     01.02.2001 ****
+   .OR. mserie = '05994516000112141476'; // MASSAS GRANO                        = 39  26.01.2009
+   .OR. mserie = '13636963000128141551'; // B F TINTAS (IVAN)                   = 66  24.05.2011
+   .OR. mserie = '09042330000114141534'; // FRANCIS LOUCAS                      = 59  29.11.2010
+   .OR. mserie = '07312430000198141566'; // PLANETANET SHOPPING BEZERROS        = 76  22.03.2012
+   .OR. mserie = '07312430000279141567'; // PLANETANET BONITO                   = 77  22.03.2012
+   .OR. mserie = '07312430000350141568'; // PLANETANET MATRIZ BEZERROS          = 78  22.03.2012
+   .OR. mserie = '14497222000176141560'; // DOCES REALEZA                       = 71  25.01.2012   GERA
+   .OR. mserie = '07312430000430141612'; // PLANETA NET SAIRE                   = 109 05.05.2016
+
+CLIENTES DE ROBERTA
+   .OR. mserie = '07206391000144141585'; // MARCOS DA RETIFICA                  = 93  06.03.2013
+   .OR. mserie = '10304248000108141589'; // AGROVET (S.BENTO)                   = 95  06.05.2013
+   .OR. mserie = '11984349000121141548'; // CENTRAL EMBALAGEM (PERICLES)        = 64  12.04.2011
+   .OR. mserie = '19503466000138141556'; // NEGO LE CONSTRUCOES                 = 68  20.10.2011
+   .OR. mserie = '01129448000253141602'; // PISO E CIA - DEPOSITO               = 106 29.10.2014
+   .OR. mserie = '12657561000147141558'; // PRONTONET BELO JARDIM               = 69  12.01.2012
+   .OR. mserie = '70223532000769141505'; // MUNDO DAS PLACAS PINA               = 70  29.10.2009
+   .OR. mserie = '05469212000136141562'; // SENNA B.JARDIM                      = 73  28.02.2012
+   .OR. mserie = '05469212000217141563'; // SENNA CACHOEIRINHA                  = 74  28.02.2012
+   .OR. mserie = '19346103000136141582'; // AGRESTE CONSULTORIA                 = 91  06.01.2013
+   .OR. mserie = '10792497000181141425'; // MUNDO DAS PLACAS MATRIZ E FABRICA   = 16  16.03.2007
+   .OR. mserie = '70223532000173141441'; // MUNDO DAS PLACAS JBO GUA            = 46  01.10.2007
+   .OR. mserie = '70223532000254141442'; // MUNDO DAS PLACAS TACARUNA           = 47  01.10.2007
+   .OR. mserie = '70223532000505141477'; // MUNDO DAS PLACAS OLINDA             = 84  29.01.2009
+   .OR. mserie = '05515083000175141412'; // REAL MADEIR                         = 13  02.09.2006
+   .OR. mserie = '08366754000171141508'; // IMPERATRIZ FASHION                  = 52  10.11.2009
+   .OR. mserie = '11575320000196141518'; // ATUAL FASHION                       = 55  14.04.2010
+   .OR. mserie = '13262457000116141545'; // IMPERATRIZ FASHION (BEZERROS)       = 63  29.03.2011
+   .OR. mserie = '05843667000331141550'; // DELAROMA CARPINA                    = 65  11.05.2011
+
+
+
+   .OR. mserie = '04535717000199141424'; // OFICINA TINTA                       = 15  15.02.2007
+   .OR. mserie = '10949673000146141434'; // COM.ASSIS MOURA                     = 17  03.08.2007
+   .OR. mserie = '01129448000172141370'; // PISO CIA                            = 7   10.12.2004
+   .OR. mserie = '70211792000129141488'; // COPARURAL                           = 43  26.03.2009
+   .OR. mserie = '10280214000112141488'; // COPARURAL                           =     26.03.2009
+   .OR. mserie = '13818268000187141556'; // MELO CONSTRUCAO                     = 68  20.10.2011
+   .OR. mserie = '19503466000138141556'; // MELO CONSTRUCAO                     = 68  20.10.2011
+   .OR. mserie = '03750630000171141336'; // FRANGO DOURAD                       =     08.01.2003
+   .OR. mserie = '04840358000183141390'; // DISCAPE                             = 29  03.10.2005
+   .OR. mserie = '04763930000158141399'; // 2001 FERRAGEM                       = 10  16.03.2004
+   .OR. mserie = '18919793000102141436'; // G.M. DISTRIBUIDORA                  = 18  20.08.2007
+   .OR. mserie = '11108609000103141513'; // ANC PLACAS                          = 54  18.01.2010
+   .OR. mserie = '11616869000181141404'; // BRASILIANO                          = 11  25.05.2006
+   .OR. mserie = '13272266000135141588'; // JOAO E MARIA (FEIRA NOVA)           = 94  20.03.2013
+   .OR. mserie = '13452954000187141575'; // MERC.JOAO DE NECO                   = 85  06.06.2012
+   .OR. mserie = '11752611000102141574'; // NAZAXX CARPINA                      = 84  24.05.2012
+   .OR. mserie = '07240648000184141506'; // INFORCELL (CARPINA)                 = 51  10.11.2009
+   .OR. mserie = '06925177000185141544'; // ASSIS PLAST                         = 62  16.03.2011
+   .OR. mserie = '08990212000175141459'; // ZE TINTAS PB                        = 22  18.06.2008
+   .OR. mserie = '07157418000156141463'; // ZE TINTAS AFO                       = 24  15.07.2008
+   .OR. mserie = '01005459000140141458'; // ZE TINTAS REC                       = 21  18.06.2008
+   .OR. mserie = '08885713000191141438'; // BRASIL COND.                        = 19  20.08.2007
+   .OR. mserie = '15324301000148141571'; // OFICINA SA (BEZERROS)               = 81  25.04.2012
+   .OR. mserie = '14885811000121141577'; // ANA BEATRIZ (CARPINA)               = 86  10.07.2012
+   .OR. mserie = '24091522000104141581'; // MAFEMA (GRINGO)             = 90  10.12.2012
+   .OR. mserie = '12835283000170141554'; // PALACIO DAS FERRAMENTAS     = 67  20.10.2011
+   .OR. mserie = '03915820000100141502'; // LAPINHA                     = 49  30.09.2009
+   .OR. mserie = '03915820000282141503'; // LAPINHA                     = 50  30.09.2009
+   .OR. mserie = '09675635000163141482'; // MOVELARIA CASA MAE          = 40  19.02.2009
+   .OR. mserie = '12687071000193141537'; // MOVELARIA CASA MAE FILIAL   =     06.12.2010
+   .OR. mserie = '08421722000121141469'; // CARPINA AUT.                = 37  08.12.2008
+   .OR. mserie = '02494275000154141413'; // CHIE CONST.                 = 20  26.09.2006
+   .OR. mserie = '08028388000140141406'; // D'COZINHA                   = 18  16.06.2006
+   .OR. mserie = '05498061000144141350'; // SOS COZINHA  (SALOMAO)      = 11  16.03.2004
+   .OR. mserie = '07247751000156141384'; // CASA AMARELA (SALOMAO)      = 12  03.06.2005
+   .OR. mserie = '01665341000149141220'; // PALACIO FOGAO (SALOMAO)     = 2
+   .OR. mserie = '24091522000104141198'; // MAFEMA                      = 1
+   .OR. mserie = '02714536000102141423'; // ARMAZEM ARRUDA              = 23  19.01.2007
+   .OR. mserie = '12146772000115141526'; // NTC DISTRIBUIDORA           = 57  14.07.2010
+   .OR. mserie = '07769355000199141415'; // NETO TELHA.                 = 21  03.10.2006
+   .OR. mserie = '14714626000174141572'; // NETO TELHAS(BEZERROS)       = 82  07.05.2012
+   .OR. mserie = '03706122000196141392'; // J.W.DEPOSITO                = 20  02.01.2006
+   .OR. mserie = '41244732000104141373'; // ALCANTARA CON               = 16  11.01.2005
+   .OR. mserie = '03706122000277141341'; // J.W.POCAO                   = 14  15.04.2003
+   .OR. mserie = '00184807000121141304'; // J.W.MOV.TACAI               = 10  02.02.2001
+   .OR. mserie = '03706122000196141334'; // JW.ALTINHO                  = 11  06.01.2003
+   .OR. mserie = '03149565000123141530'; // RECILAB                     = 82  17.09.2010
+   .OR. mserie = '07228019000139141432'; // DO LAR MAGAZINE             = 34  17.07.2007
+   .OR. mserie = '11907519000174141432'; // DO LAR MAGAZINE             = 34  17.07.2007
+   .OR. mserie = '05248081000167141446'; // CARPINA IMP.                = 48  11.12.2007
+   .OR. mserie = '03551154000160141517'; // SOUZA MOVEIS                = 77  17.03.2010
+   .OR. mserie = '02838461000163141473'; // GIOVANNI SONDA (MATRIZ)     = 58  14.01.2009
+   .OR. mserie = '02838461000244141473'; // GIOVANNI SONDA (GIMEX)      =     14.01.2009
+   .OR. mserie = '09338304000138141473'; // GIOVANNI SONDA (THE BRAVE)  =     14.01.2009
+   .OR. mserie = '12394908000106141549'; // VILOPACK IND. (R&E)         = 93  09.05.2011
+   .OR. mserie = '10202304000195141547'; // R&E EMBALAGENS (CAMARAGIBE) = 91  12.04.2011
+   .OR. mserie = '10861093000100141541'; // JORMEL (RIDEL)              = 87  27.01.2011
+   .OR. mserie = '24442717000151141586'; // JH SOUZA                    = 124 12.03.2013
+   .OR. mserie = '09664073000152141583'; // MERCADINHO DO MINEIRO       = 121 29.01.2013
+   .OR. mserie = '14678753000165141587'; // ALVES BEBIDAS               = 125 13.03.2013
+   .OR. mserie = '16314569000161141206'; // BRUNO P.AFON                = 2
+   .OR. mserie = '10873599000121141525'; // DESKART DESCART. ALIMENTOS  = 80  13.07.2010
+   .OR. mserie = '14458388000183141525'; // DESKART DESCART. (IS)             13.07.2010
+   .OR. mserie = '00368677000187141236'; // SOTINTAS  SOL               = 8
+   .OR. mserie = '70243357000186141376'; // CARUARU TINTA               = 22  06.12.2004
+   .OR. mserie = '12341230000101141376'; // CARUARU TINTA               =     06.12.2004
+   .OR. mserie = '11111111111111141576'; // MELO CONSTRU. FILIAL        = 116 06.06.2012
+   .OR. mserie = '10976905000155141507'; // INFORCELL (MACAPARANA)      = 72  10.11.2009
+   .OR. mserie = '05469212000489141564'; // SENNA GRAVATA               = 104 28.02.2012
+   .OR. mserie = '08228213000187141414'; // CASA RESTAURANTE            = 36  28.09.2006
+   .OR. mserie = '14461449000161141414'; // CASA RESTAURANTE                  28.09.2006
+   .OR. mserie = '06225958000167141237'; // DISSMA COM.                 = 9
+   .OR. mserie = '12808484000189141237'; // CELESTE ALIMENTOS           = 9
+   .OR. mserie = '00300568000128141314'; // RIDEL ELET.                 = 5   14.08.2001
+   .OR. mserie = '08777708000165141215'; // CARMEL                      = 6
+   .OR. mserie = '11787482000198141538'; // AUTO POSTO TACAIMBO         = 85  03.01.2011
+   .OR. mserie = '07430845000166141393'; // J.W.S.CRUZ                  = 28  02.01.2006
+   .OR. mserie = '07100963000106141383'; // J.W.AGRESTINA               = 24  15.04.2005
+   .OR. mserie = '02104372000274141344'; // J.W.ALAGOINHA               = 18  26.08.2003
+   .OR. mserie = '05385229000105141358'; // J.W.SAO CAET                = 19  09.06.2004
+   .OR. mserie = '70220389000166141225'; // COMERCIA 2001               = 7
+   .OR. mserie = '70220389000247141225'; // DEPOSITO COMERCIA 2001      = 7.1 13/02/2012
+   .OR. mserie = '02935359000186141254'; // MADEIRA 2001                = 11  19.02.99
+   .OR. mserie = '08950986000172141557'; // VAREJAO DA CONSTRUCAO       = 154 16.11.2011
+   .OR. mserie = '11316583000180141555'; // PALACIO DAS FOGOES NATAL    = 152 20.10.2011
+   .OR. mserie = '09036647000148141553'; // ASA CONSTRUCOES             = 149 20.09.2011
+   .OR. mserie = '04084222000190141543'; // TRUKAR                      = 139 08.02.2011
+   .OR. mserie = '07637915000151141532'; // NEXUS COM.DIST.EMBALAGEM    = 129 19.10.2010
+   .OR. mserie = '00158979000120141531'; // DISTRIBUIDORA MELO          = 128 05.10.2010
+   .OR. mserie = '11572077000152141529'; // RECINOR (GUILHERME)         = 126 09.09.2010
+   .OR. mserie = '10639518000123141528'; // LOJINHA BAIRRO NOVO(BEZERRO)= 125 04.08.2010
+   .OR. mserie = '11878944000182141524'; // CARUARU TINTAS FILIAL       = 122 03.06.2010
+   .OR. mserie = '70068770000151141523'; // CASA DO CONSTRUTOR          = 121 03.06.2010
+   .OR. mserie = '13741826000153141521'; // NOSSA TINTA (PRAZERES)      = 120 17.05.2010
+   .OR. mserie = '00642037000113141519'; // CONSUELO MOVEIS             = 118 17.03.2010
+   .OR. mserie = '05997032000127141516'; // POSTO DISLUB CARPINA        = 76  02.03.2010
+   .OR. mserie = '11480470000116141514'; // SETA CONSTRUCAO             = 113 29.01.2010
+   .OR. mserie = '10816555000160141515'; // MANTO SUPERMERCADO          = 114 03.02.2010
+   .OR. mserie = '06063897000189141510'; // COUTO CONSTRUCOES           = 110 01.12.2009
+   .OR. mserie = '08695980000104141504'; // FARMACIA DO TRABALHADOR     = 105 05.10.2009
+   .OR. mserie = '07491530000129141496'; // NOSSA TINTA (RECIFE)        = 97  08.07.2009
+   .OR. mserie = '13756436000157141497'; // NOSSA TINTA (IBURA)         = 98  08.07.2009
+   .OR. mserie = '09722459000173141499'; // MASTER FERRO GARANHUNS      = 100 24.09.2009
+   .OR. mserie = '10981559000101141500'; // FLOR DE MARIA               = 101 28.09.2009
+   .OR. mserie = '70224795000105141501'; // NOSSA TINTA PRADO           = 102 30.09.2009
+   .OR. mserie = '10849946000180141495'; // DATERRA CONSTRUCOES         = 96  01.07.2009
+   .OR. mserie = '12794350000156141483'; // LIQUIGAS CARPINA            = 87  27.02.2009
+   .OR. mserie = '10592364000161141481'; // BIG MERCADINHO              = 85  17.02.2009
+   .OR. mserie = '10805968000572141480'; // CASAS FERNANDES COSTA       = 84  17.02.2009
+   .OR. mserie = '08991193000100141474'; // ARMAZEM LUZ                 = 82  14.01.2009
+   .OR. mserie = '02042721000190141468'; // PEDRO AMARO                 = 77  23.11.2008
+   .OR. mserie = '09563867000120141461'; // BOX ECONOMIA                = 72  11.07.2008
+   .OR. mserie = '09524662000135141460'; // ZE TINTAS CAMARAGIBE        = 71  18.06.2008
+   .OR. mserie = '00368677000268141452'; // SOTINTAS PB                 = 67  23.02.2008
+   .OR. mserie = '08348785000108141444'; // CELL BOX                    = 61  23.11.2007
+   .OR. mserie = '08348785000108141443'; // CASA RODRIGUE               = 60  16.11.2007
+   .OR. mserie = '05151324000225141440'; // PONTO CERTO                 = 57  01.10.2007
+   .OR. mserie = '08855539000134141435'; // CONSTRULAR                  = 54  13.08.2007
+   .OR. mserie = '07076168000120141429'; // SOTINTAS CARU               = 50  21.05.2007
+   .OR. mserie = '07634527000117141428'; // MERC.COMSUELO               = 49  30.03.2007
+   .OR. mserie = '01914416000188141426'; // DIST.CATALOGO               = 48  23.03.2007
+   .OR. mserie = '00184807000121141402'; // J.W.MOVEIS 2                = 35  05.05.2006
+   .OR. mserie = '07228019000139141395'; // MAGAZINE LAR                = 33  02.01.2006
+   .OR. mserie = '11907519000174141395'; // MAGAZINE LAR                = 33  17.07.2007
+   .OR. mserie = '11878944000182141360'; // MUNDO TINTAS                = 24  07.07.2004
+   .OR. mserie = '05395000000151141335'; // VAREJAO TREVO               = 19  06.01.2003
+   .OR. mserie = '10537794000180141471'; // SPAZIO DIV.                 = 79  30.12.2008
+   .OR. mserie = '09913043000132141467'; // MERC.MIRELLA                = 76  11.11.2008
+   .OR. mserie = '07089043000134141430'; // PERFIL MOVEIS               = 51  17.07.2007
+   .OR. mserie = '04352661000137141410'; // SHOP.PERFUMA                = 38  14.08.2006
+   .OR. mserie = '10469493000167141410'; // BAZAR PERFUMADO             = 39  14.08.2006
+   .OR. mserie = '03175272000110141265'; // CAM VIDEO                   = 10
+   .OR. mserie = '09483917000169141265'; // SPECTRA IND.                = 11
+   .OR. mserie = '10483586000146141457'; // PERFIL DIVIS.               = 68  27.05.2008
+   .OR. mserie = '05587827000167141449'; // SPECTRA                     = 65
+   .OR. mserie = '24393837000106141450'; // CENTURY                     = 66
+   .OR. mserie = '13050718000134141539'; // FRONTAL TINTAS (NOSSA TINTA)= 135 03.01.2011
+   .OR. mserie = '10365166000165141498'; // NOSSA TINTA (OLINDA)        = 99  08.07.2009
+   .OR. mserie = '01813830000109141546'; // GS MOVEIS (B.JARDIM)        = 142 04.04.2011
+   .OR. mserie = '01224859000147141287'; // J.W.ESTOFADO                = 12  27.04.2000
+   .OR. mserie = '0210437200019314128D'; // DIST.J.W.                   = 13  27.04.2000
+   .OR. mserie = '07489754000104141478'; // BOSCO MERCADINHO            = 85  02.02.2009
+   .OR. mserie = '05262741000164141479'; // FERNANDO CONSTRUCOES        = 86  11.02.2009
+   .OR. mserie = '04382470000118141470'; // CETEC INFOR.                = 81  09.12.2008
+   .OR. mserie = '09061477000151141475'; // MERCAD. KIKO                = 86  22.01.2009
+   .OR. mserie = '10866094000130141509'; // ICABEL BELO JARDIM          = 120 16.11.2009
+   .OR. mserie = '10494189000170141484'; // AIGRIDIS MODAS              = 95  20.05.2009
+   .OR. mserie = '10494189000170141485'; // MARCILENE VARIEDADES        = 96  10.03.2009
+   .OR. mserie = '09582244000102141527'; // CASA DO QUEIJO DO REINO     = 137 22.07.2010
+   .OR. mserie = '01737213000163141421'; // MARPE MOVE.                 = 45  18.12.2006
+   .OR. mserie = '10618190000169141427'; // MENDONCA COSM               = 50  26.03.2007
+   .OR. mserie = '05606081000191141522'; // CLIMEVA                     = 132 07.04.2010
+   .OR. mserie = '35596881000130141494'; // DISPLAC BELO JARDIM         = 105 12.06.2009
+   .OR. mserie = '01067879000151141235'; // PERFIL PRAZER               = 6
+   .OR. mserie = '35603158000130141512'; // ELETROCAR (DR.LEO)          = 125 14.12.2009
+   .OR. mserie = '02276128000108141368'; // J.W.MUCUTA                  = 25  22.11.2004
+   .OR. mserie = '04969752000116141327'; // BEMOTO                      = 18  08.06.2002
+   .OR. mserie = '06130655000160141489'; // EDIVALDO CALCADOS           = 102 13.04.2009
+   .OR. mserie = '07731741000191141439'; // IMPERIAL ALI                = 61  25.08.2007
+   .OR. mserie = '06209172000156141420'; // GLOBAL SOM.                 = 46  18.12.2006
+   .OR. mserie = '10417927000185141466'; // KOCHILO COM.                = 80  04.11.2008
+   .OR. mserie = '09025410000161141454'; // CHUTE INTEL. = 83  22.04.2008
+   .OR. mserie = '08687242000107141437'; // MUNDO COLEG. = 67  20.08.2007
+   .OR. mserie = '04707927000117141431'; // JORDAO MOTO  = 61  17.07.2007
+   .OR. mserie = '08346128000113141422'; // MULTI MIX    = 52  20.12.2006
+   .OR. mserie = '08438645000112141418'; // CASA FORTE EQ= 49  28.11.2006
+   .OR. mserie = '00184773000175141313'; // MERC.VICENTE = 19  09.08.2001
+   .OR. mserie = '09303348000122141251'; // PAL.FOCAO PB.= 10
+   .OR. mserie = '05248081000167141446'; // CARPINA IMP. = 76  11.12.2007
+   .OR. mserie = '05599602000120141451'; // CAM VIDEO CE = 81
+   .OR. mserie = '03706122000609141445'; // JW SOCORRO   = 75  06.12.2007
+   .OR. mserie = '01359078000160141433'; // NORDESTA MOTO= 63  20.07.2007
+   .OR. mserie = '07880885000100141456'; // SOPACK       = 84  15.05.2008
+   .OR. mserie = '03944281000129141462'; // VOTORIA IMPO.= 90  13.07.2008
+   .OR. mserie = '00756321000110141417'; // RET.PERNAM.  = 65  25.10.2006
+   .OR. mserie = '07834595000120141362'; // RECIFE COATI = 25  19.07.2004
+   .OR. mserie = '05643353000123141342'; // RECANTO CONST= 25  02.06.2003
+   .OR. mserie = '02766345000186141322'; // MCR PROD.AUTO= 22  22.04.2002
+   .OR. mserie = '09440070000135141455'; // IMPACTO      = 102 25.04.2008
+   .OR. mserie = '09480779000164141453'; // SMART COM.   = 100 16.04.2008
+   .OR. mserie = '08149810000116141380'; // CASA DO QUEIJ= 41  10.03.2005
+   .OR. mserie = '02737514000150141345'; // UCHOA AUTO P = 30  16.10.2003
+   .OR. mserie = '01300191000170141407'; // MAG.MELO ALT = 56  31.07.2006
+   .OR. mserie = '01300191000250141408'; // MAG.MELO BON = 57  31.07.2006
+   .OR. mserie = '04317680000122141409'; // MAG.MELO CUP = 58  31.07.2006
+   .OR. mserie = '40872467000146141419'; // KOLINAS AM.  = 67  31.11.2006
+   .OR. mserie = '02193608000105141375'; // CAP.BOM JESUS= 39  18.01.2005
+   .OR. mserie = '07068052000149141204'; // L.BASTOS     = 2  //DISALE
+   .OR. mserie = '07755792000153141401'; // PCR EQUIPADO = 51  02.05.2006
+   .OR. mserie = '02274669000105141357'; // IPOJUCA COSM = 32  17.06.2003
+   .OR. mserie = '10230027000124141277'; // M.C.BRAS.GARA= 15  20.08.2003
+   .OR. mserie = '08171249000171141411'; // MEGA COROA   = 63  01.09.2006
+   .OR. mserie = '24091548000152141340'; // HOME CENTER  = 28  10.03.2003
+   .OR. mserie = '02261506000180141403'; // RAMASUL      = 55  24.05.2006
+   .OR. mserie = '07619335000131141391'; // PRIMACOM     = 48  02.01.2006
+   .OR. mserie = '04729975000106141207'; // MATV NORDEST = 10
+   .OR. mserie = '01722323000151141210'; // OPERETA      = 12
+   .OR. mserie = '01943812000133141246'; // PROAUDIO     = 39
+   .OR. mserie = '11997962000345141247'; // GALINDO      = 40
+   .OR. mserie = '01087636000266141248'; // SARAU        = 41
+   .OR. mserie = '02800104000106141249'; // ESTRIPULIA   = 42
+   .OR. mserie = '35520097000148141253'; // PRINTLAB     = 46  01.02.99
+   .OR. mserie = '01880438000174141257'; // FUHUA        = 50
+   .OR. mserie = '10230027000205141276'; // M.C.BRASILEIR= 14  20.01.2000
+   .OR. mserie = '41237181000151141276'; // PRAEIRA TINT = 72  03.01.2000
+   .OR. mserie = '03709296000102141280'; // PROCESS PEDRO= 76  02.03.2000
+   .OR. mserie = '03527990000109141285'; // CRUSE MOTORS = 78  03.04.2000
+   .OR. mserie = '01867573000180141293'; // MOTOLINE     = 86  13.06.2000
+   .OR. mserie = '08815433000107141295'; // ART VOGUE TAC= 88  05.08.2000
+   .OR. mserie = '              141296'; // ART VOGUE BOA= 89  05.08.2000
+   .OR. mserie = '09563867000120141297'; // BOX ECONOMIA = 90  09.11.2000
+   .OR. mserie = '04541479000124141298'; // J.M. REPRES. = 91  28.11.2000
+   .OR. mserie = '06144320000100141303'; // GOMEL        = 96  01.02.2001
+   .OR. mserie = '03580210000194141316'; // BRASCELL     = 109 25.08.2001
+   .OR. mserie = '03580210000275141316'; // BRASCELL     = 110 25.08.2001
+   .OR. mserie = '04471370000168141320'; // LIDER CEL    = 114 25.01.2002
+   .OR. mserie = '11446911000163141326'; // SERPRO       = 57  22.05.2002
+   .OR. mserie = '08172611000129141275'; // CARPINA ANT. = 28  28.12.99
+   .OR. mserie = '03059772000197141286'; // ARMAZ.OPCAO  = 31  19.04.2000
+   .OR. mserie = '01898051000145141315'; // TUDO CIA.    = 49  20.08.2001
+   .OR. mserie = '05459489000188141327'; // BRILHO TINTAS= 55  15.07.2002
+   .OR. mserie = '04750425000179141331'; // CALCADAS PRES= 59  14.10.2002
+   .OR. mserie = '02414194000105141260'; // EMPORIO VILA = 22  20.10.98
+   .OR. mserie = '00664255000159141332'; // BELAVE       = 60  16.10.2002
+   .OR. mserie = '70245311000104141205'; // LIV.DO MEC   = 3
+   .OR. mserie = '02054386000140141250'; // LIV.MEC JBO  = 18
+   .OR. mserie = '00668720000120141291'; // DEL SOL ATACA= 35  09.02.2000
+   .OR. mserie = '01835873000187141294'; // DEL SOL TIMBA= 37  08.08.2000
+   .OR. mserie = '03664001000129141347'; // ATAC.DEL VITO= 75
+   .OR. mserie = '08264558000196141346'; // BELOGAS(DADA)= 74  21.10.2003
+
+
+  .OR. mserie = '07362717000122141385'; // CASA ANDRADE = 83  13.06.2005
+  .OR. mserie = '70178801000127141386'; // JORDAO PECAS = 83  27.06.2005
+  .OR. mserie = '05524292000185141388'; // MANOEL PECAS = 83  02.08.2005
+  .OR. mserie = '06162859000183141389'; // AM PNEUS     = 83  04.08.2005
+  .OR. mserie = '07182763000140141381'; // COM.PROLAC   = 83  10.03.2005
+  .OR. mserie = '02945396000175141377'; // FONCCCEL MAT.= 83  17.02.2005
+  .OR. mserie = '70227939000119141378'; // COBRA TELE.  = 83  22.02.2005
+  .OR. mserie = '05471682000134141374'; // ALTA PERF.BV = 83  17.01.2005
+  .OR. mserie = '11261450000154141369'; // CASA CERQUINH= 83  08.12.2004
+  .OR. mserie = '04696970000124141371'; // NORDESTE TINT= 83  27.12.2004
+  .OR. mserie = '06801100000101141372'; // ATAC.CONSTR. = 83  06.01.2005
+  .OR. mserie = '08662421000190141366'; // MUNDO CELL   = 83  12.08.2004
+  .OR. mserie = '06296416000185141367'; // ALT.PERFORMA = 83  01.09.2004
+  .OR. mserie = '24548836000193141363'; // MARCOS EQUIP.= 83  01.08.2004
+  .OR. mserie = '06339440000154141364'; // MAISON MAMAE.= 83  30.07.2004
+  .OR. mserie = '06369701000189141365'; // CAMVIDEO SALV= 83  09.08.2004
+  .OR. mserie = '05407235000116141361'; // R.M.CAMINHAO = 83  13.07.2004
+  .OR. mserie = '04198866000100141359'; // VAREJ.MORAIS = 83  10.06.2004
+  .OR. mserie = '03152983000170141352'; // SUZUKI       = 80  06.12.2003
+  .OR. mserie = '69921211000163141353'; // VASCONCELO C = 81  17.11.2003
+  .OR. mserie = '02231420000104141354'; // S.G.MAT.ELE. = 82  28.04.2004
+  .OR. mserie = '35309921000115141355'; // AUTO TREVO   = 83  29.12.2003
+  .OR. mserie = '41249467000157141348'; // RODE BEM CARP= 76  05.11.2003
+  .OR. mserie = '03644033000162141349'; // BVCEL        = 77  19.11.2003
+  .OR. mserie = '04935522000136141343'; // VAREJAO MORAI= 71  08.08.2003
+  .OR. mserie = '69909919000107141339'; // HIFEL        = 67  30.01.2003
+  .OR. mserie = '05599602000120141337'; // CAMVIDEO CE. = 65  20.01.2003
+  .OR. mserie = '02763907000138141328'; // SOPAPEL      = 56  26.08.2002
+  .OR. mserie = '00911324000181141329'; // AQUI TEM CONS= 57  06.09.2002
+  .OR. mserie = '00738825000108141330'; // CIMENTOLANDIA= 58  10.10.2002
+  .OR. mserie = '05015457000274141333'; // CASA ANITA   = 60  01.03.2003
+  .OR. mserie = '00525186000364141323'; // COM.MATA NORT= 53  25.04.2002
+  .OR. mserie = '40830473000130141325'; // REDICOL      = 54  09.05.2002
+  .OR. mserie = '02629661000106141318'; // CASA RELOGIO = 50  17.10.2001
+  .OR. mserie = '02770885000133141321'; // ULTRA DIST.  = 51  17.04.2002
+  .OR. mserie = '01943963000191141305'; // PONTE ACO    = 41  12.03.2001
+  .OR. mserie = '04141275000104141306'; // PORTAL CONS. = 42  02.03.2001
+  .OR. mserie = '03992820000103141308'; // PAUDALHO FER = 44  24.04.2001
+  .OR. mserie = '35458454000195141309'; // ACEROLANDIA  = 45  27.04.2001
+  .OR. mserie = '40842551000117141311'; // CARMACOL     = 46  01.05.2001
+  .OR. mserie = '05459489000340141300'; // CAMARAGIBE TI= 38  13.08.2000
+  .OR. mserie = '70179791000144141290'; // VITORIA FERRO= 34  09.02.2000
+  .OR. mserie = '11943701000180141270'; // MEC.NEOPOLIS = 25  15.10.99
+  .OR. mserie = '09981440000141141282'; // COOP.CARPINA = 27  05.11.99
+  .OR. mserie = '08857419000176141256'; // R.ACO FERRAO = 21  05.04.99
+  .OR. mserie = '05541012000147141262'; // ANDRADE PECAS= 23  29.07.99
+  .OR. mserie = '40830697000142141245'; // CASA NOVA    = 17
+  .OR. mserie = '06300334000167141241'; // ELLOS CORREN = 35
+  .OR. mserie = '05138823000100141226'; // BOAS MARCAS  = 9
+  .OR. mserie = '11025459000166141229'; // F.GLOBO (sj) = 10 17/03/98
+  .OR. mserie = '11025459000328141230'; // F.GLOBO (es) = 11 17/03/98
+  .OR. mserie = '11025459000247141231'; // F.GLOBO (bv) = 12 17/03/98
+*/
+***************************** F I M *********************************************
+* FUNCAO PARA CRIPTOGRAFA
+*************************
+FUNCTION crip(mexp,q,mprod)
+***************************
+LOCAL mletra:={},maux:={},msenha,i
+IF LASTKEY() = 27
+        RETURN .F.
+ENDIF
+msenha := ''
+mexp := UPPER(mexp)
+i:=0
+FOR i = 1 TO LEN(mexp)
+        AADD(mletra,SUBSTR(mexp,i,1))
+NEXT
+i:=0
+FOR i = 1 TO LEN(mexp)
+        IF mletra[i] = '0'
+                AADD(maux,'5')
+        ELSEIF mletra[i] = '1'
+                AADD(maux,'0')
+        ELSEIF mletra[i] = '2'
+                AADD(maux,'W')
+        ELSEIF mletra[i] = '3'
+                AADD(maux,'U')
+        ELSEIF mletra[i] = '4'
+                AADD(maux,'8')
+        ELSEIF mletra[i] = '5'
+                AADD(maux,'J')
+        ELSEIF mletra[i] = '6'
+                AADD(maux,'3')
+        ELSEIF mletra[i] = '7'
+                AADD(maux,'K')
+        ELSEIF mletra[i] = '8'
+                AADD(maux,'6')
+        ELSEIF mletra[i] = '9'
+                AADD(maux,'A')
+        ELSE
+                atencao('SENHA DE LIBERACAO Foi digitada errada, verifique tente novamente...')
+                msenha := ''
+                RETURN msenha
+        ENDIF
+NEXT
+i:=0
+IF LEN(mexp) = 1
+        msenha := maux[1]
+ELSE
+        msenha := maux[2] + maux[1]
+        FOR i = 3 TO LEN(mexp)
+                msenha := msenha + maux[i]
+        NEXT
+ENDIF
+RETURN msenha
+*********************** F I M *******************************
+* FUNCAO PARA DES-CRIPTOGRAFA
+*****************************
+FUNCTION dcrip(mexp)
+********************
+LOCAL mletra:={},maux:={},msenha,i
+ASIZE(mletra,0)
+ASIZE(maux,0)
+msenha := ''
+i:=0
+FOR i = 1 TO LEN(mexp)
+        IF SUBSTR(mexp,i,1) = ' ' .OR. SUBSTR(mexp,i,1) = NIL
+                LOOP
+        ENDIF
+        AADD(mletra,SUBSTR(mexp,i,1))
+NEXT
+i:=0
+IF EMPTY(mletra)
+        RETURN NIL
+ENDIF
+FOR i = 1 TO LEN(mletra)
+        IF mletra[i] = '5'
+                AADD(maux,'0')
+        ELSEIF mletra[i] = '0'
+                AADD(maux,'1')
+        ELSEIF mletra[i] = 'W'
+                AADD(maux,'2')
+        ELSEIF mletra[i] = 'U'
+                AADD(maux,'3')
+        ELSEIF mletra[i] = '8'
+                AADD(maux,'4')
+        ELSEIF mletra[i] = 'J'
+                AADD(maux,'5')
+        ELSEIF mletra[i] = '3'
+                AADD(maux,'6')
+        ELSEIF mletra[i] = 'K'
+                AADD(maux,'7')
+        ELSEIF mletra[i] = '6'
+                AADD(maux,'8')
+        ELSEIF mletra[i] = 'A'
+                AADD(maux,'9')
+        ELSE
+                atencao('SENHA DE LIBERACAO Foi digitada errada, verifique tente novamente...')
+                msenha := ''
+                RETURN msenha
+        ENDIF
+NEXT
+IF LEN(mexp) = 1
+        msenha := maux[1]
+ELSE
+        i:=0
+        msenha := maux[2] + maux[1]
+        FOR i = 3 TO LEN(maux)
+                msenha := msenha + maux[i]
+        NEXT
+ENDIF
+RETURN msenha
+************************************* F I M ********************************************
+FUNCTION fecha_tela
+wvw_lclosewindow()
+RETURN NIL
+***************************  F I M  **********************************
+FUNCTION tira_pontos(mpalavra)
+******************************
+mpalavra := STRTRAN(mpalavra,'.','')
+mpalavra := STRTRAN(mpalavra,'-','')
+mpalavra := STRTRAN(mpalavra,'/','')
+mpalavra := STRTRAN(mpalavra,",","")
+RETURN mpalavra
+******************************* F I M ******************************************
+FUNCTION senha_cesso
+********************
+LOCAL mdig1,mdig2,mdig3,mdig4,mdig5,mdata:=CTOD('  /  /  '),mqtddias:=''
+//M+A+D
+IF cod_operado # '999'
+        RETURN NIL
+ENDIF
+op_tela(10,10,13,50,'')
+DEVPOS(0,0);DEVOUT('Data Vencimento:')
+DEVPOS(1,0);DEVOUT('Senha Nova.....:')
+DEVPOS(2,0);DEVOUT('Senha Antiga...:')
+@ 0,COL()+1 GET mdata
+READ
+mdig1 := SUBSTR(STRZERO(VAL(SUBSTR(DTOC(DATE()),7,2))+VAL(SUBSTR(DTOC(DATE()),1,2))+VAL(SUBSTR(DTOC(DATE()),4,2)),2),1,1)
+mdig2 := STRZERO(VAL(SUBSTR(DTOC(DATE()),4,2))+VAL(SUBSTR(DTOC(DATE()),1,2)),2)
+mdig3 := STRZERO(VAL(SUBSTR(DTOC(DATE()),7,2))+VAL(SUBSTR(DTOC(DATE()),1,2)),2)
+mdig4 := STRZERO(VAL(SUBSTR(DTOC(DATE()),1,2))+VAL(SUBSTR(DTOC(DATE()),1,2)),2)
+mdig5 := SUBSTR(STRZERO(VAL(SUBSTR(DTOC(DATE()),7,2))+VAL(SUBSTR(DTOC(DATE()),1,2))+VAL(SUBSTR(DTOC(DATE()),4,2)),2),2,1)
+IF ! EMPTY(mdata)
+        mqtddias := STRZERO(mdata - DATE(),2)
+ENDIF
+DEVPOS(1,0);DEVOUT('Senha Nova.....:  '+mdig1+mdig2+mdig3+mdig4+mdig5+mqtddias)
+DEVPOS(2,0);DEVOUT('Senha Antiga...:  '+mdig1+mdig3+mdig4+mdig2+mdig5+mqtddias)
+        //atencao('SENHA Acesso NOVA....:  '+mdig1+mdig2+mdig3+mdig4+mdig5+m_qp+m_qp+'SENHA Acesso ANTIGA:  '+mdig1+mdig3+mdig4+mdig2+mdig5)
+mensagem('Pressione qualquer tecla para SAIR')
+INKEY(0)
+fecha_tela()
+RETURN NIL
+********************************** f i m **************************************
+FUNCTION cod_acess
+********************
+LOCAL mcons_cli := {},mcod_acess:=''
+PRIVATE mcod_cli:=0
+op_tela(10,10,13,50,'')
+WHILE .T.
+        DEVPOS(0,0);DEVOUT('Codigo Cliente..:')
+        DEVPOS(1,0);DEVOUT('CNPJ............:')
+        DEVPOS(2,0);DEVOUT('Codigo de Acesso:')
+        @ 0,COL()+1 GET mcod_cli PICT '99999'
+        READ
+        IF LASTKEY() = 27
+                EXIT
+        ENDIF
+        mcons_cli := {}
+        sr_getconnection():exec("SELECT * FROM saccli WHERE cod_cli = "+sr_cdbvalue(mcod_cli),,.t.,@mcons_cli)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(mcons_cli) = 0
+                atencao('Cliente nao econtrado...')
+                LOOP
+        ENDIF
+        DEVPOS(1,0);DEVOUT('CNPJ............: '+mcons_cli[1,32])
+        mcod_acess := SUBSTR(STRZERO(mcons_cli[1,2],5),5,1)+SUBSTR(STRZERO(mcons_cli[1,2],5),2,1)+SUBSTR(STRZERO(mcons_cli[1,2],5),4,1)+SUBSTR(STRZERO(mcons_cli[1,2],5),1,1)+SUBSTR(STRZERO(mcons_cli[1,2],5),3,1)+SUBSTR(mcons_cli[1,32],7)+SUBSTR(mcons_cli[1,32],1,6)
+        atencao('Codigo de Acesso: '+mcod_acess)
+ENDDO
+fecha_tela()
+RETURN NIL
+
+
+

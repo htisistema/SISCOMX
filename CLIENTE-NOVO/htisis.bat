@@ -1,0 +1,10 @@
+@ ECHO OFF
+NET TIME \\SERVIDOR /SET /YES
+NET USE LPT2 /DELETE
+NET USE LPT2 \\nomecomputador\nomeimpressora /yes
+NET USE I: /DELETE /Y
+NET USE I: \\SERVIDOR\SIAC /YES
+REM SUBST T: C:\BMTEF
+XCOPY I:\*.EXE /r /y /d
+XCOPY I:\*.DLL /r /y /d
+SISCOM %1

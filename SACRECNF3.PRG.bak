@@ -1,0 +1,99 @@
+*****************************************
+* RECEBIMENTO DA NOTA FISCAL DE ENTRADA
+******************************************
+MEMVAR getlist,nivel_acess,mdata_sis,cod_operado
+
+FUNCTION sacrecnf2()
+***************
+LOCAL mcons_nota:={},m_prod:={},point:=0,mcod_m
+
+PRIVATE MPRG:='SACRECNF2',mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mcod_forn,mnum_nota := SPACE(6),mtraco,mtit,mtipo,mhoras,mdata,moper,;
+        mccomm,m_demo:={}
+
+IF ! ver_nivel(mprg,'ASSOCIACAO CADASTRAR PRODUTO P/RECEBIMENTO NOTA DE ENTRADA','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+op_tela(02,00,32,100,' ASSOCIACAO CADASTRAR PRODUTO P/RECEBIMENTO NOTA DE ENTRADA ')
+mtraco := REPLI('=',137)
+WHILE .T.
+        limpa(0,0,33,100)
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        mcons_nota:={}
+        m_prod:={}
+        m_demo:={}
+        mtipo_imp := m_indiv[1,10]
+        mcod_forn :=  0
+        mnum_nota := SPACE(6)
+        DEVPOS(0,0);DEVOUT('Codigo Fornecedor....:')
+        DEVPOS(1,0);DEVOUT('Numero da Nota Fiscal:')
+        @ 2,0 TO 2,100
+        DEVPOS(3,0);DEVOUT('Item Codigo Barra    Cod. Descricao                                 Quantidade     Avarias Sit.')
+        @ 4,0 TO 4,100
+        @ 0,22 GET mcod_forn PICT '9999'        //VALID IF(EMPTY(mcod_forn),.F.,v_fornece(mcod_forn,0,27))
+        READ
+        IF LASTKEY() = 27
+                RELEASE mprg
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        @ 1,22 GET mnum_nota PICT '999999'      //VALID IF(EMPTY(mnum_nota) .OR. LEN(ALLTRIM(mnum_nota)) < 6,.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                RELEASE mprg
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+	mcons_nota:={}
+	mccomm := "SELECT * FROM sacrec_nf WHERE (cod_merc IS NULL OR cod_merc = '     ') "
+        IF ! EMPTY(mcod_forn)
+                mccomm := mccomm + " AND cod_forn = "+sr_cdbvalue(STRZERO(mcod_forn,4))
+        ENDIF
+        IF ! EMPTY(mnum_nota)
+                mccomm := mccomm + " AND num_nf = "+sr_cdbvalue(mnum_nota)
+        ENDIF
+	sr_getconnection():exec(mccomm,,.t.,@mcons_nota)
+        sr_getconnection():exec('COMMIT',,.f.)
+
+        IF LEN(mcons_nota) = 0 
+                atencao('Nao existe nenhuma Produto para cadastrar...')
+                LOOP
+        ENDIF
+
+        FOR i = 1 TO LEN(mcons_nota)
+                AADD(m_demo,STRZERO(i,3)+'  '+mcons_nota[i,3]+' '+mcons_nota[i,4]+' '+mcons_nota[i,5]+' '+TRANSFORM(mcons_nota[i,6],'999,999.99')+' '+TRANSFORM(mcons_nota[i,7],'999,999.99'))
+                AADD(m_prod,{mcons_nota[i,3],mcons_nota[i,4],mcons_nota[i,5],mcons_nota[i,6],mcons_nota[i,7],IF(EMPTY(mcons_nota[i,4]),'NAO CADASTRADO','OK'),mcons_nota[i,2],mcons_nota[i,1]})
+        NEXT
+        WHILE .T.
+                setcor(3)
+                setcor(10);point := ACHOICE(5,0,31,100,m_demo,,,point)
+                DO CASE
+                        CASE LASTKEY()=27
+                                EXIT
+                        CASE LASTKEY() = 13
+                                IF m_prod[point,7] = '*'
+                                        atencao('Este produto na foi cadastrado...')
+                                        LOOP
+                                ENDIF
+                                setcor(1)
+                                mcod_m := sac110(,,m_prod[point,1],m_prod[point,3],m_prod[point,7])
+                                IF EMPTY(mcod_m)
+                                        LOOP
+                                ENDIF
+                                sr_getconnection():exec("UPDATE sacrec_nf SET cod_merc = "+sr_cdbvalue(mcod_m)+",oper_cad = "+sr_cdbvalue(cod_operado)+",data_cad = "+sr_cdbvalue(mdata_sis)+",hora_cad = "+sr_cdbvalue(TIME())+" WHERE cod_barra = "+sr_cdbvalue(m_prod[point,1])+" AND cod_forn = "+sr_cdbvalue(m_prod[point,7])+" AND num_nf = "+sr_cdbvalue(m_prod[point,8]) ,,.f.)
+                                sr_getconnection():exec("COMMIT" ,,.f.)
+                                m_demo[point] := m_demo[point] + ' CADASTRADO'
+                                m_prod[point,7] := '*'
+                ENDCASE
+        ENDDO
+        setcor(1)
+        IF 'S' = op_simnao('S','Confirma a Impressao da 2a.Via:')
+                imp_recnf(m_prod,'02')
+
+        ENDIF
+ENDDO
+RETURN NIL
+
+********************************* f i m ***************************************

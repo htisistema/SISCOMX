@@ -1,0 +1,61 @@
+E
+TREVO DISTRIBUIDORAF
+Tabela de Precos                                                                        09/06/10
+Sub-Grupo: 001.01 - PRODUTOS NASSAU                                                                                              Pagina: 001
+TREVO DISTRIBUIDORA                                                              .: SISCOM :. Sistema Integrado Automacao Comercial v10.06.01 - (SAC51)
+====================================================================================================================================
+ Cod. Descricao                                Cod.Barra/Ref    UN    Saldo         7ST
+                                                                        Promocao                                                                        Promocao
+=========================================================================================================================================
+                      >>> GRUPO: 001-PRODUTOS NASSAU <<<                       
+             *** Sub-Grupo: 001.01 - PRODUTOS NASSAU EM GERAL ***              
+ 
+00147 ASDFASDFAS                               0000101001470  UN   1000.00    17.00%
+00139 ASDFGSAFGS                               0000101001395  UN   1000.00    17.00%
+00905 CIMENTO ITA 50KG                         0000010100905  UN   1000.00    17.00%
+00002 CIMENTO NASSAU 50KG                                     UN    440.00    17.00%
+00136 ESFKJNVWGELKJFJGVLKHEWKJLHGJEWH          0000101001364  UN   1000.00    17.00%
+01039 JHQWJKHDKJAHGKHFIVHWEIRHIGHEI                           UN   1000.00    17.00%
+01019 SACARIA ITA VAZIA 2 FOLHAS CPIV TARJA 50 0000010101019  UN   1000.00    17.00%
+00950 SACARIA NASSAU VAZIA TARJA 50KG          0000010100950  UN   1000.00    17.00%
+00128 SADFASFDGSDFG                            0000101001289  UN    900.00    17.00%
+00134 SDFGSDFGSDF                              0000101001340  UN   1000.00    17.00%
+00949 SLING                                    0000010100949  UN   1000.00     0.00%
+00126 TESTE DE PRODUTOS INSENTOS               0000101001265  UN    660.00     0.00%
+00146 ZSDL‡JKSDFJGDKLFGSKLDFKLGS               0000101001463  UN   1000.00    17.00%
+--------------------------------------------------------------------------------
+
+
+Total de Item:      13.00
+
+16:30:13
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=========================================================================================================================================
+                                    AV. JERONIMO HERACLIO, 2076 - LIMOEIRO-PE - Fone: 8136280693                                    

@@ -1,0 +1,458 @@
+********************
+* FATURAMENTO DO MES
+********************
+MEMVAR getlist,nivel_acess,mdata_sis,mdata1,mdata2
+FUNCTION sac39(mdt1)
+********************
+LOCAL MPRG:='SAC39',;
+      tela,telaprin,lci,cci,lba,cba,opcao,mtot_din,mtot_ch,mtot_ch_p,;
+      mtot_dup,mtot_cart,mdata,mtraco,mquantd,mdata_ini,mdata_fim,;
+      mdia_din,mdia_ch,mdia_ch_p,mdia_dup,mdia_cart,mdia_fin,mdata_aux,mtot_fin,;
+      m_cartao:={},msintetico:=' ',mmes,m_finan:={},mcom_sem:=' ',i:=0,cont_caixa:=0,mtot_cr:=0
+PRIVATE mcod_ven,mpag,mtit,mtipo,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+IF ! ver_nivel(mprg,'FATURAMENTO POR PERIODO','15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+mtraco := REPLI('=',80)
+
+lci := 05
+cci := 02
+lba := 17
+cba := 68
+*------------------------------------------------------------
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('sacfin','fin');RETURN NIL;ENDIF
+IF ! AbriArq('saccarta','car');RETURN NIL;ENDIF
+IF ! AbriArq('saccaixa','caix');RETURN NIL;ENDIF
+*------------------------------------------------------------
+op_tela(00,10,21,80,' Faturamento Periodo ',,1)
+WHILE .T.
+        exibi_prg(mprg)
+	limpa(00,00,30,100)
+	botao(lci,cci,lba,cba,,' Resumo do Periodo: ')
+	setcor(1)
+	DEVPOS(lci+2,cci+2);DEVOUT('Total Dinheiro R$...........:')
+	DEVPOS(lci+3,cci+2);DEVOUT('Total Cheques R$............:')
+	DEVPOS(lci+4,cci+2);DEVOUT('Total Cartao R$.............:')
+	DEVPOS(lci+5,cci+2);DEVOUT('Total Cheques pre-datado R$.:')
+	DEVPOS(lci+6,cci+2);DEVOUT('Total em Duplicata R$.......:')
+	DEVPOS(lci+7,cci+2);DEVOUT('Total em Financiamento R$...:')
+        DEVPOS(lci+8,cci+2);DEVOUT('Total Recebimento Diverso R$:')
+	DEVPOS(lci+9,cci+2);DEVOUT('                              -------------')
+	DEVPOS(lci+10,cci+2);DEVOUT('TOTAL DO PERIODO............:')
+        mtipo_imp := m_indiv[1,18]
+        IF mdt1 <> NIL
+                mdata_ini := mdata1
+                mdata_fim := mdata2
+        ELSE
+                mdata_ini := mdata_fim := CTOD('  /  /  ')
+        ENDIF
+        mtot_din := mtot_ch := mtot_ch_p := mtot_dup := mtot_cart := ;
+        mtot_fin := mdia_din := mdia_ch := mdia_ch_p := mdia_dup := ;
+        mdia_cart := mdia_fin := mquantd := mcod_ven := mtot_cr := mtot_re := mdia_re := 0
+        mdata := mdata_sis
+        ASIZE(m_cartao,0)
+        ASIZE(m_finan,0)
+        IF mdt1 = NIL
+                msintetico := 'N'
+                DEVPOS(00,01);DEVOUT('Data Inicial...:')
+                DEVPOS(01,01);DEVOUT('Data Final.....:')
+                DEVPOS(02,01);DEVOUT('Cod.Vendedor...:')
+                DEVPOS(03,01);DEVOUT('Sinteitco p/mes:')
+
+                @ 00,18 GET mdata_ini PICT '99/99/99'
+                @ 01,18 GET mdata_fim PICT '99/99/99' VALID IF(mdata_fim < mdata_ini,.F.,.T.)
+                @ 02,18 GET mcod_ven PICT '999' VALID IF(EMPTY(mcod_ven),.T.,ven(mcod_ven,02,22))
+                @ 03,18 GET msintetico PICT '@!' VALID msintetico $ 'S,N'
+                READ
+                IF LASTKEY() = 27
+                        wvw_lclosewindow()
+                        RETURN NIL
+                ENDIF
+                mensagem('Aguarde um Momento OK !!!')
+                ****************
+                SELE('car');ORDSETFOCUS(1)
+                GO TOP
+                ****************
+                WHILE ! EOF()
+                        AADD(m_cartao,{car->codigo,car->cartao,0})
+                        SKIP
+                ENDDO
+
+                mtipo := 'Periodo: '+DTOC(mdata_ini)+' a '+DTOC(mdata_fim)
+
+                ****************
+                SELE('fin');ORDSETFOCUS(1)
+                GO TOP
+                ****************
+                WHILE ! EOF()
+                        AADD(m_finan,{fin->cod_fin,fin->desc_fin,0})
+                        SKIP
+                ENDDO
+                cons_caixa := {}
+                ccomm := "SELECT * FROM saccaixa WHERE data >= "+sr_cdbvalue(mdata_ini)+" AND data <= "+sr_cdbvalue(mdata_fim)
+                IF ! EMPTY(mcod_ven)
+                        ccomm := ccomm + " AND cod_vend = "+sr_cdbvalue(STRZERO(mcod_ven,3))
+                ENDIF
+                IF ! EMPTY(mcom_sem)
+                        ccomm := ccomm + " AND c_s = "+sr_cdbvalue(mcom_sem)
+                ENDIF
+                ccomm := ccomm + " AND (tipo = 'CH' OR tipo = 'CT' OR tipo = 'DU' OR tipo = 'DN' OR tipo = 'FI' OR tipo = 'CR' OR tipo = 'RE')"
+                ccomm := ccomm + " AND (tp_mov IS NULL OR tp_mov = ' ') ORDER BY data"
+                sr_getconnection():exec(ccomm,,.t.,@cons_caixa)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(cons_caixa) = 0
+                        atencao('Nao existe movimento neste periodo')
+                        LOOP
+                ENDIF
+                botao(lci,cci,lba,cba,,' Resumo do Periodo: '+DTOC(mdata_ini)+' a '+DTOC(mdata_fim))
+                setcor(1)
+                DEVPOS(lci+2,cci+2);DEVOUT('Total Dinheiro R$...........:')
+                DEVPOS(lci+3,cci+2);DEVOUT('Total Cheques R$............:')
+                DEVPOS(lci+4,cci+2);DEVOUT('Total Cartao R$.............:')
+                DEVPOS(lci+5,cci+2);DEVOUT('Total Cheques pre-datado R$.:')
+                DEVPOS(lci+6,cci+2);DEVOUT('Total em Duplicata R$.......:')
+                DEVPOS(lci+7,cci+2);DEVOUT('Total em Financiamento R$...:')
+                DEVPOS(lci+8,cci+2);DEVOUT('Total Recebimento Diverso R$:')
+                DEVPOS(lci+9,cci+2);DEVOUT('                              -------------')
+                DEVPOS(lci+10,cci+2);DEVOUT('TOTAL DO PERIODO............:')
+                mensagem('Aguarde um Momento OK !!!')
+                cont_caixa:=0
+                FOR cont_caixa = 1 TO LEN(cons_caixa)
+                        prog_imp(cont_caixa,DTOC(cons_caixa[cont_caixa,9]))
+                        setcor(3)
+                        IF cons_caixa[cont_caixa,2] = 'DN' .AND. cons_caixa[cont_caixa,4] = 'DUPLI_AP'
+                                LOOP
+                        ELSEIF cons_caixa[cont_caixa,2] = 'DN'
+                                mtot_din = mtot_din + cons_caixa[cont_caixa,10]
+                                DEVPOS(lci+2,cci+32);DEVOUTPICT(mtot_din,'99,999,999.99')
+                        ELSEIF cons_caixa[cont_caixa,2] = 'CH' .AND. cons_caixa[cont_caixa,9] = cons_caixa[cont_caixa,3]
+                                mtot_ch = mtot_ch + cons_caixa[cont_caixa,10]
+                                DEVPOS(lci+3,cci+32);DEVOUTPICT(mtot_ch,'99,999,999.99')
+                        ELSEIF cons_caixa[cont_caixa,2] = 'CT'
+                                mtot_cart = mtot_cart + cons_caixa[cont_caixa,10]
+                                i := 0
+                                DEVPOS(lci+4,cci+32);DEVOUTPICT(mtot_cart,'99,999,999.99')
+                                FOR i = 1 TO LEN(m_cartao)
+                                        IF cons_caixa[cont_caixa,7] = m_cartao[i,1]
+                                                m_cartao[i,3] := m_cartao[i,3] + cons_caixa[cont_caixa,10]
+                                                EXIT
+                                        ENDIF
+                                NEXT
+                        ELSEIF cons_caixa[cont_caixa,2] = 'CH' .AND. cons_caixa[cont_caixa,9] > cons_caixa[cont_caixa,3]
+                                mtot_ch_p = mtot_ch_p + cons_caixa[cont_caixa,10]
+                                DEVPOS(lci+5,cci+32);DEVOUTPICT(mtot_ch_p,'99,999,999.99')
+                        ELSEIF cons_caixa[cont_caixa,2] = 'DU' .AND. cons_caixa[cont_caixa,20] = ' '
+                                mtot_dup = mtot_dup + cons_caixa[cont_caixa,10]
+                                DEVPOS(lci+6,cci+32);DEVOUTPICT(mtot_dup,'99,999,999.99')
+                        ELSEIF cons_caixa[cont_caixa,2] = 'FI'
+                                mtot_fin = mtot_fin + cons_caixa[cont_caixa,10]
+                                DEVPOS(lci+7,cci+32);DEVOUTPICT(mtot_fin,'99,999,999.99')
+                                i := 0
+                                FOR i = 1 TO LEN(m_finan)
+                                        IF cons_caixa[cont_caixa,7] = m_finan[i,1]
+                                                m_finan[i,3] := m_finan[i,3] + cons_caixa[cont_caixa,10]
+                                                EXIT
+                                        ENDIF
+                                NEXT
+                        ELSEIF cons_caixa[cont_caixa,2] = 'RE'
+                                mtot_re = mtot_re + cons_caixa[cont_caixa,10]
+                                DEVPOS(lci+8,cci+32);DEVOUTPICT(mtot_re,'99,999,999.99')
+/*
+                        ELSEIF cons_caixa[cont_caixa,2] = 'CR'
+                                mtot_cr = mtot_cr + cons_caixa[cont_caixa,10]
+                                DEVPOS(lci+8,cci+32);DEVOUTPICT(mtot_cr,'99,999,999.99')
+*/
+                        ENDIF
+                NEXT
+                DEVPOS(lci+2,cci+48);DEVOUT(TRANSFORM((mtot_din/(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re)) * 100,'9999.99')+' %')
+                DEVPOS(lci+3,cci+48);DEVOUT(TRANSFORM((mtot_ch/(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re)) * 100,'9999.99')+' %')
+                DEVPOS(lci+4,cci+48);DEVOUT(TRANSFORM((mtot_cart/(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re)) * 100,'9999.99')+' %')
+                DEVPOS(lci+5,cci+48);DEVOUT(TRANSFORM((mtot_ch_p/(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re)) * 100,'9999.99')+' %')
+                DEVPOS(lci+6,cci+48);DEVOUT(TRANSFORM((mtot_dup/(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re)) * 100,'9999.99')+' %')
+                DEVPOS(lci+7,cci+48);DEVOUT(TRANSFORM((mtot_fin/(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re)) * 100,'9999.99')+' %')
+
+                DEVPOS(lci+10,cci+32);DEVOUTPICT(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re,'99,999,999.99')
+                setcor(1)
+        ELSE
+                mtipo := 'Periodo: '+DTOC(mdata_ini)+' a '+DTOC(mdata_ini)
+                mensagem('Aguarde um Momento OK !!!')
+                ****************
+                SELE('car');ORDSETFOCUS(1)
+                GO TOP
+                ****************
+                WHILE ! EOF()
+                        AADD(m_cartao,{car->codigo,car->cartao,0})
+                        SKIP
+                ENDDO
+                ****************
+                SELE('fin');ORDSETFOCUS(1)
+                GO TOP
+                ****************
+                WHILE ! EOF()
+                        AADD(m_finan,{fin->cod_fin,fin->desc_fin,0})
+                        SKIP
+                ENDDO
+                cons_caixa := {}
+                ccomm := "SELECT * FROM saccaixa WHERE data >= "+sr_cdbvalue(mdata_ini)+" AND data <= "+sr_cdbvalue(mdata_ini)
+                ccomm := ccomm + " AND (tipo = 'CH' OR tipo = 'CT' OR tipo = 'DU' OR tipo = 'DN' OR tipo = 'FI' OR tipo = 'CR' OR tipo = 'RE')"
+                ccomm := ccomm + " AND (tp_mov IS NULL OR tp_mov = ' ') ORDER BY data"
+                sr_getconnection():exec(ccomm,,.t.,@cons_caixa)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(cons_caixa) = 0
+                        atencao('Nao existe movimento neste periodo')
+                        LOOP
+                ENDIF
+                botao(lci,cci,lba,cba,,' Resumo do Periodo: '+DTOC(mdata_ini)+' a '+DTOC(mdata_ini))
+                setcor(1)
+                DEVPOS(lci+2,cci+2);DEVOUT('Total Dinheiro R$...........:')
+                DEVPOS(lci+3,cci+2);DEVOUT('Total Cheques R$............:')
+                DEVPOS(lci+4,cci+2);DEVOUT('Total Cartao R$.............:')
+                DEVPOS(lci+5,cci+2);DEVOUT('Total Cheques pre-datado R$.:')
+                DEVPOS(lci+6,cci+2);DEVOUT('Total em Duplicata R$.......:')
+                DEVPOS(lci+7,cci+2);DEVOUT('Total em Financiamento R$...:')
+                DEVPOS(lci+8,cci+2);DEVOUT('Total Recebimento Diverso R$:')
+                DEVPOS(lci+9,cci+2);DEVOUT('                              -------------')
+                DEVPOS(lci+10,cci+2);DEVOUT('TOTAL DO PERIODO............:')
+                mensagem('Aguarde um Momento OK !!!')
+                cont_caixa:=0
+                FOR cont_caixa = 1 TO LEN(cons_caixa)
+                        prog_imp(cont_caixa,DTOC(cons_caixa[cont_caixa,9]))
+                        setcor(3)
+                        IF cons_caixa[cont_caixa,2] = 'CH' .AND. cons_caixa[cont_caixa,9] > cons_caixa[cont_caixa,3]
+                                mtot_ch_p = mtot_ch_p + cons_caixa[cont_caixa,10]
+                                DEVPOS(lci+5,cci+32);DEVOUTPICT(mtot_ch_p,'99,999,999.99')
+                        ELSEIF cons_caixa[cont_caixa,2] = 'CH' .AND. cons_caixa[cont_caixa,9] = cons_caixa[cont_caixa,3]
+                                mtot_ch = mtot_ch + cons_caixa[cont_caixa,10]
+                                DEVPOS(lci+3,cci+32);DEVOUTPICT(mtot_ch,'99,999,999.99')
+                        ELSEIF cons_caixa[cont_caixa,2] = 'CT'
+                                mtot_cart = mtot_cart + cons_caixa[cont_caixa,10]
+                                i := 0
+                                DEVPOS(lci+4,cci+32);DEVOUTPICT(mtot_cart,'99,999,999.99')
+                                FOR i = 1 TO LEN(m_cartao)
+                                        IF cons_caixa[cont_caixa,7] = m_cartao[i,1]
+                                                m_cartao[i,3] := m_cartao[i,3] + cons_caixa[cont_caixa,10]
+                                                EXIT
+                                        ENDIF
+                                NEXT
+                        ELSEIF cons_caixa[cont_caixa,2] = 'DU' .AND. cons_caixa[cont_caixa,20] = ' '
+                                mtot_dup = mtot_dup + cons_caixa[cont_caixa,10]
+                                DEVPOS(lci+6,cci+32);DEVOUTPICT(mtot_dup,'99,999,999.99')
+                        ELSEIF cons_caixa[cont_caixa,2] = 'DN'
+                                mtot_din = mtot_din + cons_caixa[cont_caixa,10]
+                                DEVPOS(lci+2,cci+32);DEVOUTPICT(mtot_din,'99,999,999.99')
+                        ELSEIF cons_caixa[cont_caixa,2] = 'FI'
+                                mtot_fin = mtot_fin + cons_caixa[cont_caixa,10]
+                                DEVPOS(lci+7,cci+32);DEVOUTPICT(mtot_fin,'99,999,999.99')
+                                i := 0
+                                FOR i = 1 TO LEN(m_finan)
+                                        IF cons_caixa[cont_caixa,7] = m_finan[i,1]
+                                                m_finan[i,3] := m_finan[i,3] + cons_caixa[cont_caixa,10]
+                                                EXIT
+                                        ENDIF
+                                NEXT
+                        ELSEIF cons_caixa[cont_caixa,2] = 'RE'
+                                mtot_re = mtot_re + cons_caixa[cont_caixa,10]
+                                DEVPOS(lci+8,cci+32);DEVOUTPICT(mtot_re,'99,999,999.99')
+                        ENDIF
+                NEXT
+                DEVPOS(lci+2,cci+48);DEVOUT(TRANSFORM((mtot_din/(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re)) * 100,'9999.99')+' %')
+                DEVPOS(lci+3,cci+48);DEVOUT(TRANSFORM((mtot_ch/(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re)) * 100,'9999.99')+' %')
+                DEVPOS(lci+4,cci+48);DEVOUT(TRANSFORM((mtot_cart/(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re)) * 100,'9999.99')+' %')
+                DEVPOS(lci+5,cci+48);DEVOUT(TRANSFORM((mtot_ch_p/(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re)) * 100,'9999.99')+' %')
+                DEVPOS(lci+6,cci+48);DEVOUT(TRANSFORM((mtot_dup/(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re)) * 100,'9999.99')+' %')
+                DEVPOS(lci+7,cci+48);DEVOUT(TRANSFORM((mtot_fin/(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re)) * 100,'9999.99')+' %')
+                DEVPOS(lci+8,cci+48);DEVOUT(TRANSFORM((mtot_re/(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re)) * 100,'9999.99')+' %')
+                DEVPOS(lci+10,cci+32);DEVOUTPICT(mtot_din+mtot_ch+mtot_cart+mtot_ch_p+mtot_dup+mtot_fin+mtot_cr+mtot_re,'99,999,999.99')
+                setcor(1)
+        ENDIF
+        mensagem('Pressione qualquer tecla para continuar')
+        INKEY(0)
+        IF ! imp_arq('FATURAM.REL','R')
+                LOOP
+        ENDIF
+        mpag := 1
+        mtit := 'FATURAMENTO'
+        IF ! EMPTY(mcod_ven)
+                mtit := mtit+' - Codigo Vendedor: '+STRZERO(mcod_ven,3)
+        ENDIF
+        cabecalho(mpag,mtit,mtipo)
+
+        imprt(mtipo_imp,'C')
+        DEVPOS(PROW()+1,02);DEVOUT('Data')
+        DEVPOS(PROW(),15);DEVOUT('Dinheiro')
+        DEVPOS(PROW(),26);DEVOUT('Cheque Avista')
+        DEVPOS(PROW(),41);DEVOUT('Chq.Pre-Datado')
+        DEVPOS(PROW(),63);DEVOUT('Cartao')
+        DEVPOS(PROW(),75);DEVOUT('Duplicata')
+        DEVPOS(PROW(),89);DEVOUT('Financeira')
+        DEVPOS(PROW(),114);DEVOUT(' Rec. Diverso')
+        DEVPOS(PROW(),PCOL()+1);DEVOUT('Total do Dia')
+        imprt(mtipo_imp,'N')
+        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+        mtot_din := mtot_ch := mtot_ch_p := mtot_dup := mtot_cart := ;
+        mtot_fin := 0
+        mdata_aux := cons_caixa[1,3]
+        mmes := SUBSTR(DTOC(cons_caixa[1,3]),4,5)
+        cont_caixa:=0                        
+        FOR cont_caixa = 1 TO LEN(cons_caixa)
+                IF msintetico = 'N'
+                        mdata_aux := cons_caixa[cont_caixa,3]
+                        WHILE mdata_aux = cons_caixa[cont_caixa,3]
+                                prog_imp(cont_caixa,DTOC(cons_caixa[cont_caixa,9]))
+                                IF cons_caixa[cont_caixa,2] = 'CH' .AND. cons_caixa[cont_caixa,9] > cons_caixa[cont_caixa,3]
+                                        mdia_ch_p = mdia_ch_p + cons_caixa[cont_caixa,10]
+                                        mtot_ch_p = mtot_ch_p + cons_caixa[cont_caixa,10]
+                                ELSEIF cons_caixa[cont_caixa,2] = 'CH' .AND. cons_caixa[cont_caixa,9] = cons_caixa[cont_caixa,3]
+                                        mdia_ch = mdia_ch + cons_caixa[cont_caixa,10]
+                                        mtot_ch = mtot_ch + cons_caixa[cont_caixa,10]
+                                ELSEIF cons_caixa[cont_caixa,2] = 'CT'
+                                        mdia_cart = mdia_cart + cons_caixa[cont_caixa,10]
+                                        mtot_cart = mtot_cart + cons_caixa[cont_caixa,10]
+                                ELSEIF cons_caixa[cont_caixa,2] = 'DU' .AND. cons_caixa[cont_caixa,20] = ' '
+                                        mdia_dup = mdia_dup + cons_caixa[cont_caixa,10]
+                                        mtot_dup = mtot_dup + cons_caixa[cont_caixa,10]
+                                ELSEIF cons_caixa[cont_caixa,2] = 'FI' .AND. cons_caixa[cont_caixa,20] = ' '
+                                        mdia_fin = mdia_fin + cons_caixa[cont_caixa,10]
+                                        mtot_fin = mtot_fin + cons_caixa[cont_caixa,10]
+                                ELSEIF cons_caixa[cont_caixa,2] = 'DN'
+                                        mdia_din = mdia_din + cons_caixa[cont_caixa,10]
+                                        mtot_din = mtot_din + cons_caixa[cont_caixa,10]
+                                ELSEIF cons_caixa[cont_caixa,2] = 'RE'
+                                        mdia_re = mdia_re + cons_caixa[cont_caixa,10]
+                                        mtot_re = mtot_re + cons_caixa[cont_caixa,10]
+                                ENDIF
+                                cont_caixa := cont_caixa + 1
+                                IF cont_caixa > LEN(cons_caixa)
+                                        EXIT
+                                ENDIF
+                        ENDDO
+                        cont_caixa := cont_caixa - 1
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(mdata_aux)
+                        DEVPOS(PROW(),10);DEVOUT(TRANSFORM(mdia_din,'99,999,999.99'))
+                        DEVPOS(PROW(),26);DEVOUT(TRANSFORM(mdia_ch,'99,999,999.99'))
+                        DEVPOS(PROW(),41);DEVOUT(TRANSFORM(mdia_ch_p,'99,999,999.99'))
+                        DEVPOS(PROW(),56);DEVOUT(TRANSFORM(mdia_cart,'99,999,999.99'))
+                        DEVPOS(PROW(),71);DEVOUT(TRANSFORM(mdia_dup,'99,999,999.99'))
+                        DEVPOS(PROW(),86);DEVOUT(TRANSFORM(mdia_fin,'99,999,999.99'))
+                        DEVPOS(PROW(),111);DEVOUT(TRANSFORM(mdia_re,'99,999,999.99'))
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(mdia_din+mdia_ch+mdia_ch_p+mdia_cart+mdia_dup+mdia_fin+mdia_re,'999,999,999.99'))
+                ELSE
+                        WHILE mmes = SUBSTR(DTOC(cons_caixa[cont_caixa,3]),4,5)
+                                prog_imp(cont_caixa,DTOC(cons_caixa[cont_caixa,9]))
+                                mmes := SUBSTR(DTOC(cons_caixa[cont_caixa,3]),4,5)
+                                IF cons_caixa[cont_caixa,2] = 'CH' .AND. cons_caixa[cont_caixa,9] > cons_caixa[cont_caixa,3]
+                                        mdia_ch_p = mdia_ch_p + cons_caixa[cont_caixa,10]
+                                        mtot_ch_p = mtot_ch_p + cons_caixa[cont_caixa,10]
+                                ELSEIF cons_caixa[cont_caixa,2] = 'CH' .AND. cons_caixa[cont_caixa,9] = cons_caixa[cont_caixa,3]
+                                        mdia_ch = mdia_ch + cons_caixa[cont_caixa,10]
+                                        mtot_ch = mtot_ch + cons_caixa[cont_caixa,10]
+                                ELSEIF cons_caixa[cont_caixa,2] = 'CT'
+                                        mdia_cart = mdia_cart + cons_caixa[cont_caixa,10]
+                                        mtot_cart = mtot_cart + cons_caixa[cont_caixa,10]
+                                ELSEIF cons_caixa[cont_caixa,2] = 'DU' .AND. cons_caixa[cont_caixa,20] = ' '
+                                        mdia_dup = mdia_dup + cons_caixa[cont_caixa,10]
+                                        mtot_dup = mtot_dup + cons_caixa[cont_caixa,10]
+                                ELSEIF cons_caixa[cont_caixa,2] = 'FI' .AND. cons_caixa[cont_caixa,20] = ' '
+                                        mdia_fin = mdia_fin + cons_caixa[cont_caixa,10]
+                                        mtot_fin = mtot_fin + cons_caixa[cont_caixa,10]
+                                ELSEIF cons_caixa[cont_caixa,2] = 'DN'
+                                        mdia_din = mdia_din + cons_caixa[cont_caixa,10]
+                                        mtot_din = mtot_din + cons_caixa[cont_caixa,10]
+                                ELSEIF cons_caixa[cont_caixa,2] = 'RE'
+                                        mdia_re = mdia_re + cons_caixa[cont_caixa,10]
+                                        mtot_re = mtot_re + cons_caixa[cont_caixa,10]
+                                ENDIF
+                                cont_caixa ++
+                                IF cont_caixa > LEN(cons_caixa)
+                                        EXIT
+                                ENDIF
+                        ENDDO
+                        cont_caixa --
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,00);DEVOUT(mmes)
+                        mmes := SUBSTR(DTOC(cons_caixa[cont_caixa,3]),4,5)
+                        DEVPOS(PROW(),10);DEVOUT(TRANSFORM(mdia_din,'99,999,999.99'))
+                        DEVPOS(PROW(),26);DEVOUT(TRANSFORM(mdia_ch,'99,999,999.99'))
+                        DEVPOS(PROW(),41);DEVOUT(TRANSFORM(mdia_ch_p,'99,999,999.99'))
+                        DEVPOS(PROW(),56);DEVOUT(TRANSFORM(mdia_cart,'99,999,999.99'))
+                        DEVPOS(PROW(),71);DEVOUT(TRANSFORM(mdia_dup,'99,999,999.99'))
+                        DEVPOS(PROW(),86);DEVOUT(TRANSFORM(mdia_fin,'99,999,999.99'))
+                        DEVPOS(PROW(),111);DEVOUT(TRANSFORM(mdia_re,'99,999,999.99'))
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(mdia_din+mdia_ch+mdia_ch_p+mdia_cart+mdia_dup+mdia_fin+mdia_re,'999,999,999.99'))
+                ENDIF
+                mdia_din := mdia_ch := mdia_ch_p := mdia_dup := ;
+                mdia_cart := mdia_fin := 0
+                IF PROW() > 59
+                        EJECT
+                        mpag ++
+                        cabecalho(mpag,mtit,mtipo)
+                        imprt(mtipo_imp,'C')
+                        DEVPOS(PROW()+1,02);DEVOUT('Data')
+                        DEVPOS(PROW(),15);DEVOUT('Dinheiro')
+                        DEVPOS(PROW(),26);DEVOUT('Cheque Avista')
+                        DEVPOS(PROW(),41);DEVOUT('Chq.Pre-Datado')
+                        DEVPOS(PROW(),63);DEVOUT('Cartao')
+                        DEVPOS(PROW(),75);DEVOUT('Duplicata')
+                        DEVPOS(PROW(),89);DEVOUT('Financeira')
+                        DEVPOS(PROW(),114);DEVOUT(' Rec. Diverso')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Total do Dia')
+                        imprt(mtipo_imp,'N')
+                        DEVPOS(PROW()+1,00);DEVOUT(mtraco)
+                ENDIF
+        NEXT
+        IF PROW() > 57
+                EJECT
+                mpag ++
+                cabecalho(mpag,mtit,mtipo)
+        ENDIF
+        imprt(mtipo_imp,'C')
+        DEVPOS(PROW()+1,10);DEVOUT('.............')
+        DEVPOS(PROW(),26);DEVOUT('.............')
+        DEVPOS(PROW(),41);DEVOUT('.............')
+        DEVPOS(PROW(),56);DEVOUT('.............')
+        DEVPOS(PROW(),71);DEVOUT('.............')
+        DEVPOS(PROW(),86);DEVOUT('.............')
+        DEVPOS(PROW(),111);DEVOUT('..............')
+        DEVPOS(PROW()+1,00);DEVOUT('TOTAL....:')
+        DEVPOS(PROW(),10);DEVOUT(TRANSFORM(mtot_din,'99,999,999.99'))
+        DEVPOS(PROW(),26);DEVOUT(TRANSFORM(mtot_ch,'99,999,999.99'))
+        DEVPOS(PROW(),41);DEVOUT(TRANSFORM(mtot_ch_p,'99,999,999.99'))
+        DEVPOS(PROW(),56);DEVOUT(TRANSFORM(mtot_cart,'99,999,999.99'))
+        DEVPOS(PROW(),71);DEVOUT(TRANSFORM(mtot_dup,'99,999,999.99'))
+        DEVPOS(PROW(),86);DEVOUT(TRANSFORM(mtot_fin,'99,999,999.99'))
+        DEVPOS(PROW(),111);DEVOUT(TRANSFORM(mtot_re,'99,999,999.99'))
+        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(mtot_din+mtot_ch+mtot_ch_p+mtot_cart+mtot_dup+mtot_fin+mtot_re,'999,999,999.99'))
+        IF LEN(m_cartao) > 0
+                DEVPOS(PROW()+2,00);DEVOUT('*****************  RESUMO DOS CARTOES *************')
+                i := 0
+                FOR i = 1 TO LEN(m_cartao)
+                        DEVPOS(PROW()+1,00);DEVOUT(m_cartao[i,1]+'-'+m_cartao[i,2]+':')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(m_cartao[i,3],'99,999,999.99')
+                NEXT
+                DEVPOS(PROW()+1,26);DEVOUT('--------------')
+                DEVPOS(PROW()+1,00);DEVOUT('Total em Cartao.........:')
+                DEVPOS(PROW(),27);DEVOUTPICT(mtot_cart,'99,999,999.99')
+        ENDIF
+        IF LEN(m_finan) > 0
+                DEVPOS(PROW()+2,00);DEVOUT('*****************  RESUMO DOS FINANCIAMENTOS ******')
+                i := 0
+                FOR i = 1 TO LEN(m_finan)
+                        DEVPOS(PROW()+1,00);DEVOUT(m_finan[i,1]+'-'+m_finan[i,2]+':')
+                        DEVPOS(PROW(),PCOL()+2);DEVOUTPICT(m_finan[i,3],'99,999,999.99')
+                NEXT
+                DEVPOS(PROW()+1,26);DEVOUT('--------------')
+                DEVPOS(PROW()+1,00);DEVOUT('Total em Financiamento..:')
+                DEVPOS(PROW(),27);DEVOUTPICT(mtot_fin,'99,999,999.99')
+        ENDIF
+        EJECT
+        SETPRC(00,00)
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('FATURAM.REL')
+        EXIT
+ENDDO
+wvw_lclosewindow()
+RETURN NIL

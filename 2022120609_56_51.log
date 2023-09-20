@@ -1,0 +1,35 @@
+Error SR_FIREBIRD/0  SQLExecDirect Error
+arithmetic exception, numeric overflow, or string truncation - Native error code 335544321
+Command sent to database : 
+UPDATE sacmerc SET empresa = '001',cod_barr  = '7800101000014',ref       = '',gru_sub   = '00101',merc      = 'MANUTENCAO DE SISTEMAS',tipo_merc = '2',balanca   = 'N',unidade   = 'MIL',especie   = '0000',metragem  = 0,pacote    = 0,peso_liq  = 0.000,peso      = 0.000,disp      = 'S',livre_desc= 'N',p_lucro   = 10.00,varejo    = 20.00,est_min   = 0.000,est_max   = 0.000,cod_fab   = '0255',fabrica   = 'A KGD1700 - FIAT UNO',pr_venda  = 15.8760,pr_venda1 = 0.0000,pr_venda2 = 0.0000,pr_venda3 = 0.0000,pr_venda4 = 0.0000,isento    = 'T',comissao  = 4.00,com_mont  = 0.00,promocao  = 0.00,bebida    = 18.00,icm_sub   = 0.0000,icm_sub2  = 0.0000,ipi       = 0.0000,cod_clf   = '',cod_fis   = '',sittrib   = '000',nbm       = '76090000',prodepe   = '',local     = '',gramatura = 0.000,prazo     = 0,fatconv   = 1.00,desc_merc = 5.00,desc_icm  = 'S',desc_icm1 = 0.7059,dolar     = 'N',aplic0    = '',aplic1    = '',aplic2    = '',aplic3    = '',aplic4    = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoGB',pocket    = 'S',descri    = 'MANUTENCAO DE SISTEMAS FNJHKFHNMJKFGH NOTA FISCAL',descri1   = '1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890',sld_neg   = 'N',descont   = 'N',iat       = 'A',ippt      = 'P',pis            = 0.00,confis         = 0.00,cst_pis        = '01',cst_conf       = '',cfop_dent      = '',cfop_fora      = ' .',cest           = '',app_imagem     = 'https://i.imgur.com/eoCQEun.jpg',desc_icm_sub   = 0.0000 WHERE cod_merc = '00001'
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+ - RollBack executed.
+Funcoes: ->THROW(0)
+Funcoes: sqlconnection.prg->SR_FIREBIRD:RUNTIMEERR(728)
+Funcoes: sqlconnection.prg->SR_FIREBIRD:EXEC(299)
+Funcoes: SAC111NOVO.PRG->SAC111SV(544)
+Funcoes: SAC111NOVO.PRG->(b)SAC111(32)
+Funcoes: ->INKEY(0)
+Funcoes: tgetlist.prg->HBGETLIST:READER(208)
+Funcoes: getsys.prg->READMODAL(141)
+Funcoes: SAC111NOVO.PRG->SAC111(243)
+Funcoes: HRBFUN.PRG->F4_MERC1(7828)
+Funcoes: SAC00.PRG->AFTERINKEY(1593)
+Funcoes: SAC00.PRG->(b)SAC0(1403)
+Funcoes: ->INKEY(0)
+Funcoes: SAC00.PRG->SAC0(1433)
+Funcoes: SACROT1.PRG->SENHA(824)
+Funcoes: SISCOM.PRG->MAIN(1127)
+************************************************************************************************************************
+Data e Hora........: 06/12/22 - 09:56:51
+Empresa............: DOCE GOSTO MAIS
+Sistema/Atualizacao: .: SISCOM :. Sistema Automacao Comercial - v22.12.05a
+Usuario do Sistema.: 999
+Nome do Executavel.: C:\HELIO\siachb\SISCOM.EXE
+Nome do Micro......: HELIO1 - Nome Terminal: helio
+Memoria Disponivel.: 2097151 - Espaço em Disco....: 126125113344
+Pasta de Diretorio.: HELIO\siachb
+Sistema Operacional: Windows NT Professional 6.02.9200
+Caminho do Banco...: localhost:C:\HELIO\SIACHB\SISCOM.GDB

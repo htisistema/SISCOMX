@@ -1,0 +1,457 @@
+#include "inkey.ch"              // constantes de codigos das teclas
+*********************************************************
+* FUNCAO P/CONSULTAR, INCLUIR, ALTERAR E EXCLUIR FORMAS DE PAGAMENTOS
+*********************************************************
+MEMVAR getlist,nivel_acess,cod_operado
+
+FUNCTION sac20(mop)
+*****************
+LOCAL mprg:='SAC20',;
+      f7tela,f7tela1,f7lba,f7cba,f7msele,f7morde,f7men,;
+      oconsprod,ocolprod[7],f7i,f7nkey,f7opcao,tela1,opcao,mreg,li,lb,cb,;
+      mcodigo,mdescri,mpercent:=0,mdia1,mdia2,mdia3,mdia4,mdia5,mdia6,mdia7,mdia8,;
+      mdia9,mdia10,mdia11,mdia12,mdia13,mdia14,mdia15,mcond:=SPACE(3),mcomi_tab:=0,;
+      mpocket:=' '
+
+*IF ! ver_nivel(mprg,'CADASTRO DE CONDICOES DE PAGAMENTOS ','15',nivel_acess,,'AMBIE')
+*        RETURN NIL
+*ENDIF
+f7lba := 33
+f7cba := 119
+
+li := 34
+ci := 00
+lb := 39
+cb := 75
+
+op_tela(10,01,48,119," CONDICOES DE PAGAMENTOS ",,1)
+
+f7msele := SELE()
+f7morde := INDEXORD()
+***********************************************
+IF ! AbriArq('sactabpg','tabpg');RETURN NIL;ENDIF
+SELE('tabpg');ORDSETFOCUS(1)
+***********************************************
+oconsprod := TBROWSEDB(0,0,f7lba-1,f7cba)
+ocolprod[1] := TBCOLUMNNEW('Cod.',{||tabpg->codigo})
+ocolprod[2] := TBCOLUMNNEW('Descricao',{||tabpg->descri})
+ocolprod[3] := TBCOLUMNNEW('Perc.',{||TRANSFORM(tabpg->percent,'999.99')})
+ocolprod[4] := TBCOLUMNNEW('Cond.',{||tabpg->cond})
+ocolprod[5] := TBCOLUMNNEW('Comissao',{||TRANSFORM(tabpg->comi_tab,'999.99')})
+ocolprod[6] := TBCOLUMNNEW('Preco',{||tabpg->preco})
+ocolprod[7] := TBCOLUMNNEW('Forma',{||TRANSFORM(tabpg->dia1,'999')+'-'+TRANSFORM(tabpg->dia2,'999')+'-'+TRANSFORM(tabpg->dia3,'999');
+               +'-'+TRANSFORM(tabpg->dia4,'999')+'-'+TRANSFORM(tabpg->dia5,'999')+'-'+TRANSFORM(tabpg->dia6,'999')+'-'+TRANSFORM(tabpg->dia7,'999');
+               +'-'+TRANSFORM(tabpg->dia8,'999')+'-'+TRANSFORM(tabpg->dia9,'999')+'-'+TRANSFORM(tabpg->dia10,'999')+'-'+TRANSFORM(tabpg->dia11,'999');
+               +'-'+TRANSFORM(tabpg->dia12,'999')+'-'+TRANSFORM(tabpg->dia13,'999')+'-'+TRANSFORM(tabpg->dia14,'999')+'-'+TRANSFORM(tabpg->dia15,'999')})
+f7i:=0
+FOR f7i=1 TO LEN(ocolprod)
+        oconsprod:ADDCOLUMN(ocolprod[f7i])
+NEXT
+oconsprod:HEADSEP := CHR(196)
+oconsprod:COLSEP := CHR(179)
+WHILE .T.
+        exibi_prg(mprg)
+        IF mop = '*'
+                mensagem('<P>esquisa <I>nclusao <ENTER>p/Alterar e Excluir <ESC>Retornar')
+        ELSE
+                mensagem('<PGUP> <PGDN> <P>esquisa <I>nclusao <ENTER> Conf. <ESC>Retornar')
+        ENDIF
+        botao(li,0,lb,cb)
+        f7nkey := 0
+        oconsprod:FORCESTABLE()
+        f7nkey := INKEY(0)
+        IF f7nkey == K_ESC
+                RELEASE ALL
+                wvw_lclosewindow()
+                RETURN NIL
+        ELSEIF f7nkey = 73 .OR. f7nkey = 105
+                IF ! ver_nivel(mprg+'I','INCLUSAO TABELAS Cond. DE PAGAMENTOS ','15',nivel_acess,,'AMBIE')
+                        RETURN NIL
+                ENDIF
+                tela1 := SAVESCREEN(01,00,24,79)
+                WHILE .T.
+                        GO BOTT
+                        mcodigo := mpercent := mdia1 := mdia2 := mdia3 := mdia4 := mdia5 := mdia6 := mdia7 := mdia8 := ;
+                        mdia9 := mdia10 := mdia11 := mdia12 := mdia13 := mdia14 := mdia15 := ;
+                        mcomi_tab := 0
+                        mpreco := ' '
+                        mpocket := 'S'
+                        mdescri := SPACE(20)
+                        mcond := SPACE(3)
+                        botao(li,0,lb,cb,,' Inclusao  Cond. de Pagamento ')
+                        mensagem('Digite o C¢digo da Cond. de Pagamento a incluido. [ESC] Abandona')
+                        DEVPOS(li+1,3);DEVOUT('Cod.')
+                        DEVPOS(li+1,08);DEVOUT('Descricao')
+                        DEVPOS(li+1,35);DEVOUT('Percent')
+                        DEVPOS(li+1,44);DEVOUT('Condicao')
+                        DEVPOS(li+1,54);DEVOUT('Comissao')
+                        DEVPOS(li+1,64);DEVOUT('Tp.Preco')
+                        DEVPOS(li+3,1);DEVOUT('Dias:')
+                        DEVPOS(li+4,1);DEVOUT('Enviar p/APP... [S/N]:')
+                        @ li+2,3 GET mcodigo PICT "999" VALID IF(EMPTY(mcodigo),.F.,.T.)
+                        READ
+                        IF LASTKEY()=27
+                                RESTSCREEN(01,00,24,79,tela1)
+                                EXIT
+                        ENDIF
+                        IF tabpg->(DBSEEK(STRZERO(mcodigo,3)))
+                                atencao("Este Cond. de Pagamento ja existe!!!")
+                                LOOP
+                        ENDIF
+                        setcor(3)
+                        DEVPOS(li+2,3);DEVOUT(STRZERO(mcodigo,3))
+                        setcor(1)
+                        mensagem("Digite o Nome/Agencia do Cartao. [ESC] Abandona.")
+                        @ li+2,08 GET mdescri PICT '@!' VALID IF(EMPTY(mdescri),.F.,.T.)
+                        @ li+2,36 GET mpercent PICT '9999.99'
+                        @ li+2,46 GET mcond PICT '@@R X-99'
+                        @ li+2,54 GET mcomi_tab PICT '9999.99'
+                        @ li+2,68 GET mpreco PICT '@!' VALID mpreco $ '1,2,C,A, '   //WHEN EMPTY(mpercent)
+                        @ li+3,07 GET mdia1 PICT '999' WHEN VAL(SUBSTR(mcond,2)) > 0
+                        @ li+3,11 GET mdia2 PICT '999' WHEN ! EMPTY(mdia1)
+                        @ li+3,15 GET mdia3 PICT '999' WHEN ! EMPTY(mdia2)
+                        @ li+3,19 GET mdia4 PICT '999' WHEN ! EMPTY(mdia3)
+                        @ li+3,23 GET mdia5 PICT '999' WHEN ! EMPTY(mdia4)
+                        @ li+3,27 GET mdia6 PICT '999' WHEN ! EMPTY(mdia5)
+                        @ li+3,31 GET mdia7 PICT '999' WHEN ! EMPTY(mdia6)
+                        @ li+3,35 GET mdia8 PICT '999' WHEN ! EMPTY(mdia7)
+                        @ li+3,39 GET mdia9 PICT '999' WHEN ! EMPTY(mdia8)
+                        @ li+3,43 GET mdia10 PICT '999' WHEN ! EMPTY(mdia9)
+                        @ li+3,47 GET mdia11 PICT '999' WHEN ! EMPTY(mdia10)
+                        @ li+3,51 GET mdia12 PICT '999' WHEN ! EMPTY(mdia11)
+                        @ li+3,55 GET mdia13 PICT '999' WHEN ! EMPTY(mdia12)
+                        @ li+3,59 GET mdia14 PICT '999' WHEN ! EMPTY(mdia13)
+                        @ li+3,63 GET mdia15 PICT '999' WHEN ! EMPTY(mdia14)
+                        @ li+4,24 GET mpocket PICT '@!' VALID mpocket $ 'S,N'
+                        READ
+                        IF LASTKEY()=27
+                                LOOP
+                        ENDIF
+                        IF op_simnao('S',"Confirma os dados digitados:") = 'N'
+                                LOOP
+                        ELSE
+                                sr_getconnection():exec('INSERT INTO sactabpg ('+;
+                                'data    ,'+; //1
+                                'ope     ,'+; //2
+                                'codigo  ,'+; //3
+                                'descri  ,'+; //4
+                                'percent ,'+; //5
+                                'cond    ,'+; //6
+                                'dia1    ,'+; //7
+                                'dia2    ,'+; //8
+                                'dia3    ,'+; //9
+                                'dia4    ,'+; //10
+                                'dia5    ,'+; //11
+                                'dia6    ,'+; //12
+                                'dia7    ,'+; //13
+                                'dia8    ,'+; //14
+                                'dia9    ,'+; //15
+                                'dia10   ,'+; //16
+                                'dia11   ,'+; //17
+                                'dia12   ,'+; //18
+                                'dia13   ,'+; //19
+                                'dia14   ,'+; //20
+                                'dia15   ,'+; //21
+                                'comi_tab,'+; //22
+                                'pocket  ,'+; //23
+                                'preco   ,'+; //24
+                                'SR_DELETED )'+;
+                                ' VALUES ('+;
+                                sr_cdbvalue(mdata_sis                  )+','+; //1
+                                sr_cdbvalue(cod_operado                )+','+; //2
+                                sr_cdbvalue(STRZERO(mcodigo,3)         )+','+; //3
+                                sr_cdbvalue(mdescri                    )+','+; //4
+                                sr_cdbvalue(mpercent                   )+','+; //5
+                                sr_cdbvalue(mcond                      )+','+; //6
+                                sr_cdbvalue(mdia1                      )+','+; //8
+                                sr_cdbvalue(mdia2                      )+','+; //9
+                                sr_cdbvalue(mdia3                      )+','+; //10
+                                sr_cdbvalue(mdia4                      )+','+; //11
+                                sr_cdbvalue(mdia5                      )+','+; //12
+                                sr_cdbvalue(mdia6                      )+','+; //13
+                                sr_cdbvalue(mdia7                      )+','+; //14
+                                sr_cdbvalue(mdia8                      )+','+; //15
+                                sr_cdbvalue(mdia9                      )+','+; //16
+                                sr_cdbvalue(mdia10                     )+','+; //17
+                                sr_cdbvalue(mdia11                     )+','+; //18
+                                sr_cdbvalue(mdia12                     )+','+; //19
+                                sr_cdbvalue(mdia13                     )+','+; //20
+                                sr_cdbvalue(mdia14                     )+','+; //21
+                                sr_cdbvalue(mdia15                     )+','+; //22
+                                sr_cdbvalue(mcomi_tab                  )+','+; //24
+                                sr_cdbvalue(mpocket                    )+','+; //25
+                                sr_cdbvalue(mpreco                     )+','+; //26
+                                sr_cdbvalue(' ')+')',,.f.)
+                                sr_getconnection():exec("COMMIT",,.f.)
+                        ENDIF
+                        RESTSCREEN(01,00,24,79,tela1)
+                        *************
+                        SELE('tabpg');ORDSETFOCUS(1)
+                        *************
+                        oconsprod := TBROWSEDB(0,0,f7lba-1,f7cba)
+                        ocolprod[1] := TBCOLUMNNEW('Cod.',{||tabpg->codigo})
+                        ocolprod[2] := TBCOLUMNNEW('Descricao',{||tabpg->descri})
+                        ocolprod[3] := TBCOLUMNNEW('Perc.',{||TRANSFORM(tabpg->percent,'999.99')})
+                        ocolprod[4] := TBCOLUMNNEW('Cond.',{||tabpg->cond})
+                        ocolprod[5] := TBCOLUMNNEW('Comissao',{||TRANSFORM(tabpg->comi_tab,'999.99')})
+                        ocolprod[6] := TBCOLUMNNEW('Preco',{||tabpg->preco})
+                        ocolprod[7] := TBCOLUMNNEW('Formas',{||TRANSFORM(tabpg->dia1,'999')+'-'+TRANSFORM(tabpg->dia2,'999')+'-'+TRANSFORM(tabpg->dia3,'999');
+                                        +'-'+TRANSFORM(tabpg->dia4,'999')+'-'+TRANSFORM(tabpg->dia5,'999')+'-'+TRANSFORM(tabpg->dia6,'999')+'-'+TRANSFORM(tabpg->dia7,'999');
+                                        +'-'+TRANSFORM(tabpg->dia8,'999')+'-'+TRANSFORM(tabpg->dia9,'999')+'-'+TRANSFORM(tabpg->dia10,'999')+'-'+TRANSFORM(tabpg->dia11,'999');
+                                        +'-'+TRANSFORM(tabpg->dia12,'999')+'-'+TRANSFORM(tabpg->dia13,'999')+'-'+TRANSFORM(tabpg->dia14,'999')+'-'+TRANSFORM(tabpg->dia15,'999')})
+                        f7i:=0
+                        FOR f7i=1 TO LEN(ocolprod)
+                                oconsprod:ADDCOLUMN(ocolprod[f7i])
+                        NEXT
+                        oconsprod:HEADSEP := CHR(196)
+                        oconsprod:COLSEP := CHR(179)
+                        oconsprod:FORCESTABLE()
+                        EXIT
+                ENDDO
+        ELSEIF f7nkey == K_ENTER
+                mreg := RECNO()
+                mcod_cond := VAL(tabpg->codigo)
+                IF mop = '*'
+                        IF ! ver_nivel(mprg+'A','ALTERACAO OU EXCLUSAO TABELAS Cond. DE PAGAMENTOS ','15',nivel_acess,,'AMBIE')
+                                RETURN NIL
+                        ENDIF
+                        f7opcao := mensagem1('Deseja <A>lterar <E>xcluir:','A','A,E')
+                        IF LASTKEY() = 27
+                                RESTSCREEN(01,00,24,79,tela1)
+                                EXIT
+                        ELSEIF f7opcao = 'A'
+                                tela1 := SAVESCREEN(01,00,24,79)
+                                WHILE .T.
+                                        mdata_sis   := tabpg-> data
+                                        mcodigo     := tabpg-> codigo
+                                        mdescri     := tabpg-> descri
+                                        mpercent    := tabpg-> percent
+                                        mcond       := tabpg-> cond
+                                        mdia1       := tabpg-> dia1
+                                        mdia2       := tabpg-> dia2
+                                        mdia3       := tabpg-> dia3
+                                        mdia4       := tabpg-> dia4
+                                        mdia5       := tabpg-> dia5
+                                        mdia6       := tabpg-> dia6
+                                        mdia7       := tabpg-> dia7
+                                        mdia8       := tabpg-> dia8
+                                        mdia9       := tabpg-> dia9
+                                        mdia10      := tabpg-> dia10
+                                        mdia11      := tabpg-> dia11
+                                        mdia12      := tabpg-> dia12
+                                        mdia13      := tabpg-> dia13
+                                        mdia14      := tabpg-> dia14
+                                        mdia15      := tabpg-> dia15
+                                        mcomi_tab   := tabpg-> comi_tab
+                                        mpocket     := tabpg-> pocket
+                                        mpreco      := tabpg-> preco
+                                        botao(li,0,lb,cb,,' Alteracao ')
+                                        mensagem("Altere os campos que deseja. [ESC] Abandona")
+                                        DEVPOS(li+1,3);DEVOUT('Cod.')
+                                        DEVPOS(li+1,08);DEVOUT('Descricao')
+                                        DEVPOS(li+1,35);DEVOUT('Percent')
+                                        DEVPOS(li+1,44);DEVOUT('Condicao')
+                                        DEVPOS(li+1,54);DEVOUT('Comissao')
+                                        DEVPOS(li+1,64);DEVOUT('Tp.Preco')
+                                        DEVPOS(li+3,1);DEVOUT('Dias:')
+                                        DEVPOS(li+4,1);DEVOUT('Enviar p/APP... [S/N]:')
+                                        setcor(3)
+                                        DEVPOS(li+2,3);DEVOUT(tabpg->codigo)
+                                        setcor(1)
+                                        mensagem("Modifique o Nome do Cartao (20 Caract. Maximo). [ESC] Abandona.")
+                                        @ li+2,08 GET mdescri PICT '@!' VALID IF(EMPTY(mdescri),.F.,.T.)
+                                        @ li+2,36 GET mpercent PICT '9999.99'
+                                        @ li+2,46 GET mcond PICT '@@R X-99'
+                                        @ li+2,54 GET mcomi_tab PICT '9999.99'
+                                        @ li+2,68 GET mpreco PICT '@!' VALID mpreco $ '1,2,C,A, '  //WHEN EMPTY(mpercent)
+                                        @ li+3,07 GET mdia1 PICT '999' WHEN VAL(SUBSTR(mcond,2)) > 0
+                                        @ li+3,11 GET mdia2 PICT '999' WHEN ! EMPTY(mdia1)
+                                        @ li+3,15 GET mdia3 PICT '999' WHEN ! EMPTY(mdia2)
+                                        @ li+3,19 GET mdia4 PICT '999' WHEN ! EMPTY(mdia3)
+                                        @ li+3,23 GET mdia5 PICT '999' WHEN ! EMPTY(mdia4)
+                                        @ li+3,27 GET mdia6 PICT '999' WHEN ! EMPTY(mdia5)
+                                        @ li+3,31 GET mdia7 PICT '999' WHEN ! EMPTY(mdia6)
+                                        @ li+3,35 GET mdia8 PICT '999' WHEN ! EMPTY(mdia7)
+                                        @ li+3,39 GET mdia9 PICT '999' WHEN ! EMPTY(mdia8)
+                                        @ li+3,43 GET mdia10 PICT '999' WHEN ! EMPTY(mdia9)
+                                        @ li+3,47 GET mdia11 PICT '999' WHEN ! EMPTY(mdia10)
+                                        @ li+3,51 GET mdia12 PICT '999' WHEN ! EMPTY(mdia11)
+                                        @ li+3,55 GET mdia13 PICT '999' WHEN ! EMPTY(mdia12)
+                                        @ li+3,59 GET mdia14 PICT '999' WHEN ! EMPTY(mdia13)
+                                        @ li+3,63 GET mdia15 PICT '999' WHEN ! EMPTY(mdia14)
+                                        @ li+4,24 GET mpocket PICT '@!' VALID mpocket $ 'S,N'
+                                        READ
+                                        IF LASTKEY()=27
+                                                RESTSCREEN(01,00,24,79,tela1)
+                                                GO TOP
+                                                EXIT
+                                        ENDIF
+                                        IF op_simnao('S',"Confirma os dados digitados:") = 'N'
+                                                LOOP
+                                        ELSE
+                                                IF BLOQREG()
+                                                        tabpg-> ope    := cod_operado
+                                                        tabpg-> descri := mdescri
+                                                        tabpg-> percent := mpercent
+                                                        tabpg-> cond    := mcond
+                                                        tabpg-> dia1    := mdia1
+                                                        tabpg-> dia2    := mdia2
+                                                        tabpg-> dia3    := mdia3
+                                                        tabpg-> dia4    := mdia4
+                                                        tabpg-> dia5    := mdia5
+                                                        tabpg-> dia6    := mdia6
+                                                        tabpg-> dia7    := mdia7
+                                                        tabpg-> dia8    := mdia8
+                                                        tabpg-> dia9    := mdia9
+                                                        tabpg-> dia10   := mdia10
+                                                        tabpg-> dia11   := mdia11
+                                                        tabpg-> dia12   := mdia12
+                                                        tabpg-> dia13   := mdia13
+                                                        tabpg-> dia14   := mdia14
+                                                        tabpg-> dia15   := mdia15
+                                                        tabpg-> comi_tab:= mcomi_tab
+                                                        tabpg-> pocket  := mpocket
+                                                        tabpg-> preco   := mpreco
+                                                        COMMIT
+                                                        UNLOCK
+                                                ELSE
+                                                        atencao('Nao foi Possivel Acessar o Arquivo')
+                                                        LOOP
+                                                ENDIF
+                                        ENDIF
+                                        RESTSCREEN(01,00,24,79,tela1)
+                                        *************
+                                        SELE('tabpg');ORDSETFOCUS(1)
+                                        *************
+                                        oconsprod := TBROWSEDB(0,0,f7lba-1,f7cba)
+                                        ocolprod[1] := TBCOLUMNNEW('Cod.',{||tabpg->codigo})
+                                        ocolprod[2] := TBCOLUMNNEW('Descricao',{||tabpg->descri})
+                                        ocolprod[3] := TBCOLUMNNEW('Perc.',{||TRANSFORM(tabpg->percent,'999.99')})
+                                        ocolprod[4] := TBCOLUMNNEW('Cond.',{||tabpg->cond})
+                                        ocolprod[5] := TBCOLUMNNEW('Comissao',{||TRANSFORM(tabpg->comi_tab,'999.99')})
+                                        ocolprod[6] := TBCOLUMNNEW('Preco',{||tabpg->preco})
+                                        ocolprod[7] := TBCOLUMNNEW('Formas',{||TRANSFORM(tabpg->dia1,'999')+'-'+TRANSFORM(tabpg->dia2,'999')+'-'+TRANSFORM(tabpg->dia3,'999');
+                                                       +'-'+TRANSFORM(tabpg->dia4,'999')+'-'+TRANSFORM(tabpg->dia5,'999')+'-'+TRANSFORM(tabpg->dia6,'999')+'-'+TRANSFORM(tabpg->dia7,'999');
+                                                       +'-'+TRANSFORM(tabpg->dia8,'999')+'-'+TRANSFORM(tabpg->dia9,'999')+'-'+TRANSFORM(tabpg->dia10,'999')+'-'+TRANSFORM(tabpg->dia11,'999');
+                                                       +'-'+TRANSFORM(tabpg->dia12,'999')+'-'+TRANSFORM(tabpg->dia13,'999')+'-'+TRANSFORM(tabpg->dia14,'999')+'-'+TRANSFORM(tabpg->dia15,'999')})
+                                        f7i:=0
+                                        FOR f7i=1 TO LEN(ocolprod)
+                                                oconsprod:ADDCOLUMN(ocolprod[f7i])
+                                        NEXT
+                                        oconsprod:HEADSEP := CHR(196)
+                                        oconsprod:COLSEP := CHR(179)
+                                        oconsprod:FORCESTABLE()
+                                        RESTSCREEN(01,00,24,79,tela1)
+                                        EXIT
+                                ENDDO
+                        ELSEIF f7opcao = 'E'
+                                tela1 := SAVESCREEN(01,00,24,79)
+                                WHILE .T.
+                                        botao(li,0,lb,cb,,' Exclusao ')
+                                        mensagem("Digite o C¢digo do Cartao a ser Excluido. [ESC] Abandona")
+                                        DEVPOS(li+1,3);DEVOUT('Cod.')
+                                        DEVPOS(li+1,08);DEVOUT('Descricao')
+                                        DEVPOS(li+1,35);DEVOUT('Percent')
+                                        DEVPOS(li+1,44);DEVOUT('Condicao')
+                                        DEVPOS(li+1,64);DEVOUT('Tp.Preco')
+                                        DEVPOS(li+3,1);DEVOUT('Dias:')
+                                        setcor(3)
+                                        DEVPOS(li+2,3);DEVOUT(tabpg->codigo)
+                                        DEVPOS(li+2,8);DEVOUT(tabpg->descri)
+                                        DEVPOS(li+2,36);DEVOUT(TRANSFORM(tabpg->percent,'999.99'))
+                                        DEVPOS(li+2,46);DEVOUT(tabpg->cond)
+                                        DEVPOS(li+2,54);DEVOUT(TRANSFORM(tabpg->comi_tab,'9999.99'))
+                                        setcor(1)
+                                        IF op_simnao('N',"Confirma EXCLUSAO do CARTAO") = 'N'
+                                                RESTSCREEN(01,00,24,79,tela1)
+                                                GO TOP
+                                                EXIT
+                                        ENDIF
+                                        IF LASTKEY()=ASC("s") .OR. LASTKEY()=ASC("S")
+                                                IF BLOQARQ()
+                                                        DELE
+                                                        UNLOCK
+                                                ELSE
+                                                        atencao('Nao foi Possivel Acessar o Arquivo')
+                                                        LOOP
+                                                ENDIF
+                                        ENDIF
+                                        sr_getconnection():exec("DELETE FROM sactabpg WHERE codigo = "+sr_cdbvalue(tabpg->codigo),,.f.)
+                                        sr_getconnection():exec("DELETE FROM sactabpg WHERE SR_DELETED = 'T'",,.f.)
+                                        sr_getconnection():exec("COMMIT",,.f.)
+                                        *************
+                                        SELE('tabpg');ORDSETFOCUS(1)
+                                        *************
+                                        oconsprod := TBROWSEDB(0,0,f7lba-1,f7cba)
+                                        ocolprod[1] := TBCOLUMNNEW('Cod.',{||tabpg->codigo})
+                                        ocolprod[2] := TBCOLUMNNEW('Descricao',{||tabpg->descri})
+                                        ocolprod[3] := TBCOLUMNNEW('Perc.',{||TRANSFORM(tabpg->percent,'999.99')})
+                                        ocolprod[4] := TBCOLUMNNEW('Cond.',{||tabpg->cond})
+                                        ocolprod[5] := TBCOLUMNNEW('Comissao',{||TRANSFORM(tabpg->comi_tab,'999.99')})
+                                        ocolprod[6] := TBCOLUMNNEW('Formas',{||TRANSFORM(tabpg->dia1,'999')+'-'+TRANSFORM(tabpg->dia2,'999')+'-'+TRANSFORM(tabpg->dia3,'999');
+                                                       +'-'+TRANSFORM(tabpg->dia4,'999')+'-'+TRANSFORM(tabpg->dia5,'999')+'-'+TRANSFORM(tabpg->dia6,'999')+'-'+TRANSFORM(tabpg->dia7,'999');
+                                                       +'-'+TRANSFORM(tabpg->dia8,'999')+'-'+TRANSFORM(tabpg->dia9,'999')+'-'+TRANSFORM(tabpg->dia10,'999')+'-'+TRANSFORM(tabpg->dia11,'999');
+                                                       +'-'+TRANSFORM(tabpg->dia12,'999')+'-'+TRANSFORM(tabpg->dia13,'999')+'-'+TRANSFORM(tabpg->dia14,'999')+'-'+TRANSFORM(tabpg->dia15,'999')})
+                                        f7i:=0
+                                        FOR f7i=1 TO LEN(ocolprod)
+                                                oconsprod:ADDCOLUMN(ocolprod[f7i])
+                                        NEXT
+                                        oconsprod:HEADSEP := CHR(196)
+                                        oconsprod:COLSEP := CHR(179)
+                                        oconsprod:FORCESTABLE()
+                                        RESTSCREEN(01,00,24,79,tela1)
+                                        EXIT
+                                ENDDO
+                        ENDIF
+                ELSE
+                        CLEAR GETS
+                        EXIT
+                ENDIF
+                oconsprod := TBROWSEDB(0,0,f7lba-1,f7cba)
+                ocolprod[1] := TBCOLUMNNEW('Cod.',{||tabpg->codigo})
+                ocolprod[2] := TBCOLUMNNEW('Descricao',{||tabpg->descri})
+                ocolprod[3] := TBCOLUMNNEW('Perc.',{||TRANSFORM(tabpg->percent,'999.99')})
+                ocolprod[4] := TBCOLUMNNEW('Cond.',{||tabpg->cond})
+                ocolprod[5] := TBCOLUMNNEW('Comissao',{||TRANSFORM(tabpg->comi_tab,'999.99')})
+                ocolprod[6] := TBCOLUMNNEW('Preco',{||tabpg->preco})
+                ocolprod[7] := TBCOLUMNNEW('Formas',{||TRANSFORM(tabpg->dia1,'999')+'-'+TRANSFORM(tabpg->dia2,'999')+'-'+TRANSFORM(tabpg->dia3,'999');
+                               +'-'+TRANSFORM(tabpg->dia4,'999')+'-'+TRANSFORM(tabpg->dia5,'999')+'-'+TRANSFORM(tabpg->dia6,'999')+'-'+TRANSFORM(tabpg->dia7,'999');
+                               +'-'+TRANSFORM(tabpg->dia8,'999')+'-'+TRANSFORM(tabpg->dia9,'999')+'-'+TRANSFORM(tabpg->dia10,'999')+'-'+TRANSFORM(tabpg->dia11,'999');
+                               +'-'+TRANSFORM(tabpg->dia12,'999')+'-'+TRANSFORM(tabpg->dia13,'999')+'-'+TRANSFORM(tabpg->dia14,'999')+'-'+TRANSFORM(tabpg->dia15,'999')})
+                f7i:=0
+                FOR f7i=1 TO LEN(ocolprod)
+                        oconsprod:ADDCOLUMN(ocolprod[f7i])
+                NEXT
+                oconsprod:HEADSEP := CHR(196)
+                oconsprod:COLSEP := CHR(179)
+                oconsprod:FORCESTABLE()
+        ELSE
+                IF genkey(oconsprod,f7nkey,'tabpg')
+                        oconsprod := TBROWSEDB(0,0,f7lba-1,f7cba)
+                        ocolprod[1] := TBCOLUMNNEW('Cod.',{||tabpg->codigo})
+                        ocolprod[2] := TBCOLUMNNEW('Descricao',{||tabpg->descri})
+                        ocolprod[3] := TBCOLUMNNEW('Perc.',{||TRANSFORM(tabpg->percent,'999.99')})
+                        ocolprod[4] := TBCOLUMNNEW('Cond.',{||tabpg->cond})
+                        ocolprod[5] := TBCOLUMNNEW('Comissao',{||TRANSFORM(tabpg->comi_tab,'999.99')})
+                        ocolprod[6] := TBCOLUMNNEW('Preco',{||tabpg->preco})
+                        ocolprod[7] := TBCOLUMNNEW('Formas',{||TRANSFORM(tabpg->dia1,'999')+'-'+TRANSFORM(tabpg->dia2,'999')+'-'+TRANSFORM(tabpg->dia3,'999');
+                                        +'-'+TRANSFORM(tabpg->dia4,'999')+'-'+TRANSFORM(tabpg->dia5,'999')+'-'+TRANSFORM(tabpg->dia6,'999')+'-'+TRANSFORM(tabpg->dia7,'999');
+                                        +'-'+TRANSFORM(tabpg->dia8,'999')+'-'+TRANSFORM(tabpg->dia9,'999')+'-'+TRANSFORM(tabpg->dia10,'999')+'-'+TRANSFORM(tabpg->dia11,'999');
+                                        +'-'+TRANSFORM(tabpg->dia12,'999')+'-'+TRANSFORM(tabpg->dia13,'999')+'-'+TRANSFORM(tabpg->dia14,'999')+'-'+TRANSFORM(tabpg->dia15,'999')})
+                        f7i:=0
+                        FOR f7i=1 TO LEN(ocolprod)
+                                oconsprod:ADDCOLUMN(ocolprod[f7i])
+                        NEXT
+                        oconsprod:HEADSEP := CHR(196)
+                        oconsprod:COLSEP := CHR(179)
+                        oconsprod:FORCESTABLE()
+                ENDIF
+        ENDIF
+END
+SELE(f7msele);IF(f7morde>0,ORDSETFOCUS(f7morde),)
+wvw_lclosewindow()
+RELEASE ALL
+CLEAR GETS
+RETURN tabpg->codigo
+******************************* f i m *********************************************
+

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><retEnvEvento versao="1.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<idLote>205</idLote>
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_18.02.08.145</verAplic>
+<cOrgao>26</cOrgao>
+<cStat>128</cStat>
+<xMotivo>Lote de Evento Processado</xMotivo><retEvento versao="1.00">
+<infEvento>
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_18.02.08.145</verAplic>
+<cOrgao>26</cOrgao>
+<cStat>135</cStat>
+<xMotivo>Evento registrado e vinculado a NF-e</xMotivo>
+<chNFe>26180324494200000106550010000002051000002054</chNFe>
+<tpEvento>110110</tpEvento>
+<xEvento>Carta de Correcao registrada</xEvento>
+<nSeqEvento>10</nSeqEvento>
+<dhRegEvento>2018-03-19T17:19:35-03:00</dhRegEvento>
+<nProt>126180000059990</nProt>
+</infEvento>
+</retEvento></retEnvEvento>

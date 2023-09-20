@@ -1,0 +1,35 @@
+Error SR_FIREBIRD/0  SQLExecDirect Error
+arithmetic exception, numeric overflow, or string truncation - Native error code 335544321
+Command sent to database : 
+INSERT INTO sacped_e (num_ped,dat_ped,gru_sub,cod_merc,merc,unidade,peso,quantd,vlr_fat,cod_forn,fornece,cod_fab,fabrica,cod_oper,frete,forma_pag,cond_pag,obs,obs2,obs3,obs4,obs5,sr_deleted) VALUES ('000026','2022/11/10','00101','00001','MANUTENCAO DE SISTEMAS','MIL',0.000,100.000,152.000,'0001','ZZ TARCISIO RODRIGUES DA SILVA','0255','A KGD1700 - FIAT UNO','999',0,'DUPLICATA','30-60-90','ASCDFSVADF','','','','','')
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+ - RollBack executed.
+Funcoes: ->THROW(0)
+Funcoes: sqlconnection.prg->SR_FIREBIRD:RUNTIMEERR(728)
+Funcoes: sqlconnection.prg->SR_FIREBIRD:EXEC(299)
+Funcoes: SAC22PED.000->FECHA_PED_COMP(483)
+Funcoes: SAC22PED.000->(b)SAC22PED(100)
+Funcoes: tgetlist.prg->HBGETLIST:GETDOSETKEY(710)
+Funcoes: tgetlist.prg->HBGETLIST:GETAPPLYKEY(288)
+Funcoes: tgetlist.prg->HBGETLIST:READER(210)
+Funcoes: getsys.prg->READMODAL(141)
+Funcoes: SAC22PED.000->SAC22PED(105)
+Funcoes: SAC00.PRG->AFTERINKEY(1855)
+Funcoes: SAC00.PRG->(b)SAC0(1382)
+Funcoes: ->INKEY(0)
+Funcoes: SAC00.PRG->SAC0(1412)
+Funcoes: SACROT1.PRG->SENHA(822)
+Funcoes: SISCOM.PRG->MAIN(1127)
+************************************************************************************************************************
+Data e Hora........: 10/11/22 - 10:21:55
+Empresa............: DOCE GOSTO MAIS
+Sistema/Atualizacao: .: SISCOM :. Sistema Automacao Comercial - v22.11.01
+Usuario do Sistema.: 999
+Nome do Executavel.: C:\HELIO\siachb\SISCOM.EXE
+Nome do Micro......: HELIO1 - Nome Terminal: helio
+Memoria Disponivel.: 2097151 - Espaço em Disco....: 129429786624
+Pasta de Diretorio.: HELIO\siachb
+Sistema Operacional: Windows NT Professional 6.02.9200
+Caminho do Banco...: localhost:C:\HELIO\SIACHB\SISCOM.GDB

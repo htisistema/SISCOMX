@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><retConsReciNFe versao="4.00">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_23.03.04.208</verAplic>
+<nRec>261190000639569</nRec>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF><dhRecbto>2019-11-05T16:03:18-03:00</dhRecbto>
+ <protNFe versao="4.00"><infProt Id="NFe1"><tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_23.03.04.208</verAplic>
+<chNFe>26191124494200000106550010000010041383523803</chNFe>
+<dhRecbto>2019-11-05T16:03:18-03:00</dhRecbto><nProt>126190000301217</nProt>
+<digVal>UgPf/z43W4VNDBTRLbWQ4Pbf4Mc=</digVal><cStat>100</cStat>
+<xMotivo>Autorizado o uso da NF-e</xMotivo>
+</infProt></protNFe></retConsReciNFe>

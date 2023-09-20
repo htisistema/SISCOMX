@@ -1,0 +1,10 @@
+[etqbarra]
+FileType=VARYING
+Delimiter="
+Separator=;
+StartAtRow=1
+UseHeaderRow=0
+Field1=codigo,CHAR,6,0,0
+Field2=descricao,CHAR,27,0,7
+Field3=cod_barra,CHAR,14,0,35
+Field4=preco,CHAR,7,0,50

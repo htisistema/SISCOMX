@@ -1,0 +1,13 @@
+SELECT 'Dinheiro' AS "label",sum(valor) AS "value" FROM saccaixa WHERE tipo = 'DN' AND MONTH(Data) = MONTH(Current_date())
+AND YEAR(Data) = YEAR(Current_date()) union ALL SELECT 'Cartao' AS "label",sum(valor) AS "value" FROM saccaixa WHERE tipo = 'CT' AND MONTH(Data) = MONTH(Current_date())
+AND YEAR(Data) = YEAR(Current_date()) union ALL SELECT 'DUPLICATA' AS "label",sum(valor) AS "value" FROM saccaixa WHERE tipo = 'DU' AND MONTH(Data) = MONTH(Current_date())
+AND YEAR(Data) = YEAR(Current_date()) union ALL SELECT 'CHEQUE' AS "label",sum(valor) AS "value" FROM saccaixa WHERE tipo = 'CH' AND MONTH(Data) = MONTH(Current_date())
+AND YEAR(Data) = YEAR(Current_date()) union ALL SELECT 'FINANCEIRA' AS "label",sum(valor) AS "value" FROM saccaixa WHERE tipo = 'FI' AND MONTH(Data) = MONTH(Current_date())
+AND YEAR(Data) = YEAR(Current_date())
+
+
+SELECT 'Dinheiro' AS "label",sum(valor) AS "value" FROM saccaixa WHERE tipo = 'DN' AND YEAR(Data) = YEAR(Current_date()) union ALL 
+SELECT 'Cartao' AS "label",sum(valor) AS "value" FROM saccaixa WHERE tipo = 'CT' AND YEAR(Data) = YEAR(Current_date()) union ALL 
+SELECT 'DUPLICATA' AS "label",sum(valor) AS "value" FROM saccaixa WHERE tipo = 'DU' AND YEAR(Data) = YEAR(Current_date()) union ALL 
+SELECT 'CHEQUE' AS "label",sum(valor) AS "value" FROM saccaixa WHERE tipo = 'CH' AND YEAR(Data) = YEAR(Current_date()) union ALL 
+SELECT 'FINANCEIRA' AS "label",sum(valor) AS "value" FROM saccaixa WHERE tipo = 'FI' AND YEAR(Data) = YEAR(Current_date())

@@ -1,0 +1,12 @@
+SETMODE(30,100)
+WVW_SetFont(,"lucida console",15,9,FW_HEAVY,PROOF_QUALITY )  // 800X600
+
+
+
+
+
+wvw_lclosewindow()
+WVW_SetFont(,'lucida console',12, 7,FW_HEAVY, PROOF_QUALITY )  // 800X600
+SETMODE(50,120)
+WVW_SetFont(,'lucida console',12, 7,FW_HEAVY, PROOF_QUALITY )  // 800X600
+

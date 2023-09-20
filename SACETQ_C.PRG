@@ -1,0 +1,321 @@
+**************************************
+* EMISSAO DE ETIQUETAS - CLIENTES
+**************************************
+MEMVAR getlist
+
+FUNCTION sacetq_c()
+*****************
+LOCAL mprg:='SACETQ_C',;
+      tela,opcao,lc,cc,lb,cb,mtip_cli,;
+      msocio,mclassif,mcidade,mbairro,mcod,mcontador,mqtd_etq,i,;
+      mespaco,mlinhas,mfila,mcodigo,mdia_ini,mdia_fim,mdata_ini,mdata_fim,;
+      m_etq:={},mquantd:=1,mbloq:='N'
+PRIVATE mcliente,mcgc,mcpf,mcod_cli,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),mcod_vend:=0,cons_cli := {}
+
+lc := cc := 0
+lb := 18
+cb := 76
+*************
+CLOSE ALL
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('SACCEP','CEP');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+set_key('cliente')
+SELE('cli');ORDSETFOCUS(2)
+GO TOP
+*************
+op_tela(02,05,25,85," Opcoes para ETIQUETAS DE CLIENTES ")
+
+WHILE .T.
+        exibi_prg(mprg)
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        mcod := 'S'
+        mcod_cli := mcodigo  := mcontador := mcod_vend := 0
+        mtip_cli := SPACE(1)
+        mclassif := '2'
+        mbairro  := mcidade  := SPACE(20)
+        mdia_ini := mdia_fim := SPACE(5)
+        mdata_ini := mdata_fim := CTOD('  /  /  ')
+        mespaco  := 11
+        mlinhas  := mfila    := 2
+        mqtd_etq := 20
+        mquantd  := 1
+        mbloq := 'S'
+        ASIZE(m_etq,0)
+        setcor(3)
+        DEVPOS(lc+1,cc+1);DEVOUT('Etiqueta INDIVIDUAL:')
+        DEVPOS(lc+3,cc+1);DEVOUT('OPCOES:')
+        DEVPOS(lc+6,cc+1);DEVOUT('CLASSIFICACAO: [ ]')
+        DEVPOS(lc+10,cc+47);DEVOUT('** Aniversario **')
+        DEVPOS(lc+11,cc+47);DEVOUT('** Data Cadastro **')
+        setcor(1)
+        DEVPOS(lc+2,cc+10);DEVOUT('Cod.Cliente:')
+        DEVPOS(lc+4,cc+9);DEVOUT('[ ] Tipo de Cliente')
+        DEVPOS(lc+5,cc+9);DEVOUT('Cod.Ult.Codigo Impresso:')
+        DEVPOS(lc+7,cc+09);DEVOUT('[1] Matricula')
+        DEVPOS(lc+8,cc+09);DEVOUT('[2] Alfabetica')
+        DEVPOS(lc+9,cc+09);DEVOUT('[5] Cidade                       Bairro ')
+        DEVPOS(lc+10,cc+03);DEVOUT('Dia/Mes Inicial:')
+        DEVPOS(lc+10,cc+26);DEVOUT('Dia/Mes Final:')
+        DEVPOS(lc+11,cc+03);DEVOUT('Data Inicial:')
+        DEVPOS(lc+11,cc+26);DEVOUT('Data Final:')
+        DEVPOS(lc+12,cc+1);DEVOUT('Espaco entre ETIQUETAS.............:')
+        DEVPOS(lc+13,cc+1);DEVOUT('Quantidade Linhas entre ETIQUETAS..:')
+        DEVPOS(lc+14,cc+1);DEVOUT('Quantidade Fileira ETIQUETAS [1,2].:')
+        DEVPOS(lc+15,cc+1);DEVOUT('Quantidade de Etiquetas p/paginas..:')
+        DEVPOS(lc+16,cc+1);DEVOUT('Deseja Imprimir o Codigo [S/n].....:')
+        DEVPOS(lc+17,cc+1);DEVOUT('Deseja Excluir os BLOQUEADOS [S/N].:')
+        DEVPOS(lc+18,cc+1);DEVOUT('Codigo do Vendedor que Desejar.....:')
+        DEVPOS(lc+19,cc+1);DEVOUT('Quantidade de Etiquetas............:')
+        Mensagem('Digite a matricula ou escolha as opcoes - [ESC] p/ Sair')
+
+        @ lc+2,cc+22 GET mcod_cli PICT '999999' VALID ver_cli(mcod_cli,lc+2,cc+29)
+        READ
+        IF LASTKEY()=27
+                CLOSE ALL
+                EXIT
+        ENDIF
+        SETCOR(3)
+        IF ! EMPTY(mcod_cli)
+                mfila := 1
+                DEVPOS(lc+2,cc+29);DEVOUT(cli->nome)
+        ENDIF
+        SETCOR(1)
+        @ lc+4,cc+10  GET mtip_cli PICT '@!' VALID mtip_cli $ 'A,C,O,R,P,F,U, ' .AND. lim_get() WHEN mcod_cli = 0 .AND. men_get(lc+5,cc+10,'Informe o Tipo de Cliente: <C>Cliente  <R>Revenda <P>otencial <F>ilial <U>Funcionarios <A>ssociado <O>Outros < >P/TODOS')
+        @ lc+5,cc+33  GET mcodigo  PICT '99999' VALID ver_cli(mcodigo,lc+5,cc+39) .AND. lim_get() WHEN mcod_cli = 0 .AND. men_get(lc+6,cc+10,'Digite o ultimo codigo do cliente impresso ou nao preencha p/TODOS')
+        @ lc+6,cc+17  GET mclassif PICT '9' VALID mclassif $ '1,2,5' WHEN mcod_cli = 0
+        @ lc+9,cc+20  GET mcidade  PICT '@!' WHEN mclassif = '5' .AND. mcod_cli = 0
+        @ lc+9,cc+50  GET mbairro  PICT '@!' WHEN mcidade <> ' '
+        @ lc+10,cc+20 GET mdia_ini PICT '99/99'         //VALID DDMM(mdia_ini)
+        @ lc+10,cc+41 GET mdia_fim PICT '99/99' VALID IF(VAL(SUBSTR(mdia_ini,4,2))>VAL(SUBSTR(mdia_fim,4,2)),.F.,.T.) WHEN ! EMPTY(mdia_ini)
+        @ lc+11,cc+17 GET mdata_ini PICT '99/99/99'
+        @ lc+11,cc+38 GET mdata_fim PICT '99/99/99' VALID IF(mdata_fim<mdata_ini,.F.,.T.) WHEN ! EMPTY(mdata_ini)
+        @ lc+12,cc+38 GET mespaco  PICT '99' VALID IF(mespaco<1,.F.,.T.) WHEN mcod_cli = 0
+        @ lc+13,cc+39 GET mlinhas  PICT '9'     // WHEN mcod_cli = 0
+        @ lc+14,cc+39 GET mfila    PICT '9'  RANGE 1,2 WHEN mcod_cli = 0
+        @ lc+15,cc+39 GET mqtd_etq PICT '99'
+        @ lc+16,cc+39 GET mcod    PICT '@!'  VALID mcod $ 'S,N'
+        @ lc+17,cc+39 GET mbloq PICT '@!' VALID mbloq $ 'S,N'
+        @ lc+18,cc+39 GET mcod_vend PICT "999" VALID ven(mcod_vend,lc+18,cc+43) .AND. lim_get() WHEN mcod_cli = 0 .AND. men_get(10,30,'Informe o Vendedor que deseja ou nao informe p/imprimir todos')
+        @ lc+19,cc+39 GET mquantd PICT '99' WHEN ! EMPTY(mcod_cli)
+        READ
+        IF LASTKEY()=27
+                EXIT
+        ENDIF
+
+        IF ! imp_arq('ETQ_CLI.REL','R')
+                LOOP
+        ENDIF
+        mcontador := 0
+        IF EMPTY(mcod_cli)
+                ****************
+                SELE('cli');ORDSETFOCUS(VAL(mclassif))
+                ****************
+                GO TOP
+                IF ! EMPTY(mcodigo)
+                        WHILE STRZERO(mcodigo,5) <> cli->cod_cli
+                                prog_imp(RECNO(),cli->cod_cli+'-'+cli->razao)
+                                SKIP
+                        ENDDO
+                        SKIP
+                ENDIF
+                WHILE ! EOF()
+                        prog_imp(RECNO(),cli->cod_cli+'-'+cli->razao)
+                        IF ! EMPTY(mdata_ini) .AND. (cli->data_cad < mdata_ini .OR. cli->data_cad > mdata_fim);
+                           .OR. (! EMPTY(mtip_cli) .AND. mtip_cli <> cli->tipo);
+                           .OR. (! EMPTY(mcod_vend) .AND. STRZERO(mcod_vend,3) <> cli->codvend);
+                           .OR. (mbloq = 'S' .AND. cli->bloqueio = 'S')
+                                SKIP
+                                LOOP
+                        ENDIF
+
+                        IF ! EMPTY(mcidade)
+                                IF mcidade <> cli-> cidade
+                                        SKIP
+                                        LOOP
+                                ENDIF
+                                IF ! EMPTY(mbairro)
+                                        IF mbairro <> cli-> bairro
+                                                SKIP
+                                                LOOP
+                                        ENDIF
+                                ENDIF
+                        ENDIF
+
+                        IF ! EMPTY(mdia_ini)
+                                IF CTOD(SUBSTR(DTOC(cli->nascimento),1,5)+'/00') >= CTOD(mdia_ini+'/00') .AND. CTOD(SUBSTR(DTOC(cli->nascimento),1,5)+'/00') <= CTOD(mdia_fim+'/00') .AND. ! EMPTY(cli->nascimento)
+                                        AADD(m_etq,{cli->razao,cli->endereco,cli->bairro,cli->cidade,cli->uf,cli->cep,cli->cod_cli})
+                                ENDIF
+                                IF CTOD(SUBSTR(DTOC(cli->data_nas1),1,5)+'/00') >= CTOD(mdia_ini+'/00') .AND. CTOD(SUBSTR(DTOC(cli->data_nas1),1,5)+'/00') <= CTOD(mdia_fim+'/00') .AND. ! EMPTY(cli->data_nas1)
+                                        AADD(m_etq,{cli->nome1,cli->endereco,cli->bairro,cli->cidade,cli->uf,cli->cep,cli->cod_cli})
+                                ENDIF
+                                IF CTOD(SUBSTR(DTOC(cli->data_nas2),1,5)+'/00') >= CTOD(mdia_ini+'/00') .AND. CTOD(SUBSTR(DTOC(cli->data_nas2),1,5)+'/00') <= CTOD(mdia_fim+'/00') .AND. ! EMPTY(cli->data_nas2)
+                                        AADD(m_etq,{cli->nome2,cli->endereco,cli->bairro,cli->cidade,cli->uf,cli->cep,cli->cod_cli})
+                                ENDIF
+                                IF CTOD(SUBSTR(DTOC(cli->data_nas3),1,5)+'/00') >= CTOD(mdia_ini+'/00') .AND. CTOD(SUBSTR(DTOC(cli->data_nas3),1,5)+'/00') <= CTOD(mdia_fim+'/00') .AND. ! EMPTY(cli->data_nas3)
+                                        AADD(m_etq,{cli->nome3,cli->endereco,cli->bairro,cli->cidade,cli->uf,cli->cep,cli->cod_cli})
+                                ENDIF
+                                IF CTOD(SUBSTR(DTOC(cli->data_nas4),1,5)+'/00') >= CTOD(mdia_ini+'/00') .AND. CTOD(SUBSTR(DTOC(cli->data_nas4),1,5)+'/00') <= CTOD(mdia_fim+'/00') .AND. ! EMPTY(cli->data_nas4)
+                                        AADD(m_etq,{cli->nome4,cli->endereco,cli->bairro,cli->cidade,cli->uf,cli->cep,cli->cod_cli})
+                                ENDIF
+                                IF CTOD(SUBSTR(DTOC(cli->data_nas5),1,5)+'/00') >= CTOD(mdia_ini+'/00') .AND. CTOD(SUBSTR(DTOC(cli->data_nas5),1,5)+'/00') <= CTOD(mdia_fim+'/00') .AND. ! EMPTY(cli->data_nas5)
+                                        AADD(m_etq,{cli->nome5,cli->endereco,cli->bairro,cli->cidade,cli->uf,cli->cep,cli->cod_cli})
+                                ENDIF
+                        ELSE
+                                AADD(m_etq,{cli->razao,cli->endereco,cli->bairro,cli->cidade,cli->uf,cli->cep,cli->cod_cli})
+                        ENDIF
+                        IF mfila > 1
+                                IF LEN(m_etq) >= 2
+                                        i := 0
+                                        FOR i = 1 TO LEN(m_etq)
+                                                imprt(mtipo_imp,'C')
+                                                DEVPOS(PROW()+1,00);DEVOUT(m_etq[i,1])
+                                                IF mcod = 'S'
+                                                        DEVPOS(PROW(),PCOL());DEVOUT(' ('+m_etq[i,7]+')')
+                                                ELSE
+                                                        DEVPOS(PROW(),PCOL());DEVOUT('        ')
+                                                ENDIF
+                                                DEVPOS(PROW(),PCOL()+mespaco);DEVOUT(IF(i+1 > LEN(m_etq),' ',m_etq[i+1,1]+' ('+m_etq[i+1,7]+')'))
+                                                DEVPOS(PROW()+1,00);DEVOUT(m_etq[i,2])
+                                                DEVPOS(PROW(),48+mespaco);DEVOUT(IF(i+1 > LEN(m_etq),' ',m_etq[i+1,2]))
+                                                DEVPOS(PROW()+1,00);DEVOUT(RTRIM(m_etq[i,3])+' - '+RTRIM(m_etq[i,4])+' - '+RTRIM(m_etq[i,5]))
+                                                DEVPOS(PROW(),48+mespaco);DEVOUT(IF(i+1 > LEN(m_etq),' ',RTRIM(m_etq[i+1,3])+' - '+RTRIM(m_etq[i+1,4])+' - '+RTRIM(m_etq[i+1,5])))
+                                                DEVPOS(PROW()+1,00);DEVOUT('CEP: '+m_etq[i,6])
+                                                DEVPOS(PROW(),48+mespaco);DEVOUT(IF(i+1 > LEN(m_etq),' ','CEP: '+m_etq[i+1,6]))
+                                                DEVPOS(PROW()+mlinhas,00);DEVOUT(' ')
+                                                i := i + 1
+                                                IF mtipo_imp = 'J'
+                                                        mcontador ++
+                                                        mcontador ++
+                                                        IF mcontador = mqtd_etq
+                                                                mcontador := 0
+                                                                EJECT
+                                                        ENDIF
+                                                ENDIF
+                                        NEXT
+                                        ASIZE(m_etq,0)
+                                ENDIF
+                                SKIP
+                        ELSE
+                                i := 0
+                                FOR i = 1 TO LEN(m_etq)
+                                        imprt(mtipo_imp,'C')
+                                        DEVPOS(PROW()+1,00);DEVOUT(m_etq[i,1])
+                                        IF mcod = 'S'
+                                                DEVPOS(PROW(),PCOL());DEVOUT(' ('+m_etq[i,7]+')')
+                                        ELSE
+                                                DEVPOS(PROW(),PCOL());DEVOUT('        ')
+                                        ENDIF
+                                        DEVPOS(PROW()+1,00);DEVOUT(m_etq[i,2])
+                                        DEVPOS(PROW()+1,00);DEVOUT(RTRIM(m_etq[i,3])+' - '+RTRIM(m_etq[i,4])+' - '+RTRIM(m_etq[i,5]))
+                                        DEVPOS(PROW()+1,00);DEVOUT('CEP: '+m_etq[i,6])
+                                        DEVPOS(PROW()+mlinhas,00);DEVOUT(' ')
+                                        IF mtipo_imp = 'J'
+                                                mcontador ++
+                                                mcontador ++
+                                                IF mcontador = mqtd_etq
+                                                        mcontador := 0
+                                                        EJECT
+                                                ENDIF
+                                        ENDIF
+                                NEXT
+                                ASIZE(m_etq,0)
+/*
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,00);DEVOUT(cli->razao)
+                                IF mcod = 'S'
+                                        DEVPOS(PROW(),PCOL());DEVOUT(' ('+STR(cli->cod_cli,5)+')')
+                                ELSE
+                                        DEVPOS(PROW(),PCOL());DEVOUT('        ')
+                                ENDIF
+                                DEVPOS(PROW()+1,00);DEVOUT(cli->endereco+', '+RTRIM(cli->numero)+IF(! EMPTY(RTRIM(cli->complemento)),' - Compl.:'+RTRIM(cli->complemento),''))
+                                DEVPOS(PROW()+1,00);DEVOUT(RTRIM(cli->bairro)+' - '+RTRIM(cli->cidade)+' - '+RTRIM(cli->uf))
+                                DEVPOS(PROW()+1,00);DEVOUT('CEP: '+cli->cep)
+                                DEVPOS(PROW()+mlinhas,00);DEVOUT(' ')
+*/
+                                SKIP
+                        ENDIF
+/*
+                        IF mtipo_imp = 'J'
+                                mcontador ++
+                                IF mcontador = mqtd_etq
+                                        mcontador := 0
+                                        EJECT
+                                ENDIF
+                        ENDIF
+*/
+                ENDDO
+        ELSE
+                IF mfila > 1
+                        i := 0
+                        FOR i = 1 TO mquantd
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,00);DEVOUT(cli->razao)
+                                IF mcod = 'S'
+                                        DEVPOS(PROW(),PCOL());DEVOUT(' ('+STR(cli->cod_cli,5)+')')
+                                ELSE
+                                        DEVPOS(PROW(),PCOL());DEVOUT('        ')
+                                ENDIF
+                                DEVPOS(PROW(),PCOL()+mespaco);DEVOUT(IF(i+1 > LEN(m_etq),' ',m_etq[i+1,1]+' ('+STR(cli->cod_cli,5)+')'))
+                                DEVPOS(PROW()+1,00);DEVOUT(cli->endereco+', '+RTRIM(cli->numero)+IF(! EMPTY(RTRIM(cli->complemento)),' - Compl.:'+RTRIM(cli->complemento),''))
+                                DEVPOS(PROW(),48+mespaco);DEVOUT(IF(i+1 > LEN(m_etq),' ',cli->endereco+', '+RTRIM(cli->numero)+IF(! EMPTY(RTRIM(cli->complemento)),' - Compl.:'+RTRIM(cli->complemento),'')))
+                                DEVPOS(PROW()+1,00);DEVOUT(RTRIM(cli->bairro)+' - '+RTRIM(cli->cidade)+' - '+RTRIM(cli->uf))
+                                DEVPOS(PROW(),48+mespaco);DEVOUT(IF(i+1 > LEN(m_etq),' ',RTRIM(cli->bairro)+' - '+RTRIM(cli->cidade)+' - '+RTRIM(cli->uf)))
+                                DEVPOS(PROW()+1,00);DEVOUT('CEP: '+cli->cep)
+                                DEVPOS(PROW(),48+mespaco);DEVOUT(IF(i+1 > LEN(m_etq),' ','CEP: '+cli->cep))
+                                DEVPOS(PROW()+mlinhas,00);DEVOUT(' ')
+                                i := i + 1
+                                IF mtipo_imp = 'J'
+                                        mcontador ++
+                                        mcontador ++
+                                        IF mcontador = mqtd_etq
+                                                mcontador := 0
+                                                EJECT
+                                        ENDIF
+                                ENDIF
+                        NEXT
+                ELSE
+                        i := 0
+                        FOR i = 1 TO mquantd
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,00);DEVOUT(cli->razao)
+                                IF mcod = 'S'
+                                        DEVPOS(PROW(),PCOL());DEVOUT(' ('+STR(cli->cod_cli,5)+')')
+                                ELSE
+                                        DEVPOS(PROW(),PCOL());DEVOUT('        ')
+                                ENDIF
+                                DEVPOS(PROW()+1,00);DEVOUT(cli->endereco+', '+RTRIM(cli->numero)+IF(! EMPTY(RTRIM(cli->complemento)),' - Compl.:'+RTRIM(cli->complemento),''))
+                                DEVPOS(PROW()+1,00);DEVOUT(RTRIM(cli->bairro)+' - '+RTRIM(cli->cidade)+' - '+RTRIM(cli->uf))
+                                DEVPOS(PROW()+1,00);DEVOUT('CEP: '+cli->cep)
+                                DEVPOS(PROW()+mlinhas,00);DEVOUT(' ')
+                        NEXT
+                        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+                        LOOP
+                ENDIF
+        ENDIF
+
+        IF LEN(m_etq) > 0
+                imprt(mtipo_imp,'C')
+                DEVPOS(PROW()+1,00);DEVOUT(m_etq[1,1])
+                IF mcod = 'S'
+                        DEVPOS(PROW(),PCOL());DEVOUT(' ('+m_etq[1,7]+')')
+                ELSE
+                        DEVPOS(PROW(),PCOL());DEVOUT('        ')
+                ENDIF
+                DEVPOS(PROW()+1,00);DEVOUT(m_etq[1,2])
+                DEVPOS(PROW()+1,00);DEVOUT(RTRIM(m_etq[1,3])+' - '+RTRIM(m_etq[1,4])+' - '+RTRIM(m_etq[1,5]))
+                DEVPOS(PROW()+1,00);DEVOUT('CEP: '+m_etq[1,6])
+                DEVPOS(PROW()+mlinhas,00);DEVOUT(' ')
+                ASIZE(m_etq,0)
+        ENDIF
+        imprt(mtipo_imp,'N')
+        EJECT
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('ETQ_CLI.REL')
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+***************************** F I M *******************************************

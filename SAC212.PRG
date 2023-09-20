@@ -1,0 +1,353 @@
+*******************************
+* 2a.VIA DA NOTA FISCAL
+*******************************
+FUNCTION sac212(mtp_nota)
+***************
+LOCAL MPRG:='SAC212',;
+      opcao,mtela2,mtela1,lba,cba,mmerc,mcod_forn,mfabrica,;
+      mquantd,mpr_venda,mgrupo,mval_venda,i,micm,mponto,point,tela2
+MEMVAR nivel_acess,mdata_sis,cod_operado,muf_firm,getlist
+PRIVATE m_codigo:={},m_desc:={},mdesconto,;
+        m_tp_venda:={},micm_f,tela,mdata_ped,mcom_ven,mvencimento,;
+        mnome_trans,mfrete_trans,;
+        mplaca_trans,mpluf_trans,mcgc_trans,mend_trans,mmun_trans,muf_trans,;
+        minsc_trans,mesp_trans,mmarca_trans,mnum_trans,mobs1,mobs2,mobs3,mobs4,;
+        mobs5,mobs6,mtipo_ped,mfrete,mseguro,mencargo,mcod_nota,;
+        mcod_cli,mcliente,mcod_merc,mnome_vend,mperc,mcod_op,mcgc,mcpf,mcod_vend,;
+        mdocumento,mdata,mnum_ped,muf,minsc,mcod_nat,mtransporte,;
+        mnota,mcond_vezes,mcod_fat,mtp_vend,mtot_desc,m_transp:={},;
+        m_point:={},mcgccpf,mnatureza,mcredito,msai_ent,mdif_icm,m_normal:={},;
+        m_isento:={},m_icmdif:={},m_icmsub:={},mserie,mnum_sel,mserie_not,mvl_vend,;
+        mtipo_nota,msittrib:=' ',mcod_nat1,mpedidos:={},mvlr_entrada:=0,;
+        mbase_icm:=0,mtot_icm:=0,mbase_icmf:=0,mtot_icmf:=0,mtot_ipi:=0,mtot_prod:=0,;
+        mtot_nota:=0,mtot_quantd:=0,mtot_peso:=0,mtot_liq:=0,;
+        mvenci,mnum_dup,mvlr_dup,mvenci1,mnum_dup1,mvlr_dup1,;
+        mvenci2,mnum_dup2,mvlr_dup2,mvenci3,mnum_dup3,mvlr_dup3,;
+        mvenci4,mnum_dup4,mvlr_dup4,mvenci5,mnum_dup5,mvlr_dup5,;
+        mintev,mintev1,mintev2,mintev3,mintev4,mintev5,mmodelo:='',cons_cli:={}
+
+IF ! ver_nivel(mprg,'2a. VIA DA NOTA FISCAL','13456',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+//SET KEY -9 TO nota('2')     // Finaliza a Nota Fiscal
+lba := 23
+cba := 78
+CLOSE ALL
+*----------------------------------------------------
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('SACPED_S','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('SACNOTA','NOTA');RETURN NIL;ENDIF
+IF ! AbriArq('SACNOTAE','NOTAE');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('saccheq','cheq');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+IF ! AbriArq('sacmerc','merc');RETURN NIL;ENDIF
+IF ! AbriArq('SACUF','TABUF');RETURN NIL;ENDIF
+IF ! AbriArq('SACTOTNT','TOTNT');RETURN NIL;ENDIF
+IF ! AbriArq('SACMOVNT','MOVNT');RETURN NIL;ENDIF
+IF ! AbriArq('saccaixa','caix');RETURN NIL;ENDIF
+IF ! AbriArq('SACOP','OP');RETURN NIL;ENDIF
+IF ! AbriArq('sactran','tran');RETURN NIL;ENDIF
+*---------------------------------------------
+set_key('cliente','merc')
+op_tela(06,05,20,84,' 2a. Via Emissao Nota Fiscal ')
+        mensagem('INCICIANDO O ACBR Aguarde um momento....')
+        IF ! EMPTY(m_indiv[1,43])
+                IBR_INIT(ALLTRIM(m_indiv[1,43]))
+        ELSE
+                NFE_INIT('C:\ACBRNFEMONITOR\')
+        ENDIF
+        //IF ! IBR_OK(nfe_comando('NFE.Ativo',,3))
+        IF ! IBR_OK(IBR_comando('NFE.Ativo',,3))
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        mensagem('Verificando STATUS DO SERVICO NFe Aguarde um momento....')
+        IF ! IBR_OK(IBR_comando('NFE.STATUSSERVICO',,3))
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+WHILE .T.
+	limpa(00,00,30,99)
+        mserie := 'AA'
+        mnum_sel := SPACE(9)
+        mdocumento := SPACE(8)
+        ASIZE(m_codigo,0)
+        ASIZE(m_desc,0)
+        ASIZE(m_normal,0)
+        ASIZE(m_isento,0)
+        ASIZE(m_icmdif,0)
+        ASIZE(m_icmsub,0)
+        SET INTEN ON
+        mensagem('Preencha os Campos - <ESC> p/Retornar ')
+        mdata := mdata_sis
+        mcod_vend := VAL(cod_operado)
+        opcao = 'S'
+        mcod_op := '03'
+        muf := 'PE'
+        i := 1
+        mdata_ped := mvencimento := CTOD('  /  /  ')
+        mvenci  := mvenci1 := mvenci2 := mvenci3 := mvenci4 := mvenci5 := CTOD('  /  /  ')
+        mcom_ven := mtot_nota := mtot_quantd := mtot_peso := mdesconto := ;
+        mperc := mcod_cli := mvl_vend := mnum_ped := 0
+        mvlr_dup  := mvlr_dup1 := mvlr_dup2 := mvlr_dup3 := mvlr_dup4 := mvlr_dup5 := 0
+        mintev  := mintev1 := mintev2 := mintev3 := mintev4 := mintev5 := 0
+        micm_f := mfrete := mseguro := mencargo := micm := 0
+        mcpf := SPACE(11)
+        mcgc := minsc := SPACE(14)
+        mnome_vend := mnome_trans := SPACE(30)
+        mtp_vend := mcond_vezes := mcod_fat := SPACE(2)
+        mnum_dup  := mnum_dup1 := mnum_dup2 := mnum_dup3 := mnum_dup4 := mnum_dup5 := SPACE(6)
+        mcod_nat := mcod_nat1 := '    '
+        mtransporte := SPACE(15)
+        mcod_nota := mcredito := msai_ent := mfrete_trans := mtipo_ped := mnota := SPACE(1)
+        mplaca_trans := SPACE(7)
+        mpluf_trans := muf_trans := SPACE(2)
+        mcgc_trans := SPACE(13)
+        mend_trans := mnatureza := SPACE(40)
+        mmun_trans := SPACE(20)
+        minsc_trans := SPACE(11)
+        mesp_trans := mmarca_trans := mnum_trans := SPACE(8)
+        mobs1 := mobs2 := mobs3 := mobs4 := mobs5 := mobs6 := SPACE(55)
+        *********************************************************************
+        SET KEY -4 TO f5_trans(@mnome_trans,@mcgc_trans,@mend_trans,@mmun_trans,;
+                               @muf_trans,@minsc_trans)
+        *********************************************************************
+        setcor(1)
+        DEVPOS(0,2);DEVOUT('No.da Nota Fiscal:')
+        DEVPOS(1,2);DEVOUT('Codigo:')
+        DEVPOS(2,2);DEVOUT('C.P.F.:')
+        DEVPOS(2,26);DEVOUT('C.G.C.:')
+        DEVPOS(3,2);DEVOUT('No.Pedido:')
+        DEVPOS(3,21);DEVOUT('Serie:')
+        DEVPOS(3,35);DEVOUT('No.Selo NF.:')
+        DEVPOS(3,65);DEVOUT('Modelo:')
+        janela(5,0,'þ DADOS DA NOTA FISCAL ','*','D')
+        DEVPOS(6,2);DEVOUT('Cod.Nat.operacao:')
+        DEVPOS(7,2);DEVOUT('Data de Emissao:')
+        DEVPOS(8,2);DEVOUT('Pagamento:')
+        DEVPOS(9,2);DEVOUT('Frete:')
+        DEVPOS(9,23);DEVOUT('Seguro:')
+        DEVPOS(9,45);DEVOUT('Disp.Acessoria:')
+        janela(10,0,'þ TRANSPORTADOR/VOLUMES TRANSPORTADOS ','*','D')
+        DEVPOS(11,2);DEVOUT('Nome:')
+        DEVPOS(12,2);DEVOUT('Frete [1]Emit.[2]Dest.:')
+        DEVPOS(12,27);DEVOUT('Placa:')
+        DEVPOS(12,43);DEVOUT('UF:')
+        DEVPOS(12,49);DEVOUT('CGC/CPF:')
+        DEVPOS(13,2);DEVOUT('End.:')
+        DEVPOS(13,49);DEVOUT('Mun.:')
+        DEVPOS(14,2);DEVOUT('UF:')
+        DEVPOS(14,08);DEVOUT('Insc.Est.:')
+        DEVPOS(14,34);DEVOUT('Esp.:')
+        DEVPOS(14,48);DEVOUT('Marca:')
+        DEVPOS(14,64);DEVOUT('No.:')
+        mensagem('Preencha os Campos ou <ESC> p/Sair')
+        @ 0,20 GET mdocumento PICT '999999'
+        @ 1,10 GET mcod_cli PICT '99999' VALID ver_cli(mcod_cli,1,17)
+        READ
+        IF LASTKEY() = 27
+                fimset()
+                RELEASE ALL
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        *******************
+        cons_movnt:={}
+        cComm  := "SELECT * FROM sacmovnt WHERE conjunta = "+sr_cdbvalue(mdocumento)+" AND cod_cli = "+sr_cdbvalue(mcod_cli)
+        sr_getconnection():exec(ccomm,,.t.,@cons_movnt)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF LEN(cons_movnt) = 0
+                atencao('Esta nota nao se encontra em nossos arquivos')
+                LOOP
+        ENDIF
+        IF cons_movnt[1,72] = 'C'
+                atencao('Esta nota foi cancelada !!!')
+                LOOP
+        ENDIF
+        *******************
+        point = RECNO()
+        mcod_cli = VAL(cons_movnt[1,31])
+        ver_cli(mcod_cli,1,17)
+        ver_dup(cons_movnt[1,8])
+        mperc := 0
+        mcod_op := '03'
+        mdata := cons_movnt[1,17]
+        mcod_vend := VAL(cons_movnt[1,26])
+        mnum_ped := VAL(cons_movnt[1,8])
+        mfrete := cons_movnt[1,47]
+        mseguro := cons_movnt[1,49]
+        mencargo := cons_movnt[1,48]
+        mtp_vend := cons_movnt[1,62]
+        mcond_vezes := cons_movnt[1,63]
+        mintev :=  VAL(SUBSTR(cons_movnt[1,64],3,3))
+        mintev1 := VAL(SUBSTR(cons_movnt[1,64],6,3))
+        mintev2 := VAL(SUBSTR(cons_movnt[1,64],9,3))
+        mintev3 := VAL(SUBSTR(cons_movnt[1,64],12,3))
+        mintev4 := VAL(SUBSTR(cons_movnt[1,64],15,3))
+        mintev5 := VAL(SUBSTR(cons_movnt[1,64],18,3))
+        micm_f := cons_movnt[1,39]
+        mcod_nat := cons_movnt[1,65]
+        mnota := SPACE(1)
+        mtipo_ped := 'C'
+        mserie_not := cons_movnt[1,5]
+        mtipo_nota := cons_movnt[1,2]
+        mmodelo := cons_movnt[1,6] 
+        mserie  := cons_movnt[1,5]
+        mfrete_trans := '1'
+        i = 1
+        micm := 0
+        setcor(3)
+        DEVPOS(3,13);DEVOUT(STRZERO(mnum_ped,6))
+        DEVPOS(1,10);DEVOUT(mcod_cli+' - ')
+        DEVPOS(1,COL());DEVOUT(mcliente)
+        DEVPOS(2,10);DEVOUTPICT(mcpf,'@@R 999.999.999-99')
+        DEVPOS(2,34);DEVOUTPICT(mcgc,'@@R 99.999.999/9999-99')
+        ver_nat(mcod_nat)
+        DEVPOS(6,20);DEVOUT(mcod_nat)
+        DEVPOS(6,26);DEVOUT(mnatureza)
+        DEVPOS(7,19);DEVOUT(mdata)
+        DEVPOS(8,12);DEVOUT(mtp_vend)
+        IF mtp_vend = 'AP'
+                DEVPOS(8,15);DEVOUT('Qt.Vezes:')
+                DEVPOS(8,28);DEVOUT('Intervalo:')
+                DEVPOS(8,24);DEVOUTPICT(mcond_vezes,'@@R 9-9')
+                DEVPOS(8,39);DEVOUT(cons_movnt[1,64])
+        ENDIF
+        DEVPOS(09,8);DEVOUTPICT(mfrete,'99,999,999.99')
+        DEVPOS(09,30);DEVOUTPICT(mseguro,'99,999,999.99')
+        DEVPOS(09,60);DEVOUTPICT(mencargo,'99,999,999.99')
+        setcor(1)
+        IF ! EMPTY(mcod_cli) .OR. ! EMPTY(mcpf) .OR. ! EMPTY(mcgc)
+                minsc := cons_cli[1,33]
+                muf := cons_cli[1,25]
+                ver_uf(muf)
+        ENDIF
+        IF muf <> muf_firm
+                mperc := 12
+        ENDIF
+        IF muf <> muf_firm .AND. minsc = SPACE(14)
+                mperc := 17
+        ENDIF
+        setcor(1)
+        @ 3,28 GET mserie PICT '@!'
+        @ 3,44 GET mnum_sel PICT '999999999' WHEN m_set[1,151] = 'E'
+        READ
+        IF LASTKEY() = 27
+                fimset()
+                RELEASE ALL
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        f5_trans(@mnome_trans,@mcgc_trans,@mend_trans,@mmun_trans,;
+                 @muf_trans,@minsc_trans)
+        tela2 := SAVESCREEN(05,39,23,78)
+        @ 11,7 GET mnome_trans PICT '@!'
+        @ 12,25 GET mfrete_trans PICT '@!' VALID mfrete_trans $ '1,2' WHEN ! EMPTY(mnome_trans)
+        @ 12,33 GET mplaca_trans PICT '@!' WHEN ! EMPTY(mnome_trans)
+        @ 12,46 GET mpluf_trans PICT '@!' WHEN ! EMPTY(mnome_trans)
+        IF mcgccpf = 'CGC'
+                @ 12,57 GET mcgc_trans PICT '@@R 99.999.999/9999-99' VALID lim_get() WHEN men_get(13,42,'Informe o CGC do transportador') .AND.  ! EMPTY(mnome_trans)
+        ELSEIF mcgccpf = 'CPF'
+                @ 12,57 GET mcgc_trans PICT '@@R 999.999.999-99' VALID lim_get() WHEN men_get(13,42,'Informe o CPF do transportador') .AND.  ! EMPTY(mnome_trans)
+        ELSE
+                @ 12,57 GET mcgc_trans PICT '@!' WHEN ! EMPTY(mnome_trans)
+        ENDIF
+        @ 13,7 GET mend_trans PICT '@!' WHEN ! EMPTY(mnome_trans)
+        @ 13,54 GET mmun_trans PICT '@!' WHEN ! EMPTY(mnome_trans)
+        @ 14,5 GET muf_trans PICT '@!' WHEN ! EMPTY(mnome_trans)
+        @ 14,18 GET minsc_trans PICT '@!' WHEN ! EMPTY(mnome_trans)
+        @ 14,39 GET mesp_trans PICT '@!'
+        @ 14,54 GET mmarca_trans PICT '@!'
+        @ 14,67 GET mnum_trans PICT '@!'
+        READ
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        i:=0
+        FOR i = 1 TO LEN(cons_movnt)
+                mcod_merc := cons_movnt[i,11]
+                ver_cod(VAL(cons_movnt[i,11]))
+                mmerc := cons_movnt[i,12]
+                mcod_forn := cons_movnt[i,14]
+                mfabrica := cons_movnt[i,15]
+                mquantd := cons_movnt[i,19]
+                mpr_venda := cons_movnt[i,20]
+                mval_venda := cons_movnt[i,22]
+                mdesconto := cons_movnt[i,50]
+*               IF SUBSTR(minsc,1,3) = '184'
+*                       micm_f := 0.051
+*               ENDIF
+                AADD(m_codigo,VAL(cons_movnt[i,11]))
+                IF mtipo_nota = 'C'
+*                                         1      2       3      4         5        6         7         8      9      10            11       12       13       14       15      16       17      18        19      20     21
+                        AADD(m_normal,{' ',cons_movnt[i,12],cons_movnt[i,14],cons_movnt[i,15],cons_movnt[i,19],cons_movnt[i,20],cons_movnt[i,22],cons_movnt[i,16],cons_movnt[i,55],cons_movnt[i,57],cons_movnt[i,50],cons_movnt[i,23],cons_movnt[i,39],cons_movnt[i,60],0,0,cons_movnt[i,58],cons_movnt[i,56],0,cons_movnt[i,38],cons_movnt[i,11],0,merc->cod_clf,merc->ipi,merc->desc_icm,cons_movnt[i,66],cons_movnt[i,67],cons_movnt[i,68],cons_movnt[i,69],cons_movnt[i,70],cons_movnt[i,71],merc->pr_fat,cons_movnt[i,24],merc->desc_icm1,merc->sittrib})
+                ELSE    //IF ver_serie() = '141236' .OR. m_set[1,17] = 'S'
+                        IF cons_movnt[i,60] = 'S' .AND. muf = muf_firm .AND. merc->desc_icm = 'S'
+*                                               1    2       3        4      5       6         7        8     9      10     11     12     13    14   15 16  17     18    19 20  21  22     23
+                                AADD(m_normal,{' ',cons_movnt[i,12],cons_movnt[i,14],cons_movnt[i,15],cons_movnt[i,19],cons_movnt[i,20],cons_movnt[i,22],cons_movnt[i,16],cons_movnt[i,55],cons_movnt[i,57],cons_movnt[i,50],cons_movnt[i,23],cons_movnt[i,39],cons_movnt[i,60],0,0,cons_movnt[i,58],cons_movnt[i,56],0,0,cons_movnt[i,11],0,merc->cod_clf,merc->ipi,merc->desc_icm,cons_movnt[i,66],cons_movnt[i,67],cons_movnt[i,68],cons_movnt[i,69],cons_movnt[i,70],cons_movnt[i,71],merc->pr_fat,cons_movnt[i,24],merc->desc_icm1,merc->sittrib})
+                                LOOP
+                        ELSEIF cons_movnt[i,60] = 'S' .AND. muf = m_set[1,19]
+*                                               1      2       3      4         5        6         7         8      9      10            11       12       13       14       15      16       17      18        19    20     21
+                                AADD(m_normal,{' ',cons_movnt[i,12],cons_movnt[i,14],cons_movnt[i,15],cons_movnt[i,19],cons_movnt[i,20],cons_movnt[i,22],cons_movnt[i,16],cons_movnt[i,55],cons_movnt[i,57],cons_movnt[i,50],cons_movnt[i,23],cons_movnt[i,39],cons_movnt[i,60],0,0,cons_movnt[i,58],cons_movnt[i,56],0,0,cons_movnt[i,11],0,merc->cod_clf,merc->ipi,merc->desc_icm,cons_movnt[i,66],cons_movnt[i,67],cons_movnt[i,68],cons_movnt[i,69],cons_movnt[i,70],cons_movnt[i,71],merc->pr_fat,cons_movnt[i,24],merc->desc_icm1,merc->sittrib})
+                                LOOP
+                        ELSEIF cons_movnt[i,60] = 'S' .AND. muf <> m_set[1,19] .AND. (ver_serie() = '141226' .OR. ver_serie() = '141236')
+*                                               1      2       3      4         5        6      7       8      9      10     11    12       13       14       15      16       17      18        19    20     21
+                                AADD(m_normal,{' ',cons_movnt[i,12],cons_movnt[i,14],cons_movnt[i,15],cons_movnt[i,19],cons_movnt[i,20],cons_movnt[i,22],cons_movnt[i,16],cons_movnt[i,55],cons_movnt[i,57],cons_movnt[i,50],cons_movnt[i,23],cons_movnt[i,39],cons_movnt[i,60],0,0,cons_movnt[i,58],cons_movnt[i,56],0,0,cons_movnt[i,11],0,merc->cod_clf,merc->ipi,merc->desc_icm,cons_movnt[i,66],cons_movnt[i,67],cons_movnt[i,68],cons_movnt[i,69],cons_movnt[i,70],cons_movnt[i,71],merc->pr_fat,cons_movnt[i,24],merc->desc_icm1,merc->sittrib})
+                                LOOP
+                        ENDIF
+                        IF cons_movnt[i,40] > 0
+*                                                1      2       3      4         5        6         7         8      9      10            11       12       13       14       15      16       17      18        19      20         21    22
+                                AADD(m_normal,{' ',cons_movnt[i,12],cons_movnt[i,14],cons_movnt[i,15],cons_movnt[i,19],cons_movnt[i,20],cons_movnt[i,22],cons_movnt[i,16],cons_movnt[i,55],cons_movnt[i,57],cons_movnt[i,50],cons_movnt[i,23],cons_movnt[i,39],cons_movnt[i,60],0,0,cons_movnt[i,58],cons_movnt[i,56],0,cons_movnt[i,38],cons_movnt[i,11],cons_movnt[i,40],merc->cod_clf,merc->ipi,merc->desc_icm,cons_movnt[i,66],cons_movnt[i,67],cons_movnt[i,68],cons_movnt[i,69],cons_movnt[i,70],cons_movnt[i,71],merc->pr_fat,cons_movnt[i,24],merc->desc_icm1,merc->sittrib})
+                                LOOP
+                        ENDIF
+                        IF cons_movnt[i,38] > mperc
+*                                                1      2       3      4         5        6         7         8      9      10            11       12       13       14       15      16       17      18        19      20         21
+                                AADD(m_normal,{' ',cons_movnt[i,12],cons_movnt[i,14],cons_movnt[i,15],cons_movnt[i,19],cons_movnt[i,20],cons_movnt[i,22],cons_movnt[i,16],cons_movnt[i,55],cons_movnt[i,57],cons_movnt[i,50],cons_movnt[i,23],cons_movnt[i,39],cons_movnt[i,60],0,0,cons_movnt[i,58],cons_movnt[i,56],0,cons_movnt[i,38],cons_movnt[i,11],0,merc->cod_clf,merc->ipi,merc->desc_icm,cons_movnt[i,66],cons_movnt[i,67],cons_movnt[i,68],cons_movnt[i,69],cons_movnt[i,70],cons_movnt[i,71],merc->pr_fat,cons_movnt[i,24],merc->desc_icm1,merc->sittrib})
+                                LOOP
+                        ENDIF
+*                                         1      2       3      4         5        6         7         8      9      10            11       12       13       14       15      16       17      18        19      20     21
+                        AADD(m_normal,{' ',cons_movnt[i,12],cons_movnt[i,14],cons_movnt[i,15],cons_movnt[i,19],cons_movnt[i,20],cons_movnt[i,22],cons_movnt[i,16],cons_movnt[i,55],cons_movnt[i,57],cons_movnt[i,50],cons_movnt[i,23],cons_movnt[i,39],cons_movnt[i,60],0,0,cons_movnt[i,58],cons_movnt[i,56],0,cons_movnt[i,38],cons_movnt[i,11],0,merc->cod_clf,merc->ipi,merc->desc_icm,cons_movnt[i,66],cons_movnt[i,67],cons_movnt[i,68],cons_movnt[i,69],cons_movnt[i,70],cons_movnt[i,71],merc->pr_fat,cons_movnt[i,24],merc->desc_icm1,merc->sittrib})
+                ENDIF
+        NEXT
+        mensagem('Pressione qualquer tecla p/continuar - <ESC>p/Sair')
+        INKEY(0)
+        IF LASTKEY() = 27
+                LOOP
+        ENDIF
+        nota('2')
+        wvw_lclosewindow()
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+*********************** FIM ***************************
+*******************************
+* PROCURA A DUPLICATA
+*******************************
+
+FUNCTION ver_dup(mnum)
+**********************
+
+LOCAL msele,morde,point
+MEMVAR mvencimento,mnum_dup
+point := RECNO()
+msele := SELE()
+morde := INDEXORD()
+
+***************
+SELE('dupr');ORDSETFOCUS(7)
+GO TOP
+***************
+SEEK mnum
+IF FOUND()
+        mvencimento := dupr->venc
+        mnum_dup := dupr->duplicata
+        SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+        GO point
+        RETURN NIL
+ENDIF
+SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+GO point
+RETURN NIL
+********************* F I M ****************************************************
+

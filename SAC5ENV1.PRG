@@ -1,0 +1,154 @@
+**************************************
+* EMISSAO DE ENVELOPES - CLIENTES
+**************************************
+MEMVAR getlist,nivel_acess
+
+FUNCTION sac5env1()
+*****************
+LOCAL mprg:='SAC5ENV1',;
+      tela,opcao,lc,cc,lb,cb,;
+      msocio,mclassif,mcidade,mbairro,;
+      mmarg_sup,mmarg_esq,mcodigo,mpausa,mtip_cli
+
+PRIVATE mcliente,mcgc,mcpf,mcod_cli,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),cons_cli:={}
+
+IF ! ver_nivel(mprg,'EMISSAO DE ENVELOPE P/CLIENTE','156',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+lc := cc := 0
+lb := 16
+cb := 76
+*************
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('SACCEP','CEP');RETURN NIL;ENDIF
+//
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+set_key('cliente')
+SELE('cli');ORDSETFOCUS(2)
+GO TOP
+*************
+op_tela(lc,cc,lb,cb," Opcoes para ENVELOPE ")
+
+WHILE .T.
+        mtipo_imp := m_indiv[1,18]
+        mcod_cli := mcodigo  := 0
+        mtip_cli := SPACE(1)
+        mclassif := '2'
+        mbairro  := mcidade  := SPACE(20)
+        mmarg_sup  := mmarg_esq  := 10
+        mpausa   := 'S'
+
+        setcor(3)
+        DEVPOS(lc+1,cc+1);DEVOUT('Envelope INDIVIDUAL:')
+        DEVPOS(lc+2,cc+10);DEVOUT('Cod.Cliente:')
+        DEVPOS(lc+3,cc+1);DEVOUT('OPCOES:')
+        DEVPOS(lc+4,cc+9);DEVOUT('[ ] Tipo de Cliente')
+        DEVPOS(lc+5,cc+9);DEVOUT('Cod.Ult.Codigo Impresso:')
+        DEVPOS(lc+6,cc+1);DEVOUT('CLASSIFICACAO: [ ]')
+        DEVPOS(lc+7,cc+09);DEVOUT('[1] Matricula')
+        DEVPOS(lc+8,cc+09);DEVOUT('[2] Alfabetica')
+        DEVPOS(lc+9,cc+09);DEVOUT('[5] Cidade                       Bairro ')
+        DEVPOS(lc+10,cc+1);DEVOUT('Margem Superior....................:')
+        DEVPOS(lc+11,cc+1);DEVOUT('Margem Esqueda.....................:')
+        DEVPOS(lc+12,cc+1);DEVOUT('Fazer Pausa entre ENVELOPE [S/N]...:')
+        @ lc+13,cc+1 TO lc+13,cb-1
+        DEVPOS(lc+14,cc+1);DEVOUT('Cliente:')
+        Mensagem('Digite a matricula ou escolha as opcoes - [ESC] p/ Sair')
+        setcor(1)
+        @ lc+2,cc+22 GET mcod_cli PICT '999999' VALID ver_cli(mcod_cli,lc+2,cc+29)
+        READ
+        IF LASTKEY()=27
+                EXIT
+        ENDIF
+        SETCOR(3)
+        IF ! EMPTY(mcod_cli)
+                DEVPOS(lc+2,cc+29);DEVOUT(cons_cli[1,4])
+        ENDIF
+        SETCOR(1)
+        @ lc+4,cc+10  GET mtip_cli PICT '@!' VALID mtip_cli $ 'A,C,O,R,P,F,U, ' .AND. lim_get() WHEN mcod_cli = 0 .AND. men_get(lc+5,cc+10,'Informe o Tipo de Cliente: <C>Cliente  <R>Revenda <P>otencial <F>ilial <U>Funcionarios <A>ssociado <O>Outros < >P/TODOS')
+        @ lc+5,cc+33  GET mcodigo  PICT '99999' VALID ver_cli(mcodigo,lc+5,cc+39) .AND. lim_get() WHEN mcod_cli = 0 .AND. men_get(lc+6,cc+10,'Digite o ultimo codigo do cliente impresso ou nao preencha p/TODOS')
+        @ lc+6,cc+17  GET mclassif PICT '9' VALID mclassif $ '1,2,5' WHEN mcod_cli = 0
+        @ lc+9,cc+20  GET mcidade  PICT '@!' WHEN mclassif = '5' .AND. mcod_cli = 0
+        @ lc+9,cc+50  GET mbairro  PICT '@!' WHEN mcidade <> ' '
+        @ lc+10,cc+38  GET mmarg_sup  PICT '99'
+        @ lc+11,cc+39  GET mmarg_esq  PICT '999'
+        @ lc+12,cc+39  GET mpausa  PICT '@!' VALID mpausa $ 'S,N'
+        READ
+        IF LASTKEY()=27
+                RESTSCREEN(01,00,24,79,tela)
+                EXIT
+        ENDIF
+
+        IF ! imp_arq('ENV_CLI.REL','R')
+                LOOP
+        ENDIF
+
+        IF EMPTY(mcod_cli)
+                ****************
+                SELE('cli');ORDSETFOCUS(VAL(mclassif))
+                ****************
+                GO TOP
+                IF ! EMPTY(mcodigo)
+                        WHILE STRZERO(mcodigo,5) <> cli->cod_cli
+                                SKIP
+                        ENDDO
+                        SKIP
+                ENDIF
+                WHILE ! EOF()
+                        IF ! EMPTY(mtip_cli) .AND. mtip_cli <> cli->tipo
+                                SKIP
+                                LOOP
+                        ENDIF
+                        IF ! EMPTY(mcidade)
+                                IF mcidade <> cli-> cidade
+                                        SKIP
+                                        LOOP
+                                ENDIF
+                                IF ! EMPTY(mbairro)
+                                        IF mbairro <> cli-> bairro
+                                                SKIP
+                                                LOOP
+                                        ENDIF
+                                ENDIF
+                        ENDIF
+
+                        SETPOS(lc+14,cc+10);DISPOUT(cons_cli[1,2]+'-'+cli->razao)
+                        IF mpausa = 'S'
+                                SETPOS(lc+15,cc+10);DISPOUT('Pressione qualquer tecla p/continuar')
+                                INKEY(0)
+                                IF LASTKEY() = 27
+                                        EXIT
+                                ENDIF
+                        ELSE
+                                SETPOS(lc+15,cc+10);DISPOUT('Aguarde o final da impressao....')
+                        ENDIF
+                        IMPRT(mtipo_imp,'C')
+                        DEVPOS(PROW()+mmarg_sup,mmarg_esq);DEVOUT(cli->razao+' ('+STR(cons_cli[1,2],5)+')')
+                        DEVPOS(PROW()+1,mmarg_esq);DEVOUT(cli->endereco+', '+RTRIM(cli->numero)+IF(! EMPTY(RTRIM(cli->complemento)),' - Compl.:'+RTRIM(cli->complemento),''))
+                        DEVPOS(PROW()+1,mmarg_esq);DEVOUT(RTRIM(cli->bairro)+' - '+RTRIM(cli->cidade)+' - '+RTRIM(cli->uf))
+                        DEVPOS(PROW()+1,mmarg_esq);DEVOUT('CEP: '+cli->cep)
+                        EJECT
+                        SKIP
+
+                ENDDO
+        ELSE
+                SETPOS(lc+14,cc+10);DISPOUT(cons_cli[1,2]+'-'+cli->razao)
+                IMPRT(mtipo_imp,'C')
+                DEVPOS(PROW()+mmarg_sup,mmarg_esq);DEVOUT(cli->razao+' ('+STR(cons_cli[1,2],5)+')')
+                DEVPOS(PROW()+1,mmarg_esq);DEVOUT(cli->endereco+', '+RTRIM(cli->numero)+IF(! EMPTY(RTRIM(cli->complemento)),' - Compl.:'+RTRIM(cli->complemento),''))
+                DEVPOS(PROW()+1,mmarg_esq);DEVOUT(RTRIM(cli->bairro)+' - '+RTRIM(cli->cidade)+' - '+RTRIM(cli->uf))
+                DEVPOS(PROW()+1,mmarg_esq);DEVOUT('CEP: '+cli->cep)
+                DEVPOS(PROW()+mmarg_esq,00);DEVOUT(' ')
+                EJECT
+        ENDIF
+        IMPRT(mtipo_imp,'N')
+        EJECT
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('ENV_CLI.REL')
+
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+***************************** F I M *******************************************

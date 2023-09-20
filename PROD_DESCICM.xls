@@ -1,0 +1,758 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<?fr-application created="FastReport®"?>
+<?fr-application homesite="http://www.fast-report.com"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+<DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+<Title></Title>
+<Author></Author>
+<Created>10/10/2022T12:52:41Z</Created>
+<Version>...</Version>
+</DocumentProperties>
+<ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+<ProtectStructure>False</ProtectStructure>
+<ProtectWindows>False</ProtectWindows>
+</ExcelWorkbook>
+<Styles>
+<Style ss:ID="s0">
+<Font ss:FontName="Arial" ss:Size="10" ss:Color="#000000"/>
+<Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/>
+<Alignment ss:Horizontal="Left" ss:Vertical="Top" ss:WrapText="1" />
+<Borders>
+</Borders>
+</Style>
+<Style ss:ID="s1">
+<Font ss:FontName="Tahoma" ss:Size="8" ss:Color="#000000"/>
+<Interior ss:Color="#F0F0F0" ss:Pattern="Solid"/>
+<Alignment ss:Horizontal="Left" ss:Vertical="Center" ss:WrapText="1" />
+<Borders>
+<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#000000" />
+<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#000000" />
+<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#000000" />
+<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#000000" />
+</Borders>
+</Style>
+<Style ss:ID="s2">
+<Font ss:FontName="Arial" ss:Size="10" ss:Color="#000000"/>
+<Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/>
+<Alignment ss:Horizontal="Right" ss:Vertical="Top" ss:WrapText="1" />
+<Borders>
+<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#000000" />
+</Borders>
+</Style>
+<Style ss:ID="s3">
+<Font ss:FontName="Tahoma" ss:Size="8" ss:Color="#000000"/>
+<Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/>
+<Alignment ss:Horizontal="Left" ss:Vertical="Top" ss:WrapText="1" />
+<Borders>
+</Borders>
+</Style>
+<Style ss:ID="s4">
+<Font ss:FontName="Tahoma" ss:Size="8" ss:Color="#000000"/>
+<Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/>
+<Alignment ss:Horizontal="Left" ss:Vertical="Center" ss:WrapText="1" />
+<Borders>
+<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#000000" />
+<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#000000" />
+<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#000000" />
+<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#000000" />
+</Borders>
+</Style>
+<Style ss:ID="s5">
+<Font ss:FontName="Arial" ss:Size="10" ss:Color="#000000"/>
+<Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/>
+<Alignment ss:Horizontal="Right" ss:Vertical="Top" ss:WrapText="1" />
+<Borders>
+</Borders>
+</Style>
+</Styles>
+<Worksheet ss:Name="Page 1">
+<Table ss:ExpandedColumnCount="7" ss:ExpandedRowCount="58" x:FullColumns="1" x:FullRows="1">
+<Column ss:AutoFitWidth="0" ss:Width="7.99418604651163"/>
+<Column ss:AutoFitWidth="0" ss:Width="37.0639534883721"/>
+<Column ss:AutoFitWidth="0" ss:Width="177.325581395349"/>
+<Column ss:AutoFitWidth="0" ss:Width="26.5176235465116"/>
+<Column ss:AutoFitWidth="0" ss:Width="14.9067950581395"/>
+<Column ss:AutoFitWidth="0" ss:Width="272.025472383721"/>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s1" >
+<Data ss:Type="String">COD_MERC</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s1" >
+<Data ss:Type="String">MERC</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s1" >
+<Data ss:Type="String">DESC_ICM</Data>
+</Cell>
+<Cell ss:Index="6" ss:MergeDown="52" ss:StyleID="s0" >
+<Data ss:Type="String"></Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#48&#48&#48&#56</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#54&#48 &#52.&#50MM ROLO GERDAU</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#48&#48&#48&#57</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#54&#48 &#53.&#48MM ROLO GERDAU</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#48&#48&#55&#55</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#55X&#49&#55) GERDAU</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#48&#48&#56&#49</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#55X&#50&#55) GERDAU</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#48&#49&#48&#55</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#55X&#50&#50) GERDAU</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#48&#49&#51&#49</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#49&#55X&#49&#55) GERDAU</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#48&#49&#54&#55</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">CUMEEIRA NORMAL TOD &#49&#53 G &#49,&#49&#48M</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#48&#51&#53&#53</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#49&#55X&#50&#55) GERDAU</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#48&#53&#56&#49</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">COLUNA POP &#54M GG &#51/&#56  X &#55X&#49&#55</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#48&#57&#52&#55</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#54&#48 &#52.&#50MM DOBRADO GERDAU</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#48&#57&#52&#56</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#54&#48 &#53.&#48MM DOBRADO GERDAU</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#48&#53&#54</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">SAPATA &#54&#48X&#54&#48 &#53/&#49&#54 PONTUAL</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#48&#53&#55</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">SAPATA &#56&#48X&#56&#48 &#51/&#56 PONTUAL</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="20.3488372093023">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#48&#55&#54</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#54&#48 &#52.&#50MM DOBRADO ARCELOR MI</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="20.3488372093023">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#48&#55&#55</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#54&#48 &#53.&#48MM DOBRADO ARCELOR MI</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#49&#53&#50</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">COLUNA POP &#54M GG &#53/&#49&#54 X &#55X&#49&#55</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#49&#54&#51</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#55X&#49&#55) PONTUAL</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#49&#54&#53</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#49&#55X&#49&#55) PONTUAL</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#53&#54&#50</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">SAPATA &#54&#48X&#54&#48 &#51/&#56 PONTUAL</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#53&#54&#51</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">COLUNA &#54M &#53/&#49&#54 X &#55X&#49&#55 SINOBRAS</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="20.3488372093023">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#55&#54&#56</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#54&#48 &#52.&#50MM DOBRADO GERDAU &#49&#50M</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#55&#56&#52</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#54&#48 &#52.&#50MM ROLO ACO CEARENSE</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#56&#50&#55</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#49&#55X&#49&#55)</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#56&#50&#56</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#49&#55X&#50&#55)</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#56&#50&#57</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#55X&#49&#55)</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#56&#51&#48</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#55X&#50&#50)</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#56&#51&#49</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#55X&#50&#55)</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#56&#56&#55</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#53&#48 &#51/&#56  DOBRADO SINOBRAS</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#56&#57&#54</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#53&#48 &#51/&#56  DOBRADO GERDAU</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#56&#57&#56</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#53&#48 &#53/&#49&#54 DOBRADO GERDAU</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#57&#48&#48</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#53&#48 &#49/&#50  DOBRADO GERDAU</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#57&#48&#50</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">MALHA LEVE &#50&#48X&#50&#48 &#51.&#52</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#57&#48&#53</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#53&#48 &#49&#48.&#48MM RETO &#49&#50M ARCELOR</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#57&#50&#54</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#53&#48 &#49/&#50  DOBRADO SINOBRAS</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#57&#51&#48</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#53&#48 &#53/&#49&#54 DOBRADO SINOBRAS</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="20.3488372093023">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#57&#52&#53</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#54&#48 &#52.&#50MM DOBRADO ACO CEAREN</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#57&#52&#57</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#53&#48 &#49/&#52  DOBRADO SINOBRAS</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#57&#53&#55</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#53&#48 &#53/&#56  DOBRADO GERDAU</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#57&#56&#51</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#54&#48 &#52.&#50MM ROLO</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#49&#57&#56&#52</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#54&#48 &#53.&#48MM ROLO</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#50&#49&#52&#55</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">REJ DO MESTRE TPII SILICONADO PLANTINA &#53</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#50&#49&#53&#56</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#49&#55X&#52&#53)</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#50&#49&#53&#57</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#49&#55X&#54&#48)</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#50&#49&#54&#49</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#55X&#50&#53)</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#50&#49&#56&#52</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#54&#48 &#52.&#50MM DOBRADO</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#50&#49&#56&#53</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">VERGALHAO CA &#54&#48 &#53.&#48MM DOBRADO</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#50&#49&#57&#57</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">SAPATA &#54&#48X&#54&#48 &#51/&#56</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#50&#50&#48&#48</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">SAPATA &#54&#48X&#54&#48 &#53/&#49&#54</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#50&#50&#48&#49</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">SAPATA &#56&#48X&#56&#48 &#51/&#56</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#50&#50&#57&#53</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#53.&#48 (&#49&#48X&#54&#48)</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.3546511627907">
+<Cell ss:Index="1" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">&#48&#50&#51&#51&#53</Data>
+</Cell>
+<Cell ss:Index="3" ss:StyleID="s4" >
+<Data ss:Type="String">ESTRIBO VERGALHAO &#52.&#50 (&#49&#52X&#52&#53)</Data>
+</Cell>
+<Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s4" >
+<Data ss:Type="String">S</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="69.951039244186">
+<Cell ss:Index="1" ss:MergeAcross="4" ss:StyleID="s0" >
+<Data ss:Type="String"></Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="1.47065555959302">
+<Cell ss:Index="1" ss:MergeAcross="5" ss:StyleID="s2" >
+<Data ss:Type="String">&#49</Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="12.2631017078488">
+<Cell ss:Index="1" ss:StyleID="s5" >
+<Data ss:Type="String"></Data>
+</Cell>
+<Cell ss:Index="2" ss:MergeAcross="2" ss:MergeDown="1" ss:StyleID="s3" >
+<Data ss:Type="String">&#49&#48/&#49&#48/&#50&#48&#50&#50 &#49&#50:&#53&#48:&#51&#54</Data>
+</Cell>
+<Cell ss:Index="5" ss:MergeAcross="1" ss:StyleID="s5" >
+<Data ss:Type="String"></Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="1.47065555959302">
+<Cell ss:Index="1" ss:MergeDown="1" ss:StyleID="s0" >
+<Data ss:Type="String"></Data>
+</Cell>
+<Cell ss:Index="5" ss:MergeAcross="1" ss:MergeDown="1" ss:StyleID="s0" >
+<Data ss:Type="String"></Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+<Row ss:Height="1.6246351380814">
+<Cell ss:Index="2" ss:MergeAcross="2" ss:StyleID="s0" >
+<Data ss:Type="String"></Data>
+</Cell>
+<Cell ss:Index="7" />
+</Row>
+</Table>
+<WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+<PageSetup>
+<PageMargins x:Bottom="0.37593984962406" x:Left="0.18796992481203" x:Right="0.37593984962406" x:Top="0.37593984962406"/>
+</PageSetup>
+</WorksheetOptions>
+<PageBreaks xmlns="urn:schemas-microsoft-com:office:excel">
+<RowBreaks>
+</RowBreaks>
+</PageBreaks>
+</Worksheet>
+</Workbook>

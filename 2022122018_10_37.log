@@ -1,0 +1,19 @@
+Error BASE/1081  Error de argumento: +
+Funcoes: HRBFUN.PRG->ARQ_ACESSO(11266)
+Funcoes: SAC00.PRG->AFTERINKEY(2658)
+Funcoes: SAC00.PRG->(b)SAC0(1404)
+Funcoes: ->INKEY(0)
+Funcoes: SAC00.PRG->SAC0(1434)
+Funcoes: SACROT1.PRG->SENHA(824)
+Funcoes: SISCOM.PRG->MAIN(1129)
+************************************************************************************************************************
+Data e Hora........: 20/12/22 - 18:10:37
+Empresa............: DOCE GOSTO MAIS
+Sistema/Atualizacao: .: SISCOM :. Sistema Automacao Comercial - v22.12.19
+Usuario do Sistema.: 999
+Nome do Executavel.: C:\HELIO\SIACHB\SISCOM.EXE
+Nome do Micro......: HELIO1 - Nome Terminal: helio
+Memoria Disponivel.: 1952804 - Espaço em Disco....: 123488313344
+Pasta de Diretorio.: HELIO\SIACHB
+Sistema Operacional: Windows NT Professional 6.02.9200
+Caminho do Banco...: localhost:C:\HELIO\SIACHB\SISCOM.GDB

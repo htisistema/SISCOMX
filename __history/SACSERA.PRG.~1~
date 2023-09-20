@@ -1,0 +1,447 @@
+********************
+* Relatorio do SERASA
+********************
+
+FUNCTION sacsera
+**************
+LOCAL MPRG:='SACSERA',mtitulo:='EMISSAO DO ARQUIVO DO SERASA',;
+      lci,cci,lba,cba,opcao,mdata1,mdata2,mponto,mcont:=0,;
+      mcont_01:=0,mcont_02:=0,mcont_03:=0,mcont_04:=0,mcont_07:=0
+
+PRIVATE mtipo_imp,mimp_tipo:=0,marq:=SPACE(35)
+
+IF ! ver_nivel(mprg,mtitulo,'15',nivel_acess,,'AMBIE')
+        RETURN NIL
+ENDIF
+
+lci := cci := 0
+lba := 21
+cba := 90
+*----------------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupr','dupr');RETURN NIL;ENDIF
+*----------------------------------------------------------------------------
+SET CENTURY ON
+op_tela(03,02,13,90,mtitulo,,'1')
+WHILE .T.
+        exibi_prg(mprg)
+        mcont_01:=0;mcont_02:=0;mcont_03:=0;mcont_04:=0;mcont_07:=0
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        mdata1 := mdata_sis - 30
+        mdata2 := mdata_sis
+        mensagem('Preencha os Campos - <ESC>p/Abandonar')
+        DEVPOS(lci+1,cci+1);DEVOUT('Data Inicial...:')
+        DEVPOS(lci+2,cci+1);DEVOUT('Data Final.....:')
+        @ lci+3,cci TO lci+3,cba
+        DEVPOS(lci+4,cci+1);DEVOUT('Clientes.......:')
+        DEVPOS(lci+5,cci+1);DEVOUT('Pag.em Dia.....:')
+        DEVPOS(lci+6,cci+1);DEVOUT('Doc.pagos......:')
+        DEVPOS(lci+7,cci+1);DEVOUT('Doc.Vencer/Venc:')
+        DEVPOS(lci+8,cci+1);DEVOUT('Hearder........:')
+
+        @ lci+1,cci+18 GET mdata1 PICT '99/99/99' VALID IF(EMPTY(mdata1),.F.,.T.)
+        @ lci+2,cci+18 GET mdata2 PICT '99/99/99' VALID IF(mdata2 < mdata1 ,.F.,.T.)
+        READ
+        IF LASTKEY() = 27
+                SET CENTURY OFF
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        opcao := op_simnao('S','Confirma o periodo:')
+        IF ! imp_arq('SERASA.TXT','R')
+                LOOP
+        ENDIF
+        DEVPOS(00,00);DEVOUT('00')
+        DEVPOS(00,02);DEVOUT('CONV INF COMERCIAL')
+        DEVPOS(00,22);DEVOUT(SUBSTR(mcgc_firm,1,2)+SUBSTR(mcgc_firm,4,3)+SUBSTR(mcgc_firm,8,3))
+        DEVPOS(00,30);DEVOUT(SUBSTR(mcgc_firm,17,2))
+*       DEVPOS(00,22);DEVOUT(SUBSTR(mcgc_firm,1,2)+SUBSTR(mcgc_firm,4,3)+SUBSTR(mcgc_firm,8,3)+SUBSTR(mcgc_firm,12,4)+SUBSTR(mcgc_firm,17,2))
+        DEVPOS(00,32);DEVOUT(SUBSTR(DTOC(mdata1),7)+SUBSTR(DTOC(mdata1),4,2)+SUBSTR(DTOC(mdata1),1,2))
+        DEVPOS(00,40);DEVOUT(SUBSTR(DTOC(mdata2),7)+SUBSTR(DTOC(mdata2),4,2)+SUBSTR(DTOC(mdata2),1,2))
+        DEVPOS(00,48);DEVOUT('M')
+        DEVPOS(00,64);DEVOUT(SPACE(3))
+        DEVPOS(00,67);DEVOUT(SUBSTR(mcgc_firm,12,4))
+        DEVPOS(00,71);DEVOUT(SPACE(29))
+	cons_cli:={}
+        //cComm  := "SELECT * FROM saccli WHERE cgc IS NOT NULL AND c = "+sr_cdbvalue(mcod_merc)
+        cComm  := "SELECT * FROM saccli WHERE cgc IS NOT NULL AND data_cad IS NOT NULL"
+        sr_getconnection():exec(ccomm,,.t.,@cons_cli)
+	IF LEN(cons_cli) > 0
+		i:=mcont:=0
+	        FOR i = 1 TO LEN(cons_cli)
+        	        prog_imp(RECNO(),cons_cli[i,2]+'-'+cons_cli[i,3])
+        	        SETPOS(lci+4,cci+18);DISPOUT(TRANSFORM(mcont++,'999,999,999'))
+                        DEVPOS(PROW()+1,00);DEVOUT('01')
+	                DEVPOS(PROW(),02);DEVOUT(SUBSTR(cons_cli[i,32],1,8))
+        	        DEVPOS(PROW(),10);DEVOUT(SUBSTR(cons_cli[i,32],13,2))
+                	DEVPOS(PROW(),12);DEVOUT('01')
+                        DEVPOS(PROW(),14);DEVOUT(SUBSTR(DTOC(cons_cli[i,5]),7)+SUBSTR(DTOC(cons_cli[i,5]),4,2)+SUBSTR(DTOC(cons_cli[i,5]),1,2))
+	                IF (mdata_sis - cons_cli[i,11]) > 380
+        	        	DEVPOS(PROW(),22);DEVOUT('3')
+                	ELSEIF (mdata_sis - cons_cli[i,5]) > 350
+	                        DEVPOS(PROW(),22);DEVOUT('1')
+	                ELSE
+        		        DEVPOS(PROW(),22);DEVOUT('2')
+                	ENDIF
+                        IF VAL(SUBSTR(cons_cli[i,32],9,4)) > 1
+	        	        DEVPOS(PROW(),23);DEVOUT(SUBSTR(cons_cli[i,32],9,4))
+        	        ELSE
+                		DEVPOS(PROW(),23);DEVOUT(STRZERO(0,4))
+                        ENDIF
+	                DEVPOS(PROW(),27);DEVOUT(SPACE(73))
+        	        mcont_01 ++
+                NEXT
+        ENDIF
+	cons_cli:={}
+        //cComm  := "SELECT * FROM saccli WHERE cgc IS NOT NULL AND c = "+sr_cdbvalue(mcod_merc)
+        cComm  := "SELECT * FROM saccli WHERE cgc IS NOT NULL AND ult_comp IS NOT NULL"
+        sr_getconnection():exec(ccomm,,.t.,@cons_cli)
+	IF LEN(cons_cli) > 0
+		i:=mcont:=0
+	        FOR i = 1 TO LEN(cons_cli)
+                        DEVPOS(PROW()+1,00);DEVOUT('01')
+                        DEVPOS(PROW(),02);DEVOUT(SUBSTR(cons_cli[i,32],1,8))
+                        DEVPOS(PROW(),10);DEVOUT(SUBSTR(cons_cli[i,32],13,2))
+                        DEVPOS(PROW(),12);DEVOUT('02')
+                        DEVPOS(PROW(),14);DEVOUT(SUBSTR(STRZERO(cons_cli[i,12],14,2),1,11)+SUBSTR(STRZERO(cons_cli[i,12],14,2),13))
+                        DEVPOS(PROW(),27);DEVOUT(SUBSTR(DTOC(cons_cli[i,11]),7)+SUBSTR(DTOC(cons_cli[i,11]),4,2)+SUBSTR(DTOC(cons_cli[i,11]),1,2))
+                        DEVPOS(PROW(),35);DEVOUT(STRZERO(0,13))
+                        DEVPOS(PROW(),48);DEVOUT(STRZERO(0,8))
+                        DEVPOS(PROW(),56);DEVOUT(STRZERO(0,13))
+                        DEVPOS(PROW(),69);DEVOUT(STRZERO(0,8))
+                        IF VAL(SUBSTR(cons_cli[i,32],9,4)) > 1
+                                DEVPOS(PROW(),77);DEVOUT(SUBSTR(cons_cli[i,32],9,4))
+                        ELSE
+                                DEVPOS(PROW(),77);DEVOUT(STRZERO(0,4))
+                        ENDIF
+                        DEVPOS(PROW(),81);DEVOUT(SPACE(19))
+                        mcont_02 ++
+                NEXT
+        ENDIF
+/*	
+	****************
+        SELE('cli');ORDSETFOCUS(1)
+        GO TOP
+        ****************
+        mcont := 0
+        WHILE ! EOF()
+                prog_imp(RECNO(),cons_cli[i,2]+'-'+cons_cli[i,3])
+                IF EMPTY(cons_cli[i,32])
+                        SKIP;LOOP
+                ENDIF
+                SETPOS(lci+4,cci+18);DISPOUT(TRANSFORM(mcont++,'999,999,999'))
+                IF ! EMPTY(cons_cli[i,5])
+                        DEVPOS(PROW()+1,00);DEVOUT('01')
+                        DEVPOS(PROW(),02);DEVOUT(SUBSTR(cons_cli[i,32],1,8))
+                        DEVPOS(PROW(),10);DEVOUT(SUBSTR(cons_cli[i,32],13,2))
+                        DEVPOS(PROW(),12);DEVOUT('01')
+                        DEVPOS(PROW(),14);DEVOUT(SUBSTR(DTOC(cons_cli[i,5]),7)+SUBSTR(DTOC(cons_cli[i,5]),4,2)+SUBSTR(DTOC(cons_cli[i,5]),1,2))
+                        IF (mdata_sis - cons_cli[i,11]) > 380
+                                DEVPOS(PROW(),22);DEVOUT('3')
+                        ELSEIF (mdata_sis - cons_cli[i,5]) > 350
+                                DEVPOS(PROW(),22);DEVOUT('1')
+                        ELSE
+                                DEVPOS(PROW(),22);DEVOUT('2')
+                        ENDIF
+                        IF VAL(SUBSTR(cons_cli[i,32],9,4)) > 1
+                                DEVPOS(PROW(),23);DEVOUT(SUBSTR(cons_cli[i,32],9,4))
+                        ELSE
+                                DEVPOS(PROW(),23);DEVOUT(STRZERO(0,4))
+                        ENDIF
+                        DEVPOS(PROW(),27);DEVOUT(SPACE(73))
+                        mcont_01 ++
+                ENDIF
+                IF ! EMPTY(cons_cli[i,11])
+                        DEVPOS(PROW()+1,00);DEVOUT('01')
+                        DEVPOS(PROW(),02);DEVOUT(SUBSTR(cons_cli[i,32],1,8))
+                        DEVPOS(PROW(),10);DEVOUT(SUBSTR(cons_cli[i,32],13,2))
+                        DEVPOS(PROW(),12);DEVOUT('02')
+                        DEVPOS(PROW(),14);DEVOUT(SUBSTR(STRZERO(cons_cli[i,12],14,2),1,11)+SUBSTR(STRZERO(cons_cli[i,12],14,2),13))
+                        DEVPOS(PROW(),27);DEVOUT(SUBSTR(DTOC(cons_cli[i,11]),7)+SUBSTR(DTOC(cons_cli[i,11]),4,2)+SUBSTR(DTOC(cons_cli[i,11]),1,2))
+                        DEVPOS(PROW(),35);DEVOUT(STRZERO(0,13))
+                        DEVPOS(PROW(),48);DEVOUT(STRZERO(0,8))
+                        DEVPOS(PROW(),56);DEVOUT(STRZERO(0,13))
+                        DEVPOS(PROW(),69);DEVOUT(STRZERO(0,8))
+                        IF VAL(SUBSTR(cons_cli[i,32],9,4)) > 1
+                                DEVPOS(PROW(),77);DEVOUT(SUBSTR(cons_cli[i,32],9,4))
+                        ELSE
+                                DEVPOS(PROW(),77);DEVOUT(STRZERO(0,4))
+                        ENDIF
+                        DEVPOS(PROW(),81);DEVOUT(SPACE(19))
+                        mcont_02 ++
+                ENDIF
+                SKIP
+        ENDDO
+*/
+
+	cons_cli:={}
+        cComm  := "SELECT * FROM saccli WHERE cgc IS NOT NULL"
+        sr_getconnection():exec(ccomm,,.t.,@cons_cli)
+	IF LEN(cons_cli) > 0
+	        mcont:=	i:=0
+	        FOR i = 1 TO LEN(cons_cli)
+	                prog_imp(RECNO(),cons_cli[i,2]+'-'+cons_cli[i,3])
+			cons_dupr:={}
+        		cComm  := "SELECT COUNT(*),SUM(vlpago) FROM sacdupr WHERE fornec = "+sr_cdbvalue(cons_cli[i,2])
+        		ccomm  := ccomm + " AND venc >= datpag AND datpag >= "+sr_cdbvalue(mdata1)+" AND datpag <= "+sr_cdbvalue(mdata2)
+			sr_getconnection():exec(ccomm,,.t.,@cons_dupr)
+			IF LEN(cons_dupr) > 0 .AND. cons_dupr[1,1] > 0
+	                        SETPOS(lci+5,cci+18);DISPOUT(TRANSFORM(i,'999,999,999'))
+        	                DEVPOS(PROW()+1,00);DEVOUT('01')
+                	        DEVPOS(PROW(),02);DEVOUT(SUBSTR(cons_cli[i,32],1,8))
+                        	DEVPOS(PROW(),10);DEVOUT(SUBSTR(cons_cli[i,32],13,2))
+	                        DEVPOS(PROW(),12);DEVOUT('03')
+        	                DEVPOS(PROW(),18);DEVOUT(SUBSTR(DTOC(mdata1),7)+SUBSTR(DTOC(mdata1),4,2))
+                	        DEVPOS(PROW(),24);DEVOUT(STRZERO(cons_dupr[1,1],5))
+                        	DEVPOS(PROW(),29);DEVOUT(SUBSTR(STRZERO(cons_dupr[1,2],14,2),1,11)+SUBSTR(STRZERO(cons_dupr[1,2],14,2),13))
+	                        IF VAL(SUBSTR(cons_cli[i,32],9,4)) > 1
+        	                        DEVPOS(PROW(),42);DEVOUT(SUBSTR(cons_cli[i,32],9,4))
+                	        ELSE
+                        	        DEVPOS(PROW(),42);DEVOUT(STRZERO(0,4))
+	                        ENDIF
+        	                DEVPOS(PROW(),46);DEVOUT(SPACE(54))
+                	        mcont_03 ++
+                        	mqtd := mavista := 0
+                        ENDIF
+		NEXT
+	ENDIF
+/*
+        ****************
+        SELE('cli');ORDSETFOCUS(1)
+        GO TOP
+        ****************
+        mcont:=0
+        WHILE ! EOF()
+                prog_imp(RECNO(),cons_cli[i,2]+'-'+cons_cli[i,3])
+                IF EMPTY(cons_cli[i,32])
+                        SKIP;LOOP
+                ENDIF
+                ****************
+                SELE('dupr');ORDSETFOCUS(6)
+                GO TOP
+                ****************
+                IF ! dupr->(DBSEEK(cons_cli[i,2]))
+                        ****************
+                        SELE('cli');ORDSETFOCUS(1)
+                        SKIP
+                        ****************
+                        LOOP
+                ENDIF
+                mponto := RECNO()
+                mqtd := mavista := 0
+                WHILE cons_cli[i,2] = dupr->fornec .AND. ! EOF()
+                        IF (dupr->venc < dupr->datpag) ;
+                           .OR. (dupr->datpag < mdata1 .OR. dupr->datpag >mdata2)
+                                SKIP;LOOP
+                        ENDIF
+                        mqtd ++
+                        mavista := mavista + dupr->vlpago
+                        SKIP
+                ENDDO
+                IF ! EMPTY(mavista)
+                        SETPOS(lci+5,cci+18);DISPOUT(TRANSFORM(mcont++,'999,999,999'))
+                        DEVPOS(PROW()+1,00);DEVOUT('01')
+                        DEVPOS(PROW(),02);DEVOUT(SUBSTR(cons_cli[i,32],1,8))
+                        DEVPOS(PROW(),10);DEVOUT(SUBSTR(cons_cli[i,32],13,2))
+                        DEVPOS(PROW(),12);DEVOUT('03')
+                        DEVPOS(PROW(),18);DEVOUT(SUBSTR(DTOC(mdata1),7)+SUBSTR(DTOC(mdata1),4,2))
+                        DEVPOS(PROW(),24);DEVOUT(STRZERO(mqtd,5))
+                        DEVPOS(PROW(),29);DEVOUT(SUBSTR(STRZERO(mavista,14,2),1,11)+SUBSTR(STRZERO(mavista,14,2),13))
+                        IF VAL(SUBSTR(cons_cli[i,32],9,4)) > 1
+                                DEVPOS(PROW(),42);DEVOUT(SUBSTR(cons_cli[i,32],9,4))
+                        ELSE
+                                DEVPOS(PROW(),42);DEVOUT(STRZERO(0,4))
+                        ENDIF
+                        DEVPOS(PROW(),46);DEVOUT(SPACE(54))
+                        mcont_03 ++
+                        mqtd := mavista := 0
+                ENDIF
+                ****************
+                SELE('cli');ORDSETFOCUS(1)
+                SKIP
+                ****************
+        ENDDO
+*/
+
+	cons_dupr:={}
+        cComm  := "SELECT * FROM sacdupr WHERE "
+        ccomm  := ccomm + " datpag >= "+sr_cdbvalue(mdata1)+" AND datpag <= "+sr_cdbvalue(mdata2)
+	sr_getconnection():exec(ccomm,,.t.,@cons_dupr)
+	IF LEN(cons_dupr) > 0
+		i:=mcont:=0
+		FOR i = 1 TO LEN(cons_dupr)
+	                prog_imp(i)
+			cons_cli:={}
+		        cComm  := "SELECT * FROM saccli WHERE cgc IS NOT NULL AND cod_cli = "+sr_cdbvalue(cons_dupr[i,7])
+        		sr_getconnection():exec(ccomm,,.t.,@cons_cli)
+			IF LEN(cons_cli) = 0
+				LOOP
+			ENDIF
+        	        SETPOS(lci+6,cci+18);DISPOUT(TRANSFORM(i,'999,999,999'))
+                	DEVPOS(PROW()+1,00);DEVOUT('01')
+	                DEVPOS(PROW(),02);DEVOUT(SUBSTR(cons_cli[1,32],1,8))
+        	        DEVPOS(PROW(),10);DEVOUT(SUBSTR(cons_cli[1,32],13,2))
+                	DEVPOS(PROW(),12);DEVOUT('04')
+	                DEVPOS(PROW(),18);DEVOUT(SUBSTR(cons_dupr[i,4],1,10))
+        	        DEVPOS(PROW(),28);DEVOUT(SUBSTR(DTOC(cons_dupr[i,11]),7)+SUBSTR(DTOC(cons_dupr[i,11]),4,2)+SUBSTR(DTOC(cons_dupr[i,11]),1,2))
+                	DEVPOS(PROW(),36);DEVOUT(SUBSTR(DTOC(cons_dupr[i,13]),7)+SUBSTR(DTOC(cons_dupr[i,13]),4,2)+SUBSTR(DTOC(cons_dupr[i,13]),1,2))
+	                DEVPOS(PROW(),44);DEVOUT(SUBSTR(STRZERO(cons_dupr[i,20],14,2),1,11)+SUBSTR(STRZERO(cons_dupr[i,20],14,2),13))
+        	        IF VAL(SUBSTR(cons_cli[1,32],9,4)) > 1
+                	        DEVPOS(PROW(),57);DEVOUT(SUBSTR(cons_cli[1,32],9,4))
+	                ELSE    	
+        	                DEVPOS(PROW(),57);DEVOUT(STRZERO(0,4))
+                	ENDIF
+	                DEVPOS(PROW(),61);DEVOUT(SPACE(39))
+        	        mcont_04 ++
+                NEXT
+	ENDIF
+
+
+/*		
+
+        ****************
+        SELE('dupr');ORDSETFOCUS(3)
+        GO TOP
+        ****************
+        dupr->(DBSEEK(DTOS(mdata1),.T.))
+        IF EOF()
+                atencao('Nao existe movimento neste periodo !!!')
+                LOOP
+        ENDIF
+        mponto := RECNO()
+        mqtd :=  mavista := mcont := 0
+        WHILE dupr->datpag <= mdata2 .AND. ! EOF()
+                prog_imp(RECNO())
+                ver_cli(VAL(dupr->fornec),,,'*')
+                IF EMPTY(cons_cli[i,32])
+                        SKIP;LOOP
+                ENDIF
+                SETPOS(lci+6,cci+18);DISPOUT(TRANSFORM(mcont++,'999,999,999'))
+                DEVPOS(PROW()+1,00);DEVOUT('01')
+                DEVPOS(PROW(),02);DEVOUT(SUBSTR(cons_cli[i,32],1,8))
+                DEVPOS(PROW(),10);DEVOUT(SUBSTR(cons_cli[i,32],13,2))
+                DEVPOS(PROW(),12);DEVOUT('04')
+                DEVPOS(PROW(),18);DEVOUT(SUBSTR(dupr->duplicata,1,10))
+                DEVPOS(PROW(),28);DEVOUT(SUBSTR(DTOC(dupr->venc),7)+SUBSTR(DTOC(dupr->venc),4,2)+SUBSTR(DTOC(dupr->venc),1,2))
+                DEVPOS(PROW(),36);DEVOUT(SUBSTR(DTOC(dupr->datpag),7)+SUBSTR(DTOC(dupr->datpag),4,2)+SUBSTR(DTOC(dupr->datpag),1,2))
+                DEVPOS(PROW(),44);DEVOUT(SUBSTR(STRZERO(dupr->vlpago,14,2),1,11)+SUBSTR(STRZERO(dupr->vlpago,14,2),13))
+                IF VAL(SUBSTR(cons_cli[i,32],9,4)) > 1
+                        DEVPOS(PROW(),57);DEVOUT(SUBSTR(cons_cli[i,32],9,4))
+                ELSE
+                        DEVPOS(PROW(),57);DEVOUT(STRZERO(0,4))
+                ENDIF
+                DEVPOS(PROW(),61);DEVOUT(SPACE(39))
+                mcont_04 ++
+                SKIP
+        ENDDO
+*/
+
+
+	cons_cli:={}
+        cComm  := "SELECT * FROM saccli WHERE cgc IS NOT NULL"
+        sr_getconnection():exec(ccomm,,.t.,@cons_cli)
+	IF LEN(cons_cli) > 0
+	        mcont:=	i:=0
+	        FOR i = 1 TO LEN(cons_cli)
+	                prog_imp(i,cons_cli[i,2]+'-'+cons_cli[i,3])
+			cons_dupr:={}
+        		
+			cComm  := "SELECT SUM(valor) FROM sacdupr WHERE fornec = "+sr_cdbvalue(cons_cli[i,2])
+        		ccomm  := ccomm + " AND datpag IS NULL AND pago IS NULL AND venc >= "+sr_cdbvalue(mdata1)+" AND venc <= "+sr_cdbvalue(mdata2)
+			sr_getconnection():exec(ccomm,,.t.,@cons_dupr)
+			
+			IF LEN(cons_dupr) > 0 .AND. cons_dupr[1,1] > 0
+	                        SETPOS(lci+7,cci+18);DISPOUT(TRANSFORM(i,'999,999,999'))
+        	                DEVPOS(PROW()+1,00);DEVOUT('01')
+                	        DEVPOS(PROW(),02);DEVOUT(SUBSTR(cons_cli[i,32],1,8))
+                        	DEVPOS(PROW(),10);DEVOUT(SUBSTR(cons_cli[i,32],13,2))
+	                        DEVPOS(PROW(),12);DEVOUT('07')
+        	                DEVPOS(PROW(),14);DEVOUT(SUBSTR(DTOC(mdata2),7)+SUBSTR(DTOC(mdata2),4,2))
+                	        DEVPOS(PROW(),20);DEVOUT(SUBSTR(STRZERO(cons_dupr[1,1],14,2),1,11)+SUBSTR(STRZERO(cons_dupr[1,1],14,2),13))
+                        	DEVPOS(PROW(),33);DEVOUT(SUBSTR(STRZERO(cons_dupr[1,1],14,2),1,11)+SUBSTR(STRZERO(cons_dupr[1,1],14,2),13))
+	                        IF VAL(SUBSTR(cons_cli[i,32],9,4)) > 1
+        	                        DEVPOS(PROW(),46);DEVOUT(SUBSTR(cons_cli[i,32],9,4))
+                	        ELSE
+                        	        DEVPOS(PROW(),46);DEVOUT(STRZERO(0,4))
+	                        ENDIF
+        	                DEVPOS(PROW(),51);DEVOUT(SPACE(50))
+                	        mcont_07 ++
+                        	mvencer := mvencida := 0
+                        ENDIF
+		NEXT
+	ENDIF
+
+
+/*
+        ****************
+        SELE('cli');ORDSETFOCUS(1)
+        GO TOP
+        ****************
+        mcont:=0
+        WHILE ! EOF()
+                prog_imp(RECNO(),cons_cli[i,2]+'-'+cons_cli[i,3])
+                IF EMPTY(cons_cli[i,32])
+                        SKIP;LOOP
+                ENDIF
+                ****************
+                SELE('dupr');ORDSETFOCUS(6)
+                GO TOP
+                ****************
+                IF ! dupr->(DBSEEK(cons_cli[i,2]))
+                        ****************
+                        SELE('cli');ORDSETFOCUS(1)
+                        SKIP
+                        ****************
+                        LOOP
+                ENDIF
+                mponto := RECNO()
+                mqtd := mvencer := mvencida := 0
+                WHILE cons_cli[i,2] = dupr->fornec .AND. ! EOF()
+                        IF (! EMPTY(dupr->datpag) .OR. ! EMPTY(dupr->pago));
+                           .OR. (dupr->venc < mdata1 .OR. dupr->venc >mdata2)
+                                SKIP;LOOP
+                        ENDIF
+                        mqtd ++
+                        mvencer := mvencer + dupr->valor
+                        mvencida := mvencida + dupr->valor
+                        SKIP
+                ENDDO
+                IF ! EMPTY(mvencer) .OR. ! EMPTY(mvencida)
+                        SETPOS(lci+7,cci+18);DISPOUT(TRANSFORM(mcont++,'999,999,999'))
+                        DEVPOS(PROW()+1,00);DEVOUT('01')
+                        DEVPOS(PROW(),02);DEVOUT(SUBSTR(cons_cli[i,32],1,8))
+                        DEVPOS(PROW(),10);DEVOUT(SUBSTR(cons_cli[i,32],13,2))
+                        DEVPOS(PROW(),12);DEVOUT('07')
+                        DEVPOS(PROW(),14);DEVOUT(SUBSTR(DTOC(mdata2),7)+SUBSTR(DTOC(mdata2),4,2))
+                        DEVPOS(PROW(),20);DEVOUT(SUBSTR(STRZERO(mvencida,14,2),1,11)+SUBSTR(STRZERO(mvencida,14,2),13))
+                        DEVPOS(PROW(),33);DEVOUT(SUBSTR(STRZERO(mvencer,14,2),1,11)+SUBSTR(STRZERO(mvencer,14,2),13))
+                        IF VAL(SUBSTR(cons_cli[i,32],9,4)) > 1
+                                DEVPOS(PROW(),46);DEVOUT(SUBSTR(cons_cli[i,32],9,4))
+                        ELSE
+                                DEVPOS(PROW(),46);DEVOUT(STRZERO(0,4))
+                        ENDIF
+                        DEVPOS(PROW(),51);DEVOUT(SPACE(50))
+                        mcont_07 ++
+                        mvencer := mvencida := 0
+                ENDIF
+                ****************
+                SELE('cli');ORDSETFOCUS(1)
+                SKIP
+                ****************
+        ENDDO
+*/
+        SETPOS(lci+8,cci+18);DISPOUT('99'+'-'+STRZERO(mcont_01,11)+'-'+STRZERO(mcont_02,11)+'-'+STRZERO(mcont_03,11)+'-'+STRZERO(mcont_04,11)+'-'+STRZERO(mcont_07,11))
+        DEVPOS(PROW()+1,00);DEVOUT('99')
+        DEVPOS(PROW(),02);DEVOUT(STRZERO(mcont_01,11))
+        DEVPOS(PROW(),13);DEVOUT(STRZERO(mcont_02,11))
+        DEVPOS(PROW(),24);DEVOUT(STRZERO(mcont_03,11))
+        DEVPOS(PROW(),35);DEVOUT(STRZERO(mcont_04,11))
+        DEVPOS(PROW(),46);DEVOUT(STRZERO(mcont_07,11))
+        DEVPOS(PROW(),58);DEVOUT(SPACE(43))
+        atencao('Pressione qualquer tecla p/contrinuar')
+        SET DEVI TO SCREEN;SET PRINT OFF;SET PRINT TO
+        conf_impressao('SERASA.TXT')
+ENDDO

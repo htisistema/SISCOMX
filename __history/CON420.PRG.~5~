@@ -1,0 +1,494 @@
+MEMVAR nivel_acess,getlist,mdata_sis
+*********************************************************
+**** CON420.PRG: Relatorio -> Duplicatas EMITIDAS (conta a receber)
+*********************************************************
+FUNCTION con420(mtp_420)
+************************
+LOCAL MPRG:='CON420',;
+      t_ini,t_fim,mod,td_mes,tp_mes,pag,mcod_vend,;
+      mfornec,tot,tot_g,tot_din,tot_gin,l_mes,tt,;
+      xxx,mtit,mtipo,mtip,mdia,mt_dia,opcao,mquantd,mtipo_con,tipo_sit := ' ',;
+      mtp_rel:=' ',mimp_com:='N',mtot_comi:=0,i,mtot_juros:=0,mtot_ind:=0,;
+      mvlr_ind:=0,msub_ind:=0,mjuros_ind:=0,mcod_aux,mmulta,mjuros,mdias_atras,;
+      mtitulo,mn_banco:=SPACE(3),mvlr_juros,mtot_dif,cons_doc:={}
+
+PRIVATE mcliente,mcgc,mcpf,mcod_cli,bank,mnome_vend,mcom_ven,;
+        mtipo_imp,mimp_tipo:=0,marq:=SPACE(35),;
+        marq_prin,mimp_rel,mporta_imp,mcodemp:=SPACE(3),malias,mcartao:='',mcod_cart:=0,cons_cli:={}
+
+IF mtp_420 = NIL
+        IF ! ver_nivel(mprg,'CONTA A RECEBER (RELATORIO DE DOCUMENTOS EMITIDOS)','156',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+        malias := 'dupr'
+        mtitulo := '(CONTAS A RECEBER)'
+ELSE
+        IF ! ver_nivel(mprg+mtp_420,'CREDITO CLIENTE (RELATORIO DE DOCUMENTOS EMITIDOS)','156',nivel_acess,,'AMBIE')
+                RETURN NIL
+        ENDIF
+        malias := 'cred'
+        mtitulo := '(CREDITO CLIENTE)'
+ENDIF
+*---------------------------------------------------------------------
+CLOSE ALL
+IF ! AbriArq('insopera','sen');RETURN NIL;ENDIF
+IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+IF ! AbriArq('sacped_s','ped_s');RETURN NIL;ENDIF
+IF ! AbriArq('saccred','cred');RETURN NIL;ENDIF
+IF ! AbriArq('sacdupr',malias);RETURN NIL;ENDIF
+*---------------------------------------------------------------------
+****************
+SELE('cli');ORDSETFOCUS(1)
+****************
+op_tela(05,10,20,82," Documentos Emitidos ")
+@ 00,00 SAY "Codigo da Empresa........:"
+@ 01,00 SAY "Tipo de Documento........:"
+@ 02,00 SAY "Codigo do Cliente........:"
+@ 03,00 SAY "Codigo do Vendedor.......:"
+@ 04,00 SAY "Pag.em [C]arteira [B]anco:    No.:"
+@ 05,00 SAY "Data do Inicio...........:"
+@ 06,00 SAY "Data do Final............:"
+@ 07,00 SAY "So [P]agos [N]ao Pagos [G]eral:"
+@ 08,00 SAY "So Docum. Transferido [S/n]...:"
+@ 09,00 SAY "Imprimir as Comissao [S/n]....:"
+@ 10,00 SAY "Juros Financeiro [S/N]........:"
+@ 11,00 SAY 'Imprimir os PRODUTOS.....[S/N]:'
+
+WHILE .T.
+        exibi_prg(mprg)
+********* VARIAVEIS DE IMPRESSAO *******************
+        mtipo_imp := m_indiv[1,18]
+****************************************************
+        bank=SPACE(1)
+        mcod_cli := mcod_vend := mod := 0
+        mcliente := SPACE(30)
+        t_ini := t_fim := CTOD("  /  /  ")
+        mfornec := SPACE(4)
+        tipo_sit := 'G'
+        mtp_rel := mimp_com := mvlr_juros := mimp_produto := 'N'
+        mtip := SPACE(2)
+        @ 00,27 GET mcodemp PICT "999" VALID ver_emp(mcodemp,00,31,,'*') WHEN mmult_emp ='S'
+        @ 01,27 GET mtip PICT "@!" VALID ver_tipdc(mtip,'*')
+        @ 02,27 GET mcod_cli pict "99999" VALID lim_get() .AND. ver_cli(mcod_cli,02,33) WHEN mcod_vend = 0 .AND. men_get(03,33,'Informe o cliente que deseja ou nao informe p/imprimir todos')
+        READ   
+        IF ! EMPTY(mcod_cli);ver_cli(mcod_cli,02,33);ENDIF
+        @ 03,27 GET mcod_vend pict "999" VALID ven(mcod_vend,03,31) .AND. lim_get() WHEN mcod_cli = 0 .AND. men_get(04,33,'Informe o Vendedor que deseja ou nao informe p/imprimir todos')
+        @ 04,27 GET bank pict "@!" VALID bank $ 'C,B, '
+        @ 04,35 GET mn_banco PICT "999" WHEN bank = 'B'
+        @ 05,27 GET t_ini VALID lim_get() WHEN men_get(06,27,'Informe a data inicial do periodo que deseja imprimir')
+        @ 06,27 GET t_fim VALID lim_get() WHEN men_get(07,27,'Informe a data final do periodo que deseja imprimir')
+        @ 07,34 GET tipo_sit PICT '@!' VALID tipo_sit $ 'P,N,G'
+        @ 08,34 GET mtp_rel PICT '@!' VALID mtp_rel $ 'S,N'
+        @ 09,34 GET mimp_com PICT '@!' VALID mimp_com $ 'S,N'
+        @ 10,34 GET mvlr_juros PICT '@!' VALID mvlr_juros $ 'S,N' WHEN mimp_com = 'N'
+        @ 11,34 GET mimp_produto PICT '@!' VALID mimp_produto $ 'S,N'
+        READ
+        IF LASTKEY()=27
+                CLOSE ALL
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        IF mtip = 'DU'
+                mtit := "DUPLICATAS EMITIDAS " + mtitulo
+                mtip := 'DU'
+        ELSEIF mtip = 'CH'
+                mtit := "CHEQUES EMITIDOS " + mtitulo
+                mtip := 'CH'
+        ELSEIF mtip = 'CT'
+                mtit := "CARTOES EMITIDOS " + mtitulo
+                mtip := 'CT'
+                mcod_cart := 0
+                op_tela(00,00,02,65,' Codigo do Cartao ')
+                @ 01,00 SAY "Codigo do Cartao.........:"
+                @ 01,27 GET mcod_cart PICT '999' VALID ver_cartao(mcod_cart,01,31)     //.AND. lim_get() WHEN men_get(21,39,'Informe o codigo do cartao ou deixe em branco para todos')
+                READ
+                setcor(3)
+                DEVPOS(01,27);DEVOUT(STRZERO(mcod_cart,3))
+                setcor(1)
+                ver_cartao(mcod_cart,01,31)
+                opcao := op_simnao('S','Confirma o Cartao:')
+                wvw_lclosewindow()
+                IF opcao = 'N'
+                        LOOP
+                ENDIF
+        ELSEIF mtip = 'FI'
+                mtit := "FINANCEIRA EMITIDOS " + mtitulo
+                mtip := 'FI'
+                mcod_cart := 0
+                op_tela(10,10,12,75,' Codigo da Financeira ')
+                @ 01,00 SAY "Codigo Financeira........:"
+                @ 01,27 GET mcod_cart PICT '999' VALID IF(EMPTY(mcod_cart),.T.,ver_finan(mcod_cart,01,31))
+                READ
+                //mcod_cart := VAL(ver_finan(mcod_cart))
+                setcor(3)
+                DEVPOS(01,27);DEVOUT(STRZERO(mcod_cart,3))
+                setcor(1)
+                ver_finan(mcod_cart,01,31)
+                opcao := op_simnao('S','Confirma a Financeira:')
+                wvw_lclosewindow()
+                IF opcao = 'N'
+                        LOOP
+                ENDIF
+        ELSE
+                mtit := "DOCUMENTOS EMITIDOS " + mtitulo
+        ENDIF
+        mtipo := DTOC(t_ini)+' a '+DTOC(t_fim)
+        mtit := mtit+' - '+IF(tipo_sit='P','Doc.PAGOS',IF(tipo_sit='N','Doc.NAO PAGO','DOC.GERAL'))
+        IF EMPTY(mcod_cli) .AND. mimp_com = 'N'
+                mtipo_con := mensagem1('Escolha o tipo de consulta [A]nalitico [S]intetico CLIENTE [T]Sintetico TIPO DOC.:','A','A,S,T')
+        ELSE
+                mtipo_con := 'A'
+        ENDIF
+        i := td_mes := tp_mes := 0
+        IF t_ini = CTOD("  /  /  ") .OR. t_fim = CTOD('  /  /  ')
+                t_ini=CTOD("01/01/94")
+                t_fim=CTOD("31/12/09")
+        ENDIF
+        cons_doc := {}
+        IF mtp_420 = NIL
+                cComm  := "SELECT * FROM sacdupr WHERE emissao >= "+sr_cdbvalue(t_ini)+" AND emissao <= "+sr_cdbvalue(t_fim)
+        ELSE
+                cComm  := "SELECT * FROM saccred WHERE emissao >= "+sr_cdbvalue(t_ini)+" AND emissao <= "+sr_cdbvalue(t_fim)
+        ENDIF
+        IF ! EMPTY(mcod_cli)
+                ccomm := ccomm + " AND fornec = "+sr_cdbvalue(mcod_cli)
+        ENDIF
+        IF ! EMPTY(mtip)
+                ccomm := ccomm + " AND tipo = "+sr_cdbvalue(mtip)
+        ENDIF
+        IF mtp_rel = 'S'
+                ccomm := ccomm + " AND doc_tran IS NOT NULL"
+        ENDIF
+        IF ! EMPTY(mcod_cart)
+                ccomm := ccomm + " AND numero = "+sr_cdbvalue(STRZERO(mcod_cart,3))
+                IF(mtip = 'CT',ver_cartao(mcod_cart),ver_finan(mcod_cart))
+                mtipo := mtipo + ' - Cartao: '+STRZERO(mcod_cart,3)+'-'+mcartao
+        ENDIF
+        IF ! EMPTY(mcod_vend)
+                ccomm := ccomm + " AND vendedor = "+sr_cdbvalue(STRZERO(mcod_vend,3))
+        ENDIF
+        IF ! EMPTY(bank)
+                ccomm := ccomm + " AND banco = "+sr_cdbvalue(bank)
+        ENDIF
+        IF ! EMPTY(mn_banco)
+                ccomm := ccomm + " AND numero = "+sr_cdbvalue(mn_banco)
+        ENDIF
+        IF ! EMPTY(mcodemp)
+                ccomm := ccomm + " AND empresa = "+sr_cdbvalue(mcodemp)
+        ENDIF
+        IF mtipo_con = 'A'
+                ccomm := ccomm + " ORDER BY emissao,fornec,banco,duplicata"
+        ELSEIF mtipo_con = 'S'
+                ccomm := ccomm + " ORDER BY fornec,banco,duplicata"
+        ELSE
+                ccomm := ccomm + " ORDER BY tipo,duplicata,fornec"
+        ENDIF
+        sr_getconnection():exec(ccomm,,.t.,cons_doc)
+        IF LEN(cons_doc) = 0
+                atencao('Nao existe documento neste Periodo...')
+                LOOP
+        ENDIF
+        //IF ! imp_arq('DOC_EMIT.REL','R',,,'N')
+        IF ! imp_arq('DOC_EMIT.REL','R')
+                wvw_lclosewindow()
+                RETURN NIL
+        ENDIF
+        IF mtipo_con = 'A'
+                pag := tot := tot_g := tot_din := tot_gin := mtot_dif := mt_dia := 0
+                mfornec := cons_doc[1,7]
+                l_mes=SUBSTR(DTOC(cons_doc[1,11]),4,5)
+                mdia := cons_doc[1,10]
+                i:=0
+                FOR i = 1 TO LEN(cons_doc)
+                        mcliente := SPACE(30)
+                        IF pag=0 .OR. PROW()>=59
+                                pag=pag+1
+                                IF pag>1
+                                        EJECT
+                                ENDIF
+                                cabecalho(pag,mtit,mtipo)
+                                imprt(mtipo_imp,'C')
+                                IF mcod_vend > 0
+                                        DEVPOS(PROW()+1,00);DEVOUT('Vendedor: '+STRZERO(mcod_vend,3)+' - '+mnome_vend)
+                                        DEVPOS(PROW(),00);DEVOUT('          '+STRZERO(mcod_vend,3)+' - '+mnome_vend)
+                                ENDIF
+                                DEVPOS(PROW()+1,0);DEVOUT( "Cod.  Cliente                                  No. Documento   Tp.Pag.  Emissao    Venc.     Valor  Dias  Sit."+IF(mtp_rel = 'S','  Doc.Trans.',''))
+                                IF mimp_com = 'S'
+                                        DEVPOS(PROW(),PCOL());DEVOUT( ' % Com  Vlr.Com No.Ped.')
+                                ENDIF
+                                IF mvlr_juros = 'S'
+                                        DEVPOS(PROW(),PCOL());DEVOUT( '   Pr.Venda  Dif.R$  Dif.%')
+                                ENDIF
+                                DEVPOS(PROW()+1,0);DEVOUT( REPLICATE("-",137))
+                                DEVPOS(PROW()+1,0);DEVOUT('')
+                        ENDIF
+                        IF mdia <> cons_doc[i,10]
+                                IF ! EMPTY(mt_dia)
+                                        DEVPOS(PROW()+1,77);DEVOUT('           --------------')
+                                        DEVPOS(PROW()+1,62);DEVOUT('Total da Emissao '+DTOC(mdia)+':')
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(mt_dia,'99,999,999.99'))
+                                        DEVPOS(PROW()+1,0);DEVOUT( REPLICATE("*",137))
+                                ENDIF
+                                mt_dia := 0
+                                mdia := cons_doc[i,10]
+                        ENDIF
+                        prog_imp(i,DTOC(cons_doc[i,10]))
+                        imprt(mtipo_imp,'C')
+                        IF tipo_sit <> 'G'
+                                IF tipo_sit = 'P'
+                                        IF EMPTY(cons_doc[i,13])
+                                                LOOP
+                                        ENDIF
+                                ELSE
+                                        IF ! EMPTY(cons_doc[i,13])
+                                                LOOP
+                                        ENDIF
+                                ENDIF
+                        ENDIF
+                        DEVPOS(PROW()+1,0);DEVOUT( STR(cons_doc[i,7],5)+" ")
+                        DEVPOS(PROW(),PCOL());DEVOUT( cons_doc[i,8]+" ")
+                        DEVPOS(PROW(),PCOL());DEVOUT( cons_doc[i,3]+" ")
+                        DEVPOS(PROW(),PCOL());DEVOUT( cons_doc[i,2]+cons_doc[i,4]+cons_doc[i,28]+" ")
+                        IF cons_doc[i,16] = 'C'
+                                DEVPOS(PROW(),PCOL());DEVOUT( 'CART.'+" ")
+                        ELSEIF cons_doc[i,16] = 'B'
+                                DEVPOS(PROW(),PCOL());DEVOUT( 'BANCO'+" ")
+                        ELSE
+                                DEVPOS(PROW(),PCOL());DEVOUT( '     '+" ")
+                        ENDIF
+                        DEVPOS(PROW(),PCOL());DEVOUT( DTOC(cons_doc[i,10])+" ")
+                        DEVPOS(PROW(),PCOL());DEVOUT( DTOC(cons_doc[i,11])+" ")
+                        DEVPOS(PROW(),PCOL());DEVOUT( transform(cons_doc[i,19],"@E 999,999.99")+" ")
+                        DEVPOS(PROW(),PCOL());DEVOUT( transform(cons_doc[i,11]-mdata_sis,"9999"))
+                        IF EMPTY(cons_doc[i,13])
+                                DEVPOS(PROW(),PCOL());DEVOUT( ' Abert')
+                        ELSE
+                                DEVPOS(PROW(),PCOL());DEVOUT( ' Pago ')
+                        ENDIF
+                        DEVPOS(PROW(),PCOL());DEVOUT( IF(mtp_rel = 'S','  '+cons_doc[i,37],' '))
+                        IF mimp_com = 'S'
+                                DEVPOS(PROW(),PCOL());DEVOUT( ' '+TRANSFORM(cons_doc[i,32]*100,'99.99'))
+                                DEVPOS(PROW(),PCOL());DEVOUT( ' '+TRANSFORM(cons_doc[i,19]*cons_doc[i,32],'9,999.99'))
+                                DEVPOS(PROW(),PCOL());DEVOUT( ' '+cons_doc[i,31])
+                                mtot_comi := mtot_comi + (cons_doc[i,19]*cons_doc[i,32])
+                        ENDIF
+                        IF mvlr_juros = 'S'
+                                mdif_vlr := juros_ped(cons_doc[i,31])
+                                DEVPOS(PROW(),PCOL());DEVOUT( ' '+TRANSFORM(cons_doc[i,19]-mdif_vlr,'99,999.99'))
+                                DEVPOS(PROW(),PCOL());DEVOUT( ' '+TRANSFORM(mdif_vlr,'9,999.99'))
+                                DEVPOS(PROW(),PCOL());DEVOUT( ' '+TRANSFORM(mdif_vlr/cons_doc[i,19],'999.99'))
+                                mtot_dif := mtot_dif + mdif_vlr
+                        ENDIF
+
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT(v_ped_nt(VAL(cons_doc[i,31]),'*','*'))
+                        IF mimp_produto = 'S'
+                                cons_ped := {}
+                                sr_getconnection():exec("SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(cons_doc[i,31]),,.t.,cons_ped)
+                                IF LEN(cons_ped) > 0
+                                        cont_ped := 0
+                                        FOR cont_ped = 1 TO LEN(cons_ped)
+                                                DEVPOS(PROW()+1,07);DEVOUT("Produto: "+cons_ped[cont_ped,6]+'-'+cons_ped[cont_ped,7]+' - '+cons_ped[cont_ped,10]+'  Quantd.:'+TRANSFORM(cons_ped[cont_ped,14],'9,999.99')+'  Preco:'+TRANSFORM(cons_ped[cont_ped,18],'999,999.99')+'  Total:'+TRANSFORM(cons_ped[cont_ped,18]*cons_ped[cont_ped,14],'999,999.99'))
+                                        NEXT
+                                ENDIF
+                        ENDIF
+
+*                        IF ver_serie() = '141259' .OR. ver_serie() = '141266' .OR. ver_serie() = '141267' .OR. ver_serie() = '141268'
+*                                ver_ped(cons_doc[i,31])
+*                        ENDIF
+                        tot=tot+1
+                        tot_g=tot_g+1
+                        tot_din=tot_din+cons_doc[i,19]
+                        tot_gin=tot_gin+cons_doc[i,19]
+                        mt_dia := mt_dia + cons_doc[i,19]
+                NEXT
+                i--
+                IF mdia <> cons_doc[i,10]
+                        IF ! EMPTY(mt_dia)
+                                DEVPOS(PROW()+1,77);DEVOUT('              --------------')
+                                DEVPOS(PROW()+1,62);DEVOUT('Total da Emissao '+DTOC(mdia)+':')
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(mt_dia,'99,999,999.99'))
+                                DEVPOS(PROW()+1,0);DEVOUT( REPLICATE("*",137))
+                        ENDIF
+                ENDIF
+                IF tot_din > 0
+                        DEVPOS(PROW()+1,0);DEVOUT( "Total de Documentos: "+transform(tot,"9999")+" - "+ltrim(transform(tot_din,"@E 999,999,999,999.99")))
+                        DEVPOS(PROW()+1,0);DEVOUT( REPLICATE("-",137))
+                ENDIF
+                IF PROW() >= 55
+                        EJECT
+                        pag=pag+1
+                        cabecalho(pag,mtit,mtipo)
+                ENDIF
+                imprt(mtipo_imp,'N')
+                DEVPOS(PROW()+2,0);DEVOUT( "*** RESUMO FINAL ***")
+                DEVPOS(PROW()+2,0);DEVOUT( "Total de Documentos EMITIDOS no Periodo: "+transform(tot_g,"99999")+" - "+ltrim(transform(tot_gin,"@E 9,999,999.99")))
+                IF mimp_com = 'S'
+                        DEVPOS(PROW()+1,0);DEVOUT( "Total de Comissao: "+ltrim(transform(mtot_comi,"@E 999,999.99")))
+                ENDIF
+                IF mvlr_juros = 'S'
+                DEVPOS(PROW()+1,0);DEVOUT( "Total a Preco de Venda.........................: "+ltrim(transform(tot_gin+mtot_dif,"@E 9,999,999.99")))
+                DEVPOS(PROW()+1,0);DEVOUT( "Total da Diferenca R$..........................: "+ltrim(transform(mtot_dif,"@E 9,999,999.99")))
+                DEVPOS(PROW()+1,0);DEVOUT( "Total da Diferenca (%).........................: "+ltrim(transform(mtot_dif/tot_gin,"@E 999.99")))
+                ENDIF
+                DEVPOS(PROW()+2,0);DEVOUT( time())
+                EJECT
+                SETPRC(00,00)
+        ELSEIF mtipo_con = 'S' .OR. mtipo_con = 'T'
+                pag:=tot:=tot_g:=tot_din:=tot_gin:=mt_dia :=mtot_juros := 0
+                l_mes=SUBSTR(DTOC(cons_doc[1,10]),4,5)
+                mdia := cons_doc[1,11]
+                mtipo := DTOC(t_ini)+' a '+DTOC(t_fim)
+                i:=0
+                FOR i = 1 TO LEN(cons_doc)
+                        mtot_ind := mvlr_ind := msub_ind := mjuros_ind := 0
+                        IF mtipo_con = 'S'
+                                mcod_aux := STR(cons_doc[i,7],5)
+                                mfornec  := STR(cons_doc[i,7],5)
+                        ELSE
+                                mcod_aux := cons_doc[i,2]
+                                mfornec  := cons_doc[i,2]
+                        ENDIF
+                        WHILE mcod_aux = mfornec
+                                IF pag=0 .OR. PROW()>=59
+                                        pag=pag+1
+                                        IF pag>1
+                                                EJECT
+                                        ENDIF
+                                        cabecalho(pag,mtit,mtipo)
+                                        imprt(mtipo_imp,'C')
+                                        IF mcod_vend > 0
+                                                DEVPOS(PROW()+1,00);DEVOUT('Vendedor: '+STRZERO(mcod_vend,3)+' - '+mnome_vend)
+                                                DEVPOS(PROW(),00);DEVOUT('          '+STRZERO(mcod_vend,3)+' - '+mnome_vend)
+                                        ENDIF
+                                        DEVPOS(PROW()+1,0);DEVOUT( "Cod.  Cliente                                     No. Doc.       Tp.Pag.   Emissao   Vencim         Valor  Dias     Juros      Total")
+                                        DEVPOS(PROW()+1,0);DEVOUT( REPLICATE("-",137))
+                                ENDIF
+                                ***************** CONDICOES ************************
+                                IF tipo_sit <> 'G'
+                                        IF tipo_sit = 'P'
+                                                IF EMPTY(cons_doc[i,13])
+                                                        IF mtipo_con = 'S'
+                                                                mfornec := STR(cons_doc[i,7],5)
+                                                        ELSE
+                                                                mfornec := cons_doc[i,2]
+                                                        ENDIF
+                                                        mdia := cons_doc[i,10]
+                                                        i++
+                                                        LOOP
+                                                ENDIF
+                                        ELSE
+                                                IF ! EMPTY(cons_doc[i,13])
+                                                        IF mtipo_con = 'S'
+                                                                mfornec := STR(cons_doc[i,7],5)
+                                                        ELSE
+                                                                mfornec := cons_doc[i,2]
+                                                        ENDIF
+                                                        mdia := cons_doc[i,10]
+                                                        i++
+                                                        LOOP
+                                                ENDIF
+                                        ENDIF
+                                ENDIF
+                                ***************** FIM CONDICOES ************************
+                                imprt(mtipo_imp,'C')
+                                DEVPOS(PROW()+1,0);DEVOUT( STR(cons_doc[i,7],5)+" ")
+                                DEVPOS(PROW(),PCOL());DEVOUT( cons_doc[i,8]+" ")
+                                DEVPOS(PROW(),PCOL());DEVOUT( cons_doc[i,3]+" ")
+                                DEVPOS(PROW(),PCOL());DEVOUT( cons_doc[i,2]+cons_doc[i,4]+cons_doc[i,28]+" ")
+                                IF cons_doc[i,16] = 'C'
+                                        DEVPOS(PROW(),PCOL());DEVOUT( 'CARTEIRA'+" ")
+                                ELSEIF cons_doc[i,16] = 'B'
+                                        DEVPOS(PROW(),PCOL());DEVOUT( 'BANCO   '+" ")
+                                ELSE
+                                        DEVPOS(PROW(),PCOL());DEVOUT( '        '+" ")
+                                ENDIF
+                                DEVPOS(PROW(),PCOL());DEVOUT( DTOC(cons_doc[i,10])+" ")
+                                DEVPOS(PROW(),PCOL());DEVOUT( DTOC(cons_doc[i,11])+" ")
+                                DEVPOS(PROW(),PCOL());DEVOUT( transform(cons_doc[i,19],"@E 999,999.99")+" ")
+                                DEVPOS(PROW(),PCOL());DEVOUT( transform(cons_doc[i,11]-mdata_sis,"9999")+' ')
+                                msub_ind := msub_ind + cons_doc[i,19]
+                                mtot_ind ++
+                                tot_g ++
+                                mmulta := mjuros := 0
+                                mdias_atras := mdata_sis-cons_doc[i,11]
+                                IF mdias_atras > 0
+                                        mmulta := cons_doc[i,19] * ((m_set[1,50])/100)
+                                        mjuros := mjuros + (cons_doc[i,19] * ((mdias_atras*m_set[1,51])/100))
+                                ENDIF
+                                mtot_juros := mtot_juros + mmulta+mjuros
+                                mjuros_ind := mjuros_ind + mmulta+mjuros
+                                mvlr_ind := mvlr_ind + cons_doc[i,19]+mmulta+mjuros
+                                tot_gin=tot_gin+cons_doc[i,19]
+                                DEVPOS(PROW(),PCOL());DEVOUT( transform(mmulta+mjuros,"999,999.99")+' ')
+                                DEVPOS(PROW(),PCOL());DEVOUT( transform(cons_doc[i,19]+mmulta+mjuros,"999,999.99"))
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT(v_ped_nt(VAL(cons_doc[i,31]),'*','*'))
+*                               DEVPOS(PROW(),PCOL());DEVOUT( ' '+TRANSFORM(cons_doc[i,32]*100,'99.99')
+*                               DEVPOS(PROW(),PCOL());DEVOUT( ' '+TRANSFORM(cons_doc[i,19]*cons_doc[i,32],'9,999.99')
+*                               DEVPOS(PROW(),PCOL());DEVOUT( ' '+cons_doc[i,31]
+                                IF mimp_produto = 'S'
+                                        cons_ped := {}
+                                        sr_getconnection():exec("SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(cons_doc[i,31]),,.t.,cons_ped)
+                                        IF LEN(cons_ped) > 0
+                                                cont_ped := 0
+                                                FOR cont_ped = 1 TO LEN(cons_ped)
+                                                        DEVPOS(PROW()+1,07);DEVOUT("Produto: "+cons_ped[cont_ped,6]+'-'+cons_ped[cont_ped,7]+' - '+cons_ped[cont_ped,10]+'  Quantd.:'+TRANSFORM(cons_ped[cont_ped,14],'9,999.99')+'  Preco:'+TRANSFORM(cons_ped[cont_ped,18],'999,999.99')+'  Total:'+TRANSFORM(cons_ped[cont_ped,18]*cons_ped[cont_ped,14],'999,999.99'))
+                                                NEXT
+                                        ENDIF
+                                ENDIF
+                                i++
+                                IF i <= LEN(cons_doc)
+                                        mdia := cons_doc[i,10]
+                                        IF mtipo_con = 'S'
+                                                mfornec := STR(cons_doc[i,7],5)
+                                        ELSE
+                                                mfornec := cons_doc[i,2]
+                                        ENDIF
+                                ELSE
+                                        EXIT
+                                ENDIF
+                        ENDDO
+                        i--
+                        IF ! EMPTY(mtot_ind)
+                                DEVPOS(PROW()+1,0);DEVOUT( REPLICATE("-",137))
+                                DEVPOS(PROW()+1,0);DEVOUT( 'QUANTD: '+STRZERO(mtot_ind,6)+' - SUB-TOTAL:'+TRANSFORM(msub_ind,'999,999.99')+' - JURO+MULTA:'+TRANSFORM(mjuros_ind,'999,999.99')+' - TOTAL:'+TRANSFORM(mvlr_ind,'9,999,999.99'))
+                                DEVPOS(PROW()+1,0);DEVOUT( REPLICATE("-",137))
+                                mtot_ind := mvlr_ind := msub_ind := mjuros_ind := 0
+                        ENDIF
+                NEXT
+                IF PROW() >= 55
+                        EJECT
+                        pag=pag+1
+                        cabecalho(pag,mtit,mtipo)
+                ENDIF
+                IF ! EMPTY(mtot_ind)
+                        DEVPOS(PROW()+1,0);DEVOUT( REPLICATE("-",137))
+                        DEVPOS(PROW()+1,0);DEVOUT( 'QUANTD: '+STRZERO(mtot_ind,6)+' - SUB-TOTAL:'+TRANSFORM(msub_ind,'999,999.99')+' - JURO+MULTA:'+TRANSFORM(mjuros_ind,'999,999.99')+' - TOTAL:'+TRANSFORM(mvlr_ind,'9,999,999.99'))
+                        DEVPOS(PROW()+1,0);DEVOUT( REPLICATE("-",137))
+                        mtot_ind := mvlr_ind := msub_ind := mjuros_ind := 0
+                ENDIF
+                imprt(mtipo_imp,'N')
+                DEVPOS(PROW()+2,0);DEVOUT( "*** RESUMO FINAL ***")
+                DEVPOS(PROW()+1,0);DEVOUT( "Total de Documentos a RECEBER no periodo  Quantd.: "+transform(tot_g,"9999")+" - Sub-Total: "+transform(tot_gin,"@E 99,999,999.99")+' Juros+Multa: '+transform(mtot_juros,"@E 9,999,999.99")+' - Total: '+transform(tot_gin+mtot_juros,"@E 9,999,999.99"))
+                DEVPOS(PROW()+2,0);DEVOUT( time())
+                EJECT
+                SETPRC(00,00)
+        ENDIF
+        SET DEVI TO SCREEN;SET PRINT TO;SET PRINT OFF
+        conf_impressao('DOC_EMIT.REL')
+        /*
+        IF mimp_tipo = 2
+                lertexto('DOC_EMIT.REL')
+        ELSEIF mtipo_imp = 'D'
+                
+        ELSE
+                MYRUN('DOSPRINTER /RAW /DEL '+ALLTRIM(m_indiv[1,5])+'HTI.REL')
+        ENDIF
+        */
+        EXIT
+ENDDO
+wvw_lclosewindow()
+RETURN NIL
+******************************* F I M *******************************
+
+
+
