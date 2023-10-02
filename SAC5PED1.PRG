@@ -360,6 +360,12 @@ WHILE .T.
                 ELSE
                         formula()
                 ENDIF
+        ELSEIF m_indiv[1,9] = 'M'
+                IF mimp_dup2 = 'S'
+                        formula_1('*')
+                ELSE
+                        formula_1()
+                ENDIF
         ELSEIF m_indiv[1,9] = 'T'
                 bole_term()
         ENDIF

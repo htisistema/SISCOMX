@@ -178,8 +178,8 @@ WHILE .T.
                                         LOOP
                                 ELSEIF mop = '009'
                                         op_tela(10,10,12,80,'TIPO DO FORMULARIO DO PEDIDO')
-                                        DEVPOS(1,1);DEVOUT('TIPO FORMULARIO DO PEDIDO [F]orm. [B]obina [A]pp HTI:')
-                                        @ 1,COL()+1 GET m_indiv[1,VAL(mop)] PICT '@!' VALID m_indiv[1,VAL(mop)] $ 'B2,B ,F ,G ,P ,T ,L ,A '
+                                        DEVPOS(1,1);DEVOUT('TIPO FORMULARIO DO PEDIDO [F]orm. [B]obina [A]pp HTI [M]oveis:')
+                                        @ 1,COL()+1 GET m_indiv[1,VAL(mop)] PICT '@!' VALID m_indiv[1,VAL(mop)] $ 'B2,B ,F ,G ,P ,T ,L ,A ,M '
                                         READ
                                         fecha_tela()
                                         LOOP

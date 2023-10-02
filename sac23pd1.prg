@@ -4552,6 +4552,8 @@ WHILE .T.
                                         formula(,mavaria)
                                 ELSEIF m_indiv[1,9] = 'F1'
                                         formula(,mavaria)
+                                ELSEIF m_indiv[1,9] = 'M'
+                                        formula_1()
                                 //ELSEIF m_indiv[1,9] = 'P'
                                         //procomp()
                                 ENDIF

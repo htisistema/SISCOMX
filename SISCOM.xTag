@@ -1,17 +1,210 @@
 <!--
 ################################################
 # xDevStudio Project - xdev@kssoftware.com.br  #
-# Created @ 20/09/2023 11:17:30                #
+# Created @ 02/10/2023 19:17:20                #
 #                                              #
 ### Standard xDev TagList - Layout v1.5 ########
 -->
 <taglist>
+   <tag filename="C:\HTI\SISCOM\SAC30.PRG" name="op_menu" args=" " scope="PUBLIC" type="ptFunction" line="2677">
+   <tag filename="C:\HTI\SISCOM\SAC30.PRG" name="altped_rec" args=" " scope="PUBLIC" type="ptFunction" line="2513">
+   <tag filename="C:\HTI\SISCOM\SAC30.PRG" name="ler_cheque" args=" " scope="PUBLIC" type="ptFunction" line="2494">
+   <tag filename="C:\HTI\SISCOM\SAC30.PRG" name="sac30" args="<mnum> " scope="PUBLIC" type="ptFunction" line="9">
+   <tag filename="C:\HTI\SISCOM\SAC610.PRG" name="sac610" args="<mmanut> " scope="PUBLIC" type="ptFunction" line="6">
+   <tag filename="C:\HTI\SISCOM\SAC530.PRG" name="sac611" args=" " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\HTI\SISCOM\SACREC.PRG" name="sacrec2" args=" " scope="PUBLIC" type="ptFunction" line="210">
+   <tag filename="C:\HTI\SISCOM\SACREC.PRG" name="sacrec1" args=" " scope="PUBLIC" type="ptFunction" line="112">
+   <tag filename="C:\HTI\SISCOM\SACREC.PRG" name="sacrec" args=" " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\HTI\SISCOM\SACREC.PRG" name="sacrec5" args="<mtp> " scope="PUBLIC" type="ptFunction" line="633">
+   <tag filename="C:\HTI\SISCOM\SACREC.PRG" name="sacrec4" args=" " scope="PUBLIC" type="ptFunction" line="548">
+   <tag filename="C:\HTI\SISCOM\SACREC.PRG" name="sacrec3" args=" " scope="PUBLIC" type="ptFunction" line="417">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="Ctrl_v" args=" " scope="PUBLIC" type="ptFunction" line="11627">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="Ctrl_c" args=" " scope="PUBLIC" type="ptFunction" line="11620">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="main" args=" " scope="PUBLIC" type="ptFunction" line="11503">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ACBrDLL" args=" " scope="STATIC" type="ptConstant" line="11501">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="Converte_Imagem" args="<cARQ>, <cSALVA>, <cTIPO> " scope="PUBLIC" type="ptFunction" line="11440">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="WHITE" args=" " scope="STATIC" type="ptConstant" line="11439">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="BROWN" args=" " scope="STATIC" type="ptConstant" line="11438">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="MAGENTA" args=" " scope="STATIC" type="ptConstant" line="11437">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="RED" args=" " scope="STATIC" type="ptConstant" line="11436">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="CYAN" args=" " scope="STATIC" type="ptConstant" line="11435">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="GREEN" args=" " scope="STATIC" type="ptConstant" line="11434">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="BLUE" args=" " scope="STATIC" type="ptConstant" line="11433">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="BLACK" args=" " scope="STATIC" type="ptConstant" line="11432">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="RGB" args="<nR>, <nG>, <nB> " scope="STATIC" type="ptPseudoFUNC" line="11431">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="PS_SOLID" args=" " scope="STATIC" type="ptConstant" line="11430">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="PSD_DEFAULT" args=" " scope="STATIC" type="ptConstant" line="11429">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="GIF_DEFAULT" args=" " scope="STATIC" type="ptConstant" line="11428">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="TIFF_DEFAULT" args=" " scope="STATIC" type="ptConstant" line="11427">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="PNG_DEFAULT" args=" " scope="STATIC" type="ptConstant" line="11426">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="JPEG_DEFAULT" args=" " scope="STATIC" type="ptConstant" line="11425">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ICO_DEFAULT" args=" " scope="STATIC" type="ptConstant" line="11424">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="BMP_DEFAULT" args=" " scope="STATIC" type="ptConstant" line="11423">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_PSD" args=" " scope="STATIC" type="ptConstant" line="11421">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_GIF" args=" " scope="STATIC" type="ptConstant" line="11420">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_TIFF" args=" " scope="STATIC" type="ptConstant" line="11419">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_PNG" args=" " scope="STATIC" type="ptConstant" line="11418">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_JPEG" args=" " scope="STATIC" type="ptConstant" line="11417">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_ICO" args=" " scope="STATIC" type="ptConstant" line="11416">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_BMP" args=" " scope="STATIC" type="ptConstant" line="11415">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="DrawLabel" args="<linha>, <coluna>, <mtexto>, <mcor_tex>, <mcor_fundo>, <mnome_letra>, <mlargura>, <maltura> " scope="PUBLIC" type="ptFunction" line="11405">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="inserir_obs" args=" " scope="PUBLIC" type="ptFunction" line="11395">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_contrato" args="<mcodcliente> " scope="PUBLIC" type="ptFunction" line="11390">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_cest" args="<mcod_ncm> " scope="PUBLIC" type="ptFunction" line="11372">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_estado" args="<mestado> " scope="PUBLIC" type="ptFunction" line="11311">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="arq_acesso" args=" " scope="PUBLIC" type="ptFunction" line="11227">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="alt_tela" args=" " scope="PUBLIC" type="ptFunction" line="11201">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_hd" args=" " scope="PUBLIC" type="ptFunction" line="11182">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_ncm" args="<vncm>, <m_cst> " scope="PUBLIC" type="ptFunction" line="11164">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="arq_ncm" args=" " scope="PUBLIC" type="ptFunction" line="11094">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="fecha_conexaoDB" args=" " scope="PUBLIC" type="ptFunction" line="11075">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="senha_lib" args="<mtp_senha> " scope="PUBLIC" type="ptFunction" line="10913">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_descon" args="<vcli>, <vcod>, <vgru> " scope="PUBLIC" type="ptFunction" line="10886">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="contratos" args="<mc_cli> " scope="PUBLIC" type="ptFunction" line="10844">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="incl_contr" args="<m_cli>, <m_alterar> " scope="PUBLIC" type="ptFunction" line="10686">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="email_ped" args="<mno_ped>, <mc_cli> " scope="PUBLIC" type="ptFunction" line="10642">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="enviar_email" args="<mpara>, <m_nomepara>, <m_assunto>, <mtexto>, <m_arqenv>, <m_nomearq>, <m_bcc>, <mtip>, <mexclusivo> " scope="PUBLIC" type="ptFunction" line="10473">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="tab_formula" args="<mcod_m> " scope="PUBLIC" type="ptFunction" line="10356">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="Decrypt" args=" " scope="PUBLIC" type="ptMethod" line="10332">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="EnCrypt" args=" " scope="PUBLIC" type="ptMethod" line="10307">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="SetTextToDecrypt" args="<cText> " scope="PUBLIC" type="Inline Method" line="10294">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="SetTextToEncrypt" args="<cText> " scope="PUBLIC" type="Inline Method" line="10293">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="criptografia" args="<mtext>, <mtipo> " scope="PUBLIC" type="ptFunction" line="10263">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="tira_pt" args="<mpalavra> " scope="PUBLIC" type="ptFunction" line="10250">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_e_d" args=" " scope="PUBLIC" type="ptFunction" line="10194">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="enable_dis" args="<mmod>, <mdesc>, <mtipo> " scope="PUBLIC" type="ptFunction" line="10177">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="iat" args="<mvlr_iat>, <mind>, <mqtd_casa> " scope="PUBLIC" type="ptFunction" line="10150">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="tira_acento" args="<mpalavra> " scope="PUBLIC" type="ptFunction" line="10132">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="alt_prod2" args="<vcd_prod> " scope="PUBLIC" type="ptFunction" line="9743">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_banco" args="<mnum_banco>, <mret>, <mlin>, <mcol> " scope="PUBLIC" type="ptFunction" line="9715">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="f8_prod" args="<mc_prod>, <mki> " scope="PUBLIC" type="ptFunction" line="9600">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="dig_11" args="<mnumero> " scope="PUBLIC" type="ptFunction" line="9442">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="inventario" args=" " scope="PUBLIC" type="ptFunction" line="9295">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="apaga_HTI" args=" " scope="PUBLIC" type="ptFunction" line="9281">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="icm_merc" args="<cod> " scope="PUBLIC" type="ptFunction" line="9258">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_nat" args="<cod>, <mt_p>, <li>, <co> " scope="PUBLIC" type="ptFunction" line="9223">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="f5_trans" args="<mnome>, <mcgc>, <mend>, <mmun>, <muf>, <minsc>, <mplaca>, <mcod> " scope="PUBLIC" type="ptFunction" line="9134">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="c_credito" args=" " scope="PUBLIC" type="ptFunction" line="9091">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="cli_dup" args="<mcod>, <mcred>, <mdocu> " scope="PUBLIC" type="ptFunction" line="9047">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_aliq" args="<mcod>, <mtip> " scope="PUBLIC" type="ptFunction" line="9025">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_envelope" args="<menv>, <t>, <ali> " scope="PUBLIC" type="ptFunction" line="8991">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="limite" args="<mcod>, <mvalor>, <mtipo>, <mped> " scope="PUBLIC" type="ptFunction" line="8938">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_regi" args="<vreg>, <li>, <ci>, <t>, <mzero> " scope="PUBLIC" type="ptFunction" line="8890">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_cond" args="<mcod>, <ld>, <cd>, <p>, <valerta> " scope="PUBLIC" type="ptFunction" line="8850">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="pesq_cpf" args="<ncpf>, <narq>, <condicao> " scope="PUBLIC" type="ptFunction" line="8824">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_dia" args="<mv> " scope="PUBLIC" type="ptFunction" line="8802">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ped_rom" args="<mnum>, <tip> " scope="PUBLIC" type="ptFunction" line="8778">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="cons_luc" args=" " scope="PUBLIC" type="ptFunction" line="8750">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="unidade1" args="<munid> " scope="PUBLIC" type="ptFunction" line="8731">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="unidade" args="<munid> " scope="PUBLIC" type="ptFunction" line="8698">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="v_ped_nt" args="<num_pedido>, <p>, <mum> " scope="PUBLIC" type="ptFunction" line="8647">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="tabcliprod" args=" " scope="PUBLIC" type="ptFunction" line="8408">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="vercodbarra" args="<vgru>, <li>, <ci>, <t> " scope="PUBLIC" type="ptFunction" line="8368">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_gru" args="<vgru>, <ld>, <cd>, <t> " scope="PUBLIC" type="ptFunction" line="8338">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="cons_ref" args="<mref>, <mfab> " scope="PUBLIC" type="ptFunction" line="8155">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_dolar" args="<mdata>, <mtipo> " scope="PUBLIC" type="ptFunction" line="8050">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="f4_merc1" args="<cons>, <mfab>, <mvar_atac>, <mpercentual> " scope="PUBLIC" type="ptFunction" line="7682">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="teste" args=" " scope="PUBLIC" type="ptFunction" line="7671">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_foto" args=" " scope="PUBLIC" type="ptFunction" line="7665">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="f4_merc" args="<cons>, <mdcri>, <mvar_atac>, <mpercentual>, <prod> " scope="PUBLIC" type="ptFunction" line="7360">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_sgru" args="<vgru>, <vsgru>, <ld>, <cd>, <t> " scope="PUBLIC" type="ptFunction" line="7329">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_profi" args="<mcod_p>, <li>, <ci>, <m_mens> " scope="PUBLIC" type="ptFunction" line="7292">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="cliprod" args=" " scope="PUBLIC" type="ptFunction" line="7236">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="f7_cli" args="<mop>, <mrecno> " scope="PUBLIC" type="ptFunction" line="6750">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_ped" args="<mnum>, <mcodprod>, <mmen>, <mtpo>, <mver> " scope="PUBLIC" type="ptFunction" line="6702">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_compras" args="<mcod> " scope="PUBLIC" type="ptFunction" line="6693">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="juros_ped" args="<mnum> " scope="PUBLIC" type="ptFunction" line="6667">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="fimset" args=" " scope="PUBLIC" type="ptFunction" line="6653">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="cons_apag" args="<mop> " scope="PUBLIC" type="ptFunction" line="6487">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_cod" args="<vgru>, <li>, <ci>, <t>, <mzero>, <p> " scope="PUBLIC" type="ptFunction" line="6423">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="f9_conta" args="<mop> " scope="PUBLIC" type="ptFunction" line="6232">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="rec_dupr" args="<m_d>, <m_p>, <mqtd>, <mtot_m>, <mtot>, <mdat>, <mtipo_rel>, <mvlr_parc>, <mdev>, <mcodcli> " scope="PUBLIC" type="ptFunction" line="5857">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="dup_sis" args="<mcod>, <mnome>, <mend>, <mbairro>, <mcidade>, <muf>, <mcep>, <mtel>, <mcgc>, <minsc>, <mcpf>, <mend_cob>, <mbairro_cob>, <mcidade_cob>, <muf_cob>, <mcep_cob>, <mfone_cob>, <mtipo>, <mduplicata>, <memi_dup>, <mvenc_dup>, <mcod_ven>, <mvlr_dup>, <mfantasia>, <mn_fat>, <mv_fat>, <mdup_prom> " scope="PUBLIC" type="ptFunction" line="5638">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_aniv" args="<vcod>, <mpt> " scope="PUBLIC" type="ptFunction" line="5562">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="v_cnpjcpf" args="<ncgc> " scope="PUBLIC" type="ptFunction" line="5493">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="cons_che" args="<mop> " scope="PUBLIC" type="ptFunction" line="5403">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="cx_fechado" args=" " scope="PUBLIC" type="ptFunction" line="5381">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_mensa" args="<mcod>, <tp>, <rapida> " scope="PUBLIC" type="ptFunction" line="5309">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="verif_ean13" args="<mcodigo> " scope="PUBLIC" type="ptFunction" line="5269">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="expor_arq" args=" " scope="PUBLIC" type="ptFunction" line="5223">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="dbf_sql" args="<mfile1>, <mfile2> " scope="PUBLIC" type="ptFunction" line="5138">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="imp_dbf" args=" " scope="PUBLIC" type="ptFunction" line="5073">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="upload" args="<cBaseDir>, <cPrefix>, <cDriver> " scope="PUBLIC" type="ptFunction" line="3869">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="dbf2sql" args=" " scope="PUBLIC" type="ptFunction" line="3859">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="HDGETSERIAL" args=" " scope="PUBLIC" type="ptFunction" line="3845">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="hdserial" args=" " scope="PUBLIC" type="ptFunction" line="3814">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="GetIp" args=" " scope="PUBLIC" type="ptFunction" line="3798">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="venda_av" args="<vnum_ped> " scope="PUBLIC" type="ptFunction" line="3774">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="MyRun2" args="<cRun> " scope="PUBLIC" type="ptFunction" line="3747">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="MYRUN" args="<cComando> " scope="PUBLIC" type="ptFunction" line="3739">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="op_tela" args="<op_l>, <op_c>, <op_lb>, <op_cb>, <op_mensagem>, <mli>, <mcent>, <mclose>, <mmax> " scope="PUBLIC" type="ptFunction" line="3702">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="op_simnaocan" args="<mtipo_op>, <mensagem>, <mtitulo> " scope="PUBLIC" type="ptFunction" line="3686">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="op_simnao" args="<mtipo_op>, <mensagem>, <mtitulo> " scope="PUBLIC" type="ptFunction" line="3673">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_ini" args=" " scope="PUBLIC" type="ptFunction" line="3638">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_acess" args="<vcd>, <li>, <ci>, <t>, <mzero>, <p> " scope="PUBLIC" type="ptFunction" line="3591">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="sacos2" args="<mop> " scope="PUBLIC" type="ptFunction" line="3366">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="sacler" args="<mrel> " scope="PUBLIC" type="ptFunction" line="3326">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="alt_data" args=" " scope="PUBLIC" type="ptFunction" line="3298">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="sacsenha" args="<mop> " scope="PUBLIC" type="ptFunction" line="2491">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="TestaIe" args="<cIe1>, <cUF> " scope="PUBLIC" type="ptFunction" line="2169">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="incl_firma" args="<t> " scope="PUBLIC" type="ptFunction" line="1821">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="prog_imp" args="<no>, <mcampo> " scope="PUBLIC" type="ptFunction" line="1808">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="lim_get" args=" " scope="PUBLIC" type="ptFunction" line="1801">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="men_get" args="<men_li>, <men_ci>, <mensagem>, <mcol> " scope="PUBLIC" type="ptFunction" line="1795">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="CALCU" args=" " scope="PUBLIC" type="ptFunction" line="1786">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="exibi_prg" args="<vprg> " scope="PUBLIC" type="ptFunction" line="1780">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="datseman" args="<dds> " scope="PUBLIC" type="ptFunction" line="1758">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="botao_r" args="<l>, <c>, <ll>, <cc>, <t>, <titulo>, <lado>, <cor_tit>, <mtamanho> " scope="PUBLIC" type="ptFunction" line="1746">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="botao1" args="<l>, <c>, <ll>, <cc>, <t>, <titulo>, <lado>, <cor_tit>, <mtamanho> " scope="PUBLIC" type="ptFunction" line="1728">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="botao" args="<l>, <c>, <ll>, <cc>, <t>, <titulo>, <lado>, <cor_tit>, <mtamanho> " scope="PUBLIC" type="ptFunction" line="1677">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="imp_data" args="<mdata> " scope="PUBLIC" type="ptFunction" line="1668">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="SUB_BANNER" args="<LIN>, <COL>, <STRING>, <VCOR> " scope="PUBLIC" type="ptFunction" line="1653">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="erro" args=" " scope="PUBLIC" type="ptFunction" line="1619">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="CALE" args=" " scope="PUBLIC" type="ptFunction" line="1535">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="pitalico" args="<P> " scope="PUBLIC" type="ptFunction" line="1525">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ctrl_w" args=" " scope="PUBLIC" type="ptFunction" line="1518">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_texto" args=" " scope="PUBLIC" type="ptFunction" line="1446">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="form_calc" args=" " scope="PUBLIC" type="ptFunction" line="1383">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="texto" args=" " scope="PUBLIC" type="ptFunction" line="1242">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="PegaSenha" args="<Senha>, <LinSenha>, <ColSenha>, <cor>, <mtamanho> " scope="PUBLIC" type="ptProcedure" line="1200">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="PegaChar" args=" " scope="PUBLIC" type="ptFunction" line="1192">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="dcripto" args="<mexp> " scope="PUBLIC" type="ptFunction" line="1009">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="cripto" args="<mexp>, <q>, <mprod> " scope="PUBLIC" type="ptFunction" line="823">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="fim" args="<msist>, <mtti> " scope="PUBLIC" type="ptFunction" line="741">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="inicializa" args=" " scope="PUBLIC" type="ptFunction" line="679">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_modulo" args="<mmodulo> " scope="PUBLIC" type="ptFunction" line="662">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_nivel" args="<mmodulo>, <mdescri>, <mnivel>, <mconf_nivel>, <mamb>, <mopera> " scope="PUBLIC" type="ptFunction" line="603">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="AbriArq" args="<arq>, <al>, <tp>, <sit>, <vlocal>, <vext>, <vcamin>, <vmens> " scope="PUBLIC" type="ptFunction" line="532">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="adireg" args=" " scope="PUBLIC" type="ptFunction" line="515">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="bloqreg" args=" " scope="PUBLIC" type="ptFunction" line="499">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="bloqarq" args=" " scope="PUBLIC" type="ptFunction" line="484">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="cabecalho" args="<pag>, <tit>, <tipo>, <vprg>, <memp>, <vgru>, <vsubg>, <vforn>, <vcli>, <vven>, <vope> " scope="PUBLIC" type="ptFunction" line="382">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="janela" args="<li>, <cb>, <cab>, <p>, <lado> " scope="PUBLIC" type="ptFunction" line="363">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="limpa" args="<li>, <ci>, <lb>, <cb> " scope="PUBLIC" type="ptFunction" line="356">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="mensagem" args="<men> " scope="PUBLIC" type="ptFunction" line="348">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="mensagem2" args="<men>, <mvar>, <masc>, <mcond>, <mtp_var>, <linha> " scope="PUBLIC" type="ptFunction" line="303">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="mensagem1" args="<men>, <mop>, <mcond>, <linha>, <mop_linha>, <mesc>, <mmensagem> " scope="PUBLIC" type="ptFunction" line="237">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="atencao" args="<men>, <tipo>, <mtitulo> " scope="PUBLIC" type="ptFunction" line="228">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="imprt" args="<imp>, <tipo>, <linha>, <col> " scope="PUBLIC" type="ptFunction" line="130">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="tela" args="<mtitulo>, <tip> " scope="PUBLIC" type="ptFunction" line="87">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="setcor" args="<nTipCor>, <mtipo> " scope="PUBLIC" type="ptFunction" line="21">
    <tag filename="C:\HTI\SISCOM\SISCOM.PRG" name="Setup" args=" " scope="PUBLIC" type="ptFunction" line="1237">
    <tag filename="C:\HTI\SISCOM\SISCOM.PRG" name="TESTA2" args=" " scope="PUBLIC" type="ptFunction" line="1227">
    <tag filename="C:\HTI\SISCOM\SISCOM.PRG" name="TESTA1" args=" " scope="PUBLIC" type="ptFunction" line="1218">
    <tag filename="C:\HTI\SISCOM\SISCOM.PRG" name="DisplayTime" args=" " scope="PUBLIC" type="ptFunction" line="1206">
    <tag filename="C:\HTI\SISCOM\SISCOM.PRG" name="ShowClue" args="<.><.><.> " scope="PUBLIC" type="ptFunction" line="1166">
    <tag filename="C:\HTI\SISCOM\SISCOM.PRG" name="main" args="<mtc>, <mecf>, <mtipo_tela> " scope="PUBLIC" type="ptFunction" line="29">
+   <tag filename="C:\HTI\SISCOM\SACTPS.PRG" name="ver_pedido" args=" " scope="PUBLIC" type="ptFunction" line="108">
+   <tag filename="C:\HTI\SISCOM\SACTPS.PRG" name="rel_verif" args=" " scope="PUBLIC" type="ptFunction" line="0">
+   <tag filename="C:\HTI\SISCOM\SACTPS.PRG" name="bole_term" args=" " scope="PUBLIC" type="ptFunction" line="134">
+   <tag filename="C:\HTI\SISCOM\SACTPS.PRG" name="rec_os" args="<cli_bol>, <razao_bol>, <num>, <numos>, <mmod>, <seri>, <valor> " scope="PUBLIC" type="ptFunction" line="1160">
+   <tag filename="C:\HTI\SISCOM\SACTPS.PRG" name="imp_emba" args="<mn_pedido>, <mcx> " scope="PUBLIC" type="ptFunction" line="777">
+   <tag filename="C:\HTI\SISCOM\FORMULA.PRG" name="formula" args="<mdup_2>, <m_ava>, <mtipo_pag>, <mtp_email> " scope="PUBLIC" type="ptFunction" line="2">
+   <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="gerar_no_ped" args=" " scope="PUBLIC" type="ptFunction" line="4639">
+   <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="fecha_pd" args="<mtip>, <magrupar>, <orc_tp> " scope="PUBLIC" type="ptFunction" line="3565">
+   <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="sac23pd1" args="<orc>, <venda>, <m_altpd> " scope="PUBLIC" type="ptFunction" line="13">
+   <tag filename="C:\HTI\SISCOM\SAC5PED1.PRG" name="sac5ped1" args="<mnum_p>, <orc>, <consult>, <tkt>, <mfrente>, <menu_print>, <mapp> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\HTI\SISCOM\sac5ped11.prg" name="sac5ped11" args=" " scope="PUBLIC" type="ptFunction" line="2">
    <tag filename="C:\SQLRDD997\include\msg.ch" name="LANG_IT_IT" args=" " scope="PUBLIC" type="ptConstant" line="10">
    <tag filename="C:\SQLRDD997\include\msg.ch" name="LANG_FR_FR" args=" " scope="PUBLIC" type="ptConstant" line="9">
    <tag filename="C:\SQLRDD997\include\msg.ch" name="LANG_DE_DE" args=" " scope="PUBLIC" type="ptConstant" line="8">
@@ -99,6 +292,7 @@
    <tag filename="C:\SQLRDD997\include\pgs.ch" name="PGRES_FATAL_ERROR" args=" " scope="PUBLIC" type="ptConstant" line="22">
    <tag filename="C:\SQLRDD997\include\pgs.ch" name="PGRES_POLLING_READING" args=" " scope="PUBLIC" type="ptConstant" line="24">
    <tag filename="C:\SQLRDD997\include\pgs.ch" name="PGRES_POLLING_FAILED" args=" " scope="PUBLIC" type="ptConstant" line="23">
+   <tag filename="C:\HTI\SISCOM\FORMULA_1.PRG" name="formula_1" args="<mdup_2>, <m_ava>, <mtipo_pag>, <mtp_email> " scope="PUBLIC" type="ptFunction" line="2">
    <tag filename="C:\SQLRDD997\include\mysql.h" name="CLIENT_NET_READ_TIMEOUT" args=" " scope="PUBLIC" type="ptConstant" line="66">
    <tag filename="C:\SQLRDD997\include\mysql.h" name="CLIENT_NET_WRITE_TIMEOUT" args=" " scope="PUBLIC" type="ptConstant" line="67">
    <tag filename="C:\SQLRDD997\include\mysql.h" name="STDCALL" args=" " scope="PUBLIC" type="ptConstant" line="43">

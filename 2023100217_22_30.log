@@ -1,0 +1,20 @@
+Error BASE/1003  No existe la variable: MCUST_REAL
+Funcoes: FORMULA_1.000->FORMULA_1(366)
+Funcoes: SAC5PED1.PRG->SAC5PED1(367)
+Funcoes: SAC00.PRG->AFTERINKEY(1904)
+Funcoes: SAC00.PRG->(b)SAC0(1408)
+Funcoes: ->INKEY(0)
+Funcoes: SAC00.PRG->SAC0(1438)
+Funcoes: SACROT1.PRG->SENHA(824)
+Funcoes: SISCOM.PRG->MAIN(1131)
+************************************************************************************************************************
+Data e Hora........: 02/10/23 - 17:22:30
+Empresa............: AGROPET CINTRA
+Sistema/Atualizacao: .: SISCOM :. Sistema Automacao Comercial - v23.09.18
+Usuario do Sistema.: 999
+Nome do Executavel.: C:\HTI\SISCOM\SISCOM.EXE
+Nome do Micro......: HELIO-PC - Nome Terminal: Helio
+Memoria Disponivel.: 2097151 - Espaço em Disco....: 13933162496
+Pasta de Diretorio.: HTI\SISCOM
+Sistema Operacional: Windows NT Professional 6.02.9200
+Caminho do Banco...: localhost:C:\hti\SISCOM\SISCOM.GDB

@@ -1,7 +1,7 @@
 <!--
 ################################################
 # xDevStudio Project - xdev@kssoftware.com.br  #
-# Created @ 20/09/2023 11:13:24                #
+# Created @ 02/10/2023 16:09:29                #
 #                                              #
 ### Standard xDev Config - Layout v1.5 #########
 -->
@@ -460,4 +460,5 @@
    <unit filename="SACCHK_NF.PRG" compile="Sim">
    <unit filename="SAC331.PRG" compile="Sim">
    <unit filename="SAC5NCM.PRG" compile="Sim">
+   <unit filename="FORMULA_1.PRG" compile="Sim">
 </project>

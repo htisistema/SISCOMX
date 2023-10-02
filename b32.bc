@@ -382,7 +382,8 @@ c0w32.obj +
 "C:\hti\SISCOM\SACINVENTA.obj"  + 
 "C:\hti\SISCOM\SACCHK_NF.obj"  + 
 "C:\hti\SISCOM\SAC331.obj"  + 
-"C:\hti\SISCOM\SAC5NCM.obj", + 
+"C:\hti\SISCOM\SAC5NCM.obj"  + 
+"C:\hti\SISCOM\FORMULA_1.obj", + 
 "C:\HTI\SISCOM\SISCOM.EXE", +   
 "C:\HTI\SISCOM\SISCOM.map", +   
 lang.lib +     
