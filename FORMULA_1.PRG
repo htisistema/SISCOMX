@@ -754,7 +754,7 @@ IF mquantd > 0
                 DEVPoS(PRoW()+1,00);DEVOUT('                              A NAO GARANTIA:')
                 imprt(mtipo_imp,'N-')
                 imprt(mtipo_imp,'C')
-                DEVPoS(PRoW()+1,0);DEVOUT("Manchas, pintura, aranhoes, trinco, rachoes e etc.  TUDO QUE ENVoLVA ''VIDRO''  NAO  TERA  GARANTIA  EM  HIPOTESE  ALGUMA, pesos que")
+                DEVPoS(PRoW()+1,0);DEVOUT("Manchas, pintura, aranhoes, trinco, rachoes e etc.  TUDO QUE ENVOLVA ''VIDRO''  NAO  TERA  GARANTIA  EM  HIPOTESE  ALGUMA, pesos que")
                 DEVPoS(PRoW()+1,0);DEVOUT('ultrapassem 200kg no assento, mudanca de cor no revestimento do estofado, agua  em excesso, exposicao ao sol  ou  uso  inadequado do')
                 DEVPoS(PRoW()+1,0);DEVOUT('produto.')
                 @ PRoW()+1,00 SAY mtraco
@@ -774,8 +774,8 @@ IF mquantd > 0
                 DEVPoS(PRoW()+1,00);DEVOUT('                               A DESISTENCIA:')
                 imprt(mtipo_imp,'N-')
                 imprt(mtipo_imp,'C')
-                DEVPoS(PRoW()+1,0);DEVOUT('o cliente tera um prazo de 7 dias corridos para mudanca ou desistência do pedido, produtos de fabricacao propria so  sera possível a')
-                DEVPoS(PRoW()+1,0);DEVOUT('troca por outro de nossa fabricacao, claramente concordando que em caso de desistência/Cancelamento, o mesmo tera um custo de 30% do')
+                DEVPoS(PRoW()+1,0);DEVOUT('o cliente tera um prazo de 7 dias corridos para mudanca ou desistencia do pedido, produtos de fabricacao propria so  sera possível a')
+                DEVPoS(PRoW()+1,0);DEVOUT('troca por outro de nossa fabricacao, claramente concordando que em caso de desistencia/Cancelamento, o mesmo tera um custo de 30% do')
                 DEVPoS(PRoW()+1,0);DEVOUT('valor aportado no ato da compra, e a empresa tera um prazo de 30 dias corridos para devolucao do  valor restante, que  corresponde a')
                 DEVPoS(PRoW()+1,0);DEVOUT('70% do que ja foi pago.')
                 @ PRoW()+1,00 SAY mtraco
@@ -788,7 +788,7 @@ IF mquantd > 0
                 DEVPoS(PRoW()+1,0);DEVOUT('endereco combinado em nota, em caso de mudanca de endereco, solicitar a fabrica uma avaliacao de acrescimo no  valor  da  logistica.')
                 DEVPoS(PRoW()+1,0);DEVOUT('A empresa nao se responsabiliza por danos causados em percurso de responsabilidade do cliente.Nao nos responsabilizamos caso o  item')
                 DEVPoS(PRoW()+1,0);DEVOUT('adquirido nao entre em sua residencia ou apto. (elevadores, escadas estreitas  e  percurso de dificil acesso)  Percurso  de  dificil')
-                DEVPoS(PRoW()+1,0);DEVOUT('acesso ou andares que passem do 3º, Fica sob responsabilidade do cliente o acerto com o pessoal da logistica a questao  da  montagem')
+                DEVPoS(PRoW()+1,0);DEVOUT('acesso ou andares que passem do 3o., Fica sob responsabilidade do cliente o acerto com o pessoal da logistica a questao  da  montagem')
                 DEVPoS(PRoW()+1,0);DEVOUT('e subida ate o destino do seu agrado.')
 
                 DEVPoS(PRoW()+2,0);DEVOUT('    OBSERVACAO: Antes de assinar o carimbo de recebimento e conferencia dos itens, examinar se todos estao de acordo com o combinado')
