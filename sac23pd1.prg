@@ -3797,8 +3797,8 @@ WHILE .T.
                         @ lcia+23,ccia+14 GET mobs4 WHEN ! EMPTY(mobs3)
                         @ lcia+24,ccia+14 GET mobs5 WHEN ! EMPTY(mobs4)
                         @ lcia+25,ccia+14 GET mobs6 WHEN ! EMPTY(mobs5)
-                        @ lcia+26,ccia+14 GET mobs7 WHEN ! EMPTY(mobs6)
-                        @ lcia+27,ccia+14 GET mobs8 WHEN ! EMPTY(mobs7)
+                        //@ lcia+26,ccia+14 GET mobs7 WHEN ! EMPTY(mobs6)
+                        //@ lcia+27,ccia+14 GET mobs8 WHEN ! EMPTY(mobs7)
                         READ
                         IF LASTKEY() = 27
                                 EXIT

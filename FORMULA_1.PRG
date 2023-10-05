@@ -128,20 +128,7 @@ IF mquantd > 0
                 IF m_set[1,22] = 'S'
                         IF mmult_emp = 'N'
                                 IF m_set[1,18] = 'J' .AND. FILE('hticabe.jpg')
-
-                                        IF m_set[1,11] = 'I'
-                                                IF m_set[1,9] = 'S'
-                                                        mpagina := 82
-                                                ELSE
-                                                        mpagina := 85
-                                                ENDIF
-                                        ELSE
-                                                IF m_set[1,9] = 'S'
-                                                        mpagina := 32
-                                                ELSE
-                                                        mpagina := 34
-                                                ENDIF
-                                        ENDIF
+                                        mpagina := 38
                                         DEVPOS(00,03);DEVOUT('"hticabe.jpg"')
                                 ELSE
                                         imprt(mtipo_imp,'N+')
@@ -172,100 +159,50 @@ IF mquantd > 0
                                 @ PROW()+1,00 SAY mtraco
                         ENDIF
                 ENDIF
-                @ PROW()+1,10 SAY ''
-                imprt(mtipo_imp,'E')
-                IF mtipo_ped = 2
-                        @ PROW(),20 SAY IF(ali='orcam',ALLTRIM(m_set[1,24]),ALLTRIM(m_set[1,23]))+' '+STRZERO(mnum_ped,6)+' AVARIAS'
-                ELSE
-                        @ PROW(),20 SAY IF(ali='orcam',ALLTRIM(m_set[1,24]),ALLTRIM(m_set[1,23]))+' '+STRZERO(mnum_ped,6)
-                ENDIF
-                IF ver_serie() <> '141237' .AND. ver_serie() <> '141473'
-                        @ PROW()+1,10 SAY ''
-                        imprt(mtipo_imp,'E')
-                        @ PROW(),22 SAY 'SEM VALOR FISCAL'
-                ENDIF
+                cons_cli:={}
+                sr_getconnection():exec("SELECT cod_cli,razao,cgc,insc,cpf,nome,comprado,endereco,bairro,cidade,uf,tel1,cep,rota,tel2,numero,complemento,rota1 FROM saccli WHERE cod_cli = "+sr_cdbvalue(imppedido[1,23]),,.t.,@cons_cli)
+                sr_getconnection():exec('COMMIT',,.f.)
                 imprt(mtipo_imp,'N')
-                IF imppedido[1,49] = '*' .AND. ver_serie() # '141599'
-                        imprt(mtipo_imp,'N')
-                        //imprt(mtipo_imp,'W1')
-                        imprt(mtipo_imp,'N+')
-                        DEVPOS(PROW()+1,00);DEVOUT('PAGO')
-                        imprt(mtipo_imp,'N-')
-                        //imprt(mtipo_imp,'W0')
-                        imprt(mtipo_imp,'C')
-                ENDIF
+                imprt(mtipo_imp,'N+')
+                @ PROW()+1,00 SAY STR(cons_cli[1,1],5)+' '+cons_cli[1,2] //CLIENTE
+                @ PROW(),0 SAY PADL(IF(ali='orcam',ALLTRIM(m_set[1,24]),ALLTRIM(m_set[1,23]))+' '+STRZERO(mnum_ped,6),77)
+                imprt(mtipo_imp,'N-')
                 imprt(mtipo_imp,'C')
-                @ PROW()+1,00 SAY 'Emissao:'
-                @ PROW(),PCOL()+1 SAY imppedido[1,4]
-                @ PROW(),PCOL()+2 SAY 'Hora:'
-                @ PROW(),PCOL()+1 SAY imppedido[1,47]
-                @ PROW(),PCOL()+2 SAY 'Ope:'
-                @ PROW(),PCOL() SAY imppedido[1,34]
-                @ PROW(),PCOL()+2 SAY 'Cod.:'
-                @ PROW(),PCOL()+1 SAY imppedido[1,32]
-                IF m_set[1,81] = 'S'
-                        @ PROW(),PCOL()+2 SAY imppedido[1,33]
+                @ PROW()+1,00 SAY 'Nome Fantasia: '+cons_cli[1,6]
+                IF cons_cli[1,3] <> SPACE(14)
+                       @ PROW(),PCOL()+3 SAY 'CNPJ:'
+                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_cli[1,3],'@@R 99.999.999/9999-99')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('- IE: '+cons_cli[1,4])
+                ELSEIF cons_cli[1,5] <> SPACE(11)
+                        @ PROW(),PCOL()+3 SAY 'CPF: '+TRANSFORM(cons_cli[1,5],'@@R 999.999.999-99')
                 ENDIF
-                IF imppedido[1,94] = 'LOJA'
-                        @ PROW(),PCOL()+2 SAY 'Filial:'
-                        @ PROW(),PCOL()+1 SAY imppedido[1,94]
-
-                ELSEIF VAL(imppedido[1,94]) > 0
-                        @ PROW(),PCOL()+2 SAY 'No.OS:'
-                        @ PROW(),PCOL()+1 SAY imppedido[1,94]
+                @ PROW(),0 SAY PADL('Emissao: '+DTOC(imppedido[1,4]),132)
+                //@ PROW()+1,00 SAY 'End.: '+ALLTRIM(cons_cli[1,8])+', '+ALLTRIM(cons_cli[1,16])+' - '+ALLTRIM(cons_cli[1,17])+' - '+ALLTRIM(cons_cli[1,9])+' - '+ALLTRIM(cons_cli[1,10])+' - '+ALLTRIM(cons_cli[1,11])+' - Fone:'+ALLTRIM(cons_cli[1,12])+' - CEP.:'+cons_cli[1,13]
+                @ PROW()+1,00 SAY 'End.: '+cons_cli[1,8]+', '+cons_cli[1,16]+' - '+cons_cli[1,17]+' - '+cons_cli[1,9]+' - '+cons_cli[1,10]
+                @ PROW(),0 SAY PADL('Previsao: '+DTOC(imppedido[1,101]),132)
+                @ PROW()+1,00 SAY 'Est.: '+cons_cli[1,11]+' - CEP.:'+cons_cli[1,13]+' - Fone:'+ALLTRIM(cons_cli[1,12])+'  - Fone:'+cons_cli[1,15]
+                @ PROW(),0 SAY PADL('Ope.: '+imppedido[1,34],132)
+                imprt(mtipo_imp,'N+')
+                @ PROW()+1,00 SAY 'Rota: '+RTRIM(cons_cli[1,14])
+                IF ! EMPTY(cons_cli[1,18])
+                        @ PROW()+1,00 SAY '      '+RTRIM(cons_cli[1,18])
                 ENDIF
-                IF ! EMPTY(imppedido[1,119])
-                        @ PROW(),PCOL()+2 SAY 'Data APP:'
-                        @ PROW(),PCOL()+1 SAY DTOC(imppedido[1,119])
-                ENDIF
-                IF mimp_tipo <> 2
-                        imprt(mtipo_imp,'C')
-                ENDIF
-                @ PROW(),00 SAY PADL(mvia+'  T:'+ALLTRIM(imppedido[1,3])+IF(mquantd > 1,' C-'+STRZERO(i,2),''),132)
+                imprt(mtipo_imp,'N-')
+                imprt(mtipo_imp,'C')
+                @ PROW(),0 SAY PADL('Cod.: '+imppedido[1,32],132)
                 imprt(mtipo_imp,'N')
-                IF ! EMPTY(imppedido[1,23])
-                        cons_cli:={}
-                        sr_getconnection():exec("SELECT cod_cli,razao,cgc,insc,cpf,nome,comprado,endereco,bairro,cidade,uf,tel1,cep,rota,tel2,numero,complemento,rota1 FROM saccli WHERE cod_cli = "+sr_cdbvalue(imppedido[1,23]),,.t.,@cons_cli)
-                        sr_getconnection():exec('COMMIT',,.f.)
-                        imprt(mtipo_imp,'C')
-                        @ PROW()+1,00 SAY STR(cons_cli[1,1],5)
-                        @ PROW(),PCOL()+1 SAY cons_cli[1,2]
-                        //imprt(mtipo_imp,'C-')
-                        imprt(mtipo_imp,'C')
-                        IF m_set[1,39] = 'S'
-                                IF cons_cli[1,3] <> SPACE(14)
-                                       @ PROW(),80 SAY 'CNPJ:'
-                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_cli[1,3],'@@R 99.999.999/9999-99')
-                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('-IE: '+cons_cli[1,4])
-                                ELSEIF cons_cli[1,5] <> SPACE(11)
-                                        @ PROW(),80 SAY 'CPF:'
-                                        DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(cons_cli[1,5],'@@R 999.999.999-99')
-                                ENDIF
-                                IF m_set[1,40] = 'S'
-                                        @ PROW()+1,00 SAY 'Nome Fantasia: '+cons_cli[1,6]
-                                        @ PROW(),PCOL()+3 SAY 'Responsavel: '+cons_cli[1,7]
-                                        @ PROW(),PCOL()+2 SAY '   - Fone:'+cons_cli[1,15]
-                                ENDIF
-                                @ PROW()+1,00 SAY 'End.: '+ALLTRIM(cons_cli[1,8])+', '+ALLTRIM(cons_cli[1,16])+' - '+ALLTRIM(cons_cli[1,17])+' - '+ALLTRIM(cons_cli[1,9])+' - '+ALLTRIM(cons_cli[1,10])+' - '+ALLTRIM(cons_cli[1,11])+' - Fone:'+ALLTRIM(cons_cli[1,12])+' - CEP.:'+cons_cli[1,13]
-                                IF ! EMPTY(cons_cli[1,14])
-                                        imprt(mtipo_imp,'N+')
-                                        @ PROW()+1,00 SAY 'Rota: '+RTRIM(cons_cli[1,14])
-                                        IF ! EMPTY(cons_cli[1,18])
-                                                @ PROW()+1,00 SAY '      '+RTRIM(cons_cli[1,18])
-                                        ENDIF
-                                        imprt(mtipo_imp,'N-')
-                                        imprt(mtipo_imp,'C')
-                                ENDIF
-                        ENDIF
-                        imprt(mtipo_imp,'N')
-                ENDIF
-                IF ! EMPTY(imppedido[1,26]) .OR. ! EMPTY(imppedido[1,27])
-                        @ PROW()+1,00 SAY 'Placa do Veiculo: '+imppedido[1,26]+'  Marca: '+imppedido[1,27]
-                        @ PROW()+1,00 SAY 'Modelo..........: '+imppedido[1,28]+'  KM: '+imppedido[1,29]
-                ENDIF
+                imprt(mtipo_imp,'N')
                 IF SUBSTR(mvia,1,6) = '2a.via'
                         imprt(mtipo_imp,'C')
-                        IF imppedido[1,49] = 'C'
+                        IF imppedido[1,49] = '*'
+                                imprt(mtipo_imp,'N')
+                                //imprt(mtipo_imp,'W1')
+                                imprt(mtipo_imp,'N+')
+                                DEVPOS(PROW()+1,00);DEVOUT('PAGO')
+                                imprt(mtipo_imp,'N-')
+                                //imprt(mtipo_imp,'W0')
+                                imprt(mtipo_imp,'C')
+                        ELSEIF imppedido[1,49] = 'C'
                                 @ PROW()+1,00 SAY 'CANCELADO - MOTIVO: '+imppedido[1,91]
                                 @ PROW()+1,00 SAY 'Emissao da 2a.via:'
                                 @ PROW(),PCOL()+1 SAY mdata_sis
@@ -289,6 +226,7 @@ IF mquantd > 0
                                 @ PROW(),PCOL()+1 SAY cod_operado
                         ENDIF
                 ENDIF
+                @ PROW(),0 SAY PADL('SEM VALOR FISCAL',132)
                 imprt(mtipo_imp,'C')
                 @ PROW()+1,00 SAY mtraco
                 @ PROW()+1,00 SAY 'Codigo'
@@ -428,157 +366,10 @@ IF mquantd > 0
                         IF ASCAN(m_montador,imppedido[y,38])=0
                                 AADD(m_montador,imppedido[y,38])
                         ENDIF
-                        IF PROW() >= mpagina .AND. STRZERO(mnum_ped,6) = imppedido[y,2] .AND. ! EOF()
-                                imprt(mtipo_imp,'C')
-                                @ PROW()+1,00 SAY mtraco
-                                imprt(mtipo_imp,'N')
-                                IF imppedido[1,45] = 'AV'
-                                        @ PROW()+1,00 SAY 'Pagamento AVISTA'
-                                        @ PROW(),00 SAY '          AVISTA'
-                                ELSEIF imppedido[1,45] = 'AP'
-                                        @ PROW()+1,00 SAY 'Pagamento APRAZO  -  Condicao do pagamento: '+SUBSTR(imppedido[1,43],1,1)+' mais '+SUBSTR(imppedido[1,43],2,2)+' Prazo de '+SUBSTR(imppedido[1,44],3,3)+' Dias'
-                                ENDIF
-                                imprt(mtipo_imp,'C')
-                                @ PROW()+1,00 SAY mtraco
-                                imprt(mtipo_imp,'N')
-                                IF m_set[1,25] <> SPACE(60)
-                                        @ PROW()+1,00 SAY PADC(RTRIM(m_set[1,25]),80)
-                                ELSE
-                                        @ PROW()+1,00 SAY ' '
-                                ENDIF
-                                IF m_set[1,26] <> SPACE(60)
-                                        @ PROW()+1,00 SAY PADC(RTRIM(m_set[1,26]),80)
-                                ELSE
-                                        @ PROW()+1,00 SAY ' '
-                                ENDIF
-                                IF m_set[1,27] <> SPACE(60)
-                                        @ PROW()+1,00 SAY PADC(RTRIM(m_set[1,27]),80)
-                                ENDIF
-                                IF m_set[1,28] <> SPACE(60)
-                                        @ PROW()+1,00 SAY PADC(RTRIM(m_set[1,28]),80)
-                                ENDIF
-                                imprt(mtipo_imp,'C')
-                                @ PROW()+1,00 SAY mtraco
-                                imprt(mtipo_imp,'N')
-                                IF ! EMPTY(m_set[1,27]) .AND. ! EMPTY(m_set[1,28])
-                                        @ PROW()+2,00 SAY ' '
-                                ELSEIF m_set[1,27] <> SPACE(60) .AND. m_set[1,28] = SPACE(60)
-                                        @ PROW()+3,00 SAY ' '
-                                ELSEIF m_set[1,27] = SPACE(60) .AND. m_set[1,28] <> SPACE(60)
-                                        @ PROW()+3,00 SAY ' '
-                                ELSEIF m_set[1,27] = SPACE(60) .AND. m_set[1,28] = SPACE(60)
-                                        @ PROW()+4,00 SAY ' '
-                                ENDIF
-                                SETPRC(00,00)
-                                EJECT
-                                IF m_set[1,22] = 'S'
-                                        IF mmult_emp = 'N'
-                                                imprt(mtipo_imp,'E')
-                                                DEVPOS(PROW(),00);DEVOUT(memp_resa)
-                                                imprt(mtipo_imp,'C')
-                                                DEVPOS(PROW()+1,00);DEVOUT(RTRIM(m_set[1,132])+', '+RTRIM(m_set[1,160])+'-'+RTRIM(m_set[1,161])+'-'+RTRIM(m_set[1,133])+'-'+RTRIM(m_set[1,134])+'-'+RTRIM(m_set[1,19])+' - Fone: '+m_set[1,136])
-                                        ELSE
-                                                ver_emp(imppedido[y,1])
-                                                imprt(mtipo_imp,'E')
-                                                DEVPOS(PROW(),00);DEVOUT(ALLTRIM(IF(cons_emp[1,9] = 'F',cons_emp[1,8],cons_emp[1,7])))
-                                                IF SUBSTR(cons_emp[1,4],1,2) = '* '
-                                                        imprt(mtipo_imp,'N')
-                                                        DEVPOS(PROW()+1,00);DEVOUT(cons_emp[1,4])
-                                                ENDIF
-                                                imprt(mtipo_imp,'C')
-                                                DEVPOS(PROW()+1,00);DEVOUT(RTRIM(cons_emp[1,10])+'-'+RTRIM(cons_emp[1,11])+'-'+RTRIM(cons_emp[1,12])+'-'+RTRIM(cons_emp[1,14])+' - Fone: '+cons_emp[1,15])
-                                        ENDIF
-                                        imprt(mtipo_imp,'C')
-                                        @ PROW()+1,00 SAY mtraco
-                                        imprt(mtipo_imp,'N')
-                                ENDIF
-                                @ PROW()+1,10 SAY '  '
-                                imprt(mtipo_imp,'E')
-                                @ PROW(),10 SAY IF(ali='orcam',ALLTRIM(m_set[1,24]),ALLTRIM(m_set[1,23]))+' '+STRZERO(mnum_ped,6)
-                                imprt(mtipo_imp,'N')
-                                IF ! EMPTY(imppedido[1,23])
-                                        @ PROW()+1,00 SAY 'Cliente:'
-                                        @ PROW(),PCOL()+1 SAY imppedido[1,23]
-                                        @ PROW(),PCOL()+1 SAY mnome_cli
-                                        @ PROW()+1,00 SAY 'Emissao:'
-                                ELSE
-                                        @ PROW()+1,00 SAY 'Emissao:'
-                                ENDIF
-                                IF ! EMPTY(mplaca) .OR. ! EMPTY(mcarro)
-                                        @ PROW()+1,00 SAY 'Placa do Veiculo: '+mplaca+'  Tipo Veiculo: '+mcarro
-                                ENDIF
-                                @ PROW(),10 SAY mdata
-                                @ PROW(),20 SAY 'Hora:'
-                                @ PROW(),26 SAY mhora
-                                @ PROW(),37 SAY 'Cod.:'
-                                @ PROW(),43 SAY imppedido[1,32]
-                                IF m_set[1,81] = 'S'
-                                        @ PROW(),47 SAY imppedido[1,33]
-                                ENDIF
-                                @ PROW(),00 SAY PADL('continuacao',80)
-                                imprt(mtipo_imp,'C')
-                                @ PROW()+1,00 SAY mtraco
-                                @ PROW()+1,05 SAY 'Codigo'
-                                @ PROW(),18 SAY 'Descricao'
-                                @ PROW(),60 SAY '    '
-                                @ PROW(),PCOL()+2 SAY 'UN'
-                                @ PROW(),PCOL()+3 SAY '  Quantd.'
-                                IF m_set[1,36] = 'S'
-                                        @ PROW(),PCOL()+3 SAY 'Vlr. Unit.'
-                                        @ PROW(),PCOL()+2 SAY ' Desc.R$'
-                                        @ PROW(),PCOL()+2 SAY 'Desc.%'
-                                ENDIF
-                                @ PROW(),PCOL()+3 SAY 'Vlr. Venda'
-                                IF ver_serie() = '141235' .OR. ver_serie() = '141265'
-                                        @ PROW(),PCOL()+3 SAY 'IPI (R$)'
-                                        @ PROW(),PCOL()+2 SAY 'IPI(%)'
-                                ENDIF
-                                @ PROW(),PCOL()+2 SAY ' Vlr. Total'
-                                imprt(mtipo_imp,'C')
-                                @ PROW()+1,00 SAY mtraco
-                                imprt(mtipo_imp,'N')
-                        ENDIF
                 NEXT
-                IF m_set[1,11] = 'I'            //.AND. ver_serie() = '141275'
-                        @ 66,00 SAY 'OBS.: '+ALLTRIM(imppedido[1,86])+' '+imppedido[1,87]
-                        @ PROW()+1,00 SAY '      '+ALLTRIM(imppedido[1,88])+' '+imppedido[1,89]
-                        imprt(mtipo_imp,'N')
-                ELSE
-                        imprt(mtipo_imp,'C')
-                        IF mpagina-PROW() <= 0
-                                @ PROW()+1,00 SAY 'OBS.: '+ALLTRIM(imppedido[1,86])+' '+imppedido[1,87]
-                        ELSE
-                                @ PROW()+(mpagina-PROW()),00 SAY 'OBS.: '+ALLTRIM(imppedido[1,86])+' '+imppedido[1,87]
-                        ENDIF
-                        @ PROW()+1,00 SAY '      '+ALLTRIM(imppedido[1,88])+' '+imppedido[1,89]
-                        imprt(mtipo_imp,'N')
-                ENDIF
                 imprt(mtipo_imp,'C')
-                @ PROW()+1,00 SAY mtraco
-                imprt(mtipo_imp,'N')
-                IF m_set[1,37] = 'S'
-                        h := 0
-                        @ PROW()+1,00 SAY 'Montadores:'
-                        FOR h = 1 TO LEN(m_montador)
-                                @ PROW(),PCOL()+1 SAY 'Cod.:'+m_montador[h]
-                        NEXT
-                        imprt(mtipo_imp,'C')
-                        @ PROW()+1,00 SAY mtraco
-                        imprt(mtipo_imp,'N')
-                ENDIF
-                IF m_set[1,110] = 'S'
-                        imprt(mtipo_imp,'C')
-                        @ PROW()+1,00 SAY 'Doc.Vencidos R$:'
-                        @ PROW(),PCOL()+1 SAY TRANSFORM(mlim_venc,'9,999,999.99')
-                        @ PROW(),PCOL()+2 SAY 'Doc.A vencer R$:'
-                        @ PROW(),PCOL()+1 SAY TRANSFORM(mlim_avenc,'9,999,999.99')
-                        @ PROW(),PCOL()+2 SAY 'Sld.Devedor R$:'
-                        @ PROW(),PCOL()+1 SAY TRANSFORM(mtot_limite,'9,999,999.99')
-                        imprt(mtipo_imp,'C')
-                        @ PROW()+1,00 SAY mtraco
-                ENDIF
-                imprt(mtipo_imp,'C')
-                @ PROW()+1,00 SAY 'Volumes:'
+                imprt(mtipo_imp,'N+')
+                @ PROW()+(mpagina-PROW()),00 SAY 'Volumes:'
                 @ PROW(),PCOL()+1 SAY STRZERO(mtot_volume,6)
                 @ PROW(),PCOL()+2 SAY 'Qtd.Itens:'
                 @ PROW(),PCOL()+1 SAY STRZERO(mtot_itens,6)
@@ -595,6 +386,7 @@ IF mquantd > 0
                 @ PROW(),55 SAY 'Total Nota:'
                 mcust_real = (iat(mt_pedido) + iat(mtot_desc))
                 @ PROW(),PCOL()+1 SAY ALLTRIM(TRANSFORM(iat(mcust_real + iat(mtot_ipi,2),2),'99,999,999.99'))
+                imprt(mtipo_imp,'N-')
                 /*
                 IF ver_serie() = '141238' .OR. ver_serie() = '141235' .OR. ver_serie() = '141274' .OR.;
                    ver_serie() = '141237' .OR. ver_serie() = '141488'
@@ -606,19 +398,7 @@ IF mquantd > 0
                 ENDIF
                 */
                 imprt(mtipo_imp,'C')
-                IF ! EMPTY(imppedido[1,101])
-                        @ PROW()+1,00 SAY mtraco
-                        @ PROW()+1,00 SAY 'PREVISAO DE ENTREGA: '+DTOC(imppedido[1,101])+' - '+ver_dia(imppedido[1,101])
-                        IF ver_serie() = '141473'
-                                imprt(mtipo_imp,'N')
-                                imprt(mtipo_imp,'W1')
-                                imprt(mtipo_imp,'N+')
-                                DEVPOS(PROW(),17);DEVOUT('(06 MESES DE GARANTIA)')
-                                imprt(mtipo_imp,'N-')
-                                imprt(mtipo_imp,'W0')
-                                imprt(mtipo_imp,'C')
-                        ENDIF
-                ELSEIF ver_serie() = '141473'
+                IF ver_serie() = '141473'
                         @ PROW()+1,00 SAY mtraco
                         imprt(mtipo_imp,'N')
                         imprt(mtipo_imp,'W1')
@@ -726,6 +506,8 @@ IF mquantd > 0
                         NEXT
                 ENDIF
                 imprt(mtipo_imp,'C')
+                @ PROW()+2,00 SAY 'OBS.: '+ALLTRIM(imppedido[1,86])+' '+imppedido[1,87]+' '+imppedido[1,88]
+                @ PROW()+1,00 SAY '      '+ALLTRIM(imppedido[1,89])+' '+imppedido[1,113]+' '+imppedido[1,114]
                 @ PROW()+1,00 SAY mtraco
                 imprt(mtipo_imp,'N')
                 IF ! EMPTY(RTRIM(m_set[1,25]));@ PROW()+1,00 SAY PADC(RTRIM(m_set[1,25]),80);ENDIF
@@ -751,15 +533,6 @@ IF mquantd > 0
                 @ PRoW()+1,00 SAY mtraco
                 imprt(mtipo_imp,'N')
                 imprt(mtipo_imp,'N+')
-                DEVPoS(PRoW()+1,00);DEVOUT('                              A NAO GARANTIA:')
-                imprt(mtipo_imp,'N-')
-                imprt(mtipo_imp,'C')
-                DEVPoS(PRoW()+1,0);DEVOUT("Manchas, pintura, aranhoes, trinco, rachoes e etc.  TUDO QUE ENVOLVA ''VIDRO''  NAO  TERA  GARANTIA  EM  HIPOTESE  ALGUMA, pesos que")
-                DEVPoS(PRoW()+1,0);DEVOUT('ultrapassem 200kg no assento, mudanca de cor no revestimento do estofado, agua  em excesso, exposicao ao sol  ou  uso  inadequado do')
-                DEVPoS(PRoW()+1,0);DEVOUT('produto.')
-                @ PRoW()+1,00 SAY mtraco
-                imprt(mtipo_imp,'N')
-                imprt(mtipo_imp,'N+')
                 DEVPoS(PRoW()+1,00);DEVOUT('                               POS GARANTIA:')
                 imprt(mtipo_imp,'N-')
                 imprt(mtipo_imp,'C')
@@ -768,6 +541,15 @@ IF mquantd > 0
                 DEVPoS(PRoW()+1,0);DEVOUT('interdeminada para efetuar servicos, trocas, reparos, substituicoes e mudancas  COM CUSTO  de  fabrica. assim acionado  o  nosso pos')
                 DEVPoS(PRoW()+1,0);DEVOUT('garantia, a empresa tera 05 dias uteis para um retorno com o orcamento da o.S (ordem de Servico) e aguardando assim a confirmacao do')
                 DEVPoS(PRoW()+1,0);DEVOUT('cliente para a execucao da o.S.')
+                @ PRoW()+1,00 SAY mtraco
+                imprt(mtipo_imp,'N')
+                imprt(mtipo_imp,'N+')
+                DEVPoS(PRoW()+1,00);DEVOUT('                              A NAO GARANTIA:')
+                imprt(mtipo_imp,'N-')
+                imprt(mtipo_imp,'C')
+                DEVPoS(PRoW()+1,0);DEVOUT("Manchas, pintura, aranhoes, trinco, rachoes e etc.  TUDO QUE ENVOLVA ''VIDRO''  NAO  TERA  GARANTIA  EM  HIPOTESE  ALGUMA, pesos que")
+                DEVPoS(PRoW()+1,0);DEVOUT('ultrapassem 200kg no assento, mudanca de cor no revestimento do estofado, agua  em excesso, exposicao ao sol  ou  uso  inadequado do')
+                DEVPoS(PRoW()+1,0);DEVOUT('produto.')
                 @ PRoW()+1,00 SAY mtraco
                 imprt(mtipo_imp,'N')
                 imprt(mtipo_imp,'N+')
