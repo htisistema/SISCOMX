@@ -65,14 +65,14 @@ WHILE .T.
         ccomm := ccomm + " FROM sacdupp d "
         ccomm := ccomm + " WHERE d.datpag BETWEEN "+sr_cdbvalue(t_ini)+" AND "+sr_cdbvalue(t_fim)+" AND d.pago = 'B'"
         IF ! EMPTY(mcons_banco)
-                ccomm := ccomm + "AND d.banco_bx = "+sr_cdbvalue(mcodigo_ban)
+                ccomm := ccomm + " AND d.banco_bx = "+sr_cdbvalue(mcodigo_ban)
         ENDIF
         ccomm := ccomm + " union all "
         cComm := ccomm + " SELECT 'C',r.datpag,r.hora_bx,r.tipo,r.duplicata,r.fornec,r.cliente,r.vlpago,r.obs1,r.banco_bx"
         ccomm := ccomm + " FROM sacdupr r "
         ccomm := ccomm + " WHERE r.datpag BETWEEN "+sr_cdbvalue(t_ini)+" AND "+sr_cdbvalue(t_fim)+" AND r.pago = 'B' AND r.banco_bx = "+sr_cdbvalue(mcodigo_ban)
         IF ! EMPTY(mcons_banco)
-                ccomm := ccomm + "AND r.banco_bx = "+sr_cdbvalue(mcodigo_ban)
+                ccomm := ccomm + " AND r.banco_bx = "+sr_cdbvalue(mcodigo_ban)
         ENDIF
         ccomm := ccomm + " ORDER BY 2,3 "
         mcons_banco := {}
