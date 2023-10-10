@@ -321,7 +321,7 @@ WHILE .T.       //.AND. LASTKEY() <> 27
                 //TRY
                 IF mint_ext <> NIL
                         //sr_getconnection():exec("UPDATE cnnt_pedido SET status_ped = 'STRZERO(mnum_ped,6)' WHERE codigo = "+sr_cdbvalue(cons_palm[p,1])+" AND cod_funcionario = "+sr_cdbvalue(STRZERO(cons_palm[p,2],3)),,.f.)
-                        sr_getconnection():exec("UPDATE cnnt_pedido SET status_ped = 'PEDIDO',obs_pco = 'EM ANDAMENTO',importado = 1 WHERE codigo = "+sr_cdbvalue(cons_palm[p,1])+" AND cod_funcionario = "+sr_cdbvalue(STRZERO(cons_palm[p,2],3)),,.f.)
+                        sr_getconnection():exec("UPDATE cnnt_pedido SET status_ped = 'PEDIDO',obs_pc = 'EM ANDAMENTO',importado = 1 WHERE codigo = "+sr_cdbvalue(cons_palm[p,1])+" AND cod_funcionario = "+sr_cdbvalue(STRZERO(cons_palm[p,2],3)),,.f.)
                 ELSE
                         sr_getconnection():exec("UPDATE cnnt_pedido SET status_ped = 'IMPORTADO',obs_pc = 'EM ANDAMENTO',importado = 1 WHERE codigo = "+sr_cdbvalue(cons_palm[p,1])+" AND cod_funcionario = "+sr_cdbvalue(STRZERO(cons_palm[p,2],3)),,.f.)
                 ENDIF

@@ -3156,7 +3156,7 @@ WHILE .T.
                         ENDIF
                         mensagem('Digite o valor do produto - <ESC>Sair')
                         //@ 21,2 GET mvlr_fat PICT ALLTRIM(m_set[1,98]) VALID IF((mped_merc[1,23]>0 .OR. m_set[1,109] = 'S') .AND. mvlr_fat < mp_venda,.F.,.T.) WHEN (m_set[1,38] <> 'P' .AND. m_indiv[1,26] <> 'S' .AND. m_indiv[1,26] <> 'T') .OR. mped_merc[1,25] = 'S' .OR. mvlr_fat = 0
-                        IF ver_serie() = '141302' .OR. ver_serie() = '141592' .OR. ver_serie() = '141607' .OR. ver_serie() = '141666'
+                        IF ver_serie() = '141302' .OR. ver_serie() = '141592' .OR. ver_serie() = '141607' .OR. ver_serie() = '141666' .OR. ver_serie() = '141628'
                                 @ 21,2 GET mvlr_fat PICT ALLTRIM(m_set[1,98]) VALID IF(mped_merc[1,23]>0 .AND. mvlr_fat < mp_venda,.F.,.T.) WHEN (m_set[1,38] <> 'P' .AND. m_indiv[1,26] <> 'S' .AND. m_indiv[1,26] <> 'T') .OR. mped_merc[1,25] = 'S' .OR. mvlr_fat = 0
                         ELSE
                                 @ 21,2 GET mvlr_fat PICT ALLTRIM(m_set[1,98]) VALID IF(mvlr_fat < mp_venda,.F.,.T.) WHEN (m_set[1,38] <> 'P' .AND. m_indiv[1,26] <> 'S' .AND. m_indiv[1,26] <> 'T') .OR. mped_merc[1,25] = 'S' .OR. mvlr_fat = 0
