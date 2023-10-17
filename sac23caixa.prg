@@ -146,8 +146,8 @@ WHILE .T.
         //botao(00,01,02,118,,'Operador')
         //DrawLabel(1,50,'Cliente: '+STR(cons_cli[1,2],5)+'-'+cons_cli[1,3],,, 'Arial Black',20,10)
         //DrawLabel(0,50,'Cliente: '+STR(cons_cli[1,2],5)+'-'+cons_cli[1,3],,, 'Arial Black',20,10)
-
         botao(11,50,13,68,,'Codigo',)
+        /*
         botao(11,70,17,115,,'Quantidade')
         botao(21,70,27,115,,'Valor Unitario')
         botao(31,70,37,115,,'Valor Total')
@@ -156,7 +156,7 @@ WHILE .T.
         DrawLabel(22,80,ALLTRIM(TRANSFORM(0,'@E '+m_set[1,98])),,, 'arial black',65,30)
         DrawLabel(32,80,ALLTRIM(TRANSFORM(0,'@E '+m_set[1,98])),,, 'arial black',65,30)
 
-
+        */
         //DrawLabel(12,92,'Codigo',,,'Arial Black',25,10)
         //DrawLabel(21,92,'Quantidade',,,'Arial Black',25,10)
         //DrawLabel(30,92,'Valor Unitario',,,'Arial Black',25,10)
@@ -165,22 +165,150 @@ WHILE .T.
         //WVW_DrawBoxGet(,24,92,20)
         //WVW_DrawBoxGet(,33,92,20)
         //WVW_DrawBoxGet(,41,92,20)
-        botao(01,01,08,48)
-        IF FILE(ALLTRIM(m_indiv[1,3])+'HTIFIRMA.JPG')
-                WVW_DrawImage( ,01,01,08,48,ALLTRIM(m_indiv[1,3])+'HTIFIRMA.JPG',.T.,.F.)
-        ELSEIF FILE(ALLTRIM(m_indiv[1,3])+'HTIFIRMA1.JPG')
-                WVW_DrawImage( ,01,01,08,48,ALLTRIM(m_indiv[1,3])+'HTIFIRMA1.JPG',.T.,.F.)
+
+        botao(01,1,08,118) // DESCRICAO PRODUTO
+
+        f:=0
+        lci:=12
+        botao(11,1,lba-5,48,,'No.Pedido: '+STRZERO(mnum_ped,6),1) // TELA DOS PRODUTO SOLICITADO
+        //DrawLabel(11,05,'No.Pedido: '+STRZERO(mnum_ped,6),,, 'Arial Black',25,15)
+        mqtd_lin := 0
+        mitem := 1
+        IF LEN(m_codigo) > 28
+                mqtd_lin := LEN(m_codigo) - 28
         ENDIF
-        botao(01,50,08,118)
-        //botao(15,50,30,80)
-        //IF FILE(ALLTRIM(m_indiv[1,3])+'HTIfirma.jpg')
-        //	WVW_DrawImage( ,15,50,30,80,ALLTRIM(m_indiv[1,3])+'HTIFIRMA.JPG',.T.,.F.)
-        //ENDIF
+        //@ lci,01 SAY ''
+        IF EMPTY(m_cfg[6])
+                DrawLabel(lci+f,COL()+1,'Item  Cod.  Descricao           Quantd.   Vlr.Unit.   Vlr.Total',,,'lucida console',16,8)
+        ELSE
+                DrawLabel(lci+f,COL()+1,'Item  Cod.  Descricao           Quantd.   Vlr.Unit.   Vlr.Total ',,m_color[8],'lucida console',12,5)
+        ENDIF
+        f++
+        f++
+        @ lci+f,01 SAY REPLI(CHR(223),48)
+        f++
+
+        botao(47,01,52,48,,'TOTAL DA VENDA R$:','*')
+        DrawLabel(48,10,TRANSFORM(0,ALLTRIM('@E '+m_set[1,98])),210,, 'arial black',55,25)
+
+
+        botao(10,70,37,115)
+        IF FILE(ALLTRIM(m_indiv[1,3])+'HTIFIRMA.JPG')
+                WVW_DrawImage( ,10,70,37,115,ALLTRIM(m_indiv[1,3])+'HTIFIRMA.JPG',.T.,.F.)
+        ELSEIF FILE(ALLTRIM(m_indiv[1,3])+'HTIFIRMA1.JPG')
+                WVW_DrawImage( ,10,70,37,115,ALLTRIM(m_indiv[1,3])+'HTIFIRMA1.JPG',.T.,.F.)
+        ENDIF
+        WVW_DrawImage( ,35,50,50,68,ALLTRIM(m_indiv[1,3])+"logohti.JPG",.F.,.F.)
+        setcor(1)
+        IF ALLTRIM(m_indiv[1,44]) = '2'
+                WVW_DrawLabel(,51,52,' '+mversao+' ',,,,, 'times',30,15,,,,,)
+        ELSE
+                WVW_DrawLabel(,51,52,' '+mversao+' ',,,RGB(25,25,112),RGB(255,250,250), 'times',30,15,,,,,)
+        ENDIF
+
+        mcod_cli := IF(EMPTY(m_set[1,84]),1,m_set[1,84])
+        mnome_cli := SPACE(40)
+        mcod_ven := cod_operado
+        mflag := 1
+        op_tela(00,01,3,80,' Informacoes para o PEDIDO ** 1 ** ',,1)
+        DEVPOS(1,01);DEVOUT('Codigo do Cliente....:')
+        DEVPOS(2,01);DEVOUT('Nome Fantasia........:')
+        WHILE .T.
+                SET KEY -8 TO sac130()           // inclusao de clientes
+                IF ! AbriArq('saccli','cli');RETURN NIL;ENDIF
+                @ 1,24 GET mcod_cli PICT '99999'
+                @ 1,30 GET mnome_cli PICT '@!' WHEN EMPTY(mcod_cli)
+                READ
+                IF LASTKEY() = 27
+                        wvw_lclosewindow()
+                        wvw_lclosewindow()
+                        RETURN
+                ENDIF
+                IF ! EMPTY(mcod_cli)
+        		cons_cli := {}
+                        sr_getconnection():exec("SELECT * FROM saccli WHERE cod_cli = "+sr_cdbvalue(mcod_cli),,.t.,@cons_cli)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(cons_cli) = 0
+                                atencao('Cliente nao cadastrado !!!')
+                                LOOP
+                        ENDIF
+                        mcod_cli := cons_cli[1,2]
+                ELSEIF ! EMPTY(mnome_cli)
+        		cons_cli := {}
+                        sr_getconnection():exec("SELECT * FROM saccli WHERE razao LIKE "+sr_cdbvalue(RTRIM(mnome_cli)+'%'),,.t.,@cons_cli)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(cons_cli) = 0
+                                atencao('Cliente nao cadastrado !!!')
+                                LOOP
+                        ELSE
+                                mcod_cli := cons_cli[1,2]
+                                IF LASTKEY() = 27
+                                        LOOP
+                                ENDIF
+                        ENDIF
+                ENDIF
+        	cons_cli := {}
+                sr_getconnection():exec("SELECT * FROM saccli WHERE cod_cli = "+sr_cdbvalue(mcod_cli),,.t.,@cons_cli)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF ! EMPTY(mnome_cli) .OR. ! EMPTY(mcod_cli)
+                        DEVPOS(1,24);DEVOUT(STR(cons_cli[1,2],5))
+                        DEVPOS(1,30);DEVOUT(cons_cli[1,3])
+                        DEVPOS(2,24);DEVOUT(cons_cli[1,4])
+                        setcor(1)
+                        IF mnum_os = 0 .AND. ! spc(mcod_cli,0,'*')
+                                UNLOCK
+                                LOOP
+                        ENDIF
+                        IF mnum_os = 0
+                                mlib_spc := '*'
+                        ENDIF
+                        mdocum := cli_dup(mcod_cli)
+                        IF ! EMPTY(mdocum)
+                                atencao('Existe estes documentos deste cliente: '+mdocum,0,,,10)
+                        ENDIF
+                ELSE
+                        LOOP
+                ENDIF
+                IF cons_cli[1,41] = 'S'
+                        atencao('CLIENTE COM CREDITO BLOQUEADO PELO SISTEMA EM: '+DTOC(cons_cli[1,138])+m_qp+m_qp+'***************************************************************************'+m_qp+'M O T I V O: '+ALLTRIM(cons_cli[1,139])+m_qp+'***************************************************************************')
+                        LOOP
+                ENDIF
+                ver_aniv(mcod_cli)
+                opcao := op_simnao('S','Confirma o CLIENTE:')
+                SET KEY -8 TO                    // inclusao de clientes
+                IF opcao = 'S'
+                        setcor(1)
+                        mcod_aux  := cons_cli[1,106]
+                        mcod_ven := cons_cli[1,106]
+                        IF mcod_cond = 0
+                                mcod_cond := VAL(cons_cli[1,133])
+                        ENDIF
+                        IF cons_cli[1,45] = 'A'
+                                mvarejo := 2
+                        ELSE
+                                mvarejo := 1
+                        ENDIF
+                ELSE
+                        LOOP
+                ENDIF
+                setcor(1)
+                IF m_set[1,10] <> 'S'
+                        mcod_aux  := cons_cli[1,106]
+                        mcod_ven := cod_operado
+                ENDIF
+                mcgc := cons_cli[1,32]
+                mcpf := cons_cli[1,34]
+                minsc:= cons_cli[1,33]
+                wvw_lclosewindow()
+                EXIT
+        ENDDO
+
         WHILE .T.
                 IF LEN(m_codigo) = 0
                         WVW_PBEnable( NIL, nBota, .F. )
                         //limpa(01,02,10,119)
-                        DrawLabel(3,65,'CAIXA LIVRE',,,'Arial Black',65,30)
+                        botao(01,1,08,118)
+                        DrawLabel(3,05,'CAIXA LIVRE',,,'Arial Black',65,30)
                 ELSE
                         WVW_PBEnable( , nBota, .T. )
                         WVW_PBEnable( , nalt, .T. )
@@ -200,10 +328,7 @@ WHILE .T.
                 IF LEN(m_codigo) > 28
                         mqtd_lin := LEN(m_codigo) - 28
                 ENDIF
-                //@ lci,01 SAY ''
                 IF EMPTY(m_cfg[6])
-                        //DEVPOS(lci+f,COL());DEVOUT('Item  Cod.  Descricao           Quantd.   Vlr.Unit.   Vlr.Total')
-                        //DrawLabel(lci+f,COL()+1,' Item  Cod.  Descricao           Quantd.   Vlr.Unit.   Vlr.Total ',,m_color[8],'lucida console',16,8)
                         DrawLabel(lci+f,COL()+1,'Item  Cod.  Descricao           Quantd.   Vlr.Unit.   Vlr.Total',,,'lucida console',16,8)
                 ELSE
                         DrawLabel(lci+f,COL()+1,'Item  Cod.  Descricao           Quantd.   Vlr.Unit.   Vlr.Total ',,m_color[8],'lucida console',12,5)
@@ -212,18 +337,14 @@ WHILE .T.
                 f++
                 @ lci+f,01 SAY REPLI(CHR(223),48)
                 f++
-                //i:=0
-                //atencao(strzero(i,5))
                 FOR i = 1 TO LEN(m_codigo)
                         IF m_matriz[i,1] = 0 .OR. EMPTY(m_codigo[i])
                                 LOOP
                         ENDIF
                         mlibera := ' '
                         IF mqtd_lin < i
-                                //@ lci+f,55 SAY ''
                                 @ lci+f,01 SAY ''
                                 IF EMPTY(m_cfg[6])
-                                        //DrawLabel(lci+f,COL(),' '+ALLTRIM(STR(i,3))+'  '+m_codigo[i]+' '+SUBSTR(m_matriz[i,5],1,18)+' '+TRANSFORM(m_matriz[i,1],ALLTRIM(m_set[1,99]))+' '+TRANSFORM(m_matriz[i,2],ALLTRIM('@E '+m_set[1,98]))+' '+TRANSFORM(m_matriz[i,1] * m_matriz[i,2],ALLTRIM('@E '+m_set[1,98])),,, 'lucida console',16,8)
                                         DrawLabel(lci+f,COL(),'  '+ALLTRIM(STRZERO(i,3))+'  '+m_codigo[i]+' '+SUBSTR(m_matriz[i,5],1,18)+' '+TRANSFORM(m_matriz[i,1],ALLTRIM(m_set[1,99]))+' '+TRANSFORM(m_matriz[i,2],ALLTRIM('@E '+m_set[1,98]))+' '+TRANSFORM(m_matriz[i,1] * m_matriz[i,2],ALLTRIM('@E '+m_set[1,98])),,, 'lucida console',14,8)
                                 ELSE
                                         DrawLabel(lci+f,COL(),'  '+ALLTRIM(STRZERO(i,3))+'  '+m_codigo[i]+' '+SUBSTR(m_matriz[i,5],1,18)+' '+TRANSFORM(m_matriz[i,1],ALLTRIM(m_set[1,99]))+' '+TRANSFORM(m_matriz[i,2],ALLTRIM('@E '+m_set[1,98]))+' '+TRANSFORM(m_matriz[i,1] * m_matriz[i,2],ALLTRIM('@E '+m_set[1,98])),,, 'lucida console',12,5)
@@ -236,8 +357,7 @@ WHILE .T.
                 tela_ := WVW_SAVESCREEN(,lci,55,lba,cba-1)
                 setcor(3)
                 setcor(1)
-                botao(47,01,52,48,,'Sub-Total:','*')
-                //DrawLabel(38,52,'TOTAL DAS VENDAS',,,'arial black',25,10)
+                botao(47,01,52,48,,'TOTAL DA VENDA R$:','*')
                 DrawLabel(48,10,TRANSFORM(msubtotal,ALLTRIM('@E '+m_set[1,98])),210,, 'arial black',55,25)
                 malterou := ' '
                 mmerc := SPACE(40)
@@ -288,227 +408,10 @@ WHILE .T.
                         LOOP
                 ENDIF
                 IF LASTKEY() = 27
-                        IF LEN(m_codigo) = 0 .AND. mnum_ped = 0
-	                        SET KEY -2 TO
-        	                SET KEY -7 TO
-                                m_codigo := {}
-                                m_matriz := {}
-                                IF m_indiv[1,26] = 'T' .OR. m_indiv[1,26] = 'P'
-                                        wvw_lclosewindow()
-                                        RETURN NIL
-                                ENDIF
-                                EXIT
-                        ENDIF
                         SET KEY -2 TO
                         SET KEY -7 TO
-                        c_ped := {}
-                        sr_getconnection():exec("SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6)),,.t.,@c_ped)
-                        sr_getconnection():exec('COMMIT',,.f.)
-                        IF LEN(c_ped) = 0       // .AND. EMPTY(c_ped[1,100])
-        			IF 'N' = op_simnao('S','Deseja Sair o Pedido:')
-                                        LOOP
-                                ENDIF
-        			IF 'N' = op_simnao('N','Deseja CANCELAR este Pedido de No. '+STRZERO(mnum_ped,6)+':')
-	              	                SET KEY -2 TO
-                		        SET KEY -7 TO
-                        	        m_codigo := {}
-                                	m_matriz := {}
-                                        IF m_indiv[1,26] = 'T'
-                                        	wvw_lclosewindow()
-	                                        RETURN NIL
-                                        ENDIF
-                                        EXIT
-                                ENDIF
-                                IF ! aut_sen('Deseja CANCELAR este Pedido: '+STRZERO(mnum_ped,6)+' - Senha de Liberacao','LIB_PED',,,,,STRZERO(mnum_ped,6))
-                                        LOOP
-                                ENDIF
-                                i := 0
-                                FOR i = 1 TO LEN(c_ped)
-                                        IF ! EMPTY(c_ped[i,80])
-                                                sr_getconnection():exec("UPDATE merc_det SET venda = NULL,n_ped = NULL WHERE codigo = "+sr_cdbvalue(c_ped[i,6])+" .AND. chassis = "+sr_cdbvalue(c_ped[i,80]),,.f.)
-                                        ENDIF
-                                        mensagem('Atualizando o SALDO DA MERCADORIA... Aguarde')
-                                        aret:={}
-                                        sr_getconnection():exec("SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(c_ped[i,6]),,.t.,@aret)
-                                        sr_getconnection():exec('COMMIT',,.f.)
-                                        //mlinha := aret[1,2]+aret[1,8]+aret[1,9]+aret[1,14]+STRZERO((aret[1,56] + c_ped[i,14])*1000,13)+STRZERO(iat(aret[1,46])*100,14)+aret[1,68]
-                                        mlinha := ' '
-                                        sr_begintransaction()
-                                                //try
-                                                        sr_getconnection():exec("UPDATE sacmerc SET saldo_mer = "+sr_cdbvalue(aret[1,56] + c_ped[i,14])+",data_atu = "+sr_cdbvalue(mdata_sis)+",chv_cript = "+sr_cdbvalue(CRIPTO(mlinha,1))+" WHERE cod_merc = "+sr_cdbvalue(c_ped[i,6]),,.f.)
-                                                //catch e
-                                                //        tracelog(valtoprg())
-                                                //        sr_COMMITtransaction()
-                                                //END
-                                                //try
-                                                        sr_getconnection():exec('INSERT INTO logproduto (data_sis,data,'+;
-                                                                                'hora,cod_prod,quantd,saldo_ant,saldo_pos,cod_oper,prog,terminal,'+;
-                                                                                'processo,ent_sai,SR_DELETED )'+;
-                                                                                ' VALUES ('+;
-                                                                                sr_cdbvalue(DATE())+','+; //1
-                                                                                sr_cdbvalue(mdata_sis)+','+; //2
-                                                                                sr_cdbvalue(TIME())+','+; //3
-                                                                                sr_cdbvalue(c_ped[i,6])+','+; //4
-                                                                                sr_cdbvalue(c_ped[i,14])+','+; //5
-                                                                                sr_cdbvalue(IF(EMPTY(aret[1,56]),0,aret[1,56]))+','+; //6
-                                                                                sr_cdbvalue(aret[1,56] + c_ped[i,14])+','+; //7
-                                                                                sr_cdbvalue(cod_operado)+','+; //8
-                                                                                sr_cdbvalue('SAC34')+','+; //9
-                                                                                sr_cdbvalue(LEFT(NETNAME(),15))+','+; //12
-                                                                                sr_cdbvalue('CANCELAR PD: '+STRZERO(mnum_ped,6))+','+; //11
-                                                                                sr_cdbvalue('E')+','+; //11
-                                                                                sr_cdbvalue(' ')+')',,.f.)
-                                                //catch e
-                                                //        tracelog(valtoprg())
-                                                //        sr_COMMITtransaction()
-                                                //END
-                                                mensagem('Atualizando o OCORRENCIA... Aguarde')
-                                                //try
-                                                        sr_getconnection():exec('INSERT INTO sacocorr (tipo,documento,data_exe,hora_exe,cod_oper,data_oco,hora_oco,cod_vend,codigo,quantd,saldo_atu,saldo_exe,pedido,obs,sr_deleted) VALUES ('+;      //?,?,?,?,?,?,?,?,?,? ,? ,? ,? ,? , ' ')"
-                                                                                sr_cdbvalue('CAN')+','+; //1
-                                                                                sr_cdbvalue(STRZERO(mnum_ped,6))+','+; //2
-                                                                                sr_cdbvalue(mdata_sis)+','+; //3
-                                                                                sr_cdbvalue(TIME())+','+; //4
-                                                                                sr_cdbvalue(cod_operado)+','+; //5
-                                                                                sr_cdbvalue(c_ped[i,4])+','+; //6
-                                                                                sr_cdbvalue(c_ped[i,47])+','+; //7
-                                                                                sr_cdbvalue(c_ped[i,32])+','+; //8
-                                                                                sr_cdbvalue(c_ped[i,6])+','+;//9
-                                                                                sr_cdbvalue(c_ped[i,14])+','+;//10
-                                                                                sr_cdbvalue(aret[1,56])+','+; //11
-                                                                                sr_cdbvalue(aret[1,56] + c_ped[i,14])+','+;//12
-                                                                                sr_cdbvalue('S')+','+;//13
-                                                                                sr_cdbvalue('CANCELAR PEDIDO EM ANDAMENTO No.: '+STRZERO(mnum_ped,6))+','+;//14
-                                                                                sr_cdbvalue(' ')+')',,.f.)
-                                                //catch e
-                                                //        tracelog(valtoprg())
-                                                //        sr_COMMITtransaction()
-                                                //END
-                                                sr_committransaction()
-                                        sr_endtransaction()
-                                NEXT
-                                mensagem('Atualizando o CANCELANDO NO CAIXA... Aguarde')                                               //  1 2 3 4 5 6 7 8
-                                sr_begintransaction()
-                                        //try
-                                                sr_getconnection():exec("INSERT INTO saccaixa (empresa,tipo,data,nota,descri1,descri2,cod_opera,hora,sr_deleted) VALUES ("+;    //?,?,?,?,?,?,?,?,' ')"
-                                                                                sr_cdbvalue(mcodempresa)+','+; //1
-                                                                                sr_cdbvalue('CA')+','+; //2
-                                                                                sr_cdbvalue(mdata_sis)+','+; //3
-                                                                                sr_cdbvalue('PD'+STRZERO(mnum_ped,6))+','+; //4
-                                                                                sr_cdbvalue('Pedido CANCELADO')+','+; //5
-                                                                                sr_cdbvalue(LEFT('(PEDIDO EM ANDAMENTO No.: '+STRZERO(mnum_ped,6),37)+')')+','+; //6
-                                                                                sr_cdbvalue(cod_operado)+','+; //7
-                                                                                sr_cdbvalue(TIME())+','+; //8
-                                                                                sr_cdbvalue(' ')+')',,.f.)
-                                        //catch e
-                                        //        tracelog(valtoprg())
-                                        //        sr_COMMITtransaction()
-                                        //END
-                                        //try
-                                		sr_getconnection():exec("UPDATE sacped_s SET ppag = 'C',pdatapag = "+sr_cdbvalue(mdata_sis)+",pautoriz = "+sr_cdbvalue(cod_operado)+",pent_por = "+sr_cdbvalue(cod_operado)+",pent_dat = "+sr_cdbvalue(mdata_sis)+",pmotivo = "+sr_cdbvalue('CANCELAR PEDIDO EM ANDAMENTO No.: '+STRZERO(mnum_ped,6))+",phora_pg = "+sr_cdbvalue(TIME())+" WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6)),,.f.)
-                                        //catch e
-                                        //        tracelog(valtoprg())
-                                        //        sr_COMMITtransaction()
-                                        //END
-                                        sr_committransaction()
-                                sr_endtransaction()
-                                sr_getconnection():exec('COMMIT',,.f.)
-                                EXIT
-                        ELSE
-                                IF ! aut_sen('Deseja CANCELAR este Pedido: '+STRZERO(mnum_ped,6)+' - Senha de Liberacao','LIB_PED',,,,,STRZERO(mnum_ped,6))
-                                        LOOP
-                                ENDIF
-                                i := 0
-                                FOR i = 1 TO LEN(c_ped)
-                                        IF ! EMPTY(c_ped[i,80])
-                                                sr_getconnection():exec("UPDATE merc_det SET venda = NULL,n_ped = NULL WHERE codigo = "+sr_cdbvalue(c_ped[i,6])+" .AND. chassis = "+sr_cdbvalue(c_ped[i,80]),,.f.)
-                                        ENDIF
-                                        mensagem('Atualizando o SALDO DA MERCADORIA... Aguarde')
-                                        aret:={}
-                                        sr_getconnection():exec("SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(c_ped[i,6]),,.t.,@aret)
-                                        sr_getconnection():exec('COMMIT',,.f.)
-                                        //mlinha := aret[1,2]+aret[1,8]+aret[1,9]+aret[1,14]+STRZERO((aret[1,56] + c_ped[i,14])*1000,13)+STRZERO(iat(aret[1,46])*100,14)+aret[1,68]
-                                        mlinha := ' '
-                                        sr_begintransaction()
-                                                //try
-                                                        sr_getconnection():exec("UPDATE sacmerc SET saldo_mer = "+sr_cdbvalue(aret[1,56] + c_ped[i,14])+",data_atu = "+sr_cdbvalue(mdata_sis)+",chv_cript = "+sr_cdbvalue(CRIPTO(mlinha,1))+" WHERE cod_merc = "+sr_cdbvalue(c_ped[i,6]),,.f.)
-                                                //catch e
-                                                //        tracelog(valtoprg())
-                                                //        sr_COMMITtransaction()
-                                                //END
-                                                //try
-                                                        sr_getconnection():exec('INSERT INTO logproduto (data_sis,data,'+;
-                                                                                'hora,cod_prod,quantd,saldo_ant,saldo_pos,cod_oper,prog,terminal,'+;
-                                                                                'processo,ent_sai,SR_DELETED )'+;
-                                                                                ' VALUES ('+;
-                                                                                sr_cdbvalue(DATE())+','+; //1
-                                                                                sr_cdbvalue(mdata_sis)+','+; //2
-                                                                                sr_cdbvalue(TIME())+','+; //3
-                                                                                sr_cdbvalue(c_ped[i,6])+','+; //4
-                                                                                sr_cdbvalue(c_ped[i,14])+','+; //5
-                                                                                sr_cdbvalue(IF(EMPTY(aret[1,56]),0,aret[1,56]))+','+; //6
-                                                                                sr_cdbvalue(aret[1,56] + c_ped[i,14])+','+; //7
-                                                                                sr_cdbvalue(cod_operado)+','+; //8
-                                                                                sr_cdbvalue('SAC34')+','+; //9
-                                                                                sr_cdbvalue(LEFT(NETNAME(),15))+','+; //12
-                                                                                sr_cdbvalue('CANCELAR PD: '+STRZERO(mnum_ped,6))+','+; //11
-                                                                                sr_cdbvalue('E')+','+; //11
-                                                                                sr_cdbvalue(' ')+')',,.f.)
-                                                //catch e
-                                                //        tracelog(valtoprg())
-                                                //        sr_COMMITtransaction()
-                                                //END
-
-                                                        mensagem('Atualizando o OCORRENCIA... Aguarde')
-                                                //try
-                                                        sr_getconnection():exec('INSERT INTO sacocorr (tipo,documento,data_exe,hora_exe,cod_oper,data_oco,hora_oco,cod_vend,codigo,quantd,saldo_atu,saldo_exe,pedido,obs,sr_deleted) VALUES ('+;      //?,?,?,?,?,?,?,?,?,? ,? ,? ,? ,? , ' ')"
-                                                                                sr_cdbvalue('CAN')+','+; //1
-                                                                                sr_cdbvalue(STRZERO(mnum_ped,6))+','+; //2
-                                                                                sr_cdbvalue(mdata_sis)+','+; //3
-                                                                                sr_cdbvalue(TIME())+','+; //4
-                                                                                sr_cdbvalue(cod_operado)+','+; //5
-                                                                                sr_cdbvalue(c_ped[i,4])+','+; //6
-                                                                                sr_cdbvalue(c_ped[i,47])+','+; //7
-                                                                                sr_cdbvalue(c_ped[i,32])+','+; //8
-                                                                                sr_cdbvalue(c_ped[i,6])+','+;//9
-                                                                                sr_cdbvalue(c_ped[i,14])+','+;//10
-                                                                                sr_cdbvalue(aret[1,56])+','+; //11
-                                                                                sr_cdbvalue(aret[1,56] + c_ped[i,14])+','+;//12
-                                                                                sr_cdbvalue('S')+','+;//13
-                                                                                sr_cdbvalue('CANCELAR PEDIDO EM ANDAMENTO No.: '+STRZERO(mnum_ped,6))+','+;//14
-                                                                                sr_cdbvalue(' ')+')',,.f.)
-                                                //catch e
-                                                //        tracelog(valtoprg())
-                                                //        sr_COMMITtransaction()
-                                                //END
-                                                sr_committransaction()
-                                        sr_endtransaction()
-                                NEXT
-                                mensagem('Atualizando o CANCELANDO NO CAIXA... Aguarde')                                               //  1 2 3 4 5 6 7 8
-                                sr_begintransaction()
-                                        //try
-                                                sr_getconnection():exec("INSERT INTO saccaixa (empresa,tipo,data,nota,descri1,descri2,cod_opera,hora,sr_deleted) VALUES ("+;    //?,?,?,?,?,?,?,?,' ')"
-                                                                                sr_cdbvalue(mcodempresa)+','+; //1
-                                                                                sr_cdbvalue('CA')+','+; //2
-                                                                                sr_cdbvalue(mdata_sis)+','+; //3
-                                                                                sr_cdbvalue('PD'+STRZERO(mnum_ped,6))+','+; //4
-                                                                                sr_cdbvalue('Pedido CANCELADO')+','+; //5
-                                                                                sr_cdbvalue(LEFT('(PEDIDO EM ANDAMENTO No.: '+STRZERO(mnum_ped,6),37)+')')+','+; //6
-                                                                                sr_cdbvalue(cod_operado)+','+; //7
-                                                                                sr_cdbvalue(TIME())+','+; //8
-                                                                                sr_cdbvalue(' ')+')',,.f.)
-                                        //catch e
-                                        //        tracelog(valtoprg())
-                                        //        sr_COMMITtransaction()
-                                        //END
-                                        //try
-                                		sr_getconnection():exec("UPDATE sacped_s SET ppag = 'C',pdatapag = "+sr_cdbvalue(mdata_sis)+",pautoriz = "+sr_cdbvalue(cod_operado)+",pent_por = "+sr_cdbvalue(cod_operado)+",pent_dat = "+sr_cdbvalue(mdata_sis)+",pmotivo = "+sr_cdbvalue('CANCELAR PEDIDO EM ANDAMENTO No.: '+STRZERO(mnum_ped,6))+",phora_pg = "+sr_cdbvalue(TIME())+" WHERE pnum_ped = "+sr_cdbvalue(STRZERO(mnum_ped,6)),,.f.)
-                                        //catch e
-                                        //        tracelog(valtoprg())
-                                        //        sr_COMMITtransaction()
-                                        //END
-                                        sr_committransaction()
-                                sr_endtransaction()
+        		IF op_simnao('S','Deseja Sair o Pedido:') = 'S'
+                                mflag := 0
                                 EXIT
                         ENDIF
                 ENDIF
@@ -766,9 +669,10 @@ WHILE .T.
                 ENDIF
                 */
                 mcod_merc := VAL(mped_merc[1,8])
-                limpa(03,50,08,118)
-                DrawLabel(2,51,'Descricao do Produto',,, 'Arial',20,8)
-                DrawLabel(4,51,mped_merc[1,9],,,'Arial Black',50,20)
+                botao(01,1,08,118)
+                limpa(03,1,08,118)
+                DrawLabel(2,2,'Descricao do Produto',,, 'Arial',20,8)
+                DrawLabel(4,3,mped_merc[1,9],,,'Arial Black',50,20)
                 setcor(1)
                 IF mped_merc[1,23] > 0
                         mvlr_fat := iat(mped_merc[1,46] - (mped_merc[1,46] * (mped_merc[1,23] / 100)),2)
@@ -945,12 +849,14 @@ WHILE .T.
                 mtot_ped = 0
                 mtot_ped = mvlr_fat * mquantd
                 //setcor(3)
+/*
                 botao(11,70,17,115,,'Quantidade')
                 botao(21,70,27,115,,'Valor Unitario')
                 botao(31,70,37,115,,'Valor Total')
                 DrawLabel(12,80,TRANSFORM(mquantd,'@E '+mmasc_qtd),,,'arial black',60,30)
                 DrawLabel(22,80,TRANSFORM(mvlr_fat,'@E '+m_set[1,98]),,, 'arial black',60,30)
                 DrawLabel(32,80,TRANSFORM(mtot_ped,'@E '+m_set[1,98]),,, 'arial black',60,30)
+*/
                 /*
                 DrawLabel(12,85,ALLTRIM(TRANSFORM(mquantd,'@E '+mmasc_qtd)),,,'arial black',60,30)
                 DrawLabel(22,85,ALLTRIM(TRANSFORM(mvlr_fat,'@E '+m_set[1,98])),,, 'arial black',60,30)

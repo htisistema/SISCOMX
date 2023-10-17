@@ -33,7 +33,7 @@ MEMVAR msist,getlist,nivel_acess
 LOCAL mprg := 'SISCOM',men,f,num,mcgc_aux,mponto,mtip_t:=' ',mtela_term,mmapear,lin,linha,linhas,marq:='',;
       matriz:={},op:=' ',d:=0,m_aux:={},xcop,cons_lib,mcnpj_txt
 
-PUBLIC mversao      := 'v23.10.10',;
+PUBLIC mversao      := 'v23.10.17',;
        msit_tip     := 'SISCOM',;
        sistema      := '.: SISCOM :. Sistema Automacao Comercial',;
        memp_resa    :='.: HTI Sistemas Ltda :.',;
@@ -47,7 +47,7 @@ PUBLIC mversao      := 'v23.10.10',;
        mcidade_HTI  := 'Tacaimbo',;
        muf_HTI      := 'PE',;
        mcep_HTI     := '55140000',;
-       mfone_HTI    := '993127894',; //mfone1_HTI   := '         ',; //m_md5        := '7d539b303a4e568e4877cda1e4feadf9',;
+       mfone_HTI    := '991269631',; //mfone1_HTI   := '         ',; //m_md5        := '7d539b303a4e568e4877cda1e4feadf9',;
        mcgc_firm,;
        minsc_firm,;
        mend_firm,;

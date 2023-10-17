@@ -133,7 +133,9 @@ WHILE .T.
                 m_codigo := {}
                 m_Cbarra := {}
                 m_alt    := {}
+                /*
                 IF m_indiv[1,26] = 'T'
+                        //atencao(m_indiv[1,26])
                         mcod_cli := IF(EMPTY(m_set[1,84]),1,m_set[1,84])
                         mnome_cli := SPACE(40)
                         mcod_ven := cod_operado
@@ -244,6 +246,7 @@ WHILE .T.
                         ENDDO
                         EXIT
                 ENDIF
+                */
                 IF m_indiv[1,9] <> 'V' .AND. m_indiv[1,26] # 'P'
                         IF orc # NIL
                                 cons_orcam := {}

@@ -31,16 +31,16 @@ WHILE .T.
         setcor(3)
         @ 2,0 TO 2,cba
         @ lba,0 TO lba,cba
-        DEVPOS(1,1);DEVOUT(' No.Ped ')
-        DEVPOS(1,11);DEVOUT('Cd.Cli ')
-        DEVPOS(1,18);DEVOUT('Vnd ')
-        DEVPOS(1,21);DEVOUT('   Data - Horas   ')
-        DEVPOS(1,41);DEVOUT('    Valor')
-        DEVPOS(1,COL()+1);DEVOUT('  R$ Desconto  %')
+        DEVPOS(1,1);DEVOUT('No.Ped ')
+        DEVPOS(1,12);DEVOUT('Cliente')
+        DEVPOS(1,41);DEVOUT('Vnd ')
+        DEVPOS(1,COL()+1);DEVOUT('   Data - Horas   ')
+        DEVPOS(1,COL()+1);DEVOUT('    Valor')
+        //DEVPOS(1,COL()+1);DEVOUT('  R$ Desconto  %')
         DEVPOS(1,COL()+1);DEVOUT(' Tp')
         DEVPOS(1,COL()+1);DEVOUT('Opr')
-        DEVPOS(1,COL()+1);DEVOUT('Lib')
-        DEVPOS(1,COL()+1);DEVOUT('Exp')
+        //DEVPOS(1,COL()+1);DEVOUT('Lib')
+        //DEVPOS(1,COL()+1);DEVOUT('Exp')
         DEVPOS(1,COL()+1);DEVOUT(' No.App')
         DEVPOS(1,COL()+1);DEVOUT('Flg')
         DEVPOS(1,COL()+1);DEVOUT('Terminal')
@@ -80,6 +80,14 @@ WHILE .T.
         i := 0
         FOR i = 1 TO LEN(cons_arq)
                 prog_imp(i,cons_arq[i,2])
+        	cons_cli := {}
+                sr_getconnection():exec("SELECT razao FROM saccli WHERE cod_cli = "+sr_cdbvalue(cons_arq[i,23]),,.t.,@cons_cli)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(cons_cli) = 0
+                        atencao('Cliente nao cadastrado !!!')
+                        LOOP
+                ENDIF
+
                 mcont_item:=0
                 mnum_pedido     := cons_arq[i,2]
                 mcod_vend       := cons_arq[i,32]
@@ -129,7 +137,8 @@ WHILE .T.
                 mtot_ger := mtot_ger + mtot_ped
                 mquantd_ped ++
 		              //      1               2              3                 4               5                   6                                7              8              9            10           11          12            13           14
-                AADD(m_codigo,mnum_pedido+' '+STR(mcod_cli,5)+' '+mcod_vend+' '+DTOC(mdata_ped)+'-'+mhora+' '+TRANSFORM(mtot_ped,'999,999.99')+' '+TRANSFORM(mdesc_r,'9,999.99')+' '+TRANSFORM(mdesc_p,'999.99')+'%  '+mtipo_venda+' '+mcod_op+' '+mlib_por+' '+mexp_por+'  '+mnum_os+'  '+mfecha+'  '+cons_arq[1,3]+' '+mqtd_via+'   '+STRZERO(mcont_item,4))
+                AADD(m_codigo,mnum_pedido+' '+STR(mcod_cli,5)+' '+LEFT(cons_cli[1,1],22)+' '+mcod_vend+' '+DTOC(mdata_ped)+'-'+mhora+'  '+TRANSFORM(mtot_ped,'999,999.99')+'  '+mtipo_venda+' '+mcod_op+'  '+mnum_os+' '+mfecha+' '+cons_arq[1,3]+'  '+mqtd_via+'      '+STR(mcont_item,4))
+                //AADD(m_codigo,mnum_pedido+' '+STR(mcod_cli,5)+' '+mcod_vend+' '+DTOC(mdata_ped)+'-'+mhora+' '+TRANSFORM(mtot_ped,'999,999.99')+' '+TRANSFORM(mdesc_r,'9,999.99')+' '+TRANSFORM(mdesc_p,'999.99')+'%  '+mtipo_venda+' '+mcod_op+' '+mlib_por+' '+mexp_por+'  '+mnum_os+'  '+mfecha+'  '+cons_arq[1,3]+' '+mqtd_via+'   '+STRZERO(mcont_item,4))
                 //AADD(m_codigo,' '+mnum_pedido+'  '+mcod_cli+'  '+mcod_vend+'  '+DTOC(mdata_ped)+'  '+mhora+'  '+TRANSFORM(mtot_ped,'9,999,999.99')+'  '+mtipo_venda+'  '+mcod_op+'   '+mcod_emp+'  '+mlib_por+' '+mexp_por+' '+mnum_os+'   '+cons_arq[1,100])
                 AADD(m_posicao,mnum_pedido)
                 IF i > LEN(cons_arq)
