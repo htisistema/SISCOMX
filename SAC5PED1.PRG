@@ -215,12 +215,14 @@ WHILE .T.
                         LOOP
                 ENDIF
         ENDIF
-        IF EMPTY(mcons_ped[1,100])
-                atencao('Este Pedido nao foi fechado corretamente, Favor entrar na alteracao de pedido para fecha o pedido para que possa tirar a 2a.via')
-                IF mnum_p # NIL
-                        EXIT
+        IF m_indiv[1,26] # 'T'
+                IF EMPTY(mcons_ped[1,100])
+                        atencao('Este Pedido nao foi fechado corretamente, Favor entrar na alteracao de pedido para fecha o pedido para que possa tirar a 2a.via')
+                        IF mnum_p # NIL
+                                EXIT
+                        ENDIF
+                        LOOP
                 ENDIF
-                LOOP
         ENDIF
         IF ! EMPTY(VAL(mcons_ped[1,109]))
                 atencao('Ja foi Impresso: '+STRZERO(VAL(mcons_ped[1,109]),4)+' Copias da 2a.via deste '+IF(orc <> NIL,'ORCAMENTO','PEDIDO')+', Data da Ultima Emissao: '+DTOC(mcons_ped[1,72])+' Hr.: '+mcons_ped[1,73]+' Operador: '+mcons_ped[1,75])

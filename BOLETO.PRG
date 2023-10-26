@@ -333,50 +333,9 @@ mdesconto := 0
                                         ENDIF
                                         */
                                 ENDIF
-
-
-                                /*
-                                IF m_set[1,109] = 'S' .OR. m_set[1,36] # 'S'
-                                        mdesconto := imppedido[cont,76]
-                                        @ PROW(),51 SAY imppedido[cont,8]
-                                        @ PROW()+1,00 SAY imppedido[cont,14] PICT unidade(imppedido[cont,8],'*')
-                                        @ PROW(),32 SAY imppedido[cont,20] PICT ALLTRIM(m_set[1,98])
-                                        mt_pedido := mt_pedido + (imppedido[cont,14]*imppedido[cont,20])        // - mdesconto)
-	                                mcust_real = imppedido[cont,14] * imppedido[cont,20]
-        	                        @ PROW(),43 SAY iat(mcust_real,2) PICT ALLTRIM(m_set[1,98])
-                                ELSEIF m_set[1,36] = 'S'
-                                        @ PROW(),51 SAY imppedido[cont,8]
-                                        @ PROW()+1,00 SAY imppedido[cont,14] PICT unidade(imppedido[cont,8],'*')
-                                        IF imppedido[cont,52] > 0
-                                                @ PROW(),PCOL()+1 SAY imppedido[cont,18] PICT ALLTRIM(m_set[1,98])
-                                                mt_pedido := mt_pedido + (imppedido[cont,14]*imppedido[cont,18])        // - mdesconto)
-                                                mdesconto := mperc := 0
-                                        ELSEIF imppedido[cont,17] > imppedido[cont,18]
-                                                @ PROW(),PCOL()+1 SAY imppedido[cont,17] PICT ALLTRIM(m_set[1,98])
-                                                mdesconto =  iat((imppedido[cont,14] * imppedido[cont,18]) - (imppedido[cont,14] * imppedido[cont,17]),2)
-                                                mperc := iat((((imppedido[cont,14] * imppedido[cont,17]) - (imppedido[cont,14] * imppedido[cont,18])) / (imppedido[cont,14] * imppedido[cont,17])),3) * 100
-                                                mt_pedido := mt_pedido + (imppedido[cont,14]*imppedido[cont,17])        // - mdesconto)
-                                        ELSEIF imppedido[cont,20] > imppedido[cont,18]
-                                                @ PROW(),PCOL()+1 SAY imppedido[cont,20] PICT ALLTRIM(m_set[1,98])
-                                                mdesconto =  (imppedido[cont,14] * imppedido[cont,18]) - (imppedido[cont,14] * imppedido[cont,20])
-                                                mperc := iat((((imppedido[cont,14] * imppedido[cont,20]) - (imppedido[cont,14] * imppedido[cont,18])) / (imppedido[cont,14] * imppedido[cont,20])),3) * 100
-                                                mt_pedido := mt_pedido + (imppedido[cont,14]*imppedido[cont,20])        // - mdesconto)
-                                        ELSE
-                                                @ PROW(),PCOL()+1 SAY imppedido[cont,17] PICT ALLTRIM(m_set[1,98])
-                                                mdesconto := 0
-                                                mperc := imppedido[cont,39]
-                                                mt_pedido := mt_pedido + (imppedido[cont,14]*imppedido[cont,17])        // - mdesconto)
-                                        ENDIF
-                                        //@ PROW(),PCOL()+1 SAY mperc PICT '99.99'
-                                        @ PROW(),PCOL()+1 SAY imppedido[cont,39] PICT '99.99'
-                                        //IF imppedido[cont,39] > 0
-                                        //        imppedido[cont,18] := imppedido[cont,20] - (imppedido[cont,20]*(imppedido[cont,39]/100))
-                                        //ENDIF
-                                        @ PROW(),PCOL()+1 SAY imppedido[cont,18] PICT ALLTRIM(m_set[1,98])
-	                                mcust_real = imppedido[cont,14] * imppedido[cont,18]
-        	                        @ PROW(),43 SAY iat(mcust_real,2) PICT ALLTRIM(m_set[1,98])
+                                IF mimp_tipo = 2
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(imppedido[cont,47])
                                 ENDIF
-                                */
                                 mpeso_brut := mpeso_brut + (imppedido[cont,11] * imppedido[cont,14])
                                 mpeso_liq := mpeso_liq + (imppedido[cont,12] * imppedido[cont,14])
                                 mtot_desc := mtot_desc + mdesconto
@@ -501,6 +460,9 @@ mdesconto := 0
                                         @ PROW(),PCOL()+1 SAY imppedido[cont,18] PICT ALLTRIM(m_set[1,98])
 	                                mcust_real = imppedido[cont,14] * imppedido[cont,18]
         	                        @ PROW(),43 SAY iat(mcust_real,2) PICT ALLTRIM(m_set[1,98])
+                                ENDIF
+                                IF mimp_tipo = 2
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT(imppedido[cont,47])
                                 ENDIF
                                 mtot_desc := mtot_desc + mdesconto
                                 //mt_pedido := mt_pedido + (imppedido[cont,14]*imppedido[cont,20])        // - mdesconto)

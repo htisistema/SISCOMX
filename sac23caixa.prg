@@ -27,7 +27,7 @@ PRIVATE MPRG:='SAC23PCAIXA',;
         msubtotal,mtot_custo:=0,mcod_aux,mproducao,mcomissao:=0,mcust_real,mvendido:=0,;
         mobs_prod:=SPACE(40),mlib_spc:=' ',msit_tip:=' ',;
         mqtd_dias:=0,mqtd_prz:=0,mcond_veze:=SPACE(3),mpromocao,mperc:=0,mcom_oper:=0,;
-        mtp_venda:='  ',mhoras,m_dia[15],m_vlr[15],;
+        mtp_venda:='  ',m_dia[15],m_vlr[15],;
         mtot_limite:=0,mlim_venc:=0,mlim_avenc:=0,mmontador:=0,mmontador1:=0,mtel_carro,mcodemp,;
         mmasc_qtd:=SPACE(10),mnum_os:=0,mobs1,mobs2,mobs3,mobs4,;
         mplaca,mcarro,mmodelo,mkm,mpt_os:=0,mcomi_tab:=0,mcod_cond:=0,mpacote:=0,;
@@ -107,7 +107,6 @@ WHILE .T.
         NEXT
         minsc := mcgc := SPACE(14)
         mcpf = SPACE(11)
-        mhoras := TIME()
         mperc := mcomi_tab := mcod_cond := mnum_ped := mtot_custo := 0
         m_matriz := {}
         m_codigo := {}
@@ -549,10 +548,10 @@ WHILE .T.
                                         IF c_orcam[i,18] = 0
                                         *                              1            2        3           4         5            6          7         8           9         10        11          12        13         14           15          16          17        18       19   20        21         22         23        24          25        26        27       28      29      30       31       32       33         34         35        36        37        38          39
                                         *                          40      41    42      43     44
-                                                AADD(m_matriz,{c_orcam[i,14],c_orcam[i,18],        0,aret[1,7],c_orcam[i,7],aret[1,14],aret[1,17],       0,         0,aret[1,30],aret[1,31],aret[1,21],aret[1,61],aret[1,23],c_orcam[i,53],aret[1,62],aret[1,16],aret[1,44],mobs1,mobs2,aret[1,73],aret[1,65],aret[1,15],c_orcam[i,10],mhoras,aret[1,82],aret[1,83],c_orcam[i,80],c_orcam[i,81],c_orcam[i,82],c_orcam[i,83],c_orcam[i,84],c_orcam[i,85],aret[1,75],aret[1,74],c_orcam[i,58],c_orcam[i,36],c_orcam[i,38],aret[1,27],;
+                                                AADD(m_matriz,{c_orcam[i,14],c_orcam[i,18],        0,aret[1,7],c_orcam[i,7],aret[1,14],aret[1,17],       0,         0,aret[1,30],aret[1,31],aret[1,21],aret[1,61],aret[1,23],c_orcam[i,53],aret[1,62],aret[1,16],aret[1,44],mobs1,mobs2,aret[1,73],aret[1,65],aret[1,15],c_orcam[i,10],TIME(),aret[1,82],aret[1,83],c_orcam[i,80],c_orcam[i,81],c_orcam[i,82],c_orcam[i,83],c_orcam[i,84],c_orcam[i,85],aret[1,75],aret[1,74],c_orcam[i,58],c_orcam[i,36],c_orcam[i,38],aret[1,27],;
                                                                aret[1,47],'  ',c_orcam[i,15],c_orcam[i,16],'00000'})
                                         ELSE
-                                                AADD(m_matriz,{c_orcam[i,14],c_orcam[i,18],c_orcam[i,39],aret[1,7],c_orcam[i,7],aret[1,14],aret[1,17],c_orcam[i,20],aret[1,45],aret[1,30],aret[1,31],aret[1,21],aret[1,61],aret[1,23],mcomissao+mcomi_tab,aret[1,62],aret[1,16],aret[1,44],mobs1,mobs2,aret[1,73],aret[1,65],aret[1,15],menvelope,mhoras,aret[1,82],aret[1,83],c_orcam[i,80],c_orcam[i,81],c_orcam[i,82],c_orcam[i,83],c_orcam[i,84],c_orcam[i,85],aret[1,75],aret[1,74],c_orcam[i,58],c_orcam[i,36],c_orcam[i,38],aret[1,27],;
+                                                AADD(m_matriz,{c_orcam[i,14],c_orcam[i,18],c_orcam[i,39],aret[1,7],c_orcam[i,7],aret[1,14],aret[1,17],c_orcam[i,20],aret[1,45],aret[1,30],aret[1,31],aret[1,21],aret[1,61],aret[1,23],mcomissao+mcomi_tab,aret[1,62],aret[1,16],aret[1,44],mobs1,mobs2,aret[1,73],aret[1,65],aret[1,15],menvelope,TIME(),aret[1,82],aret[1,83],c_orcam[i,80],c_orcam[i,81],c_orcam[i,82],c_orcam[i,83],c_orcam[i,84],c_orcam[i,85],aret[1,75],aret[1,74],c_orcam[i,58],c_orcam[i,36],c_orcam[i,38],aret[1,27],;
                                                                aret[1,47],'  ',c_orcam[i,15],c_orcam[i,16],'00000'})
                                         ENDIF
                                         IF aret[1,14] = 'EV'
@@ -866,7 +865,6 @@ WHILE .T.
                 //@ 32,64 SAY mtot_ped PICT ALLTRIM(m_set[1,98])
                 setcor(1)
                 //ATENCAO(TRANSFORM(mtot_ped,ALLTRIM('@E '+m_set[1,98])))
-                        //atencao(ELAPTIME(mhoras,TIME()))
                 opcao := 'S'
                         IF LEN(m_codigo) = 0 .AND. mnum_ped = 0
                                 mensagem('Aguarde um momento Gerando NUMERO para o PEDIDO....')
@@ -1039,7 +1037,7 @@ WHILE .T.
                                         sr_cdbvalue(0)+','+;//40
                                         sr_cdbvalue(0)+','+;//41
                                         sr_cdbvalue(' ')+','+;//42
-                                        sr_cdbvalue(mhoras)+','+;//43
+                                        sr_cdbvalue(TIME())+','+;//43
                                         sr_cdbvalue(mtp_venda)+','+;//44
                                         sr_cdbvalue(0)+','+;//45
                                         sr_cdbvalue(aret[1,61])+','+;//46
@@ -1089,10 +1087,10 @@ WHILE .T.
 
                         *                         1       2        3           4     5       6          7         8           9         10        11          12        13         14              15             16          17        18       19   20        21         22         23        24       25        26        27       28      29      30       31       32       33         34         35        36        37        38          39
                         *                          40      41    42      43     44
-                                AADD(m_matriz,{mquantd,mvlr_fat,        0,aret[1,7],mmerc,aret[1,14],aret[1,17],       0,         0,aret[1,30],aret[1,31],aret[1,21],aret[1,61],aret[1,23],mcomissao+mcomi_tab,aret[1,62],aret[1,16],aret[1,44],mobs1,mobs2,aret[1,73],aret[1,65],aret[1,15],menvelope,mhoras,aret[1,82],aret[1,83],mchass,mdescri1,mdescri2,mdescri3,mdescri4,mdescri5,aret[1,75],aret[1,74],mobs_prod,mmontador,mmontador1,aret[1,27],;
+                                AADD(m_matriz,{mquantd,mvlr_fat,        0,aret[1,7],mmerc,aret[1,14],aret[1,17],       0,         0,aret[1,30],aret[1,31],aret[1,21],aret[1,61],aret[1,23],mcomissao+mcomi_tab,aret[1,62],aret[1,16],aret[1,44],mobs1,mobs2,aret[1,73],aret[1,65],aret[1,15],menvelope,TIME(),aret[1,82],aret[1,83],mchass,mdescri1,mdescri2,mdescri3,mdescri4,mdescri5,aret[1,75],aret[1,74],mobs_prod,mmontador,mmontador1,aret[1,27],;
                                                aret[1,47],'  ',mpacote,mpecas,mcod_pres})
                         ELSE
-                                  AADD(m_matriz,{mquantd,mvlr_fat,mdesconto,aret[1,7],mmerc,aret[1,14],aret[1,17],mp_venda,aret[1,45],aret[1,30],aret[1,31],aret[1,21],aret[1,61],aret[1,23],mcomissao+mcomi_tab,aret[1,62],aret[1,16],aret[1,44],mobs1,mobs2,aret[1,73],aret[1,65],aret[1,15],menvelope,mhoras,aret[1,82],aret[1,83],mchass,mdescri1,mdescri2,mdescri3,mdescri4,mdescri5,aret[1,75],aret[1,74],mobs_prod,mmontador,mmontador1,aret[1,27],;
+                                  AADD(m_matriz,{mquantd,mvlr_fat,mdesconto,aret[1,7],mmerc,aret[1,14],aret[1,17],mp_venda,aret[1,45],aret[1,30],aret[1,31],aret[1,21],aret[1,61],aret[1,23],mcomissao+mcomi_tab,aret[1,62],aret[1,16],aret[1,44],mobs1,mobs2,aret[1,73],aret[1,65],aret[1,15],menvelope,TIME(),aret[1,82],aret[1,83],mchass,mdescri1,mdescri2,mdescri3,mdescri4,mdescri5,aret[1,75],aret[1,74],mobs_prod,mmontador,mmontador1,aret[1,27],;
                                                aret[1,47],'  ',mpacote,mpecas,mcod_pres})
                         ENDIF
                         IF aret[1,14] = 'EV'
@@ -2837,7 +2835,6 @@ WHILE .T.
                                                         END
                                                         sr_endtransaction()
                                                 ENDDO
-                                                mhoras := TIME()
                                                 atencao('Foi Gerado o Pedido de Numero: '+STRZERO(mnum_novo,6))
                                         ENDIF
                                         mensagem('Foi Gerado o Pedido de Numero: '+STRZERO(mnum_novo,6))
@@ -2971,7 +2968,7 @@ WHILE .T.
      			                                sr_cdbvalue(c_pedi[1,40]             )+','+;//40
                                                         sr_cdbvalue(c_pedi[1,43]             )+','+;//41
                                                         sr_cdbvalue(c_pedi[1,44]             )+','+;//42
-                                                        sr_cdbvalue(mhoras                   )+','+;//43
+                                                        sr_cdbvalue(TIME()                   )+','+;//43
              			                        sr_cdbvalue(c_pedi[1,45]             )+','+;//44
                                                         sr_cdbvalue(c_pedi[1,46]             )+','+;//45
                                                         sr_cdbvalue(c_pedi[1,51]             )+','+;//46
