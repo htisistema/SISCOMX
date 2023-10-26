@@ -182,9 +182,11 @@ WHILE .T.
                 atencao('Pedido nao ENCONTRADO !!!')
                 LOOP
         ENDIF
-        IF EMPTY(cons_ped[1,100]) 
-                atencao('Este pedido nao foi FECHADO corretamente por isso nao pode ser Recebido, Favor entrar na alteracao de pedido para fechar corretamente...'+m_qp+'Operador: '+cons_ped[1,34]+m_qp+'Vendedor :'+cons_ped[1,32]+m_qp+'Data :'+DTOC(cons_ped[1,4]))
-                LOOP
+        IF m_indiv[1,26] # 'T'
+                IF EMPTY(cons_ped[1,100])
+                        atencao('Este pedido nao foi FECHADO corretamente por isso nao pode ser Recebido, Favor entrar na alteracao de pedido para fechar corretamente...'+m_qp+'Operador: '+cons_ped[1,34]+m_qp+'Vendedor :'+cons_ped[1,32]+m_qp+'Data :'+DTOC(cons_ped[1,4]))
+                        LOOP
+                ENDIF
         ENDIF
         IF cons_ped[1,49] = 'C'
                 atencao('Este pedido foi CANCELADO do dia: '+DTOC(cons_ped[1,50])+' Hrs.: '+cons_ped[1,59]+' Por: '+cons_ped[1,60]+' Motivo:'+cons_ped[1,91])
