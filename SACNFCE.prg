@@ -1472,7 +1472,7 @@ WVW_PBSetFont( , 'times new roman',20,10)
 nPBins_dados := wvw_pbCreate(NIL, 5, 3,8, 15,  ' CPF/CNPJ ',NIL,{||ins_dados()})
 nPBins_dados := wvw_pbCreate(NIL, 5, 25,8, 40,  ' Observacao ',NIL,{||ins_obs()})
 
-m_conteudo:={'1 Dinheiro','2 Cheque','3 Duplicata','4 Financeira','5 Cartao','6 Credito','7 PIX'}
+m_conteudo:={'1 Dinheiro','2 Cheque','3 Duplicata','4 Financeira','5 Cartao','6 Credito','7 PIX', '8 Cartao de Debito' }
 mposicao:={0,0,3,4}
 WVW_CBSetFont( , 'times new roman', 20, 12,2,2)
 //WVW_CBSetFont( , 'lucida console', 20, 12,2,2)
@@ -2406,6 +2406,10 @@ WHILE .T.
                                 sLinhas := slinhas + 'tpag=03'+ m_qp + ;
                                                       'vpag='+ALLTRIM(TRANSFORM(iat(m_recebe[y,10]),'999999.99'))+ m_qp+;
                                                       'indpag=1'+ m_qp
+                        ELSEIF m_recebe[y,1] = 'CD'
+                                sLinhas := slinhas + 'tpag=04'+ m_qp + ;
+                                                      'vpag='+ALLTRIM(TRANSFORM(iat(m_recebe[y,10]),'999999.99'))+ m_qp+;
+                                                      'indpag=1'+ m_qp
                         ELSEIF m_recebe[y,1] = 'DU'
                                 sLinhas := slinhas + 'tpag=05'+ m_qp + ;
                                                       'vpag='+ALLTRIM(TRANSFORM(iat(m_recebe[y,10]),'999999.99'))+ m_qp+;
@@ -2544,10 +2548,12 @@ WHILE .T.
                                                                 sr_cdbvalue(' ')+')',,.f.)
                         ENDIF
                 NEXT
-                //DEVPOS(05,01);DEVOUT('IMPRIMINDO DANFE No.: '+mretorno)
-                prog(2,1,100,'IMPRIMINDO DANFE No.: '+mretorno)
-                mret := IBR_comando('NFE.ImprimirDanfe('+mretorno+')',,100,.T.)
-                WVW_SetMousePos(,10,10)
+
+                *** IMPRIMIR O CUPOM  ***
+                // DEVPOS(05,01);DEVOUT('IMPRIMINDO DANFE No.: '+mretorno)
+                // prog(2,1,100,'IMPRIMINDO DANFE No.: '+mretorno)
+                // mret := IBR_comando('NFE.ImprimirDanfe('+mretorno+')',,100,.T.)
+                // WVW_SetMousePos(,10,10)
                 //mret := IBR_comando('NFE.ImprimirDanfe('+mretorno+')')
                 //atencao(mret)
                 //SR_BEGINTRANSACTION()
@@ -2929,6 +2935,10 @@ WHILE .T.
         ENDIF
         sr_getconnection():exec('COMMIT',,.f.)
         */
+                prog(2,1,100,'IMPRIMINDO DANFE No.: '+mretorno)
+                mret := IBR_comando('NFE.ImprimirDanfe('+mretorno+')',,100,.T.)
+                WVW_SetMousePos(,10,10)
+
         mpago := ' '
         mabrir_cp := m_flag_f := " "
         ASIZE(m_codigo,0)
