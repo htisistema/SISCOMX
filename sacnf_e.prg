@@ -1125,6 +1125,8 @@ WHILE .T.
 									'vICMSST='+ALLTRIM(TRANSFORM(m_vicmsst,'999999.99'))+ m_qp
 
                                                         mbase_fcp := iat((iat(mpr_fat) * m_nota[i,5]),2)
+	              					mbase_icmsub := mbase_icmsub + m_vbcst
+	               					mvlr_icmsub := mvlr_icmsub + m_vicmsst
 
                                                 ELSE
                                                         mbase_icm := mbase_icm + 0
