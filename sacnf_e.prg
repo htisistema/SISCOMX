@@ -1108,13 +1108,21 @@ WHILE .T.
                                                 IF m_nota[i,35] = '900'
                                                         mbase_icm = mbase_icm + iat((iat(mpr_fat) * m_nota[i,5]),2)
                                                         mtot_icm := mtot_icm + iat((m_nota[i,20]/100) * iat((iat(mpr_fat)*m_nota[i,5]),2),2)
+                                                        m_vbcst   := iat(((mpr_fat * m_nota[i,5]) * ((mcons_prod[1,63]/100)+1) * mcons_prod[1,72]))
+                                                        m_vicmsst := iat((m_vbcst * (mcons_prod[1,62] /100)) - m_vicms)
                                                         sLinhas := slinhas +    'vBC='+ALLTRIM(TRANSFORM(iat((iat(mpr_fat) * m_nota[i,5]),2),'999999.99'))+ m_qp + ;
                                                                                 'pICMS='+ALLTRIM(TRANSFORM(m_nota[i,20],'999.99'))+ m_qp + ;
                                                                                 'vICMS='+ALLTRIM(TRANSFORM(iat((m_nota[i,20]/100) * iat((iat(mpr_fat)*m_nota[i,5]),2),2),'999999.99'))+ m_qp +;
                                                                                 'pRedBCEfet='+ALLTRIM(TRANSFORM(0,'999999.99'))+ m_qp + ;
                                                                                 'vBCEfet='+ALLTRIM(TRANSFORM(0,'999999.99'))+ m_qp + ;
                                                                                 'pICMSEfet='+ALLTRIM(TRANSFORM(0,'999999.99'))+ m_qp + ;
-                                                                                'vICMSEfet='+ALLTRIM(TRANSFORM(0,'999999.99'))+ m_qp
+                                                                                'vICMSEfet='+ALLTRIM(TRANSFORM(0,'999999.99'))+ m_qp + ;
+                                                                        'pRedBC='+ALLTRIM(TRANSFORM(mcons_prod[1,72],'99.9999'))+ m_qp + ;
+                                                                        'pMVAST='+ALLTRIM(TRANSFORM(mcons_prod[1,63],'999999.99'))+ m_qp +;
+                                                                        'pRedBCST='+ALLTRIM(TRANSFORM(mcons_prod[1,72],'99.9999'))+ m_qp + ;
+                                                                        'vBCST='+ALLTRIM(TRANSFORM(m_vbcst,'999999.99'))+ m_qp + ;
+                                                                        'pICMSST='+ALLTRIM(TRANSFORM(mcons_prod[1,62],'999999.99'))+ m_qp+;
+									'vICMSST='+ALLTRIM(TRANSFORM(m_vicmsst,'999999.99'))+ m_qp
 
                                                         mbase_fcp := iat((iat(mpr_fat) * m_nota[i,5]),2)
 
