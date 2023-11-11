@@ -1108,6 +1108,8 @@ WHILE .T.
                                                 IF m_nota[i,35] = '900'
                                                         mbase_icm = mbase_icm + iat((iat(mpr_fat) * m_nota[i,5]),2)
                                                         mtot_icm := mtot_icm + iat((m_nota[i,20]/100) * iat((iat(mpr_fat)*m_nota[i,5]),2),2)
+                                                        m_vbc     := iat((mpr_fat * m_nota[i,5]) * mcons_prod[1,72])
+                                                        m_vicms   := iat(m_vbc * (mcons_prod[1,62]/100))
                                                         m_vbcst   := iat(((mpr_fat * m_nota[i,5]) * ((mcons_prod[1,63]/100)+1) * mcons_prod[1,72]))
                                                         m_vicmsst := iat((m_vbcst * (mcons_prod[1,62] /100)) - m_vicms)
                                                         sLinhas := slinhas +    'vBC='+ALLTRIM(TRANSFORM(iat((iat(mpr_fat) * m_nota[i,5]),2),'999999.99'))+ m_qp + ;
