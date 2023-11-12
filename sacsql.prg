@@ -5135,6 +5135,74 @@ IF mdbf = NIL .AND. ! SR_EXISTTABLE('SACMDFE')
                 sr_committransaction()
         sr_endtransaction()
 ENDIF
+IF mdbf = NIL .AND. ! SR_EXISTTABLE('mastmesas')
+        DEVPOS(02,01);DEVOUT(STRZERO(f++,3)+'] Criando o Arquivo -> MASTMESAS   ')
+        matriz:={}
+        matriz := 'tipo CHAR(1)'
+        matriz := matriz +',numero CHAR(4)'
+        matriz := matriz +',descri CHAR(50)'
+        matriz := matriz +',data DATE'
+        matriz := matriz +',preco DECIMAL(12,2)'
+        matriz := matriz +',oper CHAR(3)'
+        matriz := matriz +',sr_recno DECIMAL(15,0) NOT NULL '
+        sr_getconnection():exec("CREATE GENERATOR MASTMESAS",,.f.)
+        sr_getconnection():exec("CREATE TABLE MASTMESAS ("+matriz+" )",,.f.)
+        sr_getconnection():exec("COMMIT",,.f.)
+        sr_getconnection():exec("ALTER TABLE MASTMESAS ADD UNIQUE (SR_RECNO)",,.f.)
+        sr_getconnection():exec("CREATE TRIGGER MASTMESAS_SR FOR MASTMESAS ACTIVE BEFORE INSERT POSITION 0 as begin If (new.SR_RECNO is null) then new.SR_RECNO = gen_id( MASTMESAS, 1); end",,.f.)
+        sr_getconnection():exec("COMMIT",,.f.)
+ENDIF
+IF mdbf = NIL .AND. ! SR_EXISTTABLE('MASTNUMMOV')
+        DEVPOS(02,01);DEVOUT(STRZERO(f++,3)+'] Criando o Arquivo ->MASTNUMMOV    ')
+        matriz:={}
+        matriz := 'num_doc CHAR(6)'
+        matriz := matriz +',data DATE'
+        matriz := matriz +',hora CHAR(8)'
+        matriz := matriz +',sr_recno DECIMAL(15,0) NOT NULL '
+        sr_getconnection():exec("CREATE GENERATOR MASTNUMMOV",,.f.)
+        sr_getconnection():exec("CREATE TABLE MASTNUMMOV ("+matriz+" )",,.f.)
+        sr_getconnection():exec("COMMIT",,.f.)
+        sr_getconnection():exec("ALTER TABLE MASTNUMMOV ADD UNIQUE (SR_RECNO)",,.f.)
+        sr_getconnection():exec("CREATE TRIGGER MASTNUMMOV_SR FOR MASTNUMMOV ACTIVE BEFORE INSERT POSITION 0 as begin If (new.SR_RECNO is null) then new.SR_RECNO = gen_id( MASTNUMMOV, 1); end",,.f.)
+        sr_getconnection():exec("COMMIT",,.f.)
+ENDIF
+IF mdbf = NIL .AND. ! SR_EXISTTABLE('MASTMOV')
+        DEVPOS(02,01);DEVOUT(STRZERO(f++,3)+'] Criando o Arquivo ->MASTMOV    ')
+        matriz:={}
+        matriz := 'num_doc CHAR(6)'
+        matriz := matriz +',num_local CHAR(5)'
+        matriz := matriz +',data DATE'
+        matriz := matriz +',hora CHAR(8)'
+        matriz := matriz +',cod_prod INTEGER'
+        matriz := matriz +',descri CHAR(50)'
+        matriz := matriz +',qtd DECIMAL(12,3)'
+        matriz := matriz +',preco DECIMAL(12,2)'
+        matriz := matriz +',cod_cli CHAR(5)'
+        matriz := matriz +',cod_garco CHAR(3)'
+        matriz := matriz +',oper CHAR(3)'
+        matriz := matriz +',obs CHAR(30)'
+        matriz := matriz +',dat_pag DATE'
+        matriz := matriz +',porta CHAR(4)'
+        matriz := matriz +',entregue CHAR(1)'
+        matriz := matriz +',imprimir CHAR(1)'
+        matriz := matriz +',qtd_p DECIMAL(3)'
+        matriz := matriz +',unidade CHAR(3)'
+        matriz := matriz +',dez_perc CHAR(1)'
+        matriz := matriz +',custo DECIMAL(12,2)'
+        matriz := matriz +',tipo CHAR(1)'
+        matriz := matriz +',excecao CHAR(60)'
+        matriz := matriz +',sr_recno DECIMAL(15,0) NOT NULL '
+        sr_getconnection():exec("CREATE GENERATOR MASTMOV",,.f.)
+        sr_getconnection():exec("CREATE TABLE MASTMOV ("+matriz+" )",,.f.)
+        sr_getconnection():exec("COMMIT",,.f.)
+        sr_getconnection():exec("ALTER TABLE MASTMOV ADD UNIQUE (SR_RECNO)",,.f.)
+        sr_getconnection():exec("CREATE TRIGGER MASTMOV_SR FOR MASTMOV ACTIVE BEFORE INSERT POSITION 0 as begin If (new.SR_RECNO is null) then new.SR_RECNO = gen_id( MASTMOV, 1); end",,.f.)
+        sr_getconnection():exec("COMMIT",,.f.)
+ENDIF
+
+
+
+
 sacdbf()
 /*
 sr_getconnection():exec("CREATE TABLE CARTA (sr_recno decimal(15,0) NOT NULL, CODE DATE(8), NAME char(50), sr_deleted char(1) NOT NULL )",,.f.)

@@ -19944,3 +19944,20 @@ SR_FIREBIRD:EXEC     Linha : 299
 ALT_TB     Linha : 1446
 SAC_DBF     Linha : 150
 MAIN     Linha : 810	
+12/11/23 10:05:43: SQLExecDirect Error
+violation of PRIMARY or UNIQUE KEY constraint "INTEG_9" on table "SACCLI" - Native error code 335544665
+Command sent to database : 
+INSERT INTO saccli (cod_cli   ,razao     ,nome      ,data_cad  ,data_atu  ,tipo      ,nascimento,endereco  ,bairro    ,cidade    ,uf        ,cep       ,rota      ,email     ,tel1      ,tel2      ,fax       ,cgc       ,insc      ,cpf       ,rg        ,orgao     ,dat_emi   ,comprado  ,contato   ,area      ,limite    ,atac_vare ,cod_cond  ,spc       ,obs       ,prazo_pag ,bloqueio  ,desconto  ,codvend   ,codoper   ,dia1_ini  ,dia1_fim  ,venc1_dup ,dia2_ini  ,dia2_fim  ,venc2_dup ,nome1     ,data_nas1 ,nome2     ,data_nas2 ,nome3     ,data_nas3 ,nome4     ,data_nas4 ,nome5     ,data_nas5 ,empre_c   ,cargo_c   ,salario_c ,end_c     ,bairro_c  ,cidade_c  ,uf_c      ,cep_c     ,fone_c1   ,fone_c2   ,loja1     ,tel_loja1 ,desde1    ,loja2     ,tel_loja2 ,desde2    ,nome_r1   ,fone_r1   ,nome_r2   ,fone_r2   ,banco1    ,ag1       ,conta1    ,banco2    ,ag2       ,conta2    ,cartao1   ,no1       ,venc1     ,cartao2   ,no2       ,venc2     ,pai       ,mae       ,end_cob   ,bairro_cob,cidade_cob,uf_cob    ,cep_cob   ,fone_cob  ,regiao    ,codforn   ,l_obs1    ,l_obs2    ,l_obs3    ,pocket    ,cod_profi ,data_bloq ,obs_bloq   ,numero     ,complemento,naturalidade,rota1       ,promotor    ,SR_DELETED ) VALUES (72,'ASLDKJFLAJSDLFJKLAS','','2023/11/12','2023/11/12','C',NULL,'','','TACAIMBO','PE','55140000','','','','','','','','','','',NULL,'','','',0,'V','000','S','','      N','S',0,'000','000','00','00','00','00','00','00','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','',0,'','','','','','','','','',NULL,'','',NULL,'','','','','','','','','','','','',NULL,'','',NULL,'','','','','TACAIMBO','PE','55140000','','','0000','','','','S','00000','2023/11/12','INCLUSAO DO CLIENTE','','','','','','')
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+SAC130     Linha : 1020
+F7_CLI     Linha : 7129
+AFTERINKEY     Linha : 1613
+(b)SAC0     Linha : 1408
+INKEY     Linha : 0
+SAC0     Linha : 1438
+SENHA     Linha : 824
+MAIN     Linha : 1131	
