@@ -1,1 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NFeAutorizacao4"><retEnviNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe"><tpAmb>2</tpAmb><verAplic>SVRSnfce202311011343</verAplic><cStat>104</cStat><xMotivo>Lote processado</xMotivo><cUF>26</cUF><dhRecbto>2023-11-09T11:54:31-03:00</dhRecbto><protNFe versao="4.00"><infProt><tpAmb>2</tpAmb><verAplic>SVRSnfce202311011343</verAplic><chNFe>26231124494200000106650010000007611159485340</chNFe><dhRecbto>2023-11-09T11:54:31-03:00</dhRecbto><nProt>326230000425542</nProt><digVal>kapDObc+pb8c9OV+6bO3phyW7wg=</digVal><cStat>100</cStat><xMotivo>Autorizado o uso da NF-e</xMotivo></infProt></protNFe></retEnviNFe></nfeResultMsg></soap:Body></soap:Envelope>
+<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><nfeResultMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NFeAutorizacao4"><retEnviNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_2.8.0</verAplic>
+<cStat>104</cStat>
+<xMotivo>Lote processado</xMotivo>
+<cUF>26</cUF>
+<dhRecbto>2023-11-13T09:48:39-03:00</dhRecbto>
+ <protNFe versao="4.00"><infProt Id="NFe1"><tpAmb>2</tpAmb>
+<verAplic>NFEPE_H_2.8.0</verAplic>
+<chNFe>26231124494200000106550010000025241993029375</chNFe>
+<dhRecbto>2023-11-13T09:48:39-03:00</dhRecbto><nProt>126230000333974</nProt>
+<digVal>XbDmJVwr26/OIYSczBnhY3OtUyQ=</digVal><cStat>100</cStat>
+<xMotivo>Autorizado o uso da NF-e</xMotivo>
+</infProt></protNFe></retEnviNFe></nfeResultMsg></soapenv:Body></soapenv:Envelope>
