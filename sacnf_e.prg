@@ -1113,7 +1113,7 @@ WHILE .T.
                                                         m_vbcst   := iat(((mpr_fat * m_nota[i,5]) * ((mcons_prod[1,63]/100)+1) * mcons_prod[1,72]))
                                                         m_vicmsst := iat((m_vbcst * (mcons_prod[1,62] /100)) - m_vicms)
                                                         //m_vicmsst := iat((m_vbcst * (m_nota[i,20] /100)) - m_vicms)
-                                        atencao('BASE ICMSST:' + TRANSFORM(m_vbcst,'999,999.99')+' valor icms:'+TRANSFORM(m_vicms,'999,999.99')+' valor icmsST:'+TRANSFORM(m_vicmsst,'999,999.99'))
+                                                        //atencao('BASE ICMSST:' + TRANSFORM(m_vbcst,'999,999.99')+' valor icms:'+TRANSFORM(m_vicms,'999,999.99')+' valor icmsST:'+TRANSFORM(m_vicmsst,'999,999.99'))
                                                         sLinhas := slinhas +    'vBC='+ALLTRIM(TRANSFORM(iat((iat(mpr_fat) * m_nota[i,5]),2),'999999.99'))+ m_qp + ;
                                                                                 'pICMS='+ALLTRIM(TRANSFORM(m_nota[i,20],'999.99'))+ m_qp + ;
                                                                                 'vICMS='+ALLTRIM(TRANSFORM(iat((m_nota[i,20]/100) * iat((iat(mpr_fat)*m_nota[i,5]),2),2),'999999.99'))+ m_qp +;
