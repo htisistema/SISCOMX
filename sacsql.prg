@@ -5199,11 +5199,37 @@ IF mdbf = NIL .AND. ! SR_EXISTTABLE('MASTMOV')
         sr_getconnection():exec("CREATE TRIGGER MASTMOV_SR FOR MASTMOV ACTIVE BEFORE INSERT POSITION 0 as begin If (new.SR_RECNO is null) then new.SR_RECNO = gen_id( MASTMOV, 1); end",,.f.)
         sr_getconnection():exec("COMMIT",,.f.)
 ENDIF
-
-
-
+IF mdbf = NIL .AND. ! SR_EXISTTABLE('MASTRESERVA')
+        DEVPOS(02,01);DEVOUT(STRZERO(f++,3)+'] Criando o Arquivo ->MASTRESERVA  ')
+        matriz :=        + 'quarto  CHAR(4) '
+        matriz := matriz + ',data_inclusao DATE '
+        matriz := matriz + ',hora_inclusao CHAR(8) '
+        matriz := matriz + ',oper_inclusao CHAR(3) '
+        matriz := matriz + ',obs_inclusao CHAR(60) '
+        matriz := matriz + ',Cliente  CHAR(5) '
+        matriz := matriz + ',data_reserva  DATE '
+        matriz := matriz + ',reserva  CHAR(10) '
+        matriz := matriz + ',data_inicial  DATE '
+        matriz := matriz + ',data_final  DATE '
+        matriz := matriz + ',Fornecedor  CHAR(4) '
+        matriz := matriz + ',reserva_forn  CHAR(15) '
+        matriz := matriz + ',valor DECIMAL(12,2) '
+        matriz := matriz + ',Status  CHAR(1) '
+        matriz := matriz + ',data_checkin  DATE '
+        matriz := matriz + ',hora_checkin CHAR(8) '
+        matriz := matriz + ',obs_checkin CHAR(60) '
+        matriz := matriz + ',oper_checkin CHAR(3) '
+        matriz := matriz + ',data_checkout  DATE '
+        matriz := matriz + ',hora_checkout CHAR(8) '
+        matriz := matriz + ',obs_checkout CHAR(60) '
+        matriz := matriz + ',oper_checkout CHAR(3) '
+        matriz := matriz + ',qtd_pessoas INTEGER NOT NULL '
+        sr_getconnection():exec("CREATE TABLE MASTRESERVA ("+matriz+" )",,.f.)
+        sr_getconnection():exec("COMMIT",,.f.)
+ENDIF
 
 sacdbf()
+
 /*
 sr_getconnection():exec("CREATE TABLE CARTA (sr_recno decimal(15,0) NOT NULL, CODE DATE(8), NAME char(50), sr_deleted char(1) NOT NULL )",,.f.)
 sr_getconnection():exec("COMMIT",,.f.)
