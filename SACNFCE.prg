@@ -2396,6 +2396,7 @@ WHILE .T.
 
                 y:=0
                 FOR y = 1 TO LEN(m_recebe)
+                        atencao(m_recebe[y,1])
                         sLinhas := slinhas +    '[pag'+STRZERO(Y,3)+']'+ m_qp + ;
                                                 'tpIntegra=2'+ m_qp
                         IF m_recebe[y,1] = 'CH'
