@@ -1,11 +1,16 @@
 <!--
 ################################################
 # xDevStudio Project - xdev@kssoftware.com.br  #
+<<<<<<< Updated upstream
 # Created @ 13/11/2023 21:01:19                #
+=======
+# Created @ 29/09/2023 11:50:15                #
+>>>>>>> Stashed changes
 #                                              #
 ### Standard xDev TagList - Layout v1.5 ########
 -->
 <taglist>
+<<<<<<< Updated upstream
    <tag filename="C:\HTI\SISCOM\SAC00.PRG" name="Ctrl_v" args=" " scope="PUBLIC" type="ptFunction" line="2867">
    <tag filename="C:\HTI\SISCOM\SAC00.PRG" name="AfterInkey" args="<nkey> " scope="PUBLIC" type="ptFunction" line="1548">
    <tag filename="C:\HTI\SISCOM\SAC00.PRG" name="sac0" args=" " scope="PUBLIC" type="ptFunction" line="498">
@@ -702,6 +707,14 @@
    <tag filename="C:\HTI\SISCOM\SAC5PED1.PRG" name="sac5ped1" args="<mnum_p>, <orc>, <consult>, <tkt>, <mfrente>, <menu_print>, <mapp> " scope="PUBLIC" type="ptFunction" line="4">
    <tag filename="C:\HTI\SISCOM\SACCAIXA.PRG" name="saccaixa" args=" " scope="PUBLIC" type="ptFunction" line="3">
    <tag filename="C:\HTI\SISCOM\sac5ped11.prg" name="sac5ped11" args=" " scope="PUBLIC" type="ptFunction" line="2">
+=======
+   <tag filename="C:\hti\SISCOMX\SISCOM.PRG" name="Setup" args=" " scope="PUBLIC" type="ptFunction" line="1237">
+   <tag filename="C:\hti\SISCOMX\SISCOM.PRG" name="TESTA2" args=" " scope="PUBLIC" type="ptFunction" line="1227">
+   <tag filename="C:\hti\SISCOMX\SISCOM.PRG" name="TESTA1" args=" " scope="PUBLIC" type="ptFunction" line="1218">
+   <tag filename="C:\hti\SISCOMX\SISCOM.PRG" name="DisplayTime" args=" " scope="PUBLIC" type="ptFunction" line="1206">
+   <tag filename="C:\hti\SISCOMX\SISCOM.PRG" name="ShowClue" args="<.><.><.> " scope="PUBLIC" type="ptFunction" line="1166">
+   <tag filename="C:\hti\SISCOMX\SISCOM.PRG" name="main" args="<mtc>, <mecf>, <mtipo_tela> " scope="PUBLIC" type="ptFunction" line="29">
+>>>>>>> Stashed changes
    <tag filename="C:\SQLRDD997\include\msg.ch" name="LANG_ES_ES" args=" " scope="PUBLIC" type="ptConstant" line="11">
    <tag filename="C:\SQLRDD997\include\msg.ch" name="LANG_PT_PT" args=" " scope="PUBLIC" type="ptConstant" line="12">
    <tag filename="C:\SQLRDD997\include\msg.ch" name="LANG_PT_BR" args=" " scope="PUBLIC" type="ptConstant" line="7">
@@ -789,6 +802,7 @@
    <tag filename="C:\SQLRDD997\include\pgs.ch" name="REFCURSOROID" args=" " scope="PUBLIC" type="ptConstant" line="75">
    <tag filename="C:\SQLRDD997\include\pgs.ch" name="REGOPERATOROID" args=" " scope="PUBLIC" type="ptConstant" line="78">
    <tag filename="C:\SQLRDD997\include\pgs.ch" name="RECORDOID" args=" " scope="PUBLIC" type="ptConstant" line="81">
+<<<<<<< Updated upstream
    <tag filename="C:\HTI\SISCOM\SACAPPHTI.PRG" name="sacapphti" args="<mprocesso>, <mint_ext>, <mmini> " scope="PUBLIC" type="ptFunction" line="2">
    <tag filename="C:\HTI\SISCOM\FORMULA_1.PRG" name="formula_1" args="<mdup_2>, <m_ava>, <mtipo_pag>, <mtp_email> " scope="PUBLIC" type="ptFunction" line="2">
    <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="cod_acess" args=" " scope="PUBLIC" type="ptFunction" line="572">
@@ -808,6 +822,8 @@
    <tag filename="C:\HTI\SISCOM\SAC110NOVO.PRG" name="sac110df" args=" " scope="PUBLIC" type="ptFunction" line="518">
    <tag filename="C:\HTI\SISCOM\SAC110NOVO.PRG" name="sac110oi" args=" " scope="PUBLIC" type="ptFunction" line="416">
    <tag filename="C:\HTI\SISCOM\SAC110NOVO.PRG" name="sac110" args="<op>, <comp>, <mcodbar>, <mdesc_p>, <mcodfrn>, <m_xml> " scope="PUBLIC" type="ptFunction" line="4">
+=======
+>>>>>>> Stashed changes
    <tag filename="C:\SQLRDD997\include\mysql.h" name="simple_command" args="<mysql>, <command>, <arg>, <length>, <skip_check> " scope="PUBLIC" type="ptPseudoFUNC" line="830">
    <tag filename="C:\SQLRDD997\include\mysql.h" name="IS_BLOB" args="<n> " scope="PUBLIC" type="ptPseudoFUNC" line="75">
    <tag filename="C:\SQLRDD997\include\mysql.h" name="IS_PRI_KEY" args="<n> " scope="PUBLIC" type="ptPseudoFUNC" line="73">
