@@ -1433,7 +1433,7 @@ LOCAL MPRG:="SACNFCE",;
       opcao,lci,lba,cba,i,mopcao,f,mtipo_comp,mtipo_pag,mtot_verif:=0,mperc_comissao,li,lb,cb,mdiferenca:=0,mtroco:=0,;
       m_recebe:={},mdinheiro,mn_banco,mn_cheque,mn_dup,mn_trans,mvencimento,mt_pag,mvalor,mn_fin,mtot_ipi,mbox_rece,;
       magencia,mc_c,mcorrente,mcartao_sn:=" ",aret:={},mvlr_cred:=0,mcredito_aux:=0,m_credito:={},Operacoes,;
-      mdesc_tot:=0,mvlr_cartao:=0,mpix := 0
+      mdesc_tot:=0,mvlr_cartao:=0,mpix := 0, mdebito:='  '
 
 MEMVAR mtot_nota,m_codigo,m_merc,m_matriz,mdocumento,mnum_ecf,mcod_bc,m_flag,mcgc,mcpf,minsc,mcliente,mcod_vend,mnum_ccf
 
@@ -1472,7 +1472,7 @@ WVW_PBSetFont( , 'times new roman',20,10)
 nPBins_dados := wvw_pbCreate(NIL, 5, 3,8, 15,  ' CPF/CNPJ ',NIL,{||ins_dados()})
 nPBins_dados := wvw_pbCreate(NIL, 5, 25,8, 40,  ' Observacao ',NIL,{||ins_obs()})
 
-m_conteudo:={'1 Dinheiro','2 Cheque','3 Duplicata','4 Financeira','5 Cartao','6 Credito','7 PIX', '8 Cartao de Debito' }
+m_conteudo:={'1 Dinheiro','2 Cheque','3 Duplicata','4 Financeira','5 Cartao','6 Credito','7 PIX'}
 mposicao:={0,0,3,4}
 WVW_CBSetFont( , 'times new roman', 20, 12,2,2)
 //WVW_CBSetFont( , 'lucida console', 20, 12,2,2)

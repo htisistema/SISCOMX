@@ -1,8 +1,8 @@
 /*
  * xHarbour build 0.99.70 Intl. (SimpLex)
  * Generated C source code from <SACAPPHTI.PRG>
- * Command: C:\xHarbour997\bin\harbour.exe C:\hti\SISCOM\SACAPPHTI.PRG /q /oC:\hti\SISCOM\SACAPPHTI.c /M /N -DxHB -DXHB_0990 -DXHB_0991 -DXHB_0992 -DXHB_0993 -DXHB_0994 -DXHB_09941 -DXHB_09950 -DXHB_09951a -DXHB_09951 -DXHB_09951b -DXHB_0996 -DXHB_09960 -DXHB_09961 -DXHB_09961B -DXHB_0997 -DXHB_09970 
- * Created: 2023.09.29 11:53:56 (Borland C++ 5.5.1)
+ * Command: C:\xHarbour997\bin\harbour.exe C:\HTI\SISCOM\SACAPPHTI.PRG /q /oC:\hti\SISCOM\SACAPPHTI.c /M /N -DxHB -DXHB_0990 -DXHB_0991 -DXHB_0992 -DXHB_0993 -DXHB_0994 -DXHB_09941 -DXHB_09950 -DXHB_09951a -DXHB_09951 -DXHB_09951b -DXHB_0996 -DXHB_09960 -DXHB_09961 -DXHB_09961B -DXHB_0997 -DXHB_09970 
+ * Created: 2023.11.21 09:47:58 (Borland C++ 5.5.1)
  */
 
 #include "hbvmpub.h"
@@ -264,7 +264,7 @@ HB_FUNC( SACAPPHTI )
 	HB_P_PUSHSYMNEAR, 14,	/* SAC3411 */
 	HB_P_PUSHNIL,
 	HB_P_DOSHORT, 0,
-	HB_P_JUMP, 104, 19,	/* 4968 (abs: 05498) */
+	HB_P_JUMP, 103, 19,	/* 4967 (abs: 05497) */
 /* 00533 */ HB_P_LINEOFFSET, 55,	/* 66 */
 	HB_P_PUSHLOCALNEAR, 2,	/* MINT_EXT */
 	HB_P_PUSHNIL,
@@ -313,7 +313,7 @@ HB_FUNC( SACAPPHTI )
 	HB_P_PUSHLOCALNEAR, 17,	/* CONS_PALM */
 	HB_P_FUNCTIONSHORT, 1,
 	HB_P_LESSEQUAL,
-	HB_P_JUMPFALSE, 151, 18,	/* 4759 (abs: 05473) */
+	HB_P_JUMPFALSE, 150, 18,	/* 4758 (abs: 05472) */
 /* 00717 */ HB_P_LINEOFFSET, 64,	/* 75 */
 	HB_P_LOCALNEARSETSTR, 43, 1, 0,	/* MCOND_VEZE 1*/
 	0, 
@@ -409,7 +409,7 @@ HB_FUNC( SACAPPHTI )
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_PLUS,
 	HB_P_DOSHORT, 1,
-	HB_P_JUMP, 156, 17,	/* 4508 (abs: 05466) */
+	HB_P_JUMP, 155, 17,	/* 4507 (abs: 05465) */
 /* 00961 */ HB_P_LINEOFFSET, 76,	/* 87 */
 	HB_P_ARRAYGEN, 0, 0,	/* 0 */
 	HB_P_POPLOCALNEAR, 18,	/* CONS_CLI */
@@ -473,7 +473,7 @@ HB_FUNC( SACAPPHTI )
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_PLUS,
 	HB_P_DOSHORT, 1,
-	HB_P_JUMP, 236, 16,	/* 4332 (abs: 05466) */
+	HB_P_JUMP, 235, 16,	/* 4331 (abs: 05465) */
 /* 01137 */ HB_P_LINEOFFSET, 83,	/* 94 */
 	HB_P_PUSHLOCALNEAR, 17,	/* CONS_PALM */
 	HB_P_PUSHLOCALNEAR, 15,	/* P */
@@ -2235,14 +2235,14 @@ HB_FUNC( SACAPPHTI )
 	HB_P_PUSHLOCALNEAR, 2,	/* MINT_EXT */
 	HB_P_PUSHNIL,
 	HB_P_NOTEQUAL,
-	HB_P_JUMPFALSE, 185, 0,	/* 185 (abs: 05223) */
+	HB_P_JUMPFALSE, 184, 0,	/* 184 (abs: 05222) */
 /* 05041 */ HB_P_LINE, 68, 1,	/* 324 */
 	HB_P_MESSAGE, 6, 0,	/* EXEC */
 	HB_P_PUSHSYMNEAR, 7,	/* SR_GETCONNECTION */
 	HB_P_PUSHNIL,
 	HB_P_FUNCTIONSHORT, 0,
-	HB_P_PUSHSTRSHORT, 100,	/* 100 */
-	'U', 'P', 'D', 'A', 'T', 'E', ' ', 'c', 'n', 'n', 't', '_', 'p', 'e', 'd', 'i', 'd', 'o', ' ', 'S', 'E', 'T', ' ', 's', 't', 'a', 't', 'u', 's', '_', 'p', 'e', 'd', ' ', '=', ' ', 39, 'P', 'E', 'D', 'I', 'D', 'O', 39, ',', 'o', 'b', 's', '_', 'p', 'c', 'o', ' ', '=', ' ', 39, 'E', 'M', ' ', 'A', 'N', 'D', 'A', 'M', 'E', 'N', 'T', 'O', 39, ',', 'i', 'm', 'p', 'o', 'r', 't', 'a', 'd', 'o', ' ', '=', ' ', '1', ' ', 'W', 'H', 'E', 'R', 'E', ' ', 'c', 'o', 'd', 'i', 'g', 'o', ' ', '=', ' ', 0, 
+	HB_P_PUSHSTRSHORT, 99,	/* 99 */
+	'U', 'P', 'D', 'A', 'T', 'E', ' ', 'c', 'n', 'n', 't', '_', 'p', 'e', 'd', 'i', 'd', 'o', ' ', 'S', 'E', 'T', ' ', 's', 't', 'a', 't', 'u', 's', '_', 'p', 'e', 'd', ' ', '=', ' ', 39, 'P', 'E', 'D', 'I', 'D', 'O', 39, ',', 'o', 'b', 's', '_', 'p', 'c', ' ', '=', ' ', 39, 'E', 'M', ' ', 'A', 'N', 'D', 'A', 'M', 'E', 'N', 'T', 'O', 39, ',', 'i', 'm', 'p', 'o', 'r', 't', 'a', 'd', 'o', ' ', '=', ' ', '1', ' ', 'W', 'H', 'E', 'R', 'E', ' ', 'c', 'o', 'd', 'i', 'g', 'o', ' ', '=', ' ', 0, 
 	HB_P_PUSHSYMNEAR, 18,	/* SR_CDBVALUE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHLOCALNEAR, 17,	/* CONS_PALM */
@@ -2272,8 +2272,8 @@ HB_FUNC( SACAPPHTI )
 	HB_P_FALSE,
 	HB_P_SENDSHORT, 3,
 	HB_P_POP,
-	HB_P_JUMP, 184, 0,	/* 184 (abs: 05404) */
-/* 05223 */ HB_P_LINE, 70, 1,	/* 326 */
+	HB_P_JUMP, 184, 0,	/* 184 (abs: 05403) */
+/* 05222 */ HB_P_LINE, 70, 1,	/* 326 */
 	HB_P_MESSAGE, 6, 0,	/* EXEC */
 	HB_P_PUSHSYMNEAR, 7,	/* SR_GETCONNECTION */
 	HB_P_PUSHNIL,
@@ -2309,7 +2309,7 @@ HB_FUNC( SACAPPHTI )
 	HB_P_FALSE,
 	HB_P_SENDSHORT, 3,
 	HB_P_POP,
-/* 05404 */ HB_P_LINE, 77, 1,	/* 333 */
+/* 05403 */ HB_P_LINE, 77, 1,	/* 333 */
 	HB_P_MESSAGE, 6, 0,	/* EXEC */
 	HB_P_PUSHSYMNEAR, 7,	/* SR_GETCONNECTION */
 	HB_P_PUSHNIL,
@@ -2320,12 +2320,12 @@ HB_FUNC( SACAPPHTI )
 	HB_P_FALSE,
 	HB_P_SENDSHORT, 3,
 	HB_P_POP,
-/* 05429 */ HB_P_LINE, 78, 1,	/* 334 */
+/* 05428 */ HB_P_LINE, 78, 1,	/* 334 */
 	HB_P_PUSHLOCALNEAR, 2,	/* MINT_EXT */
 	HB_P_PUSHNIL,
 	HB_P_NOTEQUAL,
-	HB_P_JUMPFALSENEAR, 27,	/* 27 (abs: 05463) */
-/* 05438 */ HB_P_LINE, 79, 1,	/* 335 */
+	HB_P_JUMPFALSENEAR, 27,	/* 27 (abs: 05462) */
+/* 05437 */ HB_P_LINE, 79, 1,	/* 335 */
 	HB_P_PUSHSYMNEAR, 38,	/* SAC5PED1 */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 20,	/* STRZERO */
@@ -2340,33 +2340,33 @@ HB_FUNC( SACAPPHTI )
 	HB_P_PUSHSTRSHORT, 2,	/* 2 */
 	'*', 0, 
 	HB_P_DOSHORT, 6,
-/* 05463 */ HB_P_LINE, 81, 1,	/* 337 */
+/* 05462 */ HB_P_LINE, 81, 1,	/* 337 */
 	HB_P_LOCALNEARADDINT, 15, 1, 0,	/* P 1*/
-	HB_P_JUMP, 98, 237,	/* -4766 (abs: 00704) */
-/* 05473 */ HB_P_LINE, 83, 1,	/* 339 */
+	HB_P_JUMP, 99, 237,	/* -4765 (abs: 00704) */
+/* 05472 */ HB_P_LINE, 83, 1,	/* 339 */
 	HB_P_PUSHLOCALNEAR, 2,	/* MINT_EXT */
 	HB_P_PUSHNIL,
 	HB_P_EQUAL,
-	HB_P_JUMPFALSENEAR, 10,	/* 10 (abs: 05490) */
-/* 05482 */ HB_P_LINE, 84, 1,	/* 340 */
+	HB_P_JUMPFALSENEAR, 10,	/* 10 (abs: 05489) */
+/* 05481 */ HB_P_LINE, 84, 1,	/* 340 */
 	HB_P_PUSHSYMNEAR, 39,	/* WVW_LCLOSEWINDOW */
 	HB_P_PUSHNIL,
 	HB_P_DOSHORT, 0,
-/* 05490 */ HB_P_LINE, 86, 1,	/* 342 */
+/* 05489 */ HB_P_LINE, 86, 1,	/* 342 */
 	HB_P_PUSHSYMNEAR, 14,	/* SAC3411 */
 	HB_P_PUSHNIL,
 	HB_P_DOSHORT, 0,
-/* 05498 */ HB_P_LINE, 91, 1,	/* 347 */
+/* 05497 */ HB_P_LINE, 91, 1,	/* 347 */
 	HB_P_PUSHSYMNEAR, 4,	/* __SETCENTURY */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSTRSHORT, 4,	/* 4 */
 	'O', 'F', 'F', 0, 
 	HB_P_DOSHORT, 1,
-/* 05512 */ HB_P_LINE, 92, 1,	/* 348 */
+/* 05511 */ HB_P_LINE, 92, 1,	/* 348 */
 	HB_P_PUSHNIL,
 	HB_P_RETVALUE,
 	HB_P_ENDPROC
-/* 05518 */
+/* 05517 */
    };
 
    hb_vmExecute( pcode, symbols, NULL );

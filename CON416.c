@@ -1,8 +1,8 @@
 /*
  * xHarbour build 0.99.70 Intl. (SimpLex)
  * Generated C source code from <CON416.PRG>
- * Command: C:\xHarbour997\bin\harbour.exe C:\hti\SISCOM\CON416.PRG /q /oC:\hti\SISCOM\CON416.c /M /N -DxHB -DXHB_0990 -DXHB_0991 -DXHB_0992 -DXHB_0993 -DXHB_0994 -DXHB_09941 -DXHB_09950 -DXHB_09951a -DXHB_09951 -DXHB_09951b -DXHB_0996 -DXHB_09960 -DXHB_09961 -DXHB_09961B -DXHB_0997 -DXHB_09970 
- * Created: 2023.09.29 11:54:02 (Borland C++ 5.5.1)
+ * Command: C:\xHarbour997\bin\harbour.exe C:\HTI\SISCOM\CON416.PRG /q /oC:\hti\SISCOM\CON416.c /M /N -DxHB -DXHB_0990 -DXHB_0991 -DXHB_0992 -DXHB_0993 -DXHB_0994 -DXHB_09941 -DXHB_09950 -DXHB_09951a -DXHB_09951 -DXHB_09951b -DXHB_0996 -DXHB_09960 -DXHB_09961 -DXHB_09961B -DXHB_0997 -DXHB_09970 
+ * Created: 2023.11.21 09:48:02 (Borland C++ 5.5.1)
  */
 
 #include "hbvmpub.h"
@@ -706,11 +706,11 @@ HB_FUNC( CON416 )
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 10, 0,	/* MCONS_BANCO */
 	HB_P_FUNCTIONSHORT, 1,
-	HB_P_JUMPTRUENEAR, 40,	/* 40 (abs: 01650) */
+	HB_P_JUMPTRUENEAR, 41,	/* 41 (abs: 01651) */
 /* 01612 */ HB_P_LINEOFFSET, 60,	/* 68 */
 	HB_P_PUSHVARIABLE, 39, 0,	/* CCOMM */
-	HB_P_PUSHSTRSHORT, 18,	/* 18 */
-	'A', 'N', 'D', ' ', 'd', '.', 'b', 'a', 'n', 'c', 'o', '_', 'b', 'x', ' ', '=', ' ', 0, 
+	HB_P_PUSHSTRSHORT, 19,	/* 19 */
+	' ', 'A', 'N', 'D', ' ', 'd', '.', 'b', 'a', 'n', 'c', 'o', '_', 'b', 'x', ' ', '=', ' ', 0, 
 	HB_P_PLUS,
 	HB_P_PUSHSYMNEAR, 40,	/* SR_CDBVALUE */
 	HB_P_PUSHNIL,
@@ -718,25 +718,25 @@ HB_FUNC( CON416 )
 	HB_P_FUNCTIONSHORT, 1,
 	HB_P_PLUS,
 	HB_P_POPVARIABLE, 39, 0,	/* CCOMM */
-/* 01650 */ HB_P_LINEOFFSET, 62,	/* 70 */
+/* 01651 */ HB_P_LINEOFFSET, 62,	/* 70 */
 	HB_P_PUSHVARIABLE, 39, 0,	/* CCOMM */
 	HB_P_PUSHSTRSHORT, 12,	/* 12 */
 	' ', 'u', 'n', 'i', 'o', 'n', ' ', 'a', 'l', 'l', ' ', 0, 
 	HB_P_PLUS,
 	HB_P_POPVARIABLE, 39, 0,	/* CCOMM */
-/* 01673 */ HB_P_LINEOFFSET, 63,	/* 71 */
+/* 01674 */ HB_P_LINEOFFSET, 63,	/* 71 */
 	HB_P_PUSHVARIABLE, 39, 0,	/* CCOMM */
 	HB_P_PUSHSTRSHORT, 96,	/* 96 */
 	' ', 'S', 'E', 'L', 'E', 'C', 'T', ' ', 39, 'C', 39, ',', 'r', '.', 'd', 'a', 't', 'p', 'a', 'g', ',', 'r', '.', 'h', 'o', 'r', 'a', '_', 'b', 'x', ',', 'r', '.', 't', 'i', 'p', 'o', ',', 'r', '.', 'd', 'u', 'p', 'l', 'i', 'c', 'a', 't', 'a', ',', 'r', '.', 'f', 'o', 'r', 'n', 'e', 'c', ',', 'r', '.', 'c', 'l', 'i', 'e', 'n', 't', 'e', ',', 'r', '.', 'v', 'l', 'p', 'a', 'g', 'o', ',', 'r', '.', 'o', 'b', 's', '1', ',', 'r', '.', 'b', 'a', 'n', 'c', 'o', '_', 'b', 'x', 0, 
 	HB_P_PLUS,
 	HB_P_POPVARIABLE, 39, 0,	/* CCOMM */
-/* 01780 */ HB_P_LINEOFFSET, 64,	/* 72 */
+/* 01781 */ HB_P_LINEOFFSET, 64,	/* 72 */
 	HB_P_PUSHVARIABLE, 39, 0,	/* CCOMM */
 	HB_P_PUSHSTRSHORT, 17,	/* 17 */
 	' ', 'F', 'R', 'O', 'M', ' ', 's', 'a', 'c', 'd', 'u', 'p', 'r', ' ', 'r', ' ', 0, 
 	HB_P_PLUS,
 	HB_P_POPVARIABLE, 39, 0,	/* CCOMM */
-/* 01808 */ HB_P_LINEOFFSET, 65,	/* 73 */
+/* 01809 */ HB_P_LINEOFFSET, 65,	/* 73 */
 	HB_P_PUSHVARIABLE, 39, 0,	/* CCOMM */
 	HB_P_PUSHSTRSHORT, 25,	/* 25 */
 	' ', 'W', 'H', 'E', 'R', 'E', ' ', 'r', '.', 'd', 'a', 't', 'p', 'a', 'g', ' ', 'B', 'E', 'T', 'W', 'E', 'E', 'N', ' ', 0, 
@@ -763,16 +763,16 @@ HB_FUNC( CON416 )
 	HB_P_FUNCTIONSHORT, 1,
 	HB_P_PLUS,
 	HB_P_POPVARIABLE, 39, 0,	/* CCOMM */
-/* 01917 */ HB_P_LINEOFFSET, 66,	/* 74 */
+/* 01918 */ HB_P_LINEOFFSET, 66,	/* 74 */
 	HB_P_PUSHSYMNEAR, 28,	/* EMPTY */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 10, 0,	/* MCONS_BANCO */
 	HB_P_FUNCTIONSHORT, 1,
-	HB_P_JUMPTRUENEAR, 40,	/* 40 (abs: 01967) */
-/* 01929 */ HB_P_LINEOFFSET, 67,	/* 75 */
+	HB_P_JUMPTRUENEAR, 41,	/* 41 (abs: 01969) */
+/* 01930 */ HB_P_LINEOFFSET, 67,	/* 75 */
 	HB_P_PUSHVARIABLE, 39, 0,	/* CCOMM */
-	HB_P_PUSHSTRSHORT, 18,	/* 18 */
-	'A', 'N', 'D', ' ', 'r', '.', 'b', 'a', 'n', 'c', 'o', '_', 'b', 'x', ' ', '=', ' ', 0, 
+	HB_P_PUSHSTRSHORT, 19,	/* 19 */
+	' ', 'A', 'N', 'D', ' ', 'r', '.', 'b', 'a', 'n', 'c', 'o', '_', 'b', 'x', ' ', '=', ' ', 0, 
 	HB_P_PLUS,
 	HB_P_PUSHSYMNEAR, 40,	/* SR_CDBVALUE */
 	HB_P_PUSHNIL,
@@ -780,16 +780,16 @@ HB_FUNC( CON416 )
 	HB_P_FUNCTIONSHORT, 1,
 	HB_P_PLUS,
 	HB_P_POPVARIABLE, 39, 0,	/* CCOMM */
-/* 01967 */ HB_P_LINEOFFSET, 69,	/* 77 */
+/* 01969 */ HB_P_LINEOFFSET, 69,	/* 77 */
 	HB_P_PUSHVARIABLE, 39, 0,	/* CCOMM */
 	HB_P_PUSHSTRSHORT, 15,	/* 15 */
 	' ', 'O', 'R', 'D', 'E', 'R', ' ', 'B', 'Y', ' ', '2', ',', '3', ' ', 0, 
 	HB_P_PLUS,
 	HB_P_POPVARIABLE, 39, 0,	/* CCOMM */
-/* 01993 */ HB_P_LINEOFFSET, 70,	/* 78 */
+/* 01995 */ HB_P_LINEOFFSET, 70,	/* 78 */
 	HB_P_ARRAYGEN, 0, 0,	/* 0 */
 	HB_P_POPVARIABLE, 10, 0,	/* MCONS_BANCO */
-/* 02001 */ HB_P_LINEOFFSET, 71,	/* 79 */
+/* 02003 */ HB_P_LINEOFFSET, 71,	/* 79 */
 	HB_P_MESSAGE, 41, 0,	/* EXEC */
 	HB_P_PUSHSYMNEAR, 42,	/* SR_GETCONNECTION */
 	HB_P_PUSHNIL,
@@ -800,7 +800,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHMEMVARREF, 10, 0,	/* MCONS_BANCO */
 	HB_P_SENDSHORT, 4,
 	HB_P_POP,
-/* 02022 */ HB_P_LINEOFFSET, 72,	/* 80 */
+/* 02024 */ HB_P_LINEOFFSET, 72,	/* 80 */
 	HB_P_MESSAGE, 41, 0,	/* EXEC */
 	HB_P_PUSHSYMNEAR, 42,	/* SR_GETCONNECTION */
 	HB_P_PUSHNIL,
@@ -811,22 +811,22 @@ HB_FUNC( CON416 )
 	HB_P_FALSE,
 	HB_P_SENDSHORT, 3,
 	HB_P_POP,
-/* 02046 */ HB_P_LINEOFFSET, 74,	/* 82 */
+/* 02048 */ HB_P_LINEOFFSET, 74,	/* 82 */
 	HB_P_PUSHSYMNEAR, 43,	/* LEN */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 10, 0,	/* MCONS_BANCO */
 	HB_P_FUNCTIONSHORT, 1,
 	HB_P_ZERO,
 	HB_P_EQUAL,
-	HB_P_JUMPFALSENEAR, 52,	/* 52 (abs: 02110) */
-/* 02060 */ HB_P_LINEOFFSET, 75,	/* 83 */
+	HB_P_JUMPFALSENEAR, 52,	/* 52 (abs: 02112) */
+/* 02062 */ HB_P_LINEOFFSET, 75,	/* 83 */
 	HB_P_PUSHSYMNEAR, 44,	/* ATENCAO */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSTRSHORT, 38,	/* 38 */
 	'N', 'a', 'o', ' ', 'e', 'x', 'i', 's', 't', 'e', ' ', 'd', 'o', 'c', 'u', 'm', 'e', 'n', 't', 'o', ' ', 'n', 'e', 's', 't', 'e', ' ', 'P', 'e', 'r', 'i', 'o', 'd', 'o', '.', '.', '.', 0, 
 	HB_P_DOSHORT, 1,
-	HB_P_JUMP, 177, 248,	/* -1871 (abs: 00236) */
-/* 02110 */ HB_P_LINEOFFSET, 78,	/* 86 */
+	HB_P_JUMP, 175, 248,	/* -1873 (abs: 00236) */
+/* 02112 */ HB_P_LINEOFFSET, 78,	/* 86 */
 	HB_P_PUSHSYMNEAR, 45,	/* IMP_ARQ */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSTRSHORT, 13,	/* 13 */
@@ -841,20 +841,20 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 2,	/* 2 */
 	'E', 0, 
 	HB_P_FUNCTIONSHORT, 8,
-	HB_P_JUMPTRUENEAR, 5,	/* 5 (abs: 02150) */
-	HB_P_JUMP, 137, 248,	/* -1911 (abs: 00236) */
-/* 02150 */ HB_P_LINEOFFSET, 83,	/* 91 */
+	HB_P_JUMPTRUENEAR, 5,	/* 5 (abs: 02152) */
+	HB_P_JUMP, 135, 248,	/* -1913 (abs: 00236) */
+/* 02152 */ HB_P_LINEOFFSET, 83,	/* 91 */
 	HB_P_PUSHVARIABLE, 2, 0,	/* MIMP_TIPO */
 	HB_P_PUSHBYTE, 4,	/* 4 */
 	HB_P_EQUAL,
-	HB_P_JUMPFALSE, 181, 3,	/* 949 (abs: 03107) */
-/* 02161 */ HB_P_LINEOFFSET, 85,	/* 93 */
+	HB_P_JUMPFALSE, 181, 3,	/* 949 (abs: 03109) */
+/* 02163 */ HB_P_LINEOFFSET, 85,	/* 93 */
 	HB_P_ARRAYGEN, 0, 0,	/* 0 */
 	HB_P_POPVARIABLE, 46, 0,	/* NXLS */
-/* 02169 */ HB_P_LINEOFFSET, 86,	/* 94 */
+/* 02171 */ HB_P_LINEOFFSET, 86,	/* 94 */
 	HB_P_ONE,
 	HB_P_POPVARIABLE, 47, 0,	/* F */
-/* 02175 */ HB_P_LINEOFFSET, 87,	/* 95 */
+/* 02177 */ HB_P_LINEOFFSET, 87,	/* 95 */
 	HB_P_PUSHSYMNEAR, 48,	/* MYRUN */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSTRSHORT, 5,	/* 5 */
@@ -862,13 +862,13 @@ HB_FUNC( CON416 )
 	HB_P_PUSHVARIABLE, 3, 0,	/* MARQ */
 	HB_P_PLUS,
 	HB_P_DOSHORT, 1,
-/* 02193 */ HB_P_LINEOFFSET, 88,	/* 96 */
+/* 02195 */ HB_P_LINEOFFSET, 88,	/* 96 */
 	HB_P_PUSHSYMNEAR, 49,	/* XLSOPEN */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 3, 0,	/* MARQ */
 	HB_P_FUNCTIONSHORT, 1,
 	HB_P_POPVARIABLE, 46, 0,	/* NXLS */
-/* 02206 */ HB_P_LINEOFFSET, 89,	/* 97 */
+/* 02208 */ HB_P_LINEOFFSET, 89,	/* 97 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -876,11 +876,11 @@ HB_FUNC( CON416 )
 	HB_P_ONE,
 	HB_P_PUSHVARIABLE, 20, 0,	/* MTIT */
 	HB_P_DOSHORT, 4,
-/* 02223 */ HB_P_LINEOFFSET, 90,	/* 98 */
+/* 02225 */ HB_P_LINEOFFSET, 90,	/* 98 */
 	HB_P_PUSHVARIABLE, 47, 0,	/* F */
 	HB_P_INC,
 	HB_P_POPVARIABLE, 47, 0,	/* F */
-/* 02232 */ HB_P_LINEOFFSET, 91,	/* 99 */
+/* 02234 */ HB_P_LINEOFFSET, 91,	/* 99 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -888,11 +888,11 @@ HB_FUNC( CON416 )
 	HB_P_ONE,
 	HB_P_PUSHVARIABLE, 38, 0,	/* MTIPO */
 	HB_P_DOSHORT, 4,
-/* 02249 */ HB_P_LINEOFFSET, 92,	/* 100 */
+/* 02251 */ HB_P_LINEOFFSET, 92,	/* 100 */
 	HB_P_PUSHVARIABLE, 47, 0,	/* F */
 	HB_P_INC,
 	HB_P_POPVARIABLE, 47, 0,	/* F */
-/* 02258 */ HB_P_LINEOFFSET, 93,	/* 101 */
+/* 02260 */ HB_P_LINEOFFSET, 93,	/* 101 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -901,7 +901,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 9,	/* 9 */
 	'D', 'a', 't', '.', 'P', 'a', 'g', '.', 0, 
 	HB_P_DOSHORT, 4,
-/* 02283 */ HB_P_LINEOFFSET, 94,	/* 102 */
+/* 02285 */ HB_P_LINEOFFSET, 94,	/* 102 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -910,7 +910,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 10,	/* 10 */
 	'D', 'o', 'c', 'u', 'm', 'e', 'n', 't', 'o', 0, 
 	HB_P_DOSHORT, 4,
-/* 02310 */ HB_P_LINEOFFSET, 95,	/* 103 */
+/* 02312 */ HB_P_LINEOFFSET, 95,	/* 103 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -919,7 +919,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 3,	/* 3 */
 	'T', 'p', 0, 
 	HB_P_DOSHORT, 4,
-/* 02330 */ HB_P_LINEOFFSET, 96,	/* 104 */
+/* 02332 */ HB_P_LINEOFFSET, 96,	/* 104 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -928,7 +928,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 12,	/* 12 */
 	'R', 'e', 'c', 'e', 'b', 'i', 'm', 'e', 'n', 't', 'o', 0, 
 	HB_P_DOSHORT, 4,
-/* 02359 */ HB_P_LINEOFFSET, 97,	/* 105 */
+/* 02361 */ HB_P_LINEOFFSET, 97,	/* 105 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -937,7 +937,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 10,	/* 10 */
 	'P', 'a', 'g', 'a', 'm', 'e', 'n', 't', 'o', 0, 
 	HB_P_DOSHORT, 4,
-/* 02386 */ HB_P_LINEOFFSET, 98,	/* 106 */
+/* 02388 */ HB_P_LINEOFFSET, 98,	/* 106 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -946,7 +946,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 9,	/* 9 */
 	'S', 'a', 'l', 'd', 'o', ' ', 'R', '$', 0, 
 	HB_P_DOSHORT, 4,
-/* 02412 */ HB_P_LINEOFFSET, 99,	/* 107 */
+/* 02414 */ HB_P_LINEOFFSET, 99,	/* 107 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -955,7 +955,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 11,	/* 11 */
 	'O', 'b', 's', 'e', 'r', 'v', 'a', 'c', 'a', 'o', 0, 
 	HB_P_DOSHORT, 4,
-/* 02440 */ HB_P_LINEOFFSET, 100,	/* 108 */
+/* 02442 */ HB_P_LINEOFFSET, 100,	/* 108 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -964,7 +964,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 8,	/* 8 */
 	'B', 'c', 'o', '.', 'P', 'a', 'g', 0, 
 	HB_P_DOSHORT, 4,
-/* 02465 */ HB_P_LINEOFFSET, 101,	/* 109 */
+/* 02467 */ HB_P_LINEOFFSET, 101,	/* 109 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -973,11 +973,11 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 19,	/* 19 */
 	'F', 'o', 'r', 'n', 'e', 'c', 'e', 'd', 'o', 'r', '/', 'C', 'l', 'i', 'e', 'n', 't', 'e', 0, 
 	HB_P_DOSHORT, 4,
-/* 02501 */ HB_P_LINEOFFSET, 102,	/* 110 */
+/* 02503 */ HB_P_LINEOFFSET, 102,	/* 110 */
 	HB_P_PUSHVARIABLE, 47, 0,	/* F */
 	HB_P_INC,
 	HB_P_POPVARIABLE, 47, 0,	/* F */
-/* 02510 */ HB_P_LINEOFFSET, 103,	/* 111 */
+/* 02512 */ HB_P_LINEOFFSET, 103,	/* 111 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -986,7 +986,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 18,	/* 18 */
 	'S', 'A', 'L', 'D', 'O', ' ', 'I', 'N', 'I', 'C', 'I', 'A', 'L', ' ', 'R', '$', ':', 0, 
 	HB_P_DOSHORT, 4,
-/* 02544 */ HB_P_LINEOFFSET, 104,	/* 112 */
+/* 02546 */ HB_P_LINEOFFSET, 104,	/* 112 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -999,9 +999,9 @@ HB_FUNC( CON416 )
 	'@', 'E', ' ', '9', '9', '9', ',', '9', '9', '9', ',', '9', '9', '9', '.', '9', '9', 0, 
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_DOSHORT, 4,
-/* 02586 */ HB_P_LINEOFFSET, 105,	/* 113 */
+/* 02588 */ HB_P_LINEOFFSET, 105,	/* 113 */
 	HB_P_LOCALNEARSETINT, 4, 0, 0,	/* I 0*/
-/* 02592 */ HB_P_LINEOFFSET, 106,	/* 114 */
+/* 02594 */ HB_P_LINEOFFSET, 106,	/* 114 */
 	HB_P_LOCALNEARSETINT, 4, 1, 0,	/* I 1*/
 	HB_P_PUSHLOCALNEAR, 4,	/* I */
 	HB_P_PUSHSYMNEAR, 43,	/* LEN */
@@ -1009,8 +1009,8 @@ HB_FUNC( CON416 )
 	HB_P_PUSHVARIABLE, 10, 0,	/* MCONS_BANCO */
 	HB_P_FUNCTIONSHORT, 1,
 	HB_P_LESSEQUAL,
-	HB_P_JUMPFALSE, 201, 1,	/* 457 (abs: 03066) */
-/* 02612 */ HB_P_LINEOFFSET, 107,	/* 115 */
+	HB_P_JUMPFALSE, 201, 1,	/* 457 (abs: 03068) */
+/* 02614 */ HB_P_LINEOFFSET, 107,	/* 115 */
 	HB_P_PUSHSYMNEAR, 52,	/* PROG_IMP */
 	HB_P_PUSHNIL,
 	HB_P_PUSHLOCALNEAR, 4,	/* I */
@@ -1023,11 +1023,11 @@ HB_FUNC( CON416 )
 	HB_P_ARRAYPUSH,
 	HB_P_FUNCTIONSHORT, 1,
 	HB_P_DOSHORT, 2,
-/* 02635 */ HB_P_LINEOFFSET, 108,	/* 116 */
+/* 02637 */ HB_P_LINEOFFSET, 108,	/* 116 */
 	HB_P_PUSHVARIABLE, 47, 0,	/* F */
 	HB_P_INC,
 	HB_P_POPVARIABLE, 47, 0,	/* F */
-/* 02644 */ HB_P_LINEOFFSET, 109,	/* 117 */
+/* 02646 */ HB_P_LINEOFFSET, 109,	/* 117 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -1042,7 +1042,7 @@ HB_FUNC( CON416 )
 	HB_P_ARRAYPUSH,
 	HB_P_FUNCTIONSHORT, 1,
 	HB_P_DOSHORT, 4,
-/* 02672 */ HB_P_LINEOFFSET, 110,	/* 118 */
+/* 02674 */ HB_P_LINEOFFSET, 110,	/* 118 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -1060,7 +1060,7 @@ HB_FUNC( CON416 )
 	HB_P_ARRAYPUSH,
 	HB_P_PLUS,
 	HB_P_DOSHORT, 4,
-/* 02706 */ HB_P_LINEOFFSET, 111,	/* 119 */
+/* 02708 */ HB_P_LINEOFFSET, 111,	/* 119 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -1072,7 +1072,7 @@ HB_FUNC( CON416 )
 	HB_P_ONE,
 	HB_P_ARRAYPUSH,
 	HB_P_DOSHORT, 4,
-/* 02729 */ HB_P_LINEOFFSET, 112,	/* 120 */
+/* 02731 */ HB_P_LINEOFFSET, 112,	/* 120 */
 	HB_P_PUSHMEMVAR, 10, 0,	/* MCONS_BANCO */
 	HB_P_PUSHLOCALNEAR, 4,	/* I */
 	HB_P_ARRAYPUSH,
@@ -1081,8 +1081,8 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 2,	/* 2 */
 	'D', 0, 
 	HB_P_EQUAL,
-	HB_P_JUMPFALSENEAR, 114,	/* 114 (abs: 02858) */
-/* 02746 */ HB_P_LINEOFFSET, 113,	/* 121 */
+	HB_P_JUMPFALSENEAR, 114,	/* 114 (abs: 02860) */
+/* 02748 */ HB_P_LINEOFFSET, 113,	/* 121 */
 	HB_P_PUSHLOCALNEAR, 6,	/* MSALDO_INI */
 	HB_P_PUSHMEMVAR, 10, 0,	/* MCONS_BANCO */
 	HB_P_PUSHLOCALNEAR, 4,	/* I */
@@ -1091,7 +1091,7 @@ HB_FUNC( CON416 )
 	HB_P_ARRAYPUSH,
 	HB_P_MINUS,
 	HB_P_POPLOCALNEAR, 6,	/* MSALDO_INI */
-/* 02762 */ HB_P_LINEOFFSET, 114,	/* 122 */
+/* 02764 */ HB_P_LINEOFFSET, 114,	/* 122 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -1110,7 +1110,7 @@ HB_FUNC( CON416 )
 	'@', 'E', ' ', '9', '9', '9', ',', '9', '9', '9', ',', '9', '9', '9', '.', '9', '9', 0, 
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_DOSHORT, 4,
-/* 02814 */ HB_P_LINEOFFSET, 115,	/* 123 */
+/* 02816 */ HB_P_LINEOFFSET, 115,	/* 123 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -1123,8 +1123,8 @@ HB_FUNC( CON416 )
 	'@', 'E', ' ', '9', '9', '9', ',', '9', '9', '9', ',', '9', '9', '9', '.', '9', '9', 0, 
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_DOSHORT, 4,
-	HB_P_JUMPNEAR, 112,	/* 112 (abs: 02968) */
-/* 02858 */ HB_P_LINEOFFSET, 117,	/* 125 */
+	HB_P_JUMPNEAR, 112,	/* 112 (abs: 02970) */
+/* 02860 */ HB_P_LINEOFFSET, 117,	/* 125 */
 	HB_P_PUSHLOCALNEAR, 6,	/* MSALDO_INI */
 	HB_P_PUSHMEMVAR, 10, 0,	/* MCONS_BANCO */
 	HB_P_PUSHLOCALNEAR, 4,	/* I */
@@ -1133,7 +1133,7 @@ HB_FUNC( CON416 )
 	HB_P_ARRAYPUSH,
 	HB_P_PLUS,
 	HB_P_POPLOCALNEAR, 6,	/* MSALDO_INI */
-/* 02874 */ HB_P_LINEOFFSET, 118,	/* 126 */
+/* 02876 */ HB_P_LINEOFFSET, 118,	/* 126 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -1152,7 +1152,7 @@ HB_FUNC( CON416 )
 	'@', 'E', ' ', '9', '9', '9', ',', '9', '9', '9', ',', '9', '9', '9', '.', '9', '9', 0, 
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_DOSHORT, 4,
-/* 02926 */ HB_P_LINEOFFSET, 119,	/* 127 */
+/* 02928 */ HB_P_LINEOFFSET, 119,	/* 127 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -1165,7 +1165,7 @@ HB_FUNC( CON416 )
 	'@', 'E', ' ', '9', '9', '9', ',', '9', '9', '9', ',', '9', '9', '9', '.', '9', '9', 0, 
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_DOSHORT, 4,
-/* 02968 */ HB_P_LINEOFFSET, 121,	/* 129 */
+/* 02970 */ HB_P_LINEOFFSET, 121,	/* 129 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -1177,7 +1177,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHBYTE, 9,	/* 9 */
 	HB_P_ARRAYPUSH,
 	HB_P_DOSHORT, 4,
-/* 02992 */ HB_P_LINEOFFSET, 122,	/* 130 */
+/* 02994 */ HB_P_LINEOFFSET, 122,	/* 130 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -1189,7 +1189,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHBYTE, 10,	/* 10 */
 	HB_P_ARRAYPUSH,
 	HB_P_DOSHORT, 4,
-/* 03016 */ HB_P_LINEOFFSET, 123,	/* 131 */
+/* 03018 */ HB_P_LINEOFFSET, 123,	/* 131 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -1210,14 +1210,14 @@ HB_FUNC( CON416 )
 	HB_P_ARRAYPUSH,
 	HB_P_PLUS,
 	HB_P_DOSHORT, 4,
-/* 03057 */ HB_P_LINEOFFSET, 124,	/* 132 */
+/* 03059 */ HB_P_LINEOFFSET, 124,	/* 132 */
 	HB_P_LOCALNEARADDINT, 4, 1, 0,	/* I 1*/
-	HB_P_JUMP, 47, 254,	/* -465 (abs: 02598) */
-/* 03066 */ HB_P_LINEOFFSET, 125,	/* 133 */
+	HB_P_JUMP, 47, 254,	/* -465 (abs: 02600) */
+/* 03068 */ HB_P_LINEOFFSET, 125,	/* 133 */
 	HB_P_PUSHVARIABLE, 47, 0,	/* F */
 	HB_P_INC,
 	HB_P_POPVARIABLE, 47, 0,	/* F */
-/* 03075 */ HB_P_LINEOFFSET, 126,	/* 134 */
+/* 03077 */ HB_P_LINEOFFSET, 126,	/* 134 */
 	HB_P_PUSHSYMNEAR, 50,	/* XLSWRITE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
@@ -1227,17 +1227,17 @@ HB_FUNC( CON416 )
 	HB_P_PUSHNIL,
 	HB_P_FUNCTIONSHORT, 0,
 	HB_P_DOSHORT, 4,
-/* 03094 */ HB_P_LINEOFFSET, 127,	/* 135 */
+/* 03096 */ HB_P_LINEOFFSET, 127,	/* 135 */
 	HB_P_PUSHSYMNEAR, 54,	/* XLSCLOSE */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 46, 0,	/* NXLS */
 	HB_P_DOSHORT, 1,
-	HB_P_JUMP, 204, 244,	/* -2868 (abs: 00236) */
-/* 03107 */ HB_P_LINEOFFSET, 130,	/* 138 */
+	HB_P_JUMP, 202, 244,	/* -2870 (abs: 00236) */
+/* 03109 */ HB_P_LINEOFFSET, 130,	/* 138 */
 	HB_P_LOCALNEARSETINT, 4, 0, 0,	/* I 0*/
 	HB_P_PUSHLOCALNEAR, 4,	/* I */
 	HB_P_POPLOCALNEAR, 5,	/* PAG */
-/* 03117 */ HB_P_LINEOFFSET, 131,	/* 139 */
+/* 03119 */ HB_P_LINEOFFSET, 131,	/* 139 */
 	HB_P_LOCALNEARSETINT, 4, 1, 0,	/* I 1*/
 	HB_P_PUSHLOCALNEAR, 4,	/* I */
 	HB_P_PUSHSYMNEAR, 43,	/* LEN */
@@ -1245,8 +1245,8 @@ HB_FUNC( CON416 )
 	HB_P_PUSHVARIABLE, 10, 0,	/* MCONS_BANCO */
 	HB_P_FUNCTIONSHORT, 1,
 	HB_P_LESSEQUAL,
-	HB_P_JUMPFALSE, 225, 3,	/* 993 (abs: 04127) */
-/* 03137 */ HB_P_LINEOFFSET, 132,	/* 140 */
+	HB_P_JUMPFALSE, 225, 3,	/* 993 (abs: 04129) */
+/* 03139 */ HB_P_LINEOFFSET, 132,	/* 140 */
 	HB_P_PUSHSYMNEAR, 52,	/* PROG_IMP */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 55,	/* RECNO */
@@ -1261,31 +1261,31 @@ HB_FUNC( CON416 )
 	HB_P_ARRAYPUSH,
 	HB_P_FUNCTIONSHORT, 1,
 	HB_P_DOSHORT, 2,
-/* 03163 */ HB_P_LINEOFFSET, 133,	/* 141 */
+/* 03165 */ HB_P_LINEOFFSET, 133,	/* 141 */
 	HB_P_PUSHLOCALNEAR, 5,	/* PAG */
 	HB_P_ZERO,
 	HB_P_EQUAL,
 	HB_P_DUPLICATE,
-	HB_P_JUMPTRUENEAR, 11,	/* 11 (abs: 03181) */
+	HB_P_JUMPTRUENEAR, 11,	/* 11 (abs: 03183) */
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
 	HB_P_PUSHNIL,
 	HB_P_FUNCTIONSHORT, 0,
 	HB_P_PUSHBYTE, 59,	/* 59 */
 	HB_P_GREATEREQUAL,
 	HB_P_OR,
-	HB_P_JUMPFALSE, 154, 1,	/* 410 (abs: 03591) */
-/* 03184 */ HB_P_LINEOFFSET, 134,	/* 142 */
+	HB_P_JUMPFALSE, 154, 1,	/* 410 (abs: 03593) */
+/* 03186 */ HB_P_LINEOFFSET, 134,	/* 142 */
 	HB_P_LOCALNEARADDINT, 5, 1, 0,	/* PAG 1*/
-/* 03190 */ HB_P_LINEOFFSET, 135,	/* 143 */
+/* 03192 */ HB_P_LINEOFFSET, 135,	/* 143 */
 	HB_P_PUSHLOCALNEAR, 5,	/* PAG */
 	HB_P_ONE,
 	HB_P_GREATER,
-	HB_P_JUMPFALSENEAR, 9,	/* 9 (abs: 03205) */
-/* 03198 */ HB_P_LINEOFFSET, 136,	/* 144 */
+	HB_P_JUMPFALSENEAR, 9,	/* 9 (abs: 03207) */
+/* 03200 */ HB_P_LINEOFFSET, 136,	/* 144 */
 	HB_P_PUSHSYMNEAR, 57,	/* __EJECT */
 	HB_P_PUSHNIL,
 	HB_P_DOSHORT, 0,
-/* 03205 */ HB_P_LINEOFFSET, 138,	/* 146 */
+/* 03207 */ HB_P_LINEOFFSET, 138,	/* 146 */
 	HB_P_PUSHSYMNEAR, 58,	/* CABECALHO */
 	HB_P_PUSHNIL,
 	HB_P_PUSHLOCALNEAR, 5,	/* PAG */
@@ -1293,14 +1293,14 @@ HB_FUNC( CON416 )
 	HB_P_PUSHVARIABLE, 38, 0,	/* MTIPO */
 	HB_P_PUSHLOCALNEAR, 1,	/* MPRG */
 	HB_P_DOSHORT, 4,
-/* 03222 */ HB_P_LINEOFFSET, 139,	/* 147 */
+/* 03224 */ HB_P_LINEOFFSET, 139,	/* 147 */
 	HB_P_PUSHSYMNEAR, 59,	/* IMPRT */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 1, 0,	/* MTIPO_IMP */
 	HB_P_PUSHSTRSHORT, 2,	/* 2 */
 	'C', 0, 
 	HB_P_DOSHORT, 2,
-/* 03236 */ HB_P_LINEOFFSET, 140,	/* 148 */
+/* 03238 */ HB_P_LINEOFFSET, 140,	/* 148 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1314,7 +1314,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 116,	/* 116 */
 	'D', 'a', 't', '.', 'P', 'a', 'g', '.', ' ', 'D', 'o', 'c', 'u', 'm', 'e', 'n', 't', 'o', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'T', 'p', ' ', ' ', 'R', 'e', 'c', 'e', 'b', 'i', 'm', 'e', 'n', 't', 'o', ' ', ' ', ' ', ' ', ' ', 'P', 'a', 'g', 'a', 'm', 'e', 'n', 't', 'o', ' ', ' ', ' ', ' ', ' ', ' ', 'S', 'a', 'l', 'd', 'o', ' ', 'R', '$', ' ', ' ', 'O', 'b', 's', 'e', 'r', 'v', 'a', 'c', 'a', 'o', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 0, 
 	HB_P_DOSHORT, 1,
-/* 03375 */ HB_P_LINEOFFSET, 141,	/* 149 */
+/* 03377 */ HB_P_LINEOFFSET, 141,	/* 149 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1332,7 +1332,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHINT, 137, 0,	/* 137 */
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_DOSHORT, 1,
-/* 03408 */ HB_P_LINEOFFSET, 142,	/* 150 */
+/* 03410 */ HB_P_LINEOFFSET, 142,	/* 150 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1346,7 +1346,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 29,	/* 29 */
 	' ', 'S', 'A', 'L', 'D', 'O', ' ', 'I', 'N', 'I', 'C', 'I', 'A', 'L', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 0, 
 	HB_P_DOSHORT, 1,
-/* 03460 */ HB_P_LINEOFFSET, 143,	/* 151 */
+/* 03462 */ HB_P_LINEOFFSET, 143,	/* 151 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1362,7 +1362,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 13,	/* 13 */
 	' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 0, 
 	HB_P_DOSHORT, 1,
-/* 03500 */ HB_P_LINEOFFSET, 144,	/* 152 */
+/* 03502 */ HB_P_LINEOFFSET, 144,	/* 152 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1378,7 +1378,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 13,	/* 13 */
 	' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 0, 
 	HB_P_DOSHORT, 1,
-/* 03540 */ HB_P_LINEOFFSET, 145,	/* 153 */
+/* 03542 */ HB_P_LINEOFFSET, 145,	/* 153 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1398,7 +1398,7 @@ HB_FUNC( CON416 )
 	'@', 'E', ' ', '9', '9', ',', '9', '9', '9', ',', '9', '9', '9', '.', '9', '9', 0, 
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_DOSHORT, 1,
-/* 03591 */ HB_P_LINEOFFSET, 148,	/* 156 */
+/* 03593 */ HB_P_LINEOFFSET, 148,	/* 156 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1415,7 +1415,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHBYTE, 2,	/* 2 */
 	HB_P_ARRAYPUSH,
 	HB_P_DOSHORT, 1,
-/* 03621 */ HB_P_LINEOFFSET, 149,	/* 157 */
+/* 03623 */ HB_P_LINEOFFSET, 149,	/* 157 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1440,7 +1440,7 @@ HB_FUNC( CON416 )
 	HB_P_ARRAYPUSH,
 	HB_P_PLUS,
 	HB_P_DOSHORT, 1,
-/* 03665 */ HB_P_LINEOFFSET, 150,	/* 158 */
+/* 03667 */ HB_P_LINEOFFSET, 150,	/* 158 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1459,7 +1459,7 @@ HB_FUNC( CON416 )
 	HB_P_ONE,
 	HB_P_ARRAYPUSH,
 	HB_P_DOSHORT, 1,
-/* 03698 */ HB_P_LINEOFFSET, 151,	/* 159 */
+/* 03700 */ HB_P_LINEOFFSET, 151,	/* 159 */
 	HB_P_PUSHMEMVAR, 10, 0,	/* MCONS_BANCO */
 	HB_P_PUSHLOCALNEAR, 4,	/* I */
 	HB_P_ARRAYPUSH,
@@ -1468,8 +1468,8 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 2,	/* 2 */
 	'D', 0, 
 	HB_P_EQUAL,
-	HB_P_JUMPFALSE, 190, 0,	/* 190 (abs: 03903) */
-/* 03716 */ HB_P_LINEOFFSET, 152,	/* 160 */
+	HB_P_JUMPFALSE, 190, 0,	/* 190 (abs: 03905) */
+/* 03718 */ HB_P_LINEOFFSET, 152,	/* 160 */
 	HB_P_PUSHLOCALNEAR, 6,	/* MSALDO_INI */
 	HB_P_PUSHMEMVAR, 10, 0,	/* MCONS_BANCO */
 	HB_P_PUSHLOCALNEAR, 4,	/* I */
@@ -1478,7 +1478,7 @@ HB_FUNC( CON416 )
 	HB_P_ARRAYPUSH,
 	HB_P_MINUS,
 	HB_P_POPLOCALNEAR, 6,	/* MSALDO_INI */
-/* 03732 */ HB_P_LINEOFFSET, 153,	/* 161 */
+/* 03734 */ HB_P_LINEOFFSET, 153,	/* 161 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1494,7 +1494,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 13,	/* 13 */
 	' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 0, 
 	HB_P_DOSHORT, 1,
-/* 03772 */ HB_P_LINEOFFSET, 154,	/* 162 */
+/* 03774 */ HB_P_LINEOFFSET, 154,	/* 162 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1520,7 +1520,7 @@ HB_FUNC( CON416 )
 	'@', 'E', ' ', '9', '9', ',', '9', '9', '9', ',', '9', '9', '9', '.', '9', '9', 0, 
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_DOSHORT, 1,
-/* 03833 */ HB_P_LINEOFFSET, 155,	/* 163 */
+/* 03835 */ HB_P_LINEOFFSET, 155,	/* 163 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1540,7 +1540,7 @@ HB_FUNC( CON416 )
 	'@', 'E', ' ', '9', '9', ',', '9', '9', '9', ',', '9', '9', '9', '.', '9', '9', 0, 
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_DOSHORT, 1,
-/* 03884 */ HB_P_LINEOFFSET, 156,	/* 164 */
+/* 03886 */ HB_P_LINEOFFSET, 156,	/* 164 */
 	HB_P_PUSHLOCALNEAR, 8,	/* MTOT_PAG */
 	HB_P_PUSHMEMVAR, 10, 0,	/* MCONS_BANCO */
 	HB_P_PUSHLOCALNEAR, 4,	/* I */
@@ -1549,8 +1549,8 @@ HB_FUNC( CON416 )
 	HB_P_ARRAYPUSH,
 	HB_P_PLUS,
 	HB_P_POPLOCALNEAR, 8,	/* MTOT_PAG */
-	HB_P_JUMP, 184, 0,	/* 184 (abs: 04084) */
-/* 03903 */ HB_P_LINEOFFSET, 158,	/* 166 */
+	HB_P_JUMP, 184, 0,	/* 184 (abs: 04086) */
+/* 03905 */ HB_P_LINEOFFSET, 158,	/* 166 */
 	HB_P_PUSHLOCALNEAR, 6,	/* MSALDO_INI */
 	HB_P_PUSHMEMVAR, 10, 0,	/* MCONS_BANCO */
 	HB_P_PUSHLOCALNEAR, 4,	/* I */
@@ -1559,7 +1559,7 @@ HB_FUNC( CON416 )
 	HB_P_ARRAYPUSH,
 	HB_P_PLUS,
 	HB_P_POPLOCALNEAR, 6,	/* MSALDO_INI */
-/* 03919 */ HB_P_LINEOFFSET, 159,	/* 167 */
+/* 03921 */ HB_P_LINEOFFSET, 159,	/* 167 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1583,7 +1583,7 @@ HB_FUNC( CON416 )
 	'@', 'E', ' ', '9', '9', ',', '9', '9', '9', ',', '9', '9', '9', '.', '9', '9', 0, 
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_DOSHORT, 1,
-/* 03977 */ HB_P_LINEOFFSET, 160,	/* 168 */
+/* 03979 */ HB_P_LINEOFFSET, 160,	/* 168 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1599,7 +1599,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 13,	/* 13 */
 	' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 0, 
 	HB_P_DOSHORT, 1,
-/* 04017 */ HB_P_LINEOFFSET, 161,	/* 169 */
+/* 04019 */ HB_P_LINEOFFSET, 161,	/* 169 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1619,7 +1619,7 @@ HB_FUNC( CON416 )
 	'@', 'E', ' ', '9', '9', ',', '9', '9', '9', ',', '9', '9', '9', '.', '9', '9', 0, 
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_DOSHORT, 1,
-/* 04068 */ HB_P_LINEOFFSET, 162,	/* 170 */
+/* 04070 */ HB_P_LINEOFFSET, 162,	/* 170 */
 	HB_P_PUSHLOCALNEAR, 7,	/* MTOT_REC */
 	HB_P_PUSHMEMVAR, 10, 0,	/* MCONS_BANCO */
 	HB_P_PUSHLOCALNEAR, 4,	/* I */
@@ -1628,7 +1628,7 @@ HB_FUNC( CON416 )
 	HB_P_ARRAYPUSH,
 	HB_P_PLUS,
 	HB_P_POPLOCALNEAR, 7,	/* MTOT_REC */
-/* 04084 */ HB_P_LINEOFFSET, 164,	/* 172 */
+/* 04086 */ HB_P_LINEOFFSET, 164,	/* 172 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1647,23 +1647,23 @@ HB_FUNC( CON416 )
 	HB_P_PUSHBYTE, 9,	/* 9 */
 	HB_P_ARRAYPUSH,
 	HB_P_DOSHORT, 1,
-/* 04118 */ HB_P_LINEOFFSET, 165,	/* 173 */
+/* 04120 */ HB_P_LINEOFFSET, 165,	/* 173 */
 	HB_P_LOCALNEARADDINT, 4, 1, 0,	/* I 1*/
-	HB_P_JUMP, 23, 252,	/* -1001 (abs: 03123) */
-/* 04127 */ HB_P_LINEOFFSET, 166,	/* 174 */
+	HB_P_JUMP, 23, 252,	/* -1001 (abs: 03125) */
+/* 04129 */ HB_P_LINEOFFSET, 166,	/* 174 */
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
 	HB_P_PUSHNIL,
 	HB_P_FUNCTIONSHORT, 0,
 	HB_P_PUSHBYTE, 53,	/* 53 */
 	HB_P_GREATER,
-	HB_P_JUMPFALSENEAR, 32,	/* 32 (abs: 04169) */
-/* 04139 */ HB_P_LINEOFFSET, 167,	/* 175 */
+	HB_P_JUMPFALSENEAR, 32,	/* 32 (abs: 04171) */
+/* 04141 */ HB_P_LINEOFFSET, 167,	/* 175 */
 	HB_P_PUSHSYMNEAR, 57,	/* __EJECT */
 	HB_P_PUSHNIL,
 	HB_P_DOSHORT, 0,
-/* 04146 */ HB_P_LINEOFFSET, 168,	/* 176 */
+/* 04148 */ HB_P_LINEOFFSET, 168,	/* 176 */
 	HB_P_LOCALNEARADDINT, 5, 1, 0,	/* PAG 1*/
-/* 04152 */ HB_P_LINEOFFSET, 169,	/* 177 */
+/* 04154 */ HB_P_LINEOFFSET, 169,	/* 177 */
 	HB_P_PUSHSYMNEAR, 58,	/* CABECALHO */
 	HB_P_PUSHNIL,
 	HB_P_PUSHLOCALNEAR, 5,	/* PAG */
@@ -1671,7 +1671,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHVARIABLE, 38, 0,	/* MTIPO */
 	HB_P_PUSHLOCALNEAR, 1,	/* MPRG */
 	HB_P_DOSHORT, 4,
-/* 04169 */ HB_P_LINEOFFSET, 171,	/* 179 */
+/* 04171 */ HB_P_LINEOFFSET, 171,	/* 179 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1689,7 +1689,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHINT, 137, 0,	/* 137 */
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_DOSHORT, 1,
-/* 04202 */ HB_P_LINEOFFSET, 172,	/* 180 */
+/* 04204 */ HB_P_LINEOFFSET, 172,	/* 180 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1710,7 +1710,7 @@ HB_FUNC( CON416 )
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_PLUS,
 	HB_P_DOSHORT, 1,
-/* 04273 */ HB_P_LINEOFFSET, 173,	/* 181 */
+/* 04275 */ HB_P_LINEOFFSET, 173,	/* 181 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1731,7 +1731,7 @@ HB_FUNC( CON416 )
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_PLUS,
 	HB_P_DOSHORT, 1,
-/* 04344 */ HB_P_LINEOFFSET, 174,	/* 182 */
+/* 04346 */ HB_P_LINEOFFSET, 174,	/* 182 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1745,7 +1745,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 32,	/* 32 */
 	' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 0, 
 	HB_P_DOSHORT, 1,
-/* 04399 */ HB_P_LINEOFFSET, 175,	/* 183 */
+/* 04401 */ HB_P_LINEOFFSET, 175,	/* 183 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1768,7 +1768,7 @@ HB_FUNC( CON416 )
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_PLUS,
 	HB_P_DOSHORT, 1,
-/* 04473 */ HB_P_LINEOFFSET, 176,	/* 184 */
+/* 04475 */ HB_P_LINEOFFSET, 176,	/* 184 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1786,7 +1786,7 @@ HB_FUNC( CON416 )
 	HB_P_PUSHINT, 137, 0,	/* 137 */
 	HB_P_FUNCTIONSHORT, 2,
 	HB_P_DOSHORT, 1,
-/* 04506 */ HB_P_LINEOFFSET, 177,	/* 185 */
+/* 04508 */ HB_P_LINEOFFSET, 177,	/* 185 */
 	HB_P_PUSHSYMNEAR, 16,	/* DEVPOS */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSYMNEAR, 56,	/* PROW */
@@ -1801,24 +1801,24 @@ HB_FUNC( CON416 )
 	HB_P_PUSHNIL,
 	HB_P_FUNCTIONSHORT, 0,
 	HB_P_DOSHORT, 1,
-/* 04532 */ HB_P_LINEOFFSET, 178,	/* 186 */
+/* 04534 */ HB_P_LINEOFFSET, 178,	/* 186 */
 	HB_P_PUSHSYMNEAR, 59,	/* IMPRT */
 	HB_P_PUSHNIL,
 	HB_P_PUSHVARIABLE, 1, 0,	/* MTIPO_IMP */
 	HB_P_PUSHSTRSHORT, 2,	/* 2 */
 	'N', 0, 
 	HB_P_DOSHORT, 2,
-/* 04546 */ HB_P_LINEOFFSET, 180,	/* 188 */
+/* 04548 */ HB_P_LINEOFFSET, 180,	/* 188 */
 	HB_P_PUSHSYMNEAR, 57,	/* __EJECT */
 	HB_P_PUSHNIL,
 	HB_P_DOSHORT, 0,
-/* 04553 */ HB_P_LINEOFFSET, 181,	/* 189 */
+/* 04555 */ HB_P_LINEOFFSET, 181,	/* 189 */
 	HB_P_PUSHSYMNEAR, 62,	/* SETPRC */
 	HB_P_PUSHNIL,
 	HB_P_ZERO,
 	HB_P_ZERO,
 	HB_P_DOSHORT, 2,
-/* 04562 */ HB_P_LINEOFFSET, 182,	/* 190 */
+/* 04564 */ HB_P_LINEOFFSET, 182,	/* 190 */
 	HB_P_PUSHSYMNEAR, 63,	/* SET */
 	HB_P_PUSHNIL,
 	HB_P_PUSHBYTE, 20,	/* 20 */
@@ -1837,15 +1837,15 @@ HB_FUNC( CON416 )
 	HB_P_PUSHSTRSHORT, 4,	/* 4 */
 	'O', 'F', 'F', 0, 
 	HB_P_DOSHORT, 2,
-/* 04603 */ HB_P_LINEOFFSET, 183,	/* 191 */
+/* 04605 */ HB_P_LINEOFFSET, 183,	/* 191 */
 	HB_P_PUSHSYMNEAR, 64,	/* CONF_IMPRESSAO */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSTRSHORT, 13,	/* 13 */
 	'D', 'O', 'C', '_', 'P', 'A', 'G', 'O', '.', 'R', 'E', 'L', 0, 
 	HB_P_DOSHORT, 1,
-	HB_P_JUMP, 219, 238,	/* -4389 (abs: 00236) */
+	HB_P_JUMP, 217, 238,	/* -4391 (abs: 00236) */
 	HB_P_ENDPROC
-/* 04629 */
+/* 04631 */
    };
 
    hb_vmExecute( pcode, symbols, NULL );

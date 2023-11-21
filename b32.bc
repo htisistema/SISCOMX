@@ -1,5 +1,5 @@
--I"C:\Borland\BCC55\include;C:\MiniGUI\XHarbour\include;C:\xHarbour997\include;C:\xharbour997\include;C:\SQLRDD997\include;C:\hti\SISCOM\ch;C:\Borland\BCC55\Include;C:\HTI\SISCOM;" +
--L"C:\Borland\BCC55\lib;C:\Borland\BCC55\lib\psdk;C:\MiniGUI\XHarbour\lib;C:\xHarbour997\lib;C:\xharbour977\lib;C:\SQLRDD997\lib\BC5;C:\hti\SISCOM\lib;C:\HTI\SISCOM;;;C:\hti\SISCOM;" +
+-I"C:\Borland\BCC55\include;C:\MiniGUI\XHarbour\include;C:\xHarbour997\include;C:\xharbour997\include;C:\SQLRDD997\include;C:\HTI\SISCOM\ch;C:\Borland\BCC55\Include;C:\HTI\SISCOM;" +
+-L"C:\Borland\BCC55\lib;C:\Borland\BCC55\lib\psdk;C:\MiniGUI\XHarbour\lib;C:\xHarbour997\lib;C:\xharbour977\lib;C:\SQLRDD997\lib\BC5;C:\HTI\SISCOM\lib;C:\HTI\SISCOM;;;C:\hti\SISCOM;" +
 -Gn -M -m  -Tpe -s +
 c0w32.obj +    
 "C:\hti\SISCOM\SISCOM.obj"  + 
@@ -382,16 +382,10 @@ c0w32.obj +
 "C:\hti\SISCOM\SACINVENTA.obj"  + 
 "C:\hti\SISCOM\SACCHK_NF.obj"  + 
 "C:\hti\SISCOM\SAC331.obj"  + 
-<<<<<<< Updated upstream
 "C:\hti\SISCOM\SAC5NCM.obj"  + 
 "C:\hti\SISCOM\FORMULA_1.obj", + 
 "C:\HTI\SISCOM\SISCOM.EXE", +   
 "C:\HTI\SISCOM\SISCOM.map", +   
-=======
-"C:\hti\SISCOM\SAC5NCM.obj", + 
-"C:\hti\SISCOM\SISCOM.EXE", +   
-"C:\hti\SISCOM\SISCOM.map", +   
->>>>>>> Stashed changes
 lang.lib +     
 vm.lib +       
 rtl.lib +      
@@ -411,7 +405,7 @@ dbffpt.lib +
 "C:\SQLRDD997\lib\BC5\oci.lib" +  
 "C:\SQLRDD997\lib\BC5\odbccp32.lib" +  
 "C:\xHarbour997\lib\tip.lib" +  
-"C:\hti\SISCOM\lib\gtwvt.lib" +  
+"C:\HTI\SISCOM\lib\gtwvt.lib" +  
 common.lib +   
 gtwin.lib + 
 codepage.lib + 
