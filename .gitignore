@@ -3,3 +3,7 @@
 *.obj
 *.gdb
 *.xml
+*.pdf
+*.txt
+*.dbf
+*.bat
