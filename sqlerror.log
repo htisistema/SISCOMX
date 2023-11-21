@@ -19944,6 +19944,7 @@ SR_FIREBIRD:EXEC     Linha : 299
 ALT_TB     Linha : 1446
 SAC_DBF     Linha : 150
 MAIN     Linha : 810	
+<<<<<<< Updated upstream
 12/11/23 10:05:43: SQLExecDirect Error
 violation of PRIMARY or UNIQUE KEY constraint "INTEG_9" on table "SACCLI" - Native error code 335544665
 Command sent to database : 
@@ -19961,3 +19962,6 @@ INKEY     Linha : 0
 SAC0     Linha : 1438
 SENHA     Linha : 824
 MAIN     Linha : 1131	
+=======
+29/09/23 11:49:39: Connection Error: -1 (check fb.log) - Database: localhost:C:\hti\SISCOM\SISCOM.GDB - Username : SYSDBA (Password not shown for security)	
+>>>>>>> Stashed changes

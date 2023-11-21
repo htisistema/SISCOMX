@@ -1,0 +1,185 @@
+/*
+ * xHarbour build 0.99.70 Intl. (SimpLex)
+ * Generated C source code from <sacftp3.prg>
+ * Command: C:\xHarbour997\bin\harbour.exe C:\hti\SISCOM\sacftp3.prg /q /oC:\hti\SISCOM\sacftp3.c /M /N -DxHB -DXHB_0990 -DXHB_0991 -DXHB_0992 -DXHB_0993 -DXHB_0994 -DXHB_09941 -DXHB_09950 -DXHB_09951a -DXHB_09951 -DXHB_09951b -DXHB_0996 -DXHB_09960 -DXHB_09961 -DXHB_09961B -DXHB_0997 -DXHB_09970 
+ * Created: 2023.09.29 11:53:30 (Borland C++ 5.5.1)
+ */
+
+#include "hbvmpub.h"
+#include "hbpcode.h"
+#include "hbinit.h"
+
+#define __PRG_SOURCE__ "sacftp3.prg"
+
+HB_FUNC( DONWLOAD_AUTO );
+HB_FUNC_EXTERN( SR_BEGINTRANSACTION );
+HB_FUNC_EXTERN( TURL );
+HB_FUNC_EXTERN( TIPCREDENTIALS );
+HB_FUNC_EXTERN( TIPCLIENTFTP );
+HB_FUNC_EXTERN( ATENCAO );
+HB_FUNC_EXTERN( SR_ENDTRANSACTION );
+
+#undef HB_PRG_PCODE_VER
+#define HB_PRG_PCODE_VER 7
+
+HB_INIT_SYMBOLS_BEGIN( hb_vm_SymbolInit_SACFTP3 )
+{ "DONWLOAD_AUTO", {HB_FS_PUBLIC | HB_FS_LOCAL | HB_FS_FIRST}, {HB_FUNCNAME( DONWLOAD_AUTO )}, NULL },
+{ "SR_BEGINTRANSACTION", {HB_FS_PUBLIC}, {HB_FUNCNAME( SR_BEGINTRANSACTION )}, NULL },
+{ "NEW", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "TURL", {HB_FS_PUBLIC}, {HB_FUNCNAME( TURL )}, NULL },
+{ "TIPCREDENTIALS", {HB_FS_PUBLIC}, {HB_FUNCNAME( TIPCREDENTIALS )}, NULL },
+{ "TIPCLIENTFTP", {HB_FS_PUBLIC}, {HB_FUNCNAME( TIPCLIENTFTP )}, NULL },
+{ "_NDEFAULTPORT", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "_NCONNTIMEOUT", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "_BUSEPASV", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "OPEN", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "ATENCAO", {HB_FS_PUBLIC}, {HB_FUNCNAME( ATENCAO )}, NULL },
+{ "CWD", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "LISTFILES", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "ALISTA", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "DOWNLOADFILE", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "CLOSE", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL },
+{ "SR_ENDTRANSACTION", {HB_FS_PUBLIC}, {HB_FUNCNAME( SR_ENDTRANSACTION )}, NULL },
+{ "E", {HB_FS_PUBLIC | HB_FS_MEMVAR | HB_FS_MESSAGE}, {NULL}, NULL }
+HB_INIT_SYMBOLS_END( hb_vm_SymbolInit_SACFTP3 )
+
+#if defined(HB_PRAGMA_STARTUP)
+   #pragma startup hb_vm_SymbolInit_SACFTP3
+#elif defined(HB_MSC_STARTUP)
+   #if _MSC_VER >= 1010
+      #pragma data_seg( ".CRT$XIY" )
+      #pragma comment( linker, "/Merge:.CRT=.data" )
+   #else
+      #pragma data_seg( "XIY" )
+   #endif
+   static HB_$INITSYM hb_vm_auto_SymbolInit_SACFTP3 = hb_vm_SymbolInit_SACFTP3;
+   #pragma data_seg()
+#endif
+
+HB_FUNC( DONWLOAD_AUTO )
+{
+   static const BYTE pcode[] =
+   {
+	HB_P_FRAME, 8, 1,	/* locals, params */
+/* 00003 */ HB_P_BASELINE, 8, 0,	/* 8 */
+	HB_P_LOCALNEARSETSTR, 2, 7, 0,	/* FTPPROTO 7*/
+	'f', 't', 'p', ':', '/', '/', 0, 
+	HB_P_LOCALNEARSETSTR, 3, 26, 0,	/* FTPSERVER 26*/
+	'f', 't', 'p', '.', 'H', 'T', 'I', 's', 'i', 's', 't', 'e', 'm', 'a', 's', '.', 'c', 'o', 'm', '.', 'b', 'r', ':', '2', '1', 0, 
+	HB_P_LOCALNEARSETSTR, 4, 11, 0,	/* FTPUSER 11*/
+	'H', 'T', 'I', 's', 'i', 's', 't', 'e', 'm', 'a', 0, 
+	HB_P_LOCALNEARSETSTR, 5, 8, 0,	/* FTPPASS 8*/
+	'H', 'T', 'I', '5', '9', '2', '3', 0, 
+	HB_P_PUSHLOCALNEAR, 2,	/* FTPPROTO */
+	HB_P_PUSHLOCALNEAR, 4,	/* FTPUSER */
+	HB_P_PLUS,
+	HB_P_PUSHSTRSHORT, 2,	/* 2 */
+	':', 0, 
+	HB_P_PLUS,
+	HB_P_PUSHLOCALNEAR, 5,	/* FTPPASS */
+	HB_P_PLUS,
+	HB_P_PUSHSTRSHORT, 2,	/* 2 */
+	'@', 0, 
+	HB_P_PLUS,
+	HB_P_PUSHLOCALNEAR, 3,	/* FTPSERVER */
+	HB_P_PLUS,
+	HB_P_POPLOCALNEAR, 6,	/* CURL */
+/* 00097 */ HB_P_LINEOFFSET, 4,	/* 12 */
+	HB_P_PUSHSYMNEAR, 1,	/* SR_BEGINTRANSACTION */
+	HB_P_PUSHNIL,
+	HB_P_DOSHORT, 0,
+	HB_P_TRYBEGIN, 208, 0, 0,	/* 208 (abs: 00000312) */
+/* 00108 */ HB_P_LINEOFFSET, 7,	/* 15 */
+	HB_P_MESSAGE, 2, 0,	/* NEW */
+	HB_P_PUSHSYMNEAR, 3,	/* TURL */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_PUSHLOCALNEAR, 6,	/* CURL */
+	HB_P_SENDSHORT, 1,
+	HB_P_POPLOCALNEAR, 7,	/* OURL */
+/* 00124 */ HB_P_LINEOFFSET, 8,	/* 16 */
+	HB_P_PUSHSYMNEAR, 4,	/* TIPCREDENTIALS */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_POPLOCALNEAR, 8,	/* OCRED */
+/* 00133 */ HB_P_LINEOFFSET, 9,	/* 17 */
+	HB_P_MESSAGE, 2, 0,	/* NEW */
+	HB_P_PUSHSYMNEAR, 5,	/* TIPCLIENTFTP */
+	HB_P_PUSHNIL,
+	HB_P_FUNCTIONSHORT, 0,
+	HB_P_PUSHLOCALNEAR, 7,	/* OURL */
+	HB_P_PUSHNIL,
+	HB_P_TRUE,
+	HB_P_SENDSHORT, 3,
+	HB_P_POPLOCALNEAR, 9,	/* OFTP */
+/* 00151 */ HB_P_LINEOFFSET, 10,	/* 18 */
+	HB_P_MESSAGE, 6, 0,	/* _NDEFAULTPORT */
+	HB_P_PUSHLOCALNEAR, 9,	/* OFTP */
+	HB_P_PUSHBYTE, 21,	/* 21 */
+	HB_P_SENDSHORT, 1,
+	HB_P_POP,
+/* 00163 */ HB_P_LINEOFFSET, 11,	/* 19 */
+	HB_P_MESSAGE, 7, 0,	/* _NCONNTIMEOUT */
+	HB_P_PUSHLOCALNEAR, 9,	/* OFTP */
+	HB_P_PUSHINT, 208, 7,	/* 2000 */
+	HB_P_SENDSHORT, 1,
+	HB_P_POP,
+/* 00176 */ HB_P_LINEOFFSET, 12,	/* 20 */
+	HB_P_MESSAGE, 8, 0,	/* _BUSEPASV */
+	HB_P_PUSHLOCALNEAR, 9,	/* OFTP */
+	HB_P_TRUE,
+	HB_P_SENDSHORT, 1,
+	HB_P_POP,
+/* 00187 */ HB_P_LINEOFFSET, 13,	/* 21 */
+	HB_P_MESSAGE, 9, 0,	/* OPEN */
+	HB_P_PUSHLOCALNEAR, 9,	/* OFTP */
+	HB_P_SENDSHORT, 0,
+	HB_P_JUMPFALSENEAR, 105,	/* 105 (abs: 00301) */
+/* 00198 */ HB_P_LINEOFFSET, 14,	/* 22 */
+	HB_P_PUSHSYMNEAR, 10,	/* ATENCAO */
+	HB_P_PUSHNIL,
+	HB_P_PUSHLOCALNEAR, 6,	/* CURL */
+	HB_P_DOSHORT, 1,
+/* 00207 */ HB_P_LINEOFFSET, 15,	/* 23 */
+	HB_P_MESSAGE, 11, 0,	/* CWD */
+	HB_P_PUSHLOCALNEAR, 9,	/* OFTP */
+	HB_P_PUSHSTRSHORT, 16,	/* 16 */
+	'/', 'w', 'e', 'b', '/', 'd', 'o', 'w', 'n', 'l', 'o', 'a', 'd', 's', '/', 0, 
+	HB_P_SENDSHORT, 1,
+	HB_P_POP,
+/* 00235 */ HB_P_LINEOFFSET, 16,	/* 24 */
+	HB_P_MESSAGE, 12, 0,	/* LISTFILES */
+	HB_P_PUSHLOCALNEAR, 9,	/* OFTP */
+	HB_P_PUSHSTRSHORT, 4,	/* 4 */
+	'*', '.', '*', 0, 
+	HB_P_SENDSHORT, 1,
+	HB_P_POPVARIABLE, 13, 0,	/* ALISTA */
+/* 00253 */ HB_P_LINEOFFSET, 18,	/* 26 */
+	HB_P_MESSAGE, 14, 0,	/* DOWNLOADFILE */
+	HB_P_PUSHLOCALNEAR, 9,	/* OFTP */
+	HB_P_PUSHSTRSHORT, 26,	/* 26 */
+	'/', 'w', 'e', 'b', '/', 'd', 'o', 'w', 'n', 'l', 'o', 'a', 'd', 's', '/', 's', 'a', 'c', 'c', 'f', 'g', '.', 'i', 'n', 'i', 0, 
+	HB_P_SENDSHORT, 1,
+	HB_P_POP,
+/* 00291 */ HB_P_LINEOFFSET, 24,	/* 32 */
+	HB_P_MESSAGE, 15, 0,	/* CLOSE */
+	HB_P_PUSHLOCALNEAR, 9,	/* OFTP */
+	HB_P_SENDSHORT, 0,
+	HB_P_POP,
+/* 00301 */ HB_P_LINEOFFSET, 26,	/* 34 */
+	HB_P_PUSHSYMNEAR, 16,	/* SR_ENDTRANSACTION */
+	HB_P_PUSHNIL,
+	HB_P_DOSHORT, 0,
+/* 00308 */ HB_P_TRYEND, 11, 0, 0,	/* 11 (abs: 00000319) */
+/* 00312 */ HB_P_TRYRECOVER, 0, 0, 0,	/* 0 (abs: 00000312) */
+	HB_P_POPVARIABLE, 17, 0,	/* E */
+/* 00319 */ HB_P_LINEOFFSET, 30,	/* 38 */
+	HB_P_PUSHNIL,
+	HB_P_RETVALUE,
+	HB_P_ENDPROC
+/* 00324 */
+   };
+
+   hb_vmExecute( pcode, symbols, NULL );
+}
+
