@@ -2110,6 +2110,7 @@ WHILE .T.
                         SET CENTURY ON
                 NEXT
                 y := mvlr_cartao := 0
+                mdebito := '  '
                 FOR y = 1 TO LEN(m_recebe)
                         IF m_recebe[y,1] # 'CT'
                                 LOOP
@@ -2121,6 +2122,7 @@ WHILE .T.
                                 LOOP
                         ENDIF
                         mvlr_cartao := mvlr_cartao + m_recebe[y,10]
+                        mdebito := cons_forma[1,3]
                 NEXT
                 IF mtef = '*'
                         LOOP
@@ -2399,7 +2401,13 @@ WHILE .T.
                         atencao(m_recebe[y,1])
                         sLinhas := slinhas +    '[pag'+STRZERO(Y,3)+']'+ m_qp + ;
                                                 'tpIntegra=2'+ m_qp
-                        IF m_recebe[y,1] = 'CH'
+
+                        IF mdebito = 'CD'
+                                sLinhas := slinhas + 'tpag=04'+ m_qp + ;
+                                                      'vpag='+ALLTRIM(TRANSFORM(iat(m_recebe[y,10]),'999999.99'))+ m_qp+;
+                                                      'indpag=1'+ m_qp
+
+                        ELSEIF m_recebe[y,1] = 'CH'
                                 sLinhas := slinhas + 'tpag=02'+ m_qp + ;
                                                       'vpag='+ALLTRIM(TRANSFORM(iat(m_recebe[y,10]),'999999.99'))+ m_qp+;
                                                       'indpag=1'+ m_qp

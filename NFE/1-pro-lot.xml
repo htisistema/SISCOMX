@@ -1,14 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?><retEnviNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
-<tpAmb>2</tpAmb>
-<verAplic>NFEPE_H_2.8.0</verAplic>
-<cStat>104</cStat>
-<xMotivo>Lote processado</xMotivo>
-<cUF>26</cUF>
-<dhRecbto>2023-11-13T09:48:39-03:00</dhRecbto>
- <protNFe versao="4.00"><infProt Id="NFe1"><tpAmb>2</tpAmb>
-<verAplic>NFEPE_H_2.8.0</verAplic>
-<chNFe>26231124494200000106550010000025241993029375</chNFe>
-<dhRecbto>2023-11-13T09:48:39-03:00</dhRecbto><nProt>126230000333974</nProt>
-<digVal>XbDmJVwr26/OIYSczBnhY3OtUyQ=</digVal><cStat>100</cStat>
-<xMotivo>Autorizado o uso da NF-e</xMotivo>
-</infProt></protNFe></retEnviNFe>
+<?xml version="1.0" encoding="UTF-8"?><retEnviNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe"><tpAmb>2</tpAmb><verAplic>SVRSnfce202311101509</verAplic><cStat>104</cStat><xMotivo>Lote processado</xMotivo><cUF>26</cUF><dhRecbto>2023-11-21T08:55:28-03:00</dhRecbto><protNFe versao="4.00"><infProt><tpAmb>2</tpAmb><verAplic>SVRSnfce202311101509</verAplic><chNFe>26231124494200000106650010000007641852273415</chNFe><dhRecbto>2023-11-21T08:55:28-03:00</dhRecbto><digVal>Ye7PpnLGOLWp3AdJ4EXEUeGDCTw=</digVal><cStat>383</cStat><xMotivo>Rejeicao: Item com CSOSN indevido [nItem:1]</xMotivo></infProt></protNFe></retEnviNFe>
