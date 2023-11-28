@@ -329,9 +329,8 @@ IF mquantd > 0
                                 imprt(mtipo_imp,'W0')
                                 imprt(mtipo_imp,'C')
                         ELSEIF ! EMPTY(imppedido[y,58])
-                                imprt(mtipo_imp,'N')
-                                @ PROW()+1,00 SAY imppedido[y,58]
                                 imprt(mtipo_imp,'C')
+                                @ PROW()+1,00 SAY '       '+imppedido[y,58]
                         ENDIF
                         IF ver_serie() = '141473' .AND. (! EMPTY(cons_merc[1,2]) .OR. ! EMPTY(cons_merc[1,3]))
                                 DEVPOS(PROW()+1,10);DEVOUT(IF(! EMPTY(cons_merc[1,3]),'Fab.:'+cons_merc[1,3]+'-'+RTRIM(cons_merc[1,4]),''))

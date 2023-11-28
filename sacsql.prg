@@ -2877,7 +2877,13 @@ IF mdbf = NIL .AND. ! SR_EXISTTABLE('saccid')
         matriz := matriz + ',cep CHAR(8) '
         matriz := matriz + ',uf CHAR(2) '
         matriz := matriz + ',cod_ope  CHAR(3) '
+        matriz := matriz +',sr_recno DECIMAL(15,0) NOT NULL '
+        matriz := matriz +',sr_deleted CHAR(1)'
+        sr_getconnection():exec("CREATE GENERATOR SACCID",,.f.)
         sr_getconnection():exec("CREATE TABLE SACCID ("+matriz+" )",,.f.)
+        sr_getconnection():exec("COMMIT",,.f.)
+        sr_getconnection():exec("ALTER TABLE SACCID ADD UNIQUE (SR_RECNO)",,.f.)
+        sr_getconnection():exec("CREATE TRIGGER SACCID_SR FOR SACCID ACTIVE BEFORE INSERT POSITION 0 as begin If (new.SR_RECNO is null) then new.SR_RECNO = gen_id( SACCID, 1); end",,.f.)
         sr_getconnection():exec("COMMIT",,.f.)
 ENDIF
 DEVPOS(01,01);DEVOUT(STRZERO(f++,3)+'] Verificando o Arquivo -> SACLOG  ')
@@ -5211,7 +5217,7 @@ IF mdbf = NIL .AND. ! SR_EXISTTABLE('MASTRESERVA')
         matriz := matriz + ',reserva  CHAR(10) '
         matriz := matriz + ',data_inicial  DATE '
         matriz := matriz + ',data_final  DATE '
-        matriz := matriz + ',Fornecedor  CHAR(4) '
+        matriz := matriz + ',Fornecedor  CHAR(5) '
         matriz := matriz + ',reserva_forn  CHAR(15) '
         matriz := matriz + ',valor DECIMAL(12,2) '
         matriz := matriz + ',Status  CHAR(1) '

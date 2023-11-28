@@ -40,6 +40,7 @@ IF ! SR_EXISTINDEX('insopera') .OR. (indexar <> NIL .AND. mfile = NIL) .OR. mfil
         sen->(DBCLOSEAREA())
 ENDIF
 
+/*
 DEVPOS(lci,1);DEVOUT('02> LOGPRODUTO =>'+SPACE(90));DEVPOS(1,1);DEVOUT(SPACE(105))
 IF ! SR_EXISTINDEX('LOGPRODUTO') .OR. (indexar <> NIL .AND. mfile = NIL) .OR. mfile = 'logproduto'
         IF ! AbriArq('logproduto','logprod','E');RETURN NIL;wvw_lclosewindow();ENDIF
@@ -48,7 +49,7 @@ IF ! SR_EXISTINDEX('LOGPRODUTO') .OR. (indexar <> NIL .AND. mfile = NIL) .OR. mf
         INDEX ON logprod->cod_prod TAG cprod TO ('logproduto')
         logprod->(DBCLOSEAREA())
 ENDIF
-
+*/
 **********************************************************************************************
 DEVPOS(lci,1);DEVOUT('03> SACMOV   =>'+SPACE(90));DEVPOS(1,1);DEVOUT(SPACE(105))
 IF ! SR_EXISTINDEX('sacmov')    //.OR. (indexar <> NIL .AND. mfile = NIL) .OR. mfile = 'sacmov'
@@ -725,6 +726,7 @@ IF ! SR_EXISTINDEX("sacprodu") .OR. (indexar <> NIL .AND. mfile = NIL) .OR. mfil
         //prog(lci+1,17,100,' OK')
         CLOSE produ
 ENDIF
+
 DEVPOS(lci,1);DEVOUT('49> SACCID   =>'+SPACE(90));DEVPOS(1,1);DEVOUT(SPACE(105))
 IF ! SR_EXISTINDEX("saccid") .OR. (indexar <> NIL .AND. mfile = NIL) .OR. mfile = 'saccid'
         IF ! AbriArq('saccid','cid','E');RETURN NIL;wvw_lclosewindow();ENDIF
@@ -733,6 +735,7 @@ IF ! SR_EXISTINDEX("saccid") .OR. (indexar <> NIL .AND. mfile = NIL) .OR. mfile 
         //prog(lci+1,17,100,' OK')
         CLOSE cid
 ENDIF
+
 DEVPOS(lci,1);DEVOUT('50> SACLOG   =>'+SPACE(90));DEVPOS(1,1);DEVOUT(SPACE(105))
 IF ! SR_EXISTINDEX("saclog") .OR. (indexar <> NIL .AND. mfile = NIL) .OR. mfile = 'saclog'
         IF ! AbriArq('saclog','log','E');RETURN NIL;wvw_lclosewindow();ENDIF
@@ -974,6 +977,7 @@ IF ! SR_EXISTINDEX("sacprofi") .OR. (indexar <> NIL .AND. mfile = NIL) .OR. mfil
         //prog(lci+1,17,100,' OK')
         CLOSE profi
 ENDIF
+/*
 DEVPOS(lci,1);DEVOUT('73> SACNCM   =>'+SPACE(90));DEVPOS(1,1);DEVOUT(SPACE(105))
 IF ! SR_EXISTINDEX("sacncm") .OR. (indexar <> NIL .AND. mfile = NIL) .OR. mfile = 'sacncm'
         IF ! AbriArq('sacncm','ncm','E');RETURN NIL;wvw_lclosewindow();ENDIF
@@ -983,6 +987,7 @@ IF ! SR_EXISTINDEX("sacncm") .OR. (indexar <> NIL .AND. mfile = NIL) .OR. mfile 
         //prog(lci+1,17,100,' OK')
         CLOSE ncm
 ENDIF
+*/
 /*
 DEVPOS(lci,1);DEVOUT('73> SACCST   =>'+SPACE(90));DEVPOS(1,1);DEVOUT(SPACE(105))
 IF ! SR_EXISTINDEX("saccst") .OR. (indexar <> NIL .AND. mfile = NIL) .OR. mfile = 'saccst'
