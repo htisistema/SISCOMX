@@ -279,11 +279,7 @@ IF mdbf = NIL .AND. ! SR_EXISTTABLE('sacsetup')
         matriz := matriz +',sr_recno DECIMAL(15,0)'
         matriz := matriz +',TIPO_BALANCA CHAR(15) '
         matriz := matriz +',COD_ACESS CHAR(20) '
-        matriz := matriz +',QTD__BALANCA DECIMAL(1,0) '
-        matriz := matriz +',ROD_ORC1 CHAR(60) '
-        matriz := matriz +',ROD_ORC2 CHAR(60) '
-        matriz := matriz +',ROD_ORC3 CHAR(60) '
-        matriz := matriz +',ROD_ORC4 CHAR(60) '
+        matriz := matriz +',QTD_BALANCA DECIMAL(1,0) '
         //DBCREATE('sacsetup  matriz,'SQLRDD')
         //sr_getconnection():exec("CREATE GENERATOR SACSETUP",,.f.)
         sr_getconnection():exec("CREATE TABLE SACSETUP ("+matriz+" )",,.f.)
