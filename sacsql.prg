@@ -977,10 +977,10 @@ DEVPOS(01,01);DEVOUT(STRZERO(f++,3)+'] Verificando o Arquivo -> SACCLI  ')
         matriz := matriz + ',email2  CHAR(70) '
         matriz := matriz + ',email3  CHAR(70) '
         matriz := matriz + ',lim_ant  DECIMAL(10,2) '
-        matriz := matriz +',sr_recno DECIMAL(15,0) NOT NULL '
-        matriz := matriz +',sr_deleted CHAR(1)'
-        matriz := matriz +',INDKEY_001 CHAR(180)'
-        matriz := matriz +',promotor CHAR(3)'
+        matriz := matriz + ',sr_recno DECIMAL(15,0) NOT NULL '
+        matriz := matriz + ',sr_deleted CHAR(1)'
+        matriz := matriz + ',INDKEY_001 CHAR(180)'
+        matriz := matriz + ',promotor CHAR(3)'
 IF mdbf = NIL .AND.  ! SR_EXISTTABLE('saccli')
         DEVPOS(02,01);DEVOUT(STRZERO(f++,3)+'] Criando o Arquivo ->SACCLI    ')
         //DBCREATE('saccli  matriz,'SQLRDD')
