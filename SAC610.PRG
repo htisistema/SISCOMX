@@ -38,7 +38,7 @@ WHILE .T.
         AADD(demo_set,'097 - Mascara NUMEROS R$..............................: '+m_set[1,97] +' ')
         AADD(demo_set,'099 - Mascara Quantidade..............................: '+m_set[1,99] +' ')
         AADD(demo_set,'103 - IAT-[A]rredondar [T]runcar......................: '+m_set[1,103]+' ')
-        AADD(demo_set,'112 - Alterar Cod.Produto na Inclusao [S/N/U].........: '+m_set[1,112]+' ')
+        AADD(demo_set,'112 - Alterar Codigo Produto na Inclusao [S/N/U]......: '+m_set[1,112]+' ')
         AADD(demo_set,'093 - Tipo Consulta do Produto [N/A]..................: '+m_set[1,93] +' ')
         AADD(demo_set,'085 - Quatidade Maxima CHEQUES p/Cliente..............: '+TRANSFORM(m_set[1,85],'999') +' ')
         AADD(demo_set,'061 - Bloquear Fechamento Caixa [S/N].................: '+m_set[1,61] +' ')

@@ -275,6 +275,7 @@ WHILE .T.
                                 NEXT
                                 //atencao( sr_ShowVector( aret ))
                                 //sr_getconnection():exec("COMMIT",,.f.)
+                        wvw_lclosewindow()
                         sac22xml()
                 ENDCASE
 ENDDO
@@ -586,6 +587,8 @@ WHILE .T.
         ver_uf(muf_forn)
         micm := mperc
         opcao := 'S'
+        mnivel_cal := '1'
+        mcod_nat := '1.102'
         @  6,59 GET mnivel_cal PICT '@!' VALID mnivel_cal $ '1,2,3'       //.AND. lim_get() WHEN men_get(6,7,'Nivel [1]: Verifica dos os dados valor total da NOTA e volume - NIVEL [2]: Verifica o Volume e o preco de venda e calculado so o percentual de lucro')
         @  7,59 GET mcod_nat PICT '9.999' VALID IF(EMPTY(mcod_nat),.F.,ver_nat(mcod_nat,'E')) WHEN (mnivel_cal = '1' .OR. mnivel_cal = '3')     //.AND. m_set[1,8] <> 'N'
         READ
@@ -673,7 +676,7 @@ WHILE .T.
                         ENDIF
                         IF LEN(mcons_prod) = 0 .OR. ! EMPTY(mcod_ean)
                                 IF EMPTY(mcod_merc)
-                                        f4_merc(,mmerc)
+                                        mcod_merc := f4_merc(,mmerc,,,,1)
                                 ENDIF
                                 mcons_prod:={}
                                 sr_getconnection():exec( "SELECT * FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(STRZERO(mcod_merc,5)),,.t.,@mcons_prod)
@@ -689,7 +692,31 @@ WHILE .T.
                                 mp_lucro  := mcons_prod[1,22]
                                 mpeso     := mcons_prod[1,17]
                                 mgramatura:= mcons_prod[1,74]
+
                         ENDIF
+                        DEVPOS(18,1);DEVOUT('Cod.Produto:')
+                        DEVPOS(18,63);DEVOUT('UN:')
+                        DEVPOS(19,1);DEVOUT('CFOP.......:')
+                        DEVPOS(20,1);DEVOUT('Quantidade.:')
+                        DEVPOS(21,1);DEVOUT('Lucro (%)..:')
+                        DEVPOS(22,1);DEVOUT('Vlr.Unit...:')
+                        DEVPOS(23,1);DEVOUT('ICMS (%)...:')
+                        DEVPOS(24,1);DEVOUT('Gramatura..:')
+                        DEVPOS(25,1);DEVOUT('Desconto...:')
+                        DEVPOS(26,1);DEVOUT('IPI (%)....:')
+                        DEVPOS(27,1);DEVOUT('I.I (%)....:')
+                        DEVPOS(28,1);DEVOUT('ICM Sub.(%):')
+
+                        botao(20,69,28,96,,' Valores Atuais  ')
+                        DEVPOS(21,70);DEVOUT('Vlr.Mercad.:')
+                        DEVPOS(22,70);DEVOUT('Cus.Mercad.:')
+                        DEVPOS(23,70);DEVOUT('Custo Real.:')
+                        DEVPOS(24,70);DEVOUT('Custo Medio:')
+                        DEVPOS(25,70);DEVOUT('Preco Venda:')
+                        DEVPOS(26,70);DEVOUT('Lucro R$...:')
+                        DEVPOS(27,70);DEVOUT('Saldo Atual:             ')
+                        @ 29,0 TO 29,cba
+
                         //mcod_bc := SPACE(14)
                         f4 := ' '
                         mvlr_icm_sub := 0
@@ -709,6 +736,9 @@ WHILE .T.
                         DEVPOS(22,14);DEVOUTPICT(mpr_unit,'9,999,999.9999')
                         setcor(1)
                         //ver_merc()
+                        IF mp_lucro = 0
+                                mp_lucro := m_set[1,6]
+                        ENDIF
                         mcfop := mcod_nat
                         @ 19,14 GET mcfop PICT '9.999'
                         @ 21,14 GET mp_lucro PICT '999.99'      //VALID lim_get() WHEN men_get(14,28,'Informe o percentual de lucro que deseja')
@@ -734,6 +764,9 @@ WHILE .T.
                         */
                         mquantd_aux := mquantd
                         mpreco_aux := mpr_unit
+                        IF mp_lucro = 0
+                                mp_lucro := m_set[1,6]
+                        ENDIF
                         IF mgramatura > 1
                                 mquantd := mquantd_aux * mgramatura
                                 mpr_unit := mpreco_aux / mgramatura
@@ -784,10 +817,11 @@ WHILE .T.
                                 setcor(3)
                                 DEVPOS(30+xlin,01);DEVOUT(m_demo[f])
                         NEXT
-
-                        LOOP
+                        //LOOP
                         IF LASTKEY() = 27
-                                EXIT
+                                IF LASTKEY() = 27
+                                        EXIT
+                                ENDIF
                         ENDIF
                 NEXT
                 IF LASTKEY() = 27

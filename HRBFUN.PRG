@@ -7358,7 +7358,7 @@ RETURN .T.
 ********************************
 #include "inkey.ch"              // constantes de codigos das teclas
 
-FUNCTION f4_merc(cons,mdcri,mvar_atac,mpercentual,prod)
+FUNCTION f4_merc(cons,mdcri,mvar_atac,mpercentual,prod,entrada)
 ******************************************************
 LOCAL f4tela,f4tela1,f4lci,f4cci,f4lba,f4cba,f4msele,f4morde,f4men,y,mcod,;
       oconsprod,ocolprod[9],i,nkey,mteste,f4,lin_br,mopcao:=' ',mprec:=0,mcodmerc,mreg,;

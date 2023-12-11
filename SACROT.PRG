@@ -1585,23 +1585,18 @@ FUNCTION ver_uf(nuf,mt)
 LOCAL men,msele,morde,opcao := 'S'
 MEMVAR mcod_op,mperc
 
-IF ! AbriArq('SACUF','TABUF');RETURN NIL;ENDIF
 men := SAVESCREEN(23,00,24,79)
-msele := SELE()
-morde := INDEXORD()
 WHILE .T.
         IF ! v_uf(nuf) .OR. nuf = SPACE(2)
                 RETURN .F.
         ENDIF
-        ****************
-        SELE('tabuf');ORDSETFOCUS(1)
-        GO TOP
-        ****************
-        IF ! tabuf->(DBSEEK(nuf))
+        mcons_uf := {}
+        sr_getconnection():exec("SELECT * FROM sacuf WHERE uf = "+sr_cdbvalue(nuf),,.t.,@mcons_uf)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF len(mcons_uf) = 0
                 CLEAR GETS
                 opcao := op_simnao('S','Estado de '+nuf+' nao esta cadastrado...Deseja Cadastra [S/n]:')
                 IF opcao = 'N'
-                        SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
                         RETURN .F.
                 ELSE
                         IF mt = NIL
@@ -1610,14 +1605,12 @@ WHILE .T.
                                 atencao('Tecle <ENTER> p/continuar...')
                                 LOOP
                         ELSE
-                                SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
                                 RETURN .T.
                         ENDIF
                 ENDIF
 
         ENDIF
-        mperc := tabuf->percent
-        SELE(msele);IF(morde>0,ORDSETFOCUS(morde),)
+        mperc := mcons_uf[1,3]
         RETURN .T.
 ENDDO
 RETURN NIL

@@ -1000,7 +1000,7 @@ WVW_PBEnable( NIL, nBota, .F. )
 WVW_PBEnable( NIL, nBota1, .F. )
 WVW_PBEnable( NIL, nBota2, .F. )
 IF mdesc_prod <> NIL .OR. mxml <> NIL
-        wvw_lclosewindow()
+        //wvw_lclosewindow()
         RETURN mcod_merc
 ENDIF
 KEYBOARD CHR(27)
