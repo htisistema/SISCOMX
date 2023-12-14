@@ -5229,7 +5229,9 @@ IF mdbf = NIL .AND. ! SR_EXISTTABLE('MASTRESERVA')
         matriz := matriz + ',qtd_dias INTEGER'
         matriz := matriz + ',vencimento DATE '
         matriz := matriz + ',form_pag CHAR(3) '
-
+        matriz := matriz + ',DATA_APGO DATE '
+        matriz := matriz + ',PAGO CHAR(1) '
+        matriz := matriz + ',OBS_PAGO CHAR(60) '
         sr_getconnection():exec("CREATE TABLE MASTRESERVA ("+matriz+" )",,.f.)
         sr_getconnection():exec("COMMIT",,.f.)
 ENDIF
