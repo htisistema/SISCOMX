@@ -120,12 +120,13 @@ WHILE .T.
         IF m_indiv[1,9] <> 'V' .AND. m_indiv[1,26] <> 'T'
                 wvw_lclosewindow()
         ENDIF
+        /*
         IF m_set[1,84] <> mcod_cli .AND. ! EMPTY(mcod_cli)
                 mlimite := cons_cli[1,44]
                 mcompras := ver_compras(mcod_cli)
         ENDIF
+        */
         setcor(1)
-
         mensagem('Montando a tela de Pedidos...')
         WvW_PBSetFont( NIL, "Arial Black", 18, 10,)
         nBota := wvw_pbCreate(NIL,40,70,42,90,'[F10] Fechamento',NIL,{||sac30caixa('1')})

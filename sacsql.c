@@ -2,7 +2,7 @@
  * xHarbour build 0.99.70 Intl. (SimpLex)
  * Generated C source code from <sacsql.prg>
  * Command: C:\xHarbour997\bin\harbour.exe C:\HTI\SISCOM\sacsql.prg /q /oC:\hti\SISCOM\sacsql.c /M /N -DxHB -DXHB_0990 -DXHB_0991 -DXHB_0992 -DXHB_0993 -DXHB_0994 -DXHB_09941 -DXHB_09950 -DXHB_09951a -DXHB_09951 -DXHB_09951b -DXHB_0996 -DXHB_09960 -DXHB_09961 -DXHB_09961B -DXHB_0997 -DXHB_09970 
- * Created: 2023.11.30 20:36:03 (Borland C++ 5.5.1)
+ * Created: 2023.12.16 08:35:35 (Borland C++ 5.5.1)
  */
 
 #include "hbvmpub.h"
@@ -34801,7 +34801,7 @@ HB_FUNC( SACSQL )
 	'M', 'A', 'S', 'T', 'R', 'E', 'S', 'E', 'R', 'V', 'A', 0, 
 	HB_P_FUNCTIONSHORT, 1,
 	HB_P_NOT,
-	HB_P_JUMPFALSE, 208, 3,	/* 976 (abs: 167345) */
+	HB_P_JUMPFALSE, 34, 4,	/* 1058 (abs: 167427) */
 /* 166372 */ HB_P_LINE, 85, 20,	/* 5205 */
 	HB_P_PUSHSYMNEAR, 12,	/* DEVPOS */
 	HB_P_PUSHNIL,
@@ -34975,7 +34975,25 @@ HB_FUNC( SACSQL )
 	',', 'f', 'o', 'r', 'm', '_', 'p', 'a', 'g', ' ', 'C', 'H', 'A', 'R', '(', '3', ')', ' ', 0, 
 	HB_P_PLUS,
 	HB_P_POPLOCALNEAR, 8,	/* MATRIZ */
-/* 167266 */ HB_P_LINE, 113, 20,	/* 5233 */
+/* 167266 */ HB_P_LINE, 112, 20,	/* 5232 */
+	HB_P_PUSHLOCALNEAR, 8,	/* MATRIZ */
+	HB_P_PUSHSTRSHORT, 17,	/* 17 */
+	',', 'D', 'A', 'T', 'A', '_', 'A', 'P', 'G', 'O', ' ', 'D', 'A', 'T', 'E', ' ', 0, 
+	HB_P_PLUS,
+	HB_P_POPLOCALNEAR, 8,	/* MATRIZ */
+/* 167293 */ HB_P_LINE, 113, 20,	/* 5233 */
+	HB_P_PUSHLOCALNEAR, 8,	/* MATRIZ */
+	HB_P_PUSHSTRSHORT, 15,	/* 15 */
+	',', 'P', 'A', 'G', 'O', ' ', 'C', 'H', 'A', 'R', '(', '1', ')', ' ', 0, 
+	HB_P_PLUS,
+	HB_P_POPLOCALNEAR, 8,	/* MATRIZ */
+/* 167318 */ HB_P_LINE, 114, 20,	/* 5234 */
+	HB_P_PUSHLOCALNEAR, 8,	/* MATRIZ */
+	HB_P_PUSHSTRSHORT, 20,	/* 20 */
+	',', 'O', 'B', 'S', '_', 'P', 'A', 'G', 'O', ' ', 'C', 'H', 'A', 'R', '(', '6', '0', ')', ' ', 0, 
+	HB_P_PLUS,
+	HB_P_POPLOCALNEAR, 8,	/* MATRIZ */
+/* 167348 */ HB_P_LINE, 115, 20,	/* 5235 */
 	HB_P_MESSAGE, 16, 0,	/* EXEC */
 	HB_P_PUSHSYMNEAR, 17,	/* SR_GETCONNECTION */
 	HB_P_PUSHNIL,
@@ -34991,7 +35009,7 @@ HB_FUNC( SACSQL )
 	HB_P_FALSE,
 	HB_P_SENDSHORT, 3,
 	HB_P_POP,
-/* 167320 */ HB_P_LINE, 114, 20,	/* 5234 */
+/* 167402 */ HB_P_LINE, 116, 20,	/* 5236 */
 	HB_P_MESSAGE, 16, 0,	/* EXEC */
 	HB_P_PUSHSYMNEAR, 17,	/* SR_GETCONNECTION */
 	HB_P_PUSHNIL,
@@ -35002,19 +35020,19 @@ HB_FUNC( SACSQL )
 	HB_P_FALSE,
 	HB_P_SENDSHORT, 3,
 	HB_P_POP,
-/* 167345 */ HB_P_LINE, 117, 20,	/* 5237 */
+/* 167427 */ HB_P_LINE, 119, 20,	/* 5239 */
 	HB_P_PUSHSYMNEAR, 71,	/* SACDBF */
 	HB_P_PUSHNIL,
 	HB_P_DOSHORT, 0,
-/* 167353 */ HB_P_LINE, 128, 20,	/* 5248 */
+/* 167435 */ HB_P_LINE, 130, 20,	/* 5250 */
 	HB_P_PUSHSYMNEAR, 72,	/* WVW_LCLOSEWINDOW */
 	HB_P_PUSHNIL,
 	HB_P_DOSHORT, 0,
-/* 167361 */ HB_P_LINE, 129, 20,	/* 5249 */
+/* 167443 */ HB_P_LINE, 131, 20,	/* 5251 */
 	HB_P_PUSHNIL,
 	HB_P_RETVALUE,
 	HB_P_ENDPROC
-/* 167367 */
+/* 167449 */
    };
 
    hb_vmExecute( pcode, symbols, NULL );

@@ -2,7 +2,7 @@
  * xHarbour build 0.99.70 Intl. (SimpLex)
  * Generated C source code from <SAC610.PRG>
  * Command: C:\xHarbour997\bin\harbour.exe C:\HTI\SISCOM\SAC610.PRG /q /oC:\hti\SISCOM\SAC610.c /M /N -DxHB -DXHB_0990 -DXHB_0991 -DXHB_0992 -DXHB_0993 -DXHB_0994 -DXHB_09941 -DXHB_09950 -DXHB_09951a -DXHB_09951 -DXHB_09951b -DXHB_0996 -DXHB_09960 -DXHB_09961 -DXHB_09961B -DXHB_0997 -DXHB_09970 
- * Created: 2023.11.21 09:47:28 (Borland C++ 5.5.1)
+ * Created: 2023.12.16 08:35:15 (Borland C++ 5.5.1)
  */
 
 #include "hbvmpub.h"
@@ -430,7 +430,7 @@ HB_FUNC( SAC610 )
 	HB_P_PUSHNIL,
 	HB_P_PUSHLOCALNEAR, 5,	/* DEMO_SET */
 	HB_P_PUSHSTRSHORT, 57,	/* 57 */
-	'1', '1', '2', ' ', '-', ' ', 'A', 'l', 't', 'e', 'r', 'a', 'r', ' ', 'C', 'o', 'd', '.', 'P', 'r', 'o', 'd', 'u', 't', 'o', ' ', 'n', 'a', ' ', 'I', 'n', 'c', 'l', 'u', 's', 'a', 'o', ' ', '[', 'S', '/', 'N', '/', 'U', ']', '.', '.', '.', '.', '.', '.', '.', '.', '.', ':', ' ', 0, 
+	'1', '1', '2', ' ', '-', ' ', 'A', 'l', 't', 'e', 'r', 'a', 'r', ' ', 'C', 'o', 'd', 'i', 'g', 'o', ' ', 'P', 'r', 'o', 'd', 'u', 't', 'o', ' ', 'n', 'a', ' ', 'I', 'n', 'c', 'l', 'u', 's', 'a', 'o', ' ', '[', 'S', '/', 'N', '/', 'U', ']', '.', '.', '.', '.', '.', '.', ':', ' ', 0, 
 	HB_P_PUSHMEMVAR, 8, 0,	/* M_SET */
 	HB_P_ONE,
 	HB_P_ARRAYPUSH,

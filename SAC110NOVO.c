@@ -2,7 +2,7 @@
  * xHarbour build 0.99.70 Intl. (SimpLex)
  * Generated C source code from <SAC110NOVO.PRG>
  * Command: C:\xHarbour997\bin\harbour.exe C:\HTI\SISCOM\SAC110NOVO.PRG /q /oC:\hti\SISCOM\SAC110NOVO.c /M /N -DxHB -DXHB_0990 -DXHB_0991 -DXHB_0992 -DXHB_0993 -DXHB_0994 -DXHB_09941 -DXHB_09950 -DXHB_09951a -DXHB_09951 -DXHB_09951b -DXHB_0996 -DXHB_09960 -DXHB_09961 -DXHB_09961B -DXHB_0997 -DXHB_09970 
- * Created: 2023.11.21 09:47:58 (Borland C++ 5.5.1)
+ * Created: 2023.12.16 08:35:48 (Borland C++ 5.5.1)
  */
 
 #include "hbvmpub.h"
@@ -8291,26 +8291,22 @@ HB_FUNC( SAC110SV )
 	HB_P_PUSHNIL,
 	HB_P_NOTEQUAL,
 	HB_P_OR,
-	HB_P_JUMPFALSENEAR, 18,	/* 18 (abs: 05604) */
-/* 05588 */ HB_P_LINE, 235, 3,	/* 1003 */
-	HB_P_PUSHSYMNEAR, 149,	/* WVW_LCLOSEWINDOW */
-	HB_P_PUSHNIL,
-	HB_P_DOSHORT, 0,
-/* 05596 */ HB_P_LINE, 236, 3,	/* 1004 */
+	HB_P_JUMPFALSENEAR, 10,	/* 10 (abs: 05596) */
+/* 05588 */ HB_P_LINE, 236, 3,	/* 1004 */
 	HB_P_PUSHVARIABLE, 2, 0,	/* MCOD_MERC */
 	HB_P_RETVALUE,
 	HB_P_ENDPROC,
-/* 05604 */ HB_P_LINE, 238, 3,	/* 1006 */
+/* 05596 */ HB_P_LINE, 238, 3,	/* 1006 */
 	HB_P_PUSHSYMNEAR, 164,	/* __KEYBOARD */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSTRSHORT, 2,	/* 2 */
 	27, 0, 
 	HB_P_DOSHORT, 1,
-/* 05616 */ HB_P_LINE, 239, 3,	/* 1007 */
+/* 05608 */ HB_P_LINE, 239, 3,	/* 1007 */
 	HB_P_PUSHNIL,
 	HB_P_RETVALUE,
 	HB_P_ENDPROC
-/* 05622 */
+/* 05614 */
    };
 
    hb_vmExecute( pcode, symbols, NULL );
