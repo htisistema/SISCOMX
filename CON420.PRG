@@ -189,10 +189,114 @@ WHILE .T.
                 atencao('Nao existe documento neste Periodo...')
                 LOOP
         ENDIF
-        //IF ! imp_arq('DOC_EMIT.REL','R',,,'N')
-        IF ! imp_arq('DOC_EMIT.REL','R')
+        IF ! imp_arq('DOC_EMIT.REL','R',,,,,,'E')
                 wvw_lclosewindow()
                 RETURN NIL
+        ENDIF
+        op_tela(10,10,11,70)
+        SETPOS(00,00);DISPOUT('Produto Processado:')
+        IF mimp_tipo = 4
+                nxls := {}
+                f:=1
+                MYRUN('DEL '+marq)
+                nXls := xlsOpen(marq)
+                xlsWrite( nXls, f, 1,mtit)
+                f++
+                xlsWrite( nXls, f, 1,mtipo)
+                f++
+                IF mcod_vend > 0
+                        xlsWrite( nXls, f, 1,'Vendedor: '+STRZERO(mcod_vend,3)+' - '+mnome_vend)
+                ENDIF
+                f++
+                xlsWrite( nXls, f, 1,'CODIGO')
+                xlsWrite( nXls, f, 2, 'CLIENTE')
+                xlsWrite( nXls, f, 3, 'NUMERO')
+                xlsWrite( nXls, f, 4, 'No.DOCUMENTO')
+                xlsWrite( nXls, f, 5, 'TP.PAGAMENTO')
+                xlsWrite( nXls, f, 6, 'EMISSAO')
+                xlsWrite( nXls, f, 7, 'VENCIMENTO')
+                xlsWrite( nXls, f, 8, 'VALOR')
+                xlsWrite( nXls, f, 9, 'DIAS')
+                xlsWrite( nXls, f, 10, 'SITUACAO')
+                mcol := 10
+                IF mtp_rel = 'S'
+                        mcol ++
+                        xlsWrite( nXls, f, mcol, 'DOC.TRANSF.')
+                ENDIF
+                IF mimp_com = 'S'
+                        mcol ++
+                        xlsWrite( nXls, f, mcol, '% COMISSAO')
+                        mcol ++
+                        xlsWrite( nXls, f, mcol, 'VLR.COMISSAO')
+                        mcol ++
+                        xlsWrite( nXls, f, mcol, 'No.PEDIDO')
+                ENDIF
+                IF mvlr_juros = 'S'
+                        mcol ++
+                        xlsWrite( nXls, f, mcol, 'PR.VENDA')
+                        mcol ++
+                        xlsWrite( nXls, f, mcol, 'DIFERENCA R$')
+                        mcol ++
+                        xlsWrite( nXls, f, mcol, 'DIFERENCA %')
+                ENDIF
+                i:=0
+                FOR i = 1 TO LEN(cons_doc)
+                        f++
+                        prog_imp(i, '')
+                        imprt(mtipo_imp,'C')
+                        xlsWrite( nXls, f, 1, STR(cons_doc[i,7],5))
+                        xlsWrite( nXls, f, 2, cons_doc[i,8])
+                        xlsWrite( nXls, f, 3,cons_doc[i,3])
+                        xlsWrite( nXls, f, 4,cons_doc[i,2]+cons_doc[i,4]+cons_doc[i,28])
+                        IF cons_doc[i,16] = 'C'
+                                xlsWrite( nXls, f, 5,'CARTEIRA')
+                        ELSEIF cons_doc[i,16] = 'B'
+                                xlsWrite( nXls, f, 5,'BANCO')
+                        ELSE
+                                xlsWrite( nXls, f, 5,'     ')
+                        ENDIF
+
+                        xlsWrite( nXls, f, 6,DTOC(cons_doc[i,10]))
+                        xlsWrite( nXls, f, 7,DTOC(cons_doc[i,11]))
+                        xlsWrite( nXls, f, 8,transform(cons_doc[i,19],"@E 999,999.99"))
+                        xlsWrite( nXls, f, 9,transform(cons_doc[i,11]-mdata_sis,"999,999"))
+                        IF EMPTY(cons_doc[i,13])
+                                xlsWrite( nXls, f, 10,' ABERTO')
+                        ELSE
+                                xlsWrite( nXls, f, 10,' PAGO')
+                        ENDIF
+                        IF mtp_rel = 'S'
+                                xlsWrite( nXls, f, 11,cons_doc[i,37])
+                        ELSE
+                                xlsWrite( nXls, f, 11,' ')
+                        ENDIF
+                        mcol := 11
+                        IF mimp_com = 'S'
+                                mcol ++
+                                xlsWrite( nXls, f, mcol, TRANSFORM(cons_doc[i,32]*100,'99.99'))
+                                mcol ++
+                                xlsWrite( nXls, f, mcol, TRANSFORM(cons_doc[i,19]*cons_doc[i,32],'9,999.99'))
+                                mcol ++
+                                xlsWrite( nXls, f, mcol, cons_doc[i,31])
+                        ENDIF
+                        IF mvlr_juros = 'S'
+                                mdif_vlr := juros_ped(cons_doc[i,31])
+                                mcol ++
+                                xlsWrite( nXls, f, mcol, TRANSFORM(cons_doc[i,19]-mdif_vlr,'99,999.99'))
+                                mcol ++
+                                xlsWrite( nXls, f, mcol, TRANSFORM(mdif_vlr,'9,999.99'))
+                                mcol ++
+                                xlsWrite( nXls, f, mcol, TRANSFORM(mdif_vlr/cons_doc[i,19],'999.99'))
+                        ENDIF
+                        mcol ++
+                        //xlsWrite( nXls, f, mcol,v_ped_nt(VAL(cons_doc[i,31]),'*','*'))
+
+                NEXT
+                f++
+                xlsWrite( nXls, f,1,TIME())
+        	xlsClose( nXls )
+                wvw_lclosewindow()
+                LOOP
         ENDIF
         IF mtipo_con = 'A'
                 pag := tot := tot_g := tot_din := tot_gin := mtot_dif := mt_dia := 0

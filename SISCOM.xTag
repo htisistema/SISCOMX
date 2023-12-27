@@ -1,7 +1,7 @@
 <!--
 ################################################
 # xDevStudio Project - xdev@kssoftware.com.br  #
-# Created @ 16/12/2023 08:36:31                #
+# Created @ 27/12/2023 11:10:27                #
 #                                              #
 ### Standard xDev TagList - Layout v1.5 ########
 -->
@@ -471,13 +471,18 @@
    <tag filename="C:\HTI\SISCOM\SAC30.PRG" name="sac30" args="<mnum> " scope="PUBLIC" type="ptFunction" line="9">
    <tag filename="C:\HTI\SISCOM\SAC30.PRG" name="op_menu" args=" " scope="PUBLIC" type="ptFunction" line="2679">
    <tag filename="C:\HTI\SISCOM\SAC30.PRG" name="altped_rec" args=" " scope="PUBLIC" type="ptFunction" line="2515">
-   <tag filename="C:\HTI\SISCOM\SAC33.PRG" name="sac33" args="<mfecha_tp>, <mtipo_fecha> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\HTI\SISCOM\SAC51.PRG" name="imp_" args="<vgrupo1>, <vgrupo2> " scope="PUBLIC" type="ptFunction" line="1261">
+   <tag filename="C:\HTI\SISCOM\SAC51.PRG" name="imp_forn" args=" " scope="PUBLIC" type="ptFunction" line="817">
+   <tag filename="C:\HTI\SISCOM\SAC51.PRG" name="sac51" args=" " scope="PUBLIC" type="ptFunction" line="5">
    <tag filename="C:\HTI\SISCOM\SAC33.PRG" name="ped_caixa" args="<mdt>, <mpd> " scope="PUBLIC" type="ptFunction" line="1571">
+   <tag filename="C:\HTI\SISCOM\SAC33.PRG" name="sac33" args="<mfecha_tp>, <mtipo_fecha> " scope="PUBLIC" type="ptFunction" line="4">
    <tag filename="C:\HTI\SISCOM\CON41.PRG" name="con41" args=" " scope="PUBLIC" type="ptFunction" line="2">
    <tag filename="C:\HTI\SISCOM\SAC610.PRG" name="sac610" args="<mmanut> " scope="PUBLIC" type="ptFunction" line="6">
    <tag filename="C:\HTI\SISCOM\SAC530.PRG" name="sac611" args=" " scope="PUBLIC" type="ptFunction" line="5">
    <tag filename="C:\HTI\SISCOM\SAC341.PRG" name="sac341_1" args="<mab_pg>, <mtp_orc>, <tipo_ali> " scope="PUBLIC" type="ptFunction" line="189">
    <tag filename="C:\HTI\SISCOM\SAC341.PRG" name="sac341" args="<mab_pg>, <mtp_orc>, <tipo_ali> " scope="PUBLIC" type="ptFunction" line="2">
+   <tag filename="C:\HTI\SISCOM\CON420.PRG" name="con420" args="<mtp_420> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\HTI\SISCOM\CON214.PRG" name="con214" args="<mfor>, <mdat1>, <mdat2>, <mtipo>, <mtip> " scope="PUBLIC" type="ptFunction" line="5">
    <tag filename="C:\HTI\SISCOM\SACCID.PRG" name="saccid" args="<mop>, <mcida>, <mempty>, <muf_f>, <mcp> " scope="PUBLIC" type="ptFunction" line="6">
    <tag filename="C:\HTI\SISCOM\SACREC.PRG" name="sacrec5" args="<mtp> " scope="PUBLIC" type="ptFunction" line="633">
    <tag filename="C:\HTI\SISCOM\SACREC.PRG" name="sacrec4" args=" " scope="PUBLIC" type="ptFunction" line="548">
@@ -664,6 +669,115 @@
    <tag filename="C:\HTI\SISCOM\SISCOM.PRG" name="DisplayTime" args=" " scope="PUBLIC" type="ptFunction" line="1206">
    <tag filename="C:\HTI\SISCOM\SISCOM.PRG" name="ShowClue" args="<.><.><.> " scope="PUBLIC" type="ptFunction" line="1166">
    <tag filename="C:\HTI\SISCOM\SISCOM.PRG" name="main" args="<mtc>, <mecf>, <mtipo_tela> " scope="PUBLIC" type="ptFunction" line="29">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="conf_imp_arq" args="<mtipo_impressora> " scope="PUBLIC" type="ptFunction" line="6442">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="conf_impressao" args="<marquivo>, <mn_impressora>, <mtip>, <imp_default>, <mnome_tef> " scope="PUBLIC" type="ptFunction" line="6401">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="imp_arq" args="<imp_arq>, <mporta>, <op>, <linha>, <comp>, <mens>, <msenha_lib>, <mexcel> " scope="PUBLIC" type="ptFunction" line="6205">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="demo_orc" args=" " scope="PUBLIC" type="ptFunction" line="6127">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="LPAD" args="<xArg1>, <xArg2>, <xArg3> " scope="PUBLIC" type="ptFunction" line="6107">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="EXT" args="<xArg1>, <xArg2>, <xArg3>, <xArg4>, <xArg5> " scope="PUBLIC" type="ptFunction" line="5917">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="NMES" args="<xArg1> " scope="PUBLIC" type="ptFunction" line="5910">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="VCGC" args="<xArg1> " scope="PUBLIC" type="ptFunction" line="5876">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="GDV1" args="<xArg1> " scope="PUBLIC" type="ptFunction" line="5859">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="GDV2" args="<xArg1> " scope="PUBLIC" type="ptFunction" line="5850">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="DbStabilize" args="<oTbr> " scope="PUBLIC" type="ptProcedure" line="5838">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="MemoBlock" args="<nFieldNum> " scope="PUBLIC" type="ptFunction" line="5833">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="StdMeth" args="<oTbr>, <nKey> " scope="PUBLIC" type="ptFunction" line="5812">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="FReadLn" args="<fHandle>, <cBuffer>, <nMaxLine> " scope="PUBLIC" type="ptFunction" line="5797">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="bkwdSrch" args="<oTbr>, <cString> " scope="PUBLIC" type="ptFunction" line="5781">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="FrwdSrch" args="<oTbr>, <cString> " scope="PUBLIC" type="ptFunction" line="5764">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="GoPrevLn" args="<oTbr> " scope="PUBLIC" type="ptFunction" line="5729">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="GoNextLn" args="<oTbr> " scope="PUBLIC" type="ptFunction" line="5711">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="FileSkip" args="<n>, <oTbr> " scope="STATIC" type="ptFunction" line="5697">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="FileGoLast" args="<oTbr> " scope="STATIC" type="ptProcedure" line="5692">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="FileGoFirst" args="<oTbr> " scope="STATIC" type="ptProcedure" line="5680">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="FileBrowseClose" args="<oTbr> " scope="PUBLIC" type="ptProcedure" line="5674">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="FBrowseOpen" args="<oTbr>, <cFileName> " scope="PUBLIC" type="ptFunction" line="5664">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="FBrowseNew" args=" " scope="PUBLIC" type="ptFunction" line="5653">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="FilePos" args="<oTbr> " scope="PUBLIC" type="ptFunction" line="5649">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="TAB_SIZE" args=" " scope="STATIC" type="ptConstant" line="5548">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="lertexto" args="<cFname> " scope="PUBLIC" type="ptFunction" line="5484">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="vercod_uf" args="<mcons_uf> " scope="PUBLIC" type="ptFunction" line="5421">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="vercod_cid" args="<mcid>, <muf> " scope="PUBLIC" type="ptFunction" line="5407">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_cidade" args="<mcid>, <t> " scope="PUBLIC" type="ptFunction" line="5374">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="arq_bat" args=" " scope="PUBLIC" type="ptFunction" line="5269">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="cons_pre" args=" " scope="PUBLIC" type="ptFunction" line="4987">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="f_compra" args=" " scope="PUBLIC" type="ptFunction" line="4660">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="genkey" args="<mconsulta>, <nkey>, <narq> " scope="PUBLIC" type="ptFunction" line="4118">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="demo_ped" args=" " scope="PUBLIC" type="ptFunction" line="4042">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="c_nota" args=" " scope="PUBLIC" type="ptFunction" line="3862">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="cons_serial" args="<mcodmerc>, <mserial> " scope="PUBLIC" type="ptFunction" line="3810">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="cons_chass" args="<achar>, <mtipo_c> " scope="PUBLIC" type="ptFunction" line="3707">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="v_gru_cod" args="<vcodigo>, <orde>, <l>, <c> " scope="PUBLIC" type="ptFunction" line="3667">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="alt_caixa" args=" " scope="PUBLIC" type="ptFunction" line="3608">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_tipdc" args="<menv>, <t>, <tc> " scope="PUBLIC" type="ptFunction" line="3570">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="menu_cons" args=" " scope="PUBLIC" type="ptFunction" line="3501">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ExtCentena" args="<nBase>, <nGenero> " scope="STATIC" type="ptFunction" line="3483">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="Extenso" args="<nBase>, <lVMonet>, <cStrSingul>, <cStrPlural>, <nGenero> " scope="PUBLIC" type="ptFunction" line="3447">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="SET_IVAR" args="<iVar>, <p> " scope="STATIC" type="ptPseudoFUNC" line="3439">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="CRLF" args=" " scope="STATIC" type="ptConstant" line="3438">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="LF" args=" " scope="STATIC" type="ptConstant" line="3437">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="CR" args=" " scope="STATIC" type="ptConstant" line="3436">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="MAX_LINE_LEN" args=" " scope="STATIC" type="ptConstant" line="3435">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="FILE_BRWS_NUM_IVARS" args=" " scope="STATIC" type="ptConstant" line="3434">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="FTell" args="<fHandle> " scope="PUBLIC" type="ptPseudoFUNC" line="3432">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name=":" args="<lineOffset> " scope="PUBLIC" type="ptPseudoFUNC" line="3431">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name=":" args="<fileLine> " scope="PUBLIC" type="ptPseudoFUNC" line="3430">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name=":" args="<fileHandle> " scope="PUBLIC" type="ptPseudoFUNC" line="3429">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ExtPorGen" args="<nGenero>, <xStr> " scope="STATIC" type="ptFunction" line="3426">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="alt_sen" args="<p>, <mfiscal> " scope="PUBLIC" type="ptFunction" line="3269">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ped_prod" args="<mnum_p>, <mcod> " scope="PUBLIC" type="ptFunction" line="3245">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="gera_num" args=" " scope="PUBLIC" type="ptFunction" line="3236">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="chq_corre" args="<vcpfcnpj> " scope="PUBLIC" type="ptFunction" line="3206">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="alt_emp" args="<mtp> " scope="PUBLIC" type="ptFunction" line="3151">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_emp" args="<vreg>, <li>, <ci>, <t>, <mzero> " scope="PUBLIC" type="ptFunction" line="3111">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="v_uf" args="<ve_uf> " scope="PUBLIC" type="ptFunction" line="3100">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="f5_qtd" args=" " scope="PUBLIC" type="ptFunction" line="3083">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="VerDesp" args="<mcoddesp>, <l>, <c>, <p>, <retu> " scope="PUBLIC" type="ptFunction" line="3048">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="valor_ped" args="<mnum> " scope="PUBLIC" type="ptFunction" line="3040">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="dias_atras" args="<mfor>, <p> " scope="PUBLIC" type="ptFunction" line="2995">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="dup_pre2" args="<memissao>, <moperador>, <mvlr>, <mdocumento>, <mvenc>, <mnome>, <mcod>, <mendereco>, <mbairro>, <mcidade>, <muf>, <mcep>, <mcgc>, <minsc>, <mcpf>, <mban>, <mn_fat>, <mv_fat> " scope="PUBLIC" type="ptFunction" line="2950">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="dup_jw" args="<memissao>, <moperador>, <mvlr>, <mdocumento>, <mvenc>, <mnome>, <mcod>, <mendereco>, <mbairro>, <mcidade>, <muf>, <mcep>, <mcgc>, <minsc>, <mcpf>, <mban> " scope="PUBLIC" type="ptFunction" line="2900">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="dup_sot" args="<memissao>, <moperador>, <mvalor>, <mdocumento>, <mvenc>, <mnome>, <mcod>, <mendereco>, <mbairro>, <mcidade>, <muf>, <mcep>, <mcgc>, <minsc>, <mcpf>, <mban> " scope="PUBLIC" type="ptFunction" line="2851">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="mcli" args="<f>, <l>, <c> " scope="PUBLIC" type="ptFunction" line="2790">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="serie_prod" args="<vcod>, <p> " scope="PUBLIC" type="ptFunction" line="2768">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_serie" args=" " scope="PUBLIC" type="ptFunction" line="2764">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_finan" args="<mcod>, <li>, <ci> " scope="PUBLIC" type="ptFunction" line="2742">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="qtd_chq" args="<mcod>, <mnum>, <mag>, <mc_c> " scope="PUBLIC" type="ptFunction" line="2723">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_debito" args="<mcod> " scope="PUBLIC" type="ptFunction" line="2687">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="spc" args="<mcod>, <mvalor>, <mtipo>, <mped>, <mlib>, <mcons> " scope="PUBLIC" type="ptFunction" line="2484">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="prog" args="<l>, <c>, <q>, <marq>, <t> " scope="PUBLIC" type="ptFunction" line="2473">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="fim_prg" args=" " scope="PUBLIC" type="ptFunction" line="2449">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="incl_tab" args=" " scope="PUBLIC" type="ptFunction" line="2387">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="set_key" args="<s1>, <s2>, <s3>, <s4>, <t> " scope="PUBLIC" type="ptFunction" line="2373">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="vencim" args="<mv>, <t>, <dup>, <memi>, <prz_dia>, <m_doc> " scope="PUBLIC" type="ptFunction" line="2337">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="soli_aut" args="<sope>, <scli>, <sprod>, <smen>, <samb> " scope="PUBLIC" type="ptFunction" line="2281">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="aut_sen" args="<men>, <mdl>, <mlin>, <mnum_cli>, <mnum_prod>, <mamb>, <mnum_pedido> " scope="PUBLIC" type="ptFunction" line="1884">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="pesq_cgc" args="<ncgc>, <narq>, <condicao>, <pesq_ali> " scope="PUBLIC" type="ptFunction" line="1852">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_cartao" args="<mcod>, <li>, <ci>, <t> " scope="PUBLIC" type="ptFunction" line="1812">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_desp" args="<mcod_des>, <li>, <ci>, <t> " scope="PUBLIC" type="ptFunction" line="1773">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ven" args="<mcod_ven>, <li>, <ci>, <p> " scope="PUBLIC" type="ptFunction" line="1732">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_ven" args="<mcod_ven>, <p>, <tip> " scope="PUBLIC" type="ptFunction" line="1703">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_cgc" args="<ncgc> " scope="PUBLIC" type="ptFunction" line="1662">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_cpf" args="<ncpf> " scope="PUBLIC" type="ptFunction" line="1619">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_uf" args="<nuf>, <mt> " scope="PUBLIC" type="ptFunction" line="1582">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ocorre" args=" " scope="PUBLIC" type="ptFunction" line="1505">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="f8_cep" args=" " scope="PUBLIC" type="ptFunction" line="1439">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="f3_nivel" args="<mop> " scope="PUBLIC" type="ptFunction" line="1265">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="cons_doc" args="<mcons>, <mtp_c> " scope="PUBLIC" type="ptFunction" line="837">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="cons_roma" args=" " scope="PUBLIC" type="ptFunction" line="764">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="cons_desp" args=" " scope="PUBLIC" type="ptFunction" line="701">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="cons_grup" args=" " scope="PUBLIC" type="ptFunction" line="638">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="cons_espe" args=" " scope="PUBLIC" type="ptFunction" line="575">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="f6_forn" args="<mop> " scope="PUBLIC" type="ptFunction" line="295">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_cli" args="<vcod>, <li>, <ci>, <p>, <ln>, <cl> " scope="PUBLIC" type="ptFunction" line="249">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ent_forn" args="<vcod>, <li>, <ci> " scope="PUBLIC" type="ptFunction" line="228">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="v_fornece" args="<vcod>, <li>, <ci>, <p>, <loc> " scope="PUBLIC" type="ptFunction" line="188">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_espe" args="<vespe>, <li>, <ci>, <t>, <mzero> " scope="PUBLIC" type="ptFunction" line="153">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="prt_sgru" args="<vgru>, <vsgru> " scope="PUBLIC" type="ptFunction" line="130">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="prt_gru" args="<vgru> " scope="PUBLIC" type="ptFunction" line="106">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_trans" args="<mcod>, <ld>, <cd>, <p> " scope="PUBLIC" type="ptFunction" line="68">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_fab" args="<mcod>, <ld>, <cd>, <p> " scope="PUBLIC" type="ptFunction" line="23">
+   <tag filename="C:\HTI\SISCOM\SACROT.PRG" name="ver_entrada" args="<mcod>, <mdoc> " scope="PUBLIC" type="ptFunction" line="8">
    <tag filename="C:\HTI\SISCOM\SACTPS.PRG" name="rec_os" args="<cli_bol>, <razao_bol>, <num>, <numos>, <mmod>, <seri>, <valor> " scope="PUBLIC" type="ptFunction" line="1160">
    <tag filename="C:\HTI\SISCOM\SACTPS.PRG" name="imp_emba" args="<mn_pedido>, <mcx> " scope="PUBLIC" type="ptFunction" line="777">
    <tag filename="C:\HTI\SISCOM\SACTPS.PRG" name="bole_term" args=" " scope="PUBLIC" type="ptFunction" line="134">
