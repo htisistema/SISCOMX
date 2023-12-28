@@ -1,0 +1,9 @@
+[SAC611.PRG->SAC611] (525) Called from: 
+                              SAC00.PRG->AFTERINKEY(2523)
+                              SAC00.PRG->(b)SAC0(1408)
+                              ->INKEY(0)
+                              SAC00.PRG->SAC0(1438)
+                              SACROT1.PRG->SENHA(824)
+                              SISCOM.PRG->MAIN(1131)
+Type: C >>>NIL<<<
+
