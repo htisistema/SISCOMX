@@ -19965,3 +19965,36 @@ MAIN     Linha : 1131
 =======
 29/09/23 11:49:39: Connection Error: -1 (check fb.log) - Database: localhost:C:\hti\SISCOM\SISCOM.GDB - Username : SYSDBA (Password not shown for security)	
 >>>>>>> Stashed changes
+29/12/23 12:59:17: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+CREATE GENERATOR INSOPERA
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+SACSQL     Linha : 68
+MAIN     Linha : 577	
+29/12/23 13:00:20: SQLExecDirect Error
+Dynamic SQL Error - Native error code 335544569
+Command sent to database : 
+CREATE TABLE SACMERC (empresa  CHAR(3) ,cod_barr  CHAR(14) ,cod_barr1  CHAR(14) ,descri1  CHAR(50) ,app_imagem  CHAR(100) ,ref  CHAR(13) ,gru_sub  CHAR(5) ,cod_merc  CHAR(5) NOT NULL ,merc  CHAR(40) ,tipo_merc  CHAR(1) ,balanca  CHAR(1) ,data_atu  DATE ,data_cad  DATE ,unidade  CHAR(3) ,especie  CHAR(4) ,peso_liq  DECIMAL(8,3)  DEFAULT 0,peso  DECIMAL(8,3)  DEFAULT 0,volume  DECIMAL(8,3)  DEFAULT 0,metragem  DECIMAL(8,3)  DEFAULT 0,pacote  DECIMAL(8,3)  DEFAULT 0,alimento  CHAR(1) ,p_lucro  DECIMAL(7,2)  DEFAULT 0,promocao  DECIMAL(7,2)  DEFAULT 0,disp  CHAR(1)  DEFAULT "",livre_desc  CHAR(1) ,comissao  DECIMAL(6,2)  DEFAULT 0,com_mont  DECIMAL(6,2)  DEFAULT 0,est_min  DECIMAL(12,3)  DEFAULT 0,est_max  DECIMAL(12,3)  DEFAULT 0,cod_fab  CHAR(4) ,fabrica  CHAR(40) ,dat_ult_s  DATE ,dat_ult_e  DATE ,saldo_ant  DECIMAL(12,3)  DEFAULT 0,a_pr_unit  DECIMAL(12,4)  DEFAULT 0,a_vlr_merc  DECIMAL(12,4)  DEFAULT 0,a_cust_mer  DECIMAL(12,4)  DEFAULT 0,a_cust_rea  DECIMAL(12,4)  DEFAULT 0,a_pr_venda  DECIMAL(12,4)  DEFAULT 0,a_pr_medio  DECIMAL(12,4)  DEFAULT 0,pr_nota  DECIMAL(12,4)  DEFAULT 0,pr_unit  DECIMAL(12,4)  DEFAULT 0,vlr_merc  DECIMAL(12,4)  DEFAULT 0,cust_merc  DECIMAL(12,4)  DEFAULT 0,cust_real  DECIMAL(12,4)  DEFAULT 0,pr_venda  DECIMAL(12,4)  DEFAULT 0,pr_venda1  DECIMAL(12,4)  DEFAULT 0,pr_medio  DECIMAL(12,4)  DEFAULT 0,pr_fat  DECIMAL(12,4) ,varejo  DECIMAL(10,2) ,ul_alt_pr  DATE ,opera_pr  CHAR(3) ,tipo_op  CHAR(2) ,hora  CHAR(8) ,saldo_fis  DECIMAL(12,3) ,saldo_mer  DECIMAL(12,3) ,saldo_av  DECIMAL(12,3) ,saldo_comp  DECIMAL(12,3) ,saldo_est  DECIMAL(12,3) ,icm  DECIMAL(10,2) ,isento  CHAR(1) ,bebida  DECIMAL(6,2) ,icm_sub  DECIMAL(12,4) ,icm_sub2  DECIMAL(12,4) ,ipi  DECIMAL(12,4) ,cod_clf  CHAR(2) ,cod_fis  CHAR(10) ,sittrib  CHAR(4) ,prodepe  CHAR(2) ,nbm  CHAR(8) ,desc_icm  CHAR(1) ,desc_icm1  DECIMAL(12,4) ,local  CHAR(8) ,gramatura  DECIMAL(9,3) ,prazo  DECIMAL(3,0) ,fatconv  DECIMAL(8,2) ,doc_ent_a  CHAR(12) ,doc_ent  CHAR(12) ,envelope  CHAR(10) ,desc_merc  DECIMAL(6,2) ,iat  CHAR(1) ,ind_icms  CHAR(2) ,sit_trib  CHAR(1) ,dolar  CHAR(1) ,aplic0  CHAR(60) ,aplic1  CHAR(60) ,aplic2  CHAR(60) ,aplic3  CHAR(60) ,aplic4  CHAR(60) ,atualiza  DATE ,ippt  CHAR(1) ,cod2  CHAR(5) ,cod3  CHAR(5) ,cod4  CHAR(5) ,data_falta  DATE ,cod_falta  CHAR(3) ,qtd_falta  DECIMAL(12,3) ,pocket  CHAR(1) ,descri  CHAR(50) ,pr_venda2  DECIMAL(12,4) ,pr_venda3  DECIMAL(12,4) ,pr_venda4  DECIMAL(12,4) ,sld_neg  CHAR(1) ,descont  CHAR(1) ,cst_pis  CHAR(2) ,cst_conf  CHAR(2) ,chv_cript  CHAR(350) ,cfop_fora  CHAR(5) ,cfop_dent  CHAR(5) ,pis  DECIMAL(7,2) ,confis  DECIMAL(7,2) ,sr_recno DECIMAL(15,0) NOT NULL ,sr_deleted CHAR(1),cest  CHAR(7) ,codigo_smart  INTEGER ,desc_icm_sub DECIMAL(12,4) ,codigo_anp CHAR(10) ,unidade_trib CHAR(3) ,adRemICMS DECIMAL(12,4)  )
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+SACSQL     Linha : 613
+MAIN     Linha : 577	
+29/12/23 13:00:49: SQLExecDirect Error
+Dynamic SQL Error - Native error code 335544569
+Command sent to database : 
+CREATE TABLE SACMERC (empresa  CHAR(3) ,cod_barr  CHAR(14) ,cod_barr1  CHAR(14) ,descri1  CHAR(50) ,app_imagem  CHAR(100) ,ref  CHAR(13) ,gru_sub  CHAR(5) ,cod_merc  CHAR(5) NOT NULL ,merc  CHAR(40) ,tipo_merc  CHAR(1) ,balanca  CHAR(1) ,data_atu  DATE ,data_cad  DATE ,unidade  CHAR(3) ,especie  CHAR(4) ,peso_liq  DECIMAL(8,3)  DEFAULT 0,peso  DECIMAL(8,3)  DEFAULT 0,volume  DECIMAL(8,3)  DEFAULT 0,metragem  DECIMAL(8,3)  DEFAULT 0,pacote  DECIMAL(8,3)  DEFAULT 0,alimento  CHAR(1) ,p_lucro  DECIMAL(7,2)  DEFAULT 0,promocao  DECIMAL(7,2)  DEFAULT 0,disp  CHAR(1)  DEFAULT " ",livre_desc  CHAR(1) ,comissao  DECIMAL(6,2)  DEFAULT 0,com_mont  DECIMAL(6,2)  DEFAULT 0,est_min  DECIMAL(12,3)  DEFAULT 0,est_max  DECIMAL(12,3)  DEFAULT 0,cod_fab  CHAR(4) ,fabrica  CHAR(40) ,dat_ult_s  DATE ,dat_ult_e  DATE ,saldo_ant  DECIMAL(12,3)  DEFAULT 0,a_pr_unit  DECIMAL(12,4)  DEFAULT 0,a_vlr_merc  DECIMAL(12,4)  DEFAULT 0,a_cust_mer  DECIMAL(12,4)  DEFAULT 0,a_cust_rea  DECIMAL(12,4)  DEFAULT 0,a_pr_venda  DECIMAL(12,4)  DEFAULT 0,a_pr_medio  DECIMAL(12,4)  DEFAULT 0,pr_nota  DECIMAL(12,4)  DEFAULT 0,pr_unit  DECIMAL(12,4)  DEFAULT 0,vlr_merc  DECIMAL(12,4)  DEFAULT 0,cust_merc  DECIMAL(12,4)  DEFAULT 0,cust_real  DECIMAL(12,4)  DEFAULT 0,pr_venda  DECIMAL(12,4)  DEFAULT 0,pr_venda1  DECIMAL(12,4)  DEFAULT 0,pr_medio  DECIMAL(12,4)  DEFAULT 0,pr_fat  DECIMAL(12,4) ,varejo  DECIMAL(10,2) ,ul_alt_pr  DATE ,opera_pr  CHAR(3) ,tipo_op  CHAR(2) ,hora  CHAR(8) ,saldo_fis  DECIMAL(12,3) ,saldo_mer  DECIMAL(12,3) ,saldo_av  DECIMAL(12,3) ,saldo_comp  DECIMAL(12,3) ,saldo_est  DECIMAL(12,3) ,icm  DECIMAL(10,2) ,isento  CHAR(1) ,bebida  DECIMAL(6,2) ,icm_sub  DECIMAL(12,4) ,icm_sub2  DECIMAL(12,4) ,ipi  DECIMAL(12,4) ,cod_clf  CHAR(2) ,cod_fis  CHAR(10) ,sittrib  CHAR(4) ,prodepe  CHAR(2) ,nbm  CHAR(8) ,desc_icm  CHAR(1) ,desc_icm1  DECIMAL(12,4) ,local  CHAR(8) ,gramatura  DECIMAL(9,3) ,prazo  DECIMAL(3,0) ,fatconv  DECIMAL(8,2) ,doc_ent_a  CHAR(12) ,doc_ent  CHAR(12) ,envelope  CHAR(10) ,desc_merc  DECIMAL(6,2) ,iat  CHAR(1) ,ind_icms  CHAR(2) ,sit_trib  CHAR(1) ,dolar  CHAR(1) ,aplic0  CHAR(60) ,aplic1  CHAR(60) ,aplic2  CHAR(60) ,aplic3  CHAR(60) ,aplic4  CHAR(60) ,atualiza  DATE ,ippt  CHAR(1) ,cod2  CHAR(5) ,cod3  CHAR(5) ,cod4  CHAR(5) ,data_falta  DATE ,cod_falta  CHAR(3) ,qtd_falta  DECIMAL(12,3) ,pocket  CHAR(1) ,descri  CHAR(50) ,pr_venda2  DECIMAL(12,4) ,pr_venda3  DECIMAL(12,4) ,pr_venda4  DECIMAL(12,4) ,sld_neg  CHAR(1) ,descont  CHAR(1) ,cst_pis  CHAR(2) ,cst_conf  CHAR(2) ,chv_cript  CHAR(350) ,cfop_fora  CHAR(5) ,cfop_dent  CHAR(5) ,pis  DECIMAL(7,2) ,confis  DECIMAL(7,2) ,sr_recno DECIMAL(15,0) NOT NULL ,sr_deleted CHAR(1),cest  CHAR(7) ,codigo_smart  INTEGER ,desc_icm_sub DECIMAL(12,4) ,codigo_anp CHAR(10) ,unidade_trib CHAR(3) ,adRemICMS DECIMAL(12,4)  )
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+SACSQL     Linha : 613
+MAIN     Linha : 577	
