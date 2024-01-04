@@ -19998,3 +19998,999 @@ RetCode           :         -1
 SR_FIREBIRD:EXEC     Linha : 299
 SACSQL     Linha : 613
 MAIN     Linha : 577	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE cnnt_pedido ADD STATUS_PED CHAR(12)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 891
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacdupp ADD data_so DATE
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1143
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacdupp ADD DAT_RECEB DATE
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1150
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacdupp ADD OPE_RECEB VARCHAR(3)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1157
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacdupp ADD DOC_TRAN VARCHAR(14)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1164
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacdupp ADD DAT_TRAN DATE
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1171
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacdupp ADD BANCO_BX VARCHAR(3)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1178
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacdupp ADD HORA_BX VARCHAR(8)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1185
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacdupr ADD HORA_BX VARCHAR(8)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1196
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacdupr ADD COM_SEM VARCHAR(1)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1203
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacdupr ADD TIPO_PG VARCHAR(20)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1210
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacdupr ADD PARCELA DECIMAL(3,0)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1218
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacdupr ADD COD_PG VARCHAR(3)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1226
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacdupr ADD TIP_CONTA VARCHAR(4)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1234
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacdupr ADD BANCO_BX VARCHAR(3)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1242
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE saccred ADD HORA_BX VARCHAR(8)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1252
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE saccred ADD COM_SEM VARCHAR(1)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1259
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacforn ADD pocket VARCHAR(1)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1284
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacforn ADD fantasia VARCHAR(40)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1291
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD pocket VARCHAR(1)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1313
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD descri VARCHAR(50)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1320
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD pr_venda2 DECIMAL(12,2)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1327
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD pr_venda3 DECIMAL(12,2)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1334
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD pr_venda4 DECIMAL(12,2)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1341
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD sld_neg VARCHAR(1)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1355
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD descont VARCHAR(1)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1362
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD cst_pis VARCHAR(2)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1369
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD cst_conf VARCHAR(2)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1376
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD chv_cript VARCHAR(256)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1383
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD cfop_fora VARCHAR(5)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1390
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD cfop_dent VARCHAR(5)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1397
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD pis DECIMAL(7,2)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1404
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD confis DECIMAL(7,2)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1411
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD cest CHAR(7)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1418
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD codigo_smart INTEGER
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1425
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmerc ADD desc_icm_sub DECIMAL(12,4)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1432
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmov ADD DEVOLUCAO VARCHAR(1)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1468
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmov ADD COD_PRESENTE VARCHAR(5)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1475
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmov ADD NORM_ELE VARCHAR(1)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1482
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmov ADD CONVIDADO VARCHAR(30)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1489
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmov ADD HORA_MOV VARCHAR(8)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1496
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacmov ADD PROMOTOR VARCHAR(3)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1503
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_e ADD TEL_TRANSP VARCHAR(14)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1761
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_e ADD OBS VARCHAR(60)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1768
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_e ADD REF VARCHAR(13)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1775
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_e ADD DATA_CHEGA DATE
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1782
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_e ADD OBS2 VARCHAR(60)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1789
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_e ADD OBS3 VARCHAR(60)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1796
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_e ADD OBS4 VARCHAR(60)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1803
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_e ADD OBS5 VARCHAR(60)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1810
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_e ADD cod_oper VARCHAR(3)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1817
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_e ADD cond_pag VARCHAR(8)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1824
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_e ADD forma_pag VARCHAR(15)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1831
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD COD_PRES VARCHAR(5)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1842
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD PFECHA VARCHAR(1)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1849
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD PD_ENTREGA DATE
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1856
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD DATA_SO DATE
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1863
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD PNUM_NF VARCHAR(10)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1870
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD COMPRADOR VARCHAR(30)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1877
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD CONVIDADO VARCHAR(30)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1884
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD TIPO_PED DECIMAL(1,0)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1891
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD QTD_ORIG DECIMAL(12,3)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1898
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD NUMPED_ORIG VARCHAR(6)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1905
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD qtd_via VARCHAR(2)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1912
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD obs_visita VARCHAR(200)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1919
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD pobs5 VARCHAR(40)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1926
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD tipo_venda VARCHAR(1)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1936
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD PROMOTOR VARCHAR(3)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1943
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacped_s ADD data_app DATE
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1950
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacorcam ADD COD_PRES VARCHAR(5)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1960
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacorcam ADD PFECHA VARCHAR(1)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1967
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacorcam ADD PD_ENTREGA DATE
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1974
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacorcam ADD DATA_SO DATE
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1981
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacorcam ADD PNUM_NF VARCHAR(10)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1988
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacorcam ADD COMPRADOR VARCHAR(30)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 1995
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacorcam ADD CONVIDADO VARCHAR(30)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 2002
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacorcam ADD TIPO_PED DECIMAL(1,0)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 2009
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacorcam ADD QTD_ORIG DECIMAL(12,3)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 2016
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacorcam ADD NUMPED_ORIG VARCHAR(6)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 2023
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacorcam ADD qtd_via VARCHAR(2)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 2030
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacorcam ADD obs_visita VARCHAR(200)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 2037
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacorcam ADD pobs5 VARCHAR(40)
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 2044
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	
+04/01/24 11:53:02: SQLExecDirect Error
+unsuccessful metadata update - Native error code 335544351
+Command sent to database : 
+ALTER TABLE sacorcam ADD data_app DATE
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_TB     Linha : 2069
+SAC_DBF     Linha : 150
+MAIN     Linha : 810	

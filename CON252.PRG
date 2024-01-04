@@ -8,7 +8,7 @@ MEMVAR getlist,mdata_sis,cod_operado,nivel_acess,memp_resa,mend_firm,mcid_firm,m
 FUNCTION con252(cx,mtp,mcli)
 ***************
 LOCAL MPRG:='CON252',;
-      tela,lin,mvlpago,mdata1,mdata2,mdatapg,msele,morde,opcao,mbaixa,;
+      tela,lin,mvlpago,mdata1,mdata2,mdata_pg,msele,morde,opcao,mbaixa,;
       mdias_atras:=0,mquantd_doc:=0,mtot_multa:=0,mtotal:=0,mpoint,mvlr_pg:=0,mresta:=0,;
       lba,cba,li,ci,la,ca,i:=0,mjuros:=0,mmulta:=0,;
       mtipo,mnumero,mduplicata,mvalor_dup,mcliente,mtip_cli,mcod_c,;
@@ -94,7 +94,7 @@ WHILE .T.
         mbaixa := 'N'
         mcom_juros := 'S'
         mdata1 := mdata2 := CTOD('  /  /  ')
-        mdatapg := mdata_sis
+        mdata_pg := mdata_sis
         mobs1:= SPACE(60)
         IF mcli = NIL
                 mcod_cli = 0
@@ -122,7 +122,7 @@ WHILE .T.
         DEVPOS(5,1);DEVOUT('Com Juros [S/N]..........:')
         @ 1,27 GET mdata1       //VALID IF(EMPTY(mdata1),.F.,.T.)
         @ 1,COL()+3 GET mdata2 VALID IF(mdata2 < mdata1,.F.,.T.)
-        @ 2,27 GET mdatapg VALID IF(mdatapg < mdata1,.F.,.T.)
+        @ 2,27 GET mdata_pg VALID IF(mdata_pg < mdata1,.F.,.T.)
         @ 2,60 GET mvlr_pg PICT '9,999,999.99' WHEN mtp = NIL
         @ 3,27 GET mcod_cli pict "99999" VALID IF(mtp<>NIL .AND. EMPTY(mcod_cli),.F.,.T.) .AND. ver_cli(mcod_cli,3,33)  // WHEN men_get(4,27,'Informe o cliente que deseja ou nao informe p/imprimir todos')
         READ
@@ -210,10 +210,10 @@ WHILE .T.
         i:=0
         FOR i = 1 TO LEN(aret)
                 mbaixa := 'S'
-                mdias_atras := mdatapg-(aret[i,11]+m_set[1,106])
+                mdias_atras := mdata_pg-(aret[i,11]+m_set[1,106])
                 mjuros := mmulta := 0
                 IF mdias_atras > 0 .AND. mcom_juros = 'S'
-                        mdias_atras := mdatapg-aret[i,11]
+                        mdias_atras := mdata_pg-aret[i,11]
                         mmulta := aret[i,19] * ((m_set[1,50])/100)
                         mjuros := (aret[i,19] * ((mdias_atras*m_set[1,51])/100))
                 ENDIF
@@ -322,7 +322,7 @@ WHILE .T.
         IF mtp = 'E'
                 opcao := op_simnao('S','Deseja imprimir os Documentos:')
                 IF opcao = 'S'
-                        rec_dupr(m_dupr,m_pos[1,1],mquantd_doc,mtot_multa,mtotal,mdatapg,mtp,0,mcod_cli)
+                        rec_dupr(m_dupr,m_pos[1,1],mquantd_doc,mtot_multa,mtotal,mdata_pg,mtp,0,mcod_cli)
                 ENDIF
                 LOOP
         ELSEIF mtp = 'G'
@@ -652,7 +652,7 @@ WHILE .T.
                                 cons_dupr:={}
                                 sr_getconnection():exec("SELECT vlpago FROM sacdupr WHERE sr_recno  = "+sr_cdbvalue(m_pos[i,1]),,.t.,@cons_dupr)
                                 sr_getconnection():exec('COMMIT',,.f.)
-                                sr_getconnection():exec("UPDATE sacdupr SET datpag = " + sr_cdbvalue(mdatapg)+;
+                                sr_getconnection():exec("UPDATE sacdupr SET datpag = " + sr_cdbvalue(mdata_pg)+;
                                         ",tip_pg = " + sr_cdbvalue('  ')+;
                                         ",vlpago = " + sr_cdbvalue(m_pos[i,5])+;
                                         ",pago   = " + sr_cdbvalue('B')+;
@@ -715,8 +715,8 @@ WHILE .T.
                                         sr_cdbvalue(m_cax[i,2])+','+; //2
                                         sr_cdbvalue(m_cax[i,3])+','+; //3
                                         sr_cdbvalue(m_cax[i,3])+','+; //4
-                                        sr_cdbvalue(mdatapg)+','+; //5
-                                        sr_cdbvalue(mdatapg)+','+; //6
+                                        sr_cdbvalue(mdata_pg)+','+; //5
+                                        sr_cdbvalue(mdata_pg)+','+; //6
                                         sr_cdbvalue(m_cax[i,6])+','+; //7
                                         sr_cdbvalue(m_cax[i,1])+','+; //8
                                         sr_cdbvalue(m_cax[i,8])+','+;//9
@@ -746,9 +746,9 @@ WHILE .T.
                                 IF ! EMPTY(mcod_cli)
                                         mdevedor:={}
                                         sr_getconnection():exec("SELECT SUM(valor) FROM sacdupr WHERE fornec = "+sr_cdbvalue(mcod_cli) +" AND datpag IS NULL",,.t.,@mdevedor)
-                                        rec_dupr(m_pag,m_pos[1,1],mquantd_doc,mtot_multa,mtotal,mdatapg,mtp,mtotal,mdevedor[1,1],mcod_cli)
+                                        rec_dupr(m_pag,m_pos[1,1],mquantd_doc,mtot_multa,mtotal,mdata_pg,mtp,mtotal,mdevedor[1,1],mcod_cli)
                                 ELSE
-                                        rec_dupr(m_pag,m_pos[1,1],mquantd_doc,mtot_multa,mtotal,mdatapg,mtp,mtotal,0,mcod_cli)
+                                        rec_dupr(m_pag,m_pos[1,1],mquantd_doc,mtot_multa,mtotal,mdata_pg,mtp,mtotal,0,mcod_cli)
                                 ENDIF
                         ENDIF
                 ENDIF
