@@ -72,13 +72,13 @@ mdata_senha:= CTOD('30/08/2021')
 mdata_cli  := CTOD('30/08/2021')
 mdata_mov  := CTOD('06/04/2022')
 mdata_tbmer:= CTOD('06/08/2022')
-mdata_peds := CTOD('29/09/2022')
 mdata_pede := CTOD('10/11/2022')
 mdata_dupr := CTOD('02/12/2022')
 mdata_dupp := CTOD('12/12/2022')
 mdata_logp := CTOD('08/03/2023')
 mdata_forn := CTOD('09/05/2023')
 mdata_merc := CTOD('04/09/2023')
+mdata_peds := CTOD('08/01/2024')
 IF mtp # 'HTI'
         IF mtp = 'arquivo'
 	       matualiza := mmerc := mmov := mmovnt := mos := mpeds := mcaix := mdupr := mdupp := ;
@@ -438,6 +438,7 @@ IF matualiza = 'X'
                 mmensagem := mmensagem + '<< Nome: PMODELO  Tipo: VARCHAR(15)>>'+m_qp
                 mmensagem := mmensagem + '<< Nome: PKM      Tipo: VARCHAR(15)>>'+m_qp
                 mmensagem := mmensagem + '<< Nome: POS      Tipo: VARCHAR(8)>>'+m_qp
+                mmensagem := mmensagem + '<< Nome: PLOCAL   Tipo: VARCHAR(8)>>'+m_qp
 
                 atencao(mmensagem)
         ENDIF

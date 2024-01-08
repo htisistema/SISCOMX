@@ -1,15 +1,15 @@
 /*
  * xHarbour build 0.99.70 Intl. (SimpLex)
- * Generated C source code from <sacsql.prg>
- * Command: C:\xHarbour997\bin\harbour.exe C:\HTI\SISCOM\sacsql.prg /q /oC:\hti\SISCOM\sacsql.c /M /N -DxHB -DXHB_0990 -DXHB_0991 -DXHB_0992 -DXHB_0993 -DXHB_0994 -DXHB_09941 -DXHB_09950 -DXHB_09951a -DXHB_09951 -DXHB_09951b -DXHB_0996 -DXHB_09960 -DXHB_09961 -DXHB_09961B -DXHB_0997 -DXHB_09970 
- * Created: 2024.01.03 11:28:39 (Borland C++ 5.5.1)
+ * Generated C source code from <sacsql.000>
+ * Command: C:\xHarbour997\bin\harbour.exe C:\HTI\SISCOM\sacsql.000 /q /oC:\hti\SISCOM\sacsql.c /M /N -DxHB -DXHB_0990 -DXHB_0991 -DXHB_0992 -DXHB_0993 -DXHB_0994 -DXHB_09941 -DXHB_09950 -DXHB_09951a -DXHB_09951 -DXHB_09951b -DXHB_0996 -DXHB_09960 -DXHB_09961 -DXHB_09961B -DXHB_0997 -DXHB_09970 
+ * Created: 2024.01.08 20:34:16 (Borland C++ 5.5.1)
  */
 
 #include "hbvmpub.h"
 #include "hbpcode.h"
 #include "hbinit.h"
 
-#define __PRG_SOURCE__ "sacsql.prg"
+#define __PRG_SOURCE__ "sacsql.000"
 
 HB_FUNC( SACSQL );
 HB_FUNC_EXTERN( __MVPRIVATE );
@@ -6632,7 +6632,7 @@ HB_FUNC( SACSQL )
 /* 33902 */ HB_P_LINE, 169, 4,	/* 1193 */
 	HB_P_PUSHLOCALNEAR, 8,	/* MATRIZ */
 	HB_P_PUSHSTRSHORT, 18,	/* 18 */
-	',', 'p', 'l', 'o', 'c', 'a', 'l', ' ', ' ', 'C', 'H', 'A', 'R', '(', '4', ')', ' ', 0, 
+	',', 'p', 'l', 'o', 'c', 'a', 'l', ' ', ' ', 'C', 'H', 'A', 'R', '(', '8', ')', ' ', 0, 
 	HB_P_PLUS,
 	HB_P_POPLOCALNEAR, 8,	/* MATRIZ */
 /* 33930 */ HB_P_LINE, 170, 4,	/* 1194 */
