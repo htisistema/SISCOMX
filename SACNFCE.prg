@@ -2261,9 +2261,9 @@ WHILE .T.
                         ENDIF
                         */
                         IF m_nota[i,34] > 0
-                                mtot_imposto := mtot_imposto + iat((((m_nota[i,5] * mpr_fat) * m_nota[i,34]) * ((ver_ncm(mcons_prod[1,70],mcons_prod[1,68])+18) / 100)),m_set[1,103])
+                                mtot_imposto := mtot_imposto + iat((((m_nota[i,5] * mpr_fat) * m_nota[i,34]) * ((ver_ncm(mcons_prod[1,70],mcons_prod[1,68]) + m_set[1,20]) / 100)),m_set[1,103])
                         ELSE
-                                mtot_imposto := mtot_imposto + iat(((m_nota[i,5] * mpr_fat) * ((ver_ncm(mcons_prod[1,70],mcons_prod[1,68])+18) / 100)),m_set[1,103])
+                                mtot_imposto := mtot_imposto + iat(((m_nota[i,5] * mpr_fat) * ((ver_ncm(mcons_prod[1,70],mcons_prod[1,68]) + m_set[1,20]) / 100)),m_set[1,103])
                         ENDIF
                         sLinhas := slinhas +    '[Produto'+STRZERO(mitem,3)+']'      + m_qp
                                                 IF ! EMPTY(m_nota[i,36])
