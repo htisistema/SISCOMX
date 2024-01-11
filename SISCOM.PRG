@@ -33,7 +33,7 @@ MEMVAR msist,getlist,nivel_acess
 LOCAL mprg := 'SISCOM',men,f,num,mcgc_aux,mponto,mtip_t:=' ',mtela_term,mmapear,lin,linha,linhas,marq:='',;
       matriz:={},op:=' ',d:=0,m_aux:={},xcop,cons_lib,mcnpj_txt
 
-PUBLIC mversao      := 'v24.01.08',;
+PUBLIC mversao      := 'v24.01.11',;
        msit_tip     := 'SISCOM',;
        sistema      := '.: SISCOM :. Sistema Automacao Comercial',;
        memp_resa    :='.: HTI Sistemas Ltda :.',;

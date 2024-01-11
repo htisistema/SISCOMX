@@ -761,9 +761,10 @@ WHILE .T.
                                 LOOP
                         ENDIF
                         IF mped_merc[1,103] = 'S' .AND. mquantd > mped_merc[1,56]
-                                atencao('MERCADORIA BLOQUEADA para nao vender com SALDO A MENOR')
-                                fecha_tela()
-                                LOOP
+                                IF ! aut_sen('MERCADORIA BLOQUEADA para nao vender com SALDO A MENOR','LIB_SALDO',,,mcod_merc)
+                                        fecha_tela()
+                                        LOOP
+                                ENDIF
                         ENDIF
                         IF ! EMPTY(mped_merc[1,28]) .AND. mped_merc[1,28] >= (mped_merc[1,56] - mquantd) .AND. mped_merc[1,9] <> 'DIVERSOS' .AND. m_set[1,107] = 'S' .AND. m_indiv[1,26] <> 'T'
                                 atencao('SALDO esta menor que o ESTOQUE MINIMO: '+TRANSFORM(mped_merc[1,28],'9,999,999.99')+' estipulado !!!')

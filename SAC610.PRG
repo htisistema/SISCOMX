@@ -24,7 +24,7 @@ WHILE .T.
         demo_set:={}
         AADD(demo_set,'    C O N F I G U R A C A O   G E R A L       ')
         AADD(demo_set,'                                              ')
-        AADD(demo_set,'020 - I.C.M. do estado (%)............................: '+TRANSFORM(m_set[1,20],'99') +' ')
+        AADD(demo_set,'020 - I.C.M. do estado (%)............................: '+TRANSFORM(m_set[1,20],'99.99') +' ')
         AADD(demo_set,'079 - Tipo de Calculo do Lucro........................: '+m_set[1,79] +' ')
         //AADD(demo_set,'006 - (%) p/Faturamento...............................: '+TRANSFORM(m_set[1,6],'999.99') +' ')
         AADD(demo_set,'003 - Aliquota do Cofins (%)..........................: '+TRANSFORM(m_set[1,3],'999.99')  +' ')
@@ -182,7 +182,7 @@ WHILE .T.
                         IF mop = '020'
                                 op_tela(10,10,12,110,'I.C.M. DO ESTADO DA EMPRESA (%)',,'*')
                                 DEVPOS(1,1);DEVOUT('I.C.M. do estado (%)............................:')
-                                @ 1,COL()+1 GET m_set[1,VAL(mop)] PICT '99'
+                                @ 1,COL()+1 GET m_set[1,VAL(mop)] PICT '99.99'
                                 READ
                                 fecha_tela()
                                 LOOP
