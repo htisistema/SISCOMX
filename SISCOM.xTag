@@ -1,7 +1,7 @@
 <!--
 ################################################
 # xDevStudio Project - xdev@kssoftware.com.br  #
-# Created @ 15/01/2024 20:55:46                #
+# Created @ 18/01/2024 12:57:53                #
 #                                              #
 ### Standard xDev TagList - Layout v1.5 ########
 -->
@@ -479,10 +479,11 @@
    <tag filename="C:\HTI\SISCOM\CON41.PRG" name="con41" args=" " scope="PUBLIC" type="ptFunction" line="2">
    <tag filename="C:\HTI\SISCOM\SAC610.PRG" name="sac610" args="<mmanut> " scope="PUBLIC" type="ptFunction" line="6">
    <tag filename="C:\HTI\SISCOM\SAC530.PRG" name="sac611" args=" " scope="PUBLIC" type="ptFunction" line="5">
-   <tag filename="C:\HTI\SISCOM\SAC341.PRG" name="sac341" args="<mab_pg>, <mtp_orc>, <tipo_ali> " scope="PUBLIC" type="ptFunction" line="2">
    <tag filename="C:\HTI\SISCOM\SAC341.PRG" name="sac341_1" args="<mab_pg>, <mtp_orc>, <tipo_ali> " scope="PUBLIC" type="ptFunction" line="189">
+   <tag filename="C:\HTI\SISCOM\SAC341.PRG" name="sac341" args="<mab_pg>, <mtp_orc>, <tipo_ali> " scope="PUBLIC" type="ptFunction" line="2">
    <tag filename="C:\HTI\SISCOM\CON420.PRG" name="con420" args="<mtp_420> " scope="PUBLIC" type="ptFunction" line="4">
    <tag filename="C:\HTI\SISCOM\CON214.PRG" name="con214" args="<mfor>, <mdat1>, <mdat2>, <mtipo>, <mtip> " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\HTI\SISCOM\CON423.PRG" name="con423" args="<mtp_423> " scope="PUBLIC" type="ptFunction" line="4">
    <tag filename="C:\HTI\SISCOM\CON414.PRG" name="con252" args="<cx>, <mtp>, <mcli> " scope="PUBLIC" type="ptFunction" line="7">
    <tag filename="C:\HTI\SISCOM\SACCID.PRG" name="saccid" args="<mop>, <mcida>, <mempty>, <muf_f>, <mcp> " scope="PUBLIC" type="ptFunction" line="6">
    <tag filename="C:\HTI\SISCOM\SACREC.PRG" name="sacrec2" args=" " scope="PUBLIC" type="ptFunction" line="210">
@@ -495,32 +496,32 @@
    <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="Ctrl_v" args=" " scope="PUBLIC" type="ptFunction" line="11627">
    <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="Ctrl_c" args=" " scope="PUBLIC" type="ptFunction" line="11620">
    <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="main" args=" " scope="PUBLIC" type="ptFunction" line="11503">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ACBrDLL" args=" " scope="STATIC" type="ptConstant" line="11501">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ACBrDLL" args=" " scope="PUBLIC" type="ptConstant" line="11501">
    <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="Converte_Imagem" args="<cARQ>, <cSALVA>, <cTIPO> " scope="PUBLIC" type="ptFunction" line="11440">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="WHITE" args=" " scope="STATIC" type="ptConstant" line="11439">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="BROWN" args=" " scope="STATIC" type="ptConstant" line="11438">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="MAGENTA" args=" " scope="STATIC" type="ptConstant" line="11437">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="RED" args=" " scope="STATIC" type="ptConstant" line="11436">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="CYAN" args=" " scope="STATIC" type="ptConstant" line="11435">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="GREEN" args=" " scope="STATIC" type="ptConstant" line="11434">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="BLUE" args=" " scope="STATIC" type="ptConstant" line="11433">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="BLACK" args=" " scope="STATIC" type="ptConstant" line="11432">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="RGB" args="<nR>, <nG>, <nB> " scope="STATIC" type="ptPseudoFUNC" line="11431">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="PS_SOLID" args=" " scope="STATIC" type="ptConstant" line="11430">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="PSD_DEFAULT" args=" " scope="STATIC" type="ptConstant" line="11429">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="GIF_DEFAULT" args=" " scope="STATIC" type="ptConstant" line="11428">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="TIFF_DEFAULT" args=" " scope="STATIC" type="ptConstant" line="11427">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="PNG_DEFAULT" args=" " scope="STATIC" type="ptConstant" line="11426">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="JPEG_DEFAULT" args=" " scope="STATIC" type="ptConstant" line="11425">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ICO_DEFAULT" args=" " scope="STATIC" type="ptConstant" line="11424">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="BMP_DEFAULT" args=" " scope="STATIC" type="ptConstant" line="11423">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_PSD" args=" " scope="STATIC" type="ptConstant" line="11421">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_GIF" args=" " scope="STATIC" type="ptConstant" line="11420">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_TIFF" args=" " scope="STATIC" type="ptConstant" line="11419">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_PNG" args=" " scope="STATIC" type="ptConstant" line="11418">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_JPEG" args=" " scope="STATIC" type="ptConstant" line="11417">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_ICO" args=" " scope="STATIC" type="ptConstant" line="11416">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_BMP" args=" " scope="STATIC" type="ptConstant" line="11415">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="WHITE" args=" " scope="PUBLIC" type="ptConstant" line="11439">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="BROWN" args=" " scope="PUBLIC" type="ptConstant" line="11438">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="MAGENTA" args=" " scope="PUBLIC" type="ptConstant" line="11437">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="RED" args=" " scope="PUBLIC" type="ptConstant" line="11436">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="CYAN" args=" " scope="PUBLIC" type="ptConstant" line="11435">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="GREEN" args=" " scope="PUBLIC" type="ptConstant" line="11434">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="BLUE" args=" " scope="PUBLIC" type="ptConstant" line="11433">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="BLACK" args=" " scope="PUBLIC" type="ptConstant" line="11432">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="RGB" args="<nR>, <nG>, <nB> " scope="PUBLIC" type="ptPseudoFUNC" line="11431">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="PS_SOLID" args=" " scope="PUBLIC" type="ptConstant" line="11430">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="PSD_DEFAULT" args=" " scope="PUBLIC" type="ptConstant" line="11429">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="GIF_DEFAULT" args=" " scope="PUBLIC" type="ptConstant" line="11428">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="TIFF_DEFAULT" args=" " scope="PUBLIC" type="ptConstant" line="11427">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="PNG_DEFAULT" args=" " scope="PUBLIC" type="ptConstant" line="11426">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="JPEG_DEFAULT" args=" " scope="PUBLIC" type="ptConstant" line="11425">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ICO_DEFAULT" args=" " scope="PUBLIC" type="ptConstant" line="11424">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="BMP_DEFAULT" args=" " scope="PUBLIC" type="ptConstant" line="11423">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_PSD" args=" " scope="PUBLIC" type="ptConstant" line="11421">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_GIF" args=" " scope="PUBLIC" type="ptConstant" line="11420">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_TIFF" args=" " scope="PUBLIC" type="ptConstant" line="11419">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_PNG" args=" " scope="PUBLIC" type="ptConstant" line="11418">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_JPEG" args=" " scope="PUBLIC" type="ptConstant" line="11417">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_ICO" args=" " scope="PUBLIC" type="ptConstant" line="11416">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="FIF_BMP" args=" " scope="PUBLIC" type="ptConstant" line="11415">
    <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="DrawLabel" args="<linha>, <coluna>, <mtexto>, <mcor_tex>, <mcor_fundo>, <mnome_letra>, <mlargura>, <maltura> " scope="PUBLIC" type="ptFunction" line="11405">
    <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="inserir_obs" args=" " scope="PUBLIC" type="ptFunction" line="11395">
    <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_contrato" args="<mcodcliente> " scope="PUBLIC" type="ptFunction" line="11390">
@@ -541,8 +542,8 @@
    <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="tab_formula" args="<mcod_m> " scope="PUBLIC" type="ptFunction" line="10356">
    <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="Decrypt" args=" " scope="PUBLIC" type="ptMethod" line="10332">
    <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="EnCrypt" args=" " scope="PUBLIC" type="ptMethod" line="10307">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="SetTextToDecrypt" args="<cText> " scope="PUBLIC" type="Inline Method" line="10294">
-   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="SetTextToEncrypt" args="<cText> " scope="PUBLIC" type="Inline Method" line="10293">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="SetTextToDecrypt" args="<cText> " scope="PUBLIC" type="ptFunction" line="10294">
+   <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="SetTextToEncrypt" args="<cText> " scope="PUBLIC" type="ptFunction" line="10293">
    <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="criptografia" args="<mtext>, <mtipo> " scope="PUBLIC" type="ptFunction" line="10263">
    <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="tira_pt" args="<mpalavra> " scope="PUBLIC" type="ptFunction" line="10250">
    <tag filename="C:\HTI\SISCOM\HRBFUN.PRG" name="ver_e_d" args=" " scope="PUBLIC" type="ptFunction" line="10194">
@@ -827,6 +828,13 @@
    <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="fecha_pd" args="<mtip>, <magrupar>, <orc_tp> " scope="PUBLIC" type="ptFunction" line="3568">
    <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="sac23pd1" args="<orc>, <venda>, <m_altpd> " scope="PUBLIC" type="ptFunction" line="13">
    <tag filename="C:\HTI\SISCOM\SAC5PED1.PRG" name="sac5ped1" args="<mnum_p>, <orc>, <consult>, <tkt>, <mfrente>, <menu_print>, <mapp> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\HTI\SISCOM\SAC5COM1.PRG" name="impven" args=" " scope="PUBLIC" type="ptFunction" line="59">
+   <tag filename="C:\HTI\SISCOM\SAC5COM1.PRG" name="com_sair" args=" " scope="PUBLIC" type="ptFunction" line="51">
+   <tag filename="C:\HTI\SISCOM\SAC5COM1.PRG" name="sac5com1" args="<mtipo_rel> " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\HTI\SISCOM\SAC5COM1.PRG" name="impres" args=" " scope="PUBLIC" type="ptFunction" line="408">
+   <tag filename="C:\HTI\SISCOM\SAC5COM1.PRG" name="comi_ped" args=" " scope="PUBLIC" type="ptFunction" line="1138">
+   <tag filename="C:\HTI\SISCOM\SAC5COM1.PRG" name="ver_comissao" args="<mcom_tipo> " scope="PUBLIC" type="ptFunction" line="888">
+   <tag filename="C:\HTI\SISCOM\SAC5COM1.PRG" name="conprod" args=" " scope="PUBLIC" type="ptFunction" line="665">
    <tag filename="C:\HTI\SISCOM\SACCAIXA.PRG" name="saccaixa" args=" " scope="PUBLIC" type="ptFunction" line="3">
    <tag filename="C:\HTI\SISCOM\sac5ped11.prg" name="sac5ped11" args=" " scope="PUBLIC" type="ptFunction" line="2">
    <tag filename="C:\SQLRDD997\include\msg.ch" name="LANG_IT_IT" args=" " scope="PUBLIC" type="ptConstant" line="10">

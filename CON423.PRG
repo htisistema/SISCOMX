@@ -318,7 +318,7 @@ WHILE .T.
                                         mjuros := mjuros + (cons_doc[i,19] * ((mdias_atras*m_set[1,51])/100))
                                 ENDIF
                                 f++
-                                xlsWrite( nXls, f, 1, cons_doc[i,7])
+                                xlsWrite( nXls, f, 1, STR(cons_doc[i,7],5))
                                 xlsWrite( nXls, f, 2, cons_doc[i,8])
                                 xlsWrite( nXls, f, 3, cons_doc[i,31])
                                 xlsWrite( nXls, f, 4, cons_doc[i,3])

@@ -137,20 +137,20 @@ IF mquantd > 0
                                         imprt(mtipo_imp,'N-')
                                         imprt(mtipo_imp,'W0')
                                         imprt(mtipo_imp,'C')
-                                        DEVPOS(PROW()+1,00);DEVOUT(ALLTRIM(m_set[1,132])+', '+ALLTRIM(m_set[1,160])+'-'+ALLTRIM(m_set[1,161])+'-'+ALLTRIM(m_set[1,133])+'-'+ALLTRIM(m_set[1,134])+'-'+ALLTRIM(m_set[1,19])+' - Fone: '+m_set[1,136])
+                                        DEVPOS(PROW()+1,04);DEVOUT(ALLTRIM(m_set[1,132])+', '+ALLTRIM(m_set[1,160])+'-'+ALLTRIM(m_set[1,161])+'-'+ALLTRIM(m_set[1,133])+'-'+ALLTRIM(m_set[1,134])+'-'+ALLTRIM(m_set[1,19])+' - Fone: '+m_set[1,136])
                                 ENDIF
                         ELSE
                                 cons_emp := {}
                                 sr_getconnection():exec("SELECT * FROM sacemp WHERE codemp = "+sr_cdbvalue(imppedido[1,1]),,.t.,@cons_emp)
                                 sr_getconnection():exec('COMMIT',,.f.)
                                 imprt(mtipo_imp,'E')
-                                DEVPOS(PROW(),00);DEVOUT(ALLTRIM(IF(cons_emp[1,9] = 'F',cons_emp[1,8],cons_emp[1,7])))
+                                DEVPOS(PROW(),04);DEVOUT(ALLTRIM(IF(cons_emp[1,9] = 'F',cons_emp[1,8],cons_emp[1,7])))
                                 IF SUBSTR(cons_emp[1,4],1,2) = '* '
                                         imprt(mtipo_imp,'N')
-                                        DEVPOS(PROW()+1,00);DEVOUT(cons_emp[1,4])
+                                        DEVPOS(PROW()+1,04);DEVOUT(cons_emp[1,4])
                                 ENDIF
                                 imprt(mtipo_imp,'C')
-                                DEVPOS(PROW()+1,00);DEVOUT(ALLTRIM(cons_emp[1,10])+'-'+ALLTRIM(cons_emp[1,11])+'-'+ALLTRIM(cons_emp[1,12])+'-'+ALLTRIM(cons_emp[1,14])+' - Fone: '+cons_emp[1,15])
+                                DEVPOS(PROW()+1,04);DEVOUT(ALLTRIM(cons_emp[1,10])+'-'+ALLTRIM(cons_emp[1,11])+'-'+ALLTRIM(cons_emp[1,12])+'-'+ALLTRIM(cons_emp[1,14])+' - Fone: '+cons_emp[1,15])
                         ENDIF
                         imprt(mtipo_imp,'C')
                         IF m_set[1,18] = 'J'
@@ -198,7 +198,7 @@ IF mquantd > 0
                                 imprt(mtipo_imp,'N')
                                 //imprt(mtipo_imp,'W1')
                                 imprt(mtipo_imp,'N+')
-                                DEVPOS(PROW()+1,00);DEVOUT('PAGO')
+                                DEVPOS(PROW()+1,04);DEVOUT('PAGO')
                                 imprt(mtipo_imp,'N-')
                                 //imprt(mtipo_imp,'W0')
                                 imprt(mtipo_imp,'C')
@@ -214,7 +214,7 @@ IF mquantd > 0
                                 imprt(mtipo_imp,'N')
                                 //imprt(mtipo_imp,'W1')
                                 imprt(mtipo_imp,'N+')
-                                DEVPOS(PROW()+1,00);DEVOUT('ABERTO')
+                                DEVPOS(PROW()+1,04);DEVOUT('ABERTO')
                                 imprt(mtipo_imp,'N-')
                                 //imprt(mtipo_imp,'W0')
                                 imprt(mtipo_imp,'C')
@@ -324,7 +324,7 @@ IF mquantd > 0
                                 imprt(mtipo_imp,'N')
                                 imprt(mtipo_imp,'W1')
                                 imprt(mtipo_imp,'N+')
-                                DEVPOS(PROW()+1,00);DEVOUT(imppedido[y,10]+' - '+IF(! EMPTY(imppedido[y,58]),ALLTRIM(imppedido[y,58]),''))
+                                DEVPOS(PROW()+1,04);DEVOUT(imppedido[y,10]+' - '+IF(! EMPTY(imppedido[y,58]),ALLTRIM(imppedido[y,58]),''))
                                 imprt(mtipo_imp,'N-')
                                 imprt(mtipo_imp,'W0')
                                 imprt(mtipo_imp,'C')
@@ -341,16 +341,16 @@ IF mquantd > 0
                         ENDIF
                         imprt(mtipo_imp,'N')
                         IF ! EMPTY(imppedido[y,81])
-                                DEVPOS(PROW()+1,00);DEVOUT(imppedido[y,81])
+                                DEVPOS(PROW()+1,04);DEVOUT(imppedido[y,81])
                         ENDIF
                         IF ! EMPTY(imppedido[y,82])
-                                DEVPOS(PROW()+1,00);DEVOUT(imppedido[y,82])
+                                DEVPOS(PROW()+1,04);DEVOUT(imppedido[y,82])
                         ENDIF
                         IF ! EMPTY(imppedido[y,83])
-                                DEVPOS(PROW()+1,00);DEVOUT(imppedido[y,83])
+                                DEVPOS(PROW()+1,04);DEVOUT(imppedido[y,83])
                         ENDIF
                         IF ! EMPTY(imppedido[y,84])
-                                DEVPOS(PROW()+1,00);DEVOUT(imppedido[y,84])
+                                DEVPOS(PROW()+1,04);DEVOUT(imppedido[y,84])
                         ENDIF
                         imprt(mtipo_imp,'C')
                         mpeso_brut := mpeso_brut + (imppedido[y,11] * imppedido[y,14])
@@ -433,17 +433,17 @@ IF mquantd > 0
                                         @ PROW(),PCOL()+1 SAY ' APRAZO: '+SUBSTR(imppedido[1,43],1,1)+' + '+SUBSTR(imppedido[1,43],2,2)+' p/ '+IF(! EMPTY(m_dia[1]),STRZERO(m_dia[1],3),'')+IF(! EMPTY(m_dia[2]),' + '+STRZERO(m_dia[2],3),'')+IF(! EMPTY(m_dia[3]),' + '+STRZERO(m_dia[3],3),'')+IF(! EMPTY(m_dia[4]),' + '+STRZERO(m_dia[4],3),'')+IF(! EMPTY(m_dia[5]),' + '+STRZERO(m_dia[5],3),'')+IF(! EMPTY(m_dia[6]),' + '+STRZERO(m_dia[6],3),'')+IF(! EMPTY(m_dia[7]),' + '+STRZERO(m_dia[7],3),'')+;
                                                                               IF(! EMPTY(m_dia[8]),' + '+STRZERO(m_dia[8],3),'')+IF(! EMPTY(m_dia[9]),' + '+STRZERO(m_dia[9],3),'')+IF(! EMPTY(m_dia[10]),' + '+STRZERO(m_dia[10],3),'')+IF(! EMPTY(m_dia[11]),' + '+STRZERO(m_dia[11],3),'')+IF(! EMPTY(m_dia[12]),' + '+STRZERO(m_dia[12],3),'')+IF(! EMPTY(m_dia[13]),' + '+STRZERO(m_dia[13],3),'')+IF(! EMPTY(m_dia[14]),' + '+STRZERO(m_dia[14],3),'')+IF(! EMPTY(m_dia[15]),' + '+STRZERO(m_dia[15],3),'')+' Dias'
                                         IF VAL(SUBSTR(imppedido[1,43],1,1)) = 1
-                                                DEVPOS(PROW()+1,00);DEVOUT('Valor da Entrada R$:'+TRANSFORM(mvlr_ent,'99,999.99'))
+                                                DEVPOS(PROW()+1,04);DEVOUT('Valor da Entrada R$:'+TRANSFORM(mvlr_ent,'99,999.99'))
                                         ENDIF
                                         IF ! EMPTY(mtot_prazo)
-                                                DEVPOS(PROW()+1,00);DEVOUT('Venc. :'+DTOC(mdata+mprazo_aux))
+                                                DEVPOS(PROW()+1,04);DEVOUT('Venc. :'+DTOC(mdata+mprazo_aux))
                                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('- R$:'+TRANSFORM(mtot_prazo,'999,999.99'))
                                         ENDIF
                                         IF VAL(SUBSTR(imppedido[1,43],2)) >= 2
                                                 mc_dup := f := 0
                                                 FOR mc_dup = 1 TO VAL(SUBSTR(imppedido[1,43],2,2))
                                                         IF f = 0
-                                                                DEVPOS(PROW()+1,00);DEVOUT('')
+                                                                DEVPOS(PROW()+1,04);DEVOUT('')
                                                         ENDIF
                                                         DEVPOS(PROW(),PCOL()+1);DEVOUT('Venc.'+ALLTRIM(STR(mc_dup))+':'+DTOC(mdata+m_dia[mc_dup]))
                                                         DEVPOS(PROW(),PCOL()+1);DEVOUT('- R$:'+TRANSFORM((((mcust_real+mtot_ipi)-mvlr_ent-mtot_prazo)/VAL(SUBSTR(imppedido[1,43],2,2))),'999,999.99'))
@@ -484,21 +484,21 @@ IF mquantd > 0
                         i := 0
                         FOR i = 1 TO LEN(cons_caixa)
                                 IF cons_caixa[i,2] = 'DN'
-                                        DEVPOS(PROW()+1,00);DEVOUT('Dinheiro R$..: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99'))
+                                        DEVPOS(PROW()+1,04);DEVOUT('Dinheiro R$..: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99'))
                                 ELSEIF cons_caixa[i,2] = 'CR'
-                                        DEVPOS(PROW()+1,00);DEVOUT('Credito R$...: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99'))
+                                        DEVPOS(PROW()+1,04);DEVOUT('Credito R$...: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99'))
                                 ELSEIF cons_caixa[i,2] = 'CH'
-                                        DEVPOS(PROW()+1,00);DEVOUT('Cheque R$....: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99')+' Bco: '+cons_caixa[i,6]+' No.: '+cons_caixa[i,8]+' Venc.: '+DTOC(cons_caixa[i,9]))
+                                        DEVPOS(PROW()+1,04);DEVOUT('Cheque R$....: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99')+' Bco: '+cons_caixa[i,6]+' No.: '+cons_caixa[i,8]+' Venc.: '+DTOC(cons_caixa[i,9]))
                                 ELSEIF cons_caixa[i,2] = 'DU'
-                                        DEVPOS(PROW()+1,00);DEVOUT('Duplicata R$.: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99')+' No.: '+cons_caixa[i,8]+IF(cons_caixa[i,20] = '*',' Pag..: ',' Venc.: ')+DTOC(cons_caixa[i,9]))
+                                        DEVPOS(PROW()+1,04);DEVOUT('Duplicata R$.: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99')+' No.: '+cons_caixa[i,8]+IF(cons_caixa[i,20] = '*',' Pag..: ',' Venc.: ')+DTOC(cons_caixa[i,9]))
                                 ELSEIF cons_caixa[i,2] = 'FI'
-                                        DEVPOS(PROW()+1,00);DEVOUT('Financeira R$: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99')+' No.: '+cons_caixa[i,8]+' Venc.: '+DTOC(cons_caixa[i,9]))
+                                        DEVPOS(PROW()+1,04);DEVOUT('Financeira R$: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99')+' No.: '+cons_caixa[i,8]+' Venc.: '+DTOC(cons_caixa[i,9]))
                                 ELSEIF cons_caixa[i,2] = 'CT'
-                                        DEVPOS(PROW()+1,00);DEVOUT('Cartao R$....: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99')+' Cod.: '+cons_caixa[i,7]+' Doc.: '+cons_caixa[i,8]+' Venc.: '+DTOC(cons_caixa[i,9]))
+                                        DEVPOS(PROW()+1,04);DEVOUT('Cartao R$....: '+TRANSFORM(cons_caixa[i,10],'9,999,999.99')+' Cod.: '+cons_caixa[i,7]+' Doc.: '+cons_caixa[i,8]+' Venc.: '+DTOC(cons_caixa[i,9]))
                                 ELSEIF cons_caixa[i,2] = 'CA'
-                                        DEVPOS(PROW()+1,00);DEVOUT('PEDIDO CANCELADO PELO OPERADOR COD.: '+cons_caixa[i,17])
+                                        DEVPOS(PROW()+1,04);DEVOUT('PEDIDO CANCELADO PELO OPERADOR COD.: '+cons_caixa[i,17])
                                 ELSEIF cons_caixa[i,2] = 'ES'
-                                        DEVPOS(PROW()+1,00);DEVOUT(cons_caixa[i,13]+'-'+cons_caixa[i,14])
+                                        DEVPOS(PROW()+1,04);DEVOUT(cons_caixa[i,13]+'-'+cons_caixa[i,14])
                                 ELSE
                                         LOOP
                                 ENDIF
@@ -521,7 +521,7 @@ IF mquantd > 0
                 @ PRoW()+1,00 SAY mtraco
                 imprt(mtipo_imp,'N')
                 imprt(mtipo_imp,'N+')
-                DEVPoS(PRoW()+2,00);DEVOUT('                                A GARANTIA:')
+                DEVPoS(PRoW()+2,04);DEVOUT('                                A GARANTIA:')
                 imprt(mtipo_imp,'N-')
                 imprt(mtipo_imp,'C')
                 DEVPoS(PRoW()+1,0);DEVOUT('o fornecedor, fabricante de moveis, em atencao as melhores  regras de qualidade e seguranca, obediente a legislacao vigente  sobre a')
@@ -532,7 +532,7 @@ IF mquantd > 0
                 @ PRoW()+1,00 SAY mtraco
                 imprt(mtipo_imp,'N')
                 imprt(mtipo_imp,'N+')
-                DEVPoS(PRoW()+1,00);DEVOUT('                               POS GARANTIA:')
+                DEVPoS(PRoW()+1,04);DEVOUT('                               POS GARANTIA:')
                 imprt(mtipo_imp,'N-')
                 imprt(mtipo_imp,'C')
                 DEVPoS(PRoW()+1,0);DEVOUT('ops! Tive um problema e minha garantia se esgotou, o que fazer? Calma  podemos  te ajudar! A Vila Belo Moveis  Design  prezando pela')
@@ -543,7 +543,7 @@ IF mquantd > 0
                 @ PRoW()+1,00 SAY mtraco
                 imprt(mtipo_imp,'N')
                 imprt(mtipo_imp,'N+')
-                DEVPoS(PRoW()+1,00);DEVOUT('                              A NAO GARANTIA:')
+                DEVPoS(PRoW()+1,04);DEVOUT('                              A NAO GARANTIA:')
                 imprt(mtipo_imp,'N-')
                 imprt(mtipo_imp,'C')
                 DEVPoS(PRoW()+1,0);DEVOUT("Manchas, pintura, aranhoes, trinco, rachoes e etc.  TUDO QUE ENVOLVA ''VIDRO''  NAO  TERA  GARANTIA  EM  HIPOTESE  ALGUMA, pesos que")
@@ -552,7 +552,7 @@ IF mquantd > 0
                 @ PRoW()+1,00 SAY mtraco
                 imprt(mtipo_imp,'N')
                 imprt(mtipo_imp,'N+')
-                DEVPoS(PRoW()+1,00);DEVOUT('                               A DESISTENCIA:')
+                DEVPoS(PRoW()+1,04);DEVOUT('                               A DESISTENCIA:')
                 imprt(mtipo_imp,'N-')
                 imprt(mtipo_imp,'C')
                 DEVPoS(PRoW()+1,0);DEVOUT('o cliente tera um prazo de 7 dias corridos para mudanca ou desistencia do pedido, produtos de fabricacao propria so  sera possível a')
@@ -562,7 +562,7 @@ IF mquantd > 0
                 @ PRoW()+1,00 SAY mtraco
                 imprt(mtipo_imp,'N')
                 imprt(mtipo_imp,'N+')
-                DEVPoS(PRoW()+1,00);DEVOUT('                                 A ENTREGA:')
+                DEVPoS(PRoW()+1,04);DEVOUT('                                 A ENTREGA:')
                 imprt(mtipo_imp,'N-')
                 imprt(mtipo_imp,'C')
                 DEVPoS(PRoW()+1,0);DEVOUT('No ato da compra, o(a) cliente fica ciente e concorda que a empresa tem um  prazo de 30 dias  uteis  para  a  entrega  dos  itens no')
