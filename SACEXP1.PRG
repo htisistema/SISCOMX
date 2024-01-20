@@ -109,7 +109,7 @@ WHILE .T.
                 DEVPOS(la-1,ci+58);DEVOUT(TRANSFORM(mtotal,'999,999,999.99'))
                 setcor(1)
                 //setcor(10);mpoint := ACHOICE(li+3,ci+1,la-3,ca-1,m_pedido,,,mponto+1);setcor(1)
-                setcor(10);mpoint := ACHOICE(li+3,ci,la-3,ca,m_pedido,,,mponto+1);setcor(1)
+                setcor(10);mpoint := ACHOICE(li+3,ci,la-3,ca,m_pedido,,,);setcor(1)
                 DO CASE
                         CASE LASTKEY() = 13
                                 IF ! EMPTY(m_pos[mpoint,5])
