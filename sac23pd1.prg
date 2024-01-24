@@ -896,7 +896,7 @@ WHILE .T.
                                                 LOOP
                                         ENDIF
                                         setcor(1)
-                                        IF m_set[1,10] <> 'S'
+                                        if m_set[1,10] <> 'S'
                                                 mcod_aux  := cons_cli[1,106]
                                                 mcod_ven := cod_operado
                                         ENDIF
