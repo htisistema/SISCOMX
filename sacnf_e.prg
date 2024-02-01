@@ -1394,7 +1394,7 @@ WHILE .T.
                 ENDIF
                 sLinhas := slinhas + 'ValorSeguro='+ALLTRIM(TRANSFORM(mseguro,'999999.99'))+ m_qp
                 IF mtipo_nfe # '4'
-                        sLinhas := slinhas + 'ValorIPI='+ALLTRIM(TRANSFORM(mtot_ipi,'999999.99'))+ m_qp
+                        sLinhas := slinhas + 'vIPIDevol=='+ALLTRIM(TRANSFORM(mtot_ipi,'999999.99'))+ m_qp
                 ENDIF
                 sLinhas := slinhas + 'VPIS='+ALLTRIM(TRANSFORM(mpis,'999999.99'))+ m_qp +;
                 'VCOFINS='+ALLTRIM(TRANSFORM(mconfis,'999999.99')) + m_qp + ;
