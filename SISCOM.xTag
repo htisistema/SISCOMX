@@ -1,7 +1,7 @@
 <!--
 ################################################
 # xDevStudio Project - xdev@kssoftware.com.br  #
-# Created @ 29/01/2024 21:51:28                #
+# Created @ 02/02/2024 10:52:37                #
 #                                              #
 ### Standard xDev TagList - Layout v1.5 ########
 -->
@@ -479,8 +479,8 @@
    <tag filename="C:\HTI\SISCOM\CON41.PRG" name="con41" args=" " scope="PUBLIC" type="ptFunction" line="2">
    <tag filename="C:\HTI\SISCOM\SAC610.PRG" name="sac610" args="<mmanut> " scope="PUBLIC" type="ptFunction" line="6">
    <tag filename="C:\HTI\SISCOM\SAC530.PRG" name="sac611" args=" " scope="PUBLIC" type="ptFunction" line="5">
-   <tag filename="C:\HTI\SISCOM\SAC341.PRG" name="sac341_1" args="<mab_pg>, <mtp_orc>, <tipo_ali> " scope="PUBLIC" type="ptFunction" line="189">
    <tag filename="C:\HTI\SISCOM\SAC341.PRG" name="sac341" args="<mab_pg>, <mtp_orc>, <tipo_ali> " scope="PUBLIC" type="ptFunction" line="2">
+   <tag filename="C:\HTI\SISCOM\SAC341.PRG" name="sac341_1" args="<mab_pg>, <mtp_orc>, <tipo_ali> " scope="PUBLIC" type="ptFunction" line="189">
    <tag filename="C:\HTI\SISCOM\CON420.PRG" name="con420" args="<mtp_420> " scope="PUBLIC" type="ptFunction" line="4">
    <tag filename="C:\HTI\SISCOM\CON214.PRG" name="con214" args="<mfor>, <mdat1>, <mdat2>, <mtipo>, <mtip> " scope="PUBLIC" type="ptFunction" line="5">
    <tag filename="C:\HTI\SISCOM\CON423.PRG" name="con423" args="<mtp_423> " scope="PUBLIC" type="ptFunction" line="4">
@@ -793,20 +793,20 @@
    <tag filename="C:\HTI\SISCOM\sacsef1.prg" name="sacsef_c" args=" " scope="PUBLIC" type="ptFunction" line="1616">
    <tag filename="C:\HTI\SISCOM\sacsef1.prg" name="sef_cod" args="<mcod>, <malias> " scope="PUBLIC" type="ptFunction" line="1532">
    <tag filename="C:\HTI\SISCOM\sacsef1.prg" name="doc_codcli" args="<mdoc>, <mcodcli> " scope="PUBLIC" type="ptFunction" line="1561">
-   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="ENT_TXT" args=" " scope="PUBLIC" type="ptConstant" line="3">
-   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="SAI_TXT" args=" " scope="PUBLIC" type="ptConstant" line="4">
-   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="TMP_TXT" args=" " scope="PUBLIC" type="ptConstant" line="5">
-   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="ETX" args=" " scope="PUBLIC" type="ptConstant" line="0">
-   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="CR" args=" " scope="PUBLIC" type="ptConstant" line="1">
-   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="LF" args=" " scope="PUBLIC" type="ptConstant" line="2">
-   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="ins_dados" args=" " scope="PUBLIC" type="ptFunction" line="3051">
-   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="alt_nfce" args="<vcd_prod> " scope="PUBLIC" type="ptFunction" line="3095">
    <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="ins_obs" args=" " scope="PUBLIC" type="ptFunction" line="3364">
-   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="SACNFCE" args="<m_mtr>, <msc> " scope="PUBLIC" type="ptFunction" line="31">
-   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="fecha_nfce" args=" " scope="PUBLIC" type="ptFunction" line="1429">
+   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="alt_nfce" args="<vcd_prod> " scope="PUBLIC" type="ptFunction" line="3095">
+   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="ins_dados" args=" " scope="PUBLIC" type="ptFunction" line="3051">
    <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="c_prod" args=" " scope="PUBLIC" type="ptFunction" line="2969">
-   <tag filename="C:\HTI\SISCOM\SAC_DBF.PRG" name="alt_tb" args=" " scope="PUBLIC" type="ptFunction" line="657">
+   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="fecha_nfce" args=" " scope="PUBLIC" type="ptFunction" line="1429">
+   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="SACNFCE" args="<m_mtr>, <msc> " scope="PUBLIC" type="ptFunction" line="31">
+   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="TMP_TXT" args=" " scope="STATIC" type="ptConstant" line="5">
+   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="SAI_TXT" args=" " scope="STATIC" type="ptConstant" line="4">
+   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="ENT_TXT" args=" " scope="STATIC" type="ptConstant" line="3">
+   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="LF" args=" " scope="STATIC" type="ptConstant" line="2">
+   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="CR" args=" " scope="STATIC" type="ptConstant" line="1">
+   <tag filename="C:\HTI\SISCOM\SACNFCE.prg" name="ETX" args=" " scope="STATIC" type="ptConstant" line="0">
    <tag filename="C:\HTI\SISCOM\SAC_DBF.PRG" name="sac_dbf" args="<mtp> " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\HTI\SISCOM\SAC_DBF.PRG" name="alt_tb" args=" " scope="PUBLIC" type="ptFunction" line="657">
    <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="Imprimir" args="<ml_op> " scope="PUBLIC" type="ptFunction" line="3097">
    <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="ler_proc" args="<marquivo>, <mprocura> " scope="PUBLIC" type="ptFunction" line="3074">
    <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="nfe_inutilizar" args=" " scope="PUBLIC" type="ptFunction" line="2960">
@@ -817,12 +817,12 @@
    <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="NFE_INIT" args="<ENDERECO> " scope="PUBLIC" type="ptFunction" line="1868">
    <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="retorno_acbr" args="<mmensa> " scope="PUBLIC" type="ptFunction" line="1833">
    <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="sacnf_e" args="<m_nota>, <via>, <texto> " scope="PUBLIC" type="ptFunction" line="24">
-   <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="TMP_TXT" args=" " scope="PUBLIC" type="ptConstant" line="8">
-   <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="SAI_TXT" args=" " scope="PUBLIC" type="ptConstant" line="7">
-   <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="ENT_TXT" args=" " scope="PUBLIC" type="ptConstant" line="6">
-   <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="LF" args=" " scope="PUBLIC" type="ptConstant" line="5">
-   <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="CR" args=" " scope="PUBLIC" type="ptConstant" line="4">
-   <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="ETX" args=" " scope="PUBLIC" type="ptConstant" line="3">
+   <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="TMP_TXT" args=" " scope="STATIC" type="ptConstant" line="8">
+   <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="SAI_TXT" args=" " scope="STATIC" type="ptConstant" line="7">
+   <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="ENT_TXT" args=" " scope="STATIC" type="ptConstant" line="6">
+   <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="LF" args=" " scope="STATIC" type="ptConstant" line="5">
+   <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="CR" args=" " scope="STATIC" type="ptConstant" line="4">
+   <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="ETX" args=" " scope="STATIC" type="ptConstant" line="3">
    <tag filename="C:\HTI\SISCOM\FORMULA.PRG" name="formula" args="<mdup_2>, <m_ava>, <mtipo_pag>, <mtp_email> " scope="PUBLIC" type="ptFunction" line="2">
    <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="gerar_no_ped" args=" " scope="PUBLIC" type="ptFunction" line="4642">
    <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="fecha_pd" args="<mtip>, <magrupar>, <orc_tp> " scope="PUBLIC" type="ptFunction" line="3568">
@@ -931,13 +931,13 @@
    <tag filename="C:\HTI\SISCOM\SACENTXML.PRG" name="TMP_TXT" args=" " scope="PUBLIC" type="ptConstant" line="3">
    <tag filename="C:\HTI\SISCOM\SACENTXML.PRG" name="SAI_TXT" args=" " scope="PUBLIC" type="ptConstant" line="2">
    <tag filename="C:\HTI\SISCOM\SACENTXML.PRG" name="ENT_TXT" args=" " scope="PUBLIC" type="ptConstant" line="1">
-   <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="cod_acess" args=" " scope="PUBLIC" type="ptFunction" line="572">
-   <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="senha_cesso" args=" " scope="PUBLIC" type="ptFunction" line="543">
-   <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="tira_pontos" args="<mpalavra> " scope="PUBLIC" type="ptFunction" line="535">
-   <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="fecha_tela" args=" " scope="PUBLIC" type="ptFunction" line="531">
    <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="dcrip" args="<mexp> " scope="PUBLIC" type="ptFunction" line="476">
    <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="crip" args="<mexp>, <q>, <mprod> " scope="PUBLIC" type="ptFunction" line="423">
    <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="autorizacao" args="<mserie> " scope="PUBLIC" type="ptFunction" line="0">
+   <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="fecha_tela" args=" " scope="PUBLIC" type="ptFunction" line="531">
+   <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="cod_acess" args=" " scope="PUBLIC" type="ptFunction" line="572">
+   <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="senha_cesso" args=" " scope="PUBLIC" type="ptFunction" line="543">
+   <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="tira_pontos" args="<mpalavra> " scope="PUBLIC" type="ptFunction" line="535">
    <tag filename="C:\HTI\SISCOM\sac23caixa.prg" name="desconto_pdv" args=" " scope="PUBLIC" type="ptFunction" line="3268">
    <tag filename="C:\HTI\SISCOM\sac23caixa.prg" name="sac30caixa" args="<mnum> " scope="PUBLIC" type="ptFunction" line="1123">
    <tag filename="C:\HTI\SISCOM\sac23caixa.prg" name="sac23caixa" args="<orc>, <venda>, <m_altpd> " scope="PUBLIC" type="ptFunction" line="11">
