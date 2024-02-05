@@ -26,7 +26,6 @@ WHILE .T.
         AADD(demo_set,'                                              ')
         AADD(demo_set,'020 - I.C.M. do estado (%)............................: '+TRANSFORM(m_set[1,20],'99.99') +' ')
         AADD(demo_set,'079 - Tipo de Calculo do Lucro........................: '+m_set[1,79] +' ')
-        //AADD(demo_set,'006 - (%) p/Faturamento...............................: '+TRANSFORM(m_set[1,6],'999.99') +' ')
         AADD(demo_set,'003 - Aliquota do Cofins (%)..........................: '+TRANSFORM(m_set[1,3],'999.99')  +' ')
         AADD(demo_set,'002 - Aliquota do PIS (%).............................: '+TRANSFORM(m_set[1,2],'999.99')  +' ')
         AADD(demo_set,'004 - Impostos Adicionais (%).........................: '+TRANSFORM(m_set[1,4],'999.99')  +' ')
@@ -119,6 +118,7 @@ WHILE .T.
         AADD(demo_set,'036 - Imprimir Desconto [S/N].........................: '+m_set[1,36] +' ')
         AADD(demo_set,'025 - Rodape do Pedido................................: '+m_set[1,25] +' ')
         AADD(demo_set,'174 - Ordem de Impressao [A]Alf.[C]Codigo [D]Digitacao: '+m_set[1,174] +' ')
+        AADD(demo_set,'006 - Margem esquerda do FORMULARIO 1(Moveis).........: '+TRANSFORM(m_set[1,6],'999') +' ')
         AADD(demo_set,'                                              ')
         AADD(demo_set,'  C o n f i g u r a c a o      R e c e b i m e n t o')
         AADD(demo_set,'                                              ')
@@ -211,6 +211,13 @@ WHILE .T.
                                 op_tela(10,10,12,110,'IMPOSTOS ADICIONAIS (%)',,'*')
                                 DEVPOS(1,1);DEVOUT('Impostos Adicionais (%).........................:')
                                 @ 1,COL()+1 GET m_set[1,VAL(mop)] PICT '99.99'
+                                READ
+                                fecha_tela()
+                                LOOP
+                        ELSEIF mop = '006'
+                                op_tela(10,10,12,110,'006 - Margem esquerda do FORMULARIO 1(Moveis)',,'*')
+                                DEVPOS(1,1);DEVOUT('006 - Margem esquerda do FORMULARIO 1(Moveis).........:')
+                                @ 1,COL()+1 GET m_set[1,VAL(mop)] PICT '99'
                                 READ
                                 fecha_tela()
                                 LOOP
@@ -1078,6 +1085,7 @@ WHILE .T.
                                 ",confis       = "+sr_cdbvalue(m_set[1,3])+;
                                 ",imposto      = "+sr_cdbvalue(m_set[1,4])+;
                                 ",varejo       = "+sr_cdbvalue(m_set[1,5])+;
+                                ",fatura       = "+sr_cdbvalue(m_set[1,6])+;
                                 ",vlr_ent      = "+sr_cdbvalue(m_set[1,7])+;
                                 ",sef          = "+sr_cdbvalue(m_set[1,8])+;
                                 ",ped_obs      = "+sr_cdbvalue(m_set[1,9])+;

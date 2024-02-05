@@ -20994,3 +20994,20 @@ SR_FIREBIRD:EXEC     Linha : 299
 ALT_TB     Linha : 2069
 SAC_DBF     Linha : 150
 MAIN     Linha : 810	
+03/02/24 18:39:04: SQLExecDirect Error
+Dynamic SQL Error - Native error code 335544569
+Command sent to database : 
+SELECT montador,codigo,COUNT(*),SUM(quantd),SUM(quantd*vl_vend),SUM(com_monta),  FROM sacmov m WHERE data_s_e >= '2002/01/01' AND  data_s_e <= '2024/02/03' AND cancel is NULL AND  tipo = '02' AND  vl_vend > 0  AND tipo = '02' AND  vl_vend > 0  AND ent_sai='S' AND NOT num_ped = 'CUPOME' AND ( documento like 'PD%' OR  documento like 'CP%') AND devolucao IS NULL AND (montador IS NOT NULL OR montador = '') GROUP BY montador, codigo
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+SAC5COM3_MONT     Linha : 663
+SAC5COM3     Linha : 74
+AFTERINKEY     Linha : 2437
+(b)SAC0     Linha : 1408
+INKEY     Linha : 0
+SAC0     Linha : 1438
+SENHA     Linha : 824
+MAIN     Linha : 1131	

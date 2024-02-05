@@ -212,18 +212,11 @@ WHILE .T.
                                 mponto := ASCAN(m_vendedor,mcons_mov[i,28])
                         ELSEIF mtipo_com = 'O'
                                 mponto := ASCAN(m_vendedor,mcons_mov[i,30])
-                        ELSEIF mtipo_com = 'M'
-                                mponto := ASCAN(m_vendedor,mcons_mov[i,32])
-                                IF mponto # 0
-                                        mponto := ASCAN(m_vendedor,mcons_mov[i,34])
-                                ENDIF
                         ENDIF
                         IF mponto > 0
                                 IF mtipo_com='V'
                                         mcomissao := mcomissao + IF(mcons_mov[i,70]='AV',m_matriz[mponto,11],m_matriz[mponto,12])
                                 ELSEIF mtipo_com = 'O'
-                                        mcomissao := mcomissao + m_matriz[mponto,13]
-                                ELSEIF mtipo_com = 'M'
                                         mcomissao := mcomissao + m_matriz[mponto,13]
                                 ENDIF
                                 m_matriz[mponto,4] := m_matriz[mponto,4] + mcons_mov[i,19]
@@ -258,11 +251,20 @@ WHILE .T.
                                 ENDIF
                         ENDIF
                 ELSE
+                        mponto := mcomissao := 0
+                        cons_prod:={}
+                        sr_getconnection():exec("SELECT comissao FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(mcons_mov[i,10]),,.t.,@cons_prod)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(cons_prod) = 0
+                                mcomissao:=0
+                        ELSE
+                                mcomissao:= cons_prod[1,1]
+                        ENDIF
                         IF ! EMPTY(mcons_mov[i,32])
                                 mponto := 0
                                 mponto := ASCAN(m_vendedor,mcons_mov[i,32])
                                 IF mponto > 0
-                                        mcomissao:=mcons_mov[i,33]
+                                        //mcomissao:=mcons_mov[i,33]
                                         m_matriz[mponto,4] := m_matriz[mponto,4] + mcons_mov[i,19]
                                         m_matriz[mponto,5] := m_matriz[mponto,5] + mcons_mov[i,19]*mvalor
                                         m_matriz[mponto,6] := m_matriz[mponto,6] + (mcons_mov[i,19]*mvalor) * (mcomissao /100)
@@ -278,11 +280,6 @@ WHILE .T.
 			                AADD(m_matriz,{IF(mtipo_com='V',mcons_mov[i,28],mcons_mov[i,30]),'VENDEDOR NAO ENCONTRADO',0,0,0,0,0,0,0,0,0,0,0})
 	        	                mponto := 0
         	        	        mponto := ASCAN(m_vendedor,IF(mtipo_com='V',mcons_mov[i,28],mcons_mov[i,30]))
-                                	IF mtipo_com='V'
-                                        	mcomissao:=mcons_mov[i,29]
-	                                ELSEIF mtipo_com = 'O'
-        	                                mcomissao:=mcons_mov[i,31]
-                	                ENDIF
                         	        m_matriz[mponto,4] := m_matriz[mponto,4] + mcons_mov[i,19]
                                 	m_matriz[mponto,5] := m_matriz[mponto,5] + mcons_mov[i,19]*mvalor
 	                                m_matriz[mponto,6] := m_matriz[mponto,6] + (mcons_mov[i,19]*mvalor) * (mcomissao /100)
@@ -299,7 +296,6 @@ WHILE .T.
                                 mponto := 0
                                 mponto := ASCAN(m_vendedor,mcons_mov[i,34])
                                 IF mponto > 0
-                                        mcomissao:=mcons_mov[i,35]
                                         m_matriz[mponto,4] := m_matriz[mponto,4] + mcons_mov[i,19]
                                         m_matriz[mponto,5] := m_matriz[mponto,5] + mcons_mov[i,19]*mvalor
                                         m_matriz[mponto,6] := m_matriz[mponto,6] + (mcons_mov[i,19]*mvalor) * (mcomissao /100)
@@ -315,11 +311,6 @@ WHILE .T.
 			                AADD(m_matriz,{IF(mtipo_com='V',mcons_mov[i,28],mcons_mov[i,30]),'VENDEDOR NAO ENCONTRADO',0,0,0,0,0,0,0,0,0,0,0})
 	        	                mponto := 0
         	        	        mponto := ASCAN(m_vendedor,IF(mtipo_com='V',mcons_mov[i,28],mcons_mov[i,30]))
-                                	IF mtipo_com='V'
-                                        	mcomissao:=mcons_mov[i,29]
-	                                ELSEIF mtipo_com = 'O'
-        	                                mcomissao:=mcons_mov[i,31]
-                	                ENDIF
                         	        m_matriz[mponto,4] := m_matriz[mponto,4] + mcons_mov[i,19]
                                 	m_matriz[mponto,5] := m_matriz[mponto,5] + mcons_mov[i,19]*mvalor
 	                                m_matriz[mponto,6] := m_matriz[mponto,6] + (mcons_mov[i,19]*mvalor) * (mcomissao /100)
@@ -638,8 +629,9 @@ WHILE .T.
         mimp_tipo := 1
         setcor(1)
         mensagem('Aguarde um momento coletando dados para o relatorio....')
-        cComm  := "SELECT montador,COUNT(*),SUM(quantd),SUM(quantd*vl_vend),SUM(com_monta) FROM sacmov"
-	cComm  := ccomm +" WHERE data_s_e >= "+sr_cdbvalue(mdat_ini)+" AND  data_s_e <= "+sr_cdbvalue(mdat_fim)
+        cComm  := "SELECT montador,codigo,COUNT(*),SUM(quantd),SUM(quantd*vl_vend),SUM(com_monta) "
+        cComm  := ccomm +" FROM sacmov m"
+        cComm  := ccomm +" WHERE data_s_e >= "+sr_cdbvalue(mdat_ini)+" AND  data_s_e <= "+sr_cdbvalue(mdat_fim)
         cComm  := ccomm +" AND cancel is NULL AND  tipo = '02' AND  vl_vend > 0 "
         cComm  := ccomm +" AND tipo = '02' AND  vl_vend > 0 "
         cComm  := ccomm +" AND ent_sai='S' AND NOT num_ped = 'CUPOME' AND ( documento like 'PD%' OR  documento like 'CP%')"
@@ -666,11 +658,48 @@ WHILE .T.
         IF ! EMPTY(mgrupo)
                 ccomm := ccomm + " AND  gru_sub LIKE "+sr_cdbvalue(STRZERO(mgrupo,3)+'%')
         ENDIF
-        ccomm := ccomm + " GROUP BY montador,montador"
+        ccomm := ccomm + " GROUP BY montador, codigo"
         cons_mov:={}
         sr_getconnection():exec(ccomm,,.t.,@cons_mov)
         sr_getconnection():exec('COMMIT',,.f.)
         IF LEN(cons_mov) > 0
+                i:=0
+                FOR i = 1 TO LEN(cons_mov)
+                        IF VAL(cons_mov[i,1]) = 0
+                                LOOP
+                        ENDIF
+                        mcomissao := 0
+                        cons_prod:={}
+                        sr_getconnection():exec("SELECT com_mont FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(cons_mov[i,2]),,.t.,@cons_prod)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(cons_prod) > 0
+                                mcomissao:= cons_prod[1,1]
+                        ENDIF
+
+                        mponto := ASCAN(m_vendedor,cons_mov[i,1])
+                        IF mponto > 0
+                                m_matriz[mponto,4] := m_matriz[mponto,4] + cons_mov[i,4]
+                                m_matriz[mponto,5] := m_matriz[mponto,5] + cons_mov[i,5]
+                                m_matriz[mponto,6] := m_matriz[mponto,6] + cons_mov[i,6] + mcomissao
+                                m_matriz[mponto,7] := m_matriz[mponto,7] + cons_mov[i,7]
+                        ELSE
+                                m_matriz[mponto,6] := m_matriz[mponto,6] + mcomissao
+                                cons_sen:={}
+                                sr_getconnection():exec("SELECT * FROM insopera WHERE scod_op = "+sr_cdbvalue(cons_mov[i,1]),,.t.,@cons_sen)
+                                sr_getconnection():exec('COMMIT',,.f.)
+                                IF LEN(cons_sen) = 0
+                                        mnome := 'NAO LOCALIZADO ESTE OPERADOR  '
+                                                      //    1          2   3      4              5             6            7        8      9 10  11 com/av    12 com/ap     13 com/op
+                                        AADD(m_matriz,{cons_mov[i,1],mnome,0,cons_mov[i,3],cons_mov[i,4],cons_mov[i,5],cons_mov[i,6],0,0,0,0,0,0})
+                                ELSE
+                                        AADD(m_matriz,{cons_sen[1,1],cons_sen[1,2],cons_sen[1,10],cons_mov[i,3],cons_mov[i,4],cons_mov[i,5],cons_mov[i,6],0,0,0,cons_sen[1,7],cons_sen[1,8],cons_sen[1,9]})
+                                ENDIF
+                                AADD(m_vendedor,cons_mov[i,1])
+                        ENDIF
+                NEXT
+
+
+/*
                 i:=0
                 FOR i = 1 TO LEN(cons_mov)
                         IF VAL(cons_mov[i,1]) = 0
@@ -682,15 +711,16 @@ WHILE .T.
                         IF LEN(cons_sen) = 0
                                 mnome := 'NAO LOCALIZADO ESTE OPERADOR  '
                                               //    1          2   3      4              5             6            7        8      9 10  11 com/av    12 com/ap     13 com/op
-                                AADD(m_matriz,{cons_mov[i,1],mnome,0,cons_mov[i,2],cons_mov[i,3],cons_mov[i,4],cons_mov[i,5],0,0,0,0,0,0})
+                                AADD(m_matriz,{cons_mov[i,1],mnome,0,cons_mov[i,3],cons_mov[i,4],cons_mov[i,5],cons_mov[i,6],0,0,0,0,0,0})
                         ELSE
-                                AADD(m_matriz,{cons_sen[1,1],cons_sen[1,2],cons_sen[1,10],cons_mov[i,2],cons_mov[i,3],cons_mov[i,4],cons_mov[i,5],0,0,0,cons_sen[1,7],cons_sen[1,8],cons_sen[1,9]})
+                                AADD(m_matriz,{cons_sen[1,1],cons_sen[1,2],cons_sen[1,10],cons_mov[i,3],cons_mov[i,4],cons_mov[i,5],cons_mov[i,6],0,0,0,cons_sen[1,7],cons_sen[1,8],cons_sen[1,9]})
                         ENDIF
                         AADD(m_vendedor,cons_mov[i,1])
                 NEXT
+*/
         ENDIF
 
-        cComm  := "SELECT montador1,COUNT(*),SUM(quantd),SUM(quantd*vl_vend),SUM(com_monta1) FROM sacmov"
+        cComm  := "SELECT montador1,codigo,COUNT(*),SUM(quantd),SUM(quantd*vl_vend),SUM(com_monta1) FROM sacmov"
 	cComm  := ccomm +" WHERE data_s_e >= "+sr_cdbvalue(mdat_ini)+" AND  data_s_e <= "+sr_cdbvalue(mdat_fim)
         cComm  := ccomm +" AND  cancel is NULL AND  tipo = '02' AND  vl_vend > 0 "
         cComm  := ccomm +" AND  ent_sai='S' AND NOT num_ped = 'CUPOME' AND ( documento like 'PD%' OR  documento like 'CP%')"
@@ -717,7 +747,7 @@ WHILE .T.
         IF ! EMPTY(mgrupo)
                 ccomm := ccomm + " AND  gru_sub LIKE "+sr_cdbvalue(STRZERO(mgrupo,3)+'%')
         ENDIF
-        ccomm := ccomm + " GROUP BY montador1,montador1"
+        ccomm := ccomm + " GROUP BY montador1, codigo"
         cons_mov:={}
         sr_getconnection():exec(ccomm,,.t.,@cons_mov)
         sr_getconnection():exec('COMMIT',,.f.)
@@ -727,22 +757,31 @@ WHILE .T.
                         IF VAL(cons_mov[i,1]) = 0
                                 LOOP
                         ENDIF
+                        mcomissao := 0
+                        cons_prod:={}
+                        sr_getconnection():exec("SELECT com_mont FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(cons_mov[i,2]),,.t.,@cons_prod)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF LEN(cons_prod) > 0
+                                mcomissao:= cons_prod[1,1]
+                        ENDIF
+
                         mponto := ASCAN(m_vendedor,cons_mov[i,1])
                         IF mponto > 0
-                                m_matriz[mponto,4] := m_matriz[mponto,4] + cons_mov[i,2]
                                 m_matriz[mponto,5] := m_matriz[mponto,5] + cons_mov[i,3]
                                 m_matriz[mponto,6] := m_matriz[mponto,6] + cons_mov[i,4]
-                                m_matriz[mponto,7] := m_matriz[mponto,7] + cons_mov[i,5]
+                                m_matriz[mponto,7] := m_matriz[mponto,7] + cons_mov[i,5] + mcomissao
+                                m_matriz[mponto,8] := m_matriz[mponto,8] + cons_mov[i,6]
                         ELSE
+                                m_matriz[mponto,6] := m_matriz[mponto,6] + mcomissao
                                 cons_sen:={}
                                 sr_getconnection():exec("SELECT * FROM insopera WHERE scod_op = "+sr_cdbvalue(cons_mov[i,1]),,.t.,@cons_sen)
                                 sr_getconnection():exec('COMMIT',,.f.)
                                 IF LEN(cons_sen) = 0
                                         mnome := 'NAO LOCALIZADO ESTE OPERADOR  '
                                                       //    1          2   3      4              5             6            7        8      9 10  11 com/av    12 com/ap     13 com/op
-                                        AADD(m_matriz,{cons_mov[i,1],mnome,0,cons_mov[i,2],cons_mov[i,3],cons_mov[i,4],cons_mov[i,5],0,0,0,0,0,0})
+                                        AADD(m_matriz,{cons_mov[i,1],mnome,0,cons_mov[i,3],cons_mov[i,4],cons_mov[i,5],cons_mov[i,6],0,0,0,0,0,0})
                                 ELSE
-                                        AADD(m_matriz,{cons_sen[1,1],cons_sen[1,2],cons_sen[1,10],cons_mov[i,2],cons_mov[i,3],cons_mov[i,4],cons_mov[i,5],0,0,0,cons_sen[1,7],cons_sen[1,8],cons_sen[1,9]})
+                                        AADD(m_matriz,{cons_sen[1,1],cons_sen[1,2],cons_sen[1,10],cons_mov[i,3],cons_mov[i,4],cons_mov[i,5],cons_mov[i,6],0,0,0,cons_sen[1,7],cons_sen[1,8],cons_sen[1,9]})
                                 ENDIF
                                 AADD(m_vendedor,cons_mov[i,1])
                         ENDIF

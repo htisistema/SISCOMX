@@ -1294,7 +1294,7 @@ WHILE .T.
                                                         sLinhas := slinhas +'[impostoDevol'+STRZERO(i,3)+']'+ m_qp+;
                                                                             'pDevol='+ALLTRIM(TRANSFORM(m_nota[i,40],'999999.99'))+ m_qp + ;
                                                                             'vIPIDevol='+ALLTRIM(TRANSFORM((iat(mpr_fat)*m_nota[i,5])*(m_nota[i,40]/100),'999999.99'))+ m_qp
-                                                        mtot_ipi += (iat(mpr_fat)*m_nota[i,5])*(m_nota[i,40]/100)
+                                                        //mtot_ipi += (iat(mpr_fat)*m_nota[i,5])*(m_nota[i,40]/100)
                                                 ELSE
         	               				IF ! EMPTY(m_nota[i,24])
                                                                  sLinhas := slinhas +  '[IPI'+STRZERO(i,3)+']'+ m_qp + ;

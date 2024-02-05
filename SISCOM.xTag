@@ -1,7 +1,7 @@
 <!--
 ################################################
 # xDevStudio Project - xdev@kssoftware.com.br  #
-# Created @ 02/02/2024 10:52:37                #
+# Created @ 03/02/2024 18:57:56                #
 #                                              #
 ### Standard xDev TagList - Layout v1.5 ########
 -->
@@ -835,6 +835,8 @@
    <tag filename="C:\HTI\SISCOM\SAC5COM1.PRG" name="impven" args=" " scope="PUBLIC" type="ptFunction" line="59">
    <tag filename="C:\HTI\SISCOM\SAC5COM1.PRG" name="com_sair" args=" " scope="PUBLIC" type="ptFunction" line="51">
    <tag filename="C:\HTI\SISCOM\SAC5COM1.PRG" name="sac5com1" args="<mtipo_rel> " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\HTI\SISCOM\SAC5COM3.PRG" name="sac5com3_mont" args="<mdat_ini>, <mdat_fim> " scope="PUBLIC" type="ptFunction" line="611">
+   <tag filename="C:\HTI\SISCOM\SAC5COM3.PRG" name="sac5com3" args=" " scope="PUBLIC" type="ptFunction" line="4">
    <tag filename="C:\HTI\SISCOM\SACCAIXA.PRG" name="saccaixa" args=" " scope="PUBLIC" type="ptFunction" line="3">
    <tag filename="C:\HTI\SISCOM\sac5ped11.prg" name="sac5ped11" args=" " scope="PUBLIC" type="ptFunction" line="2">
    <tag filename="C:\SQLRDD997\include\msg.ch" name="LANG_ES_ES" args=" " scope="PUBLIC" type="ptConstant" line="11">
@@ -948,6 +950,10 @@
    <tag filename="C:\HTI\SISCOM\SAC110NOVO.PRG" name="sac110site" args=" " scope="PUBLIC" type="ptFunction" line="1072">
    <tag filename="C:\HTI\SISCOM\SAC110NOVO.PRG" name="vercst" args="<m_cst>, <mtp> " scope="PUBLIC" type="ptFunction" line="1050">
    <tag filename="C:\HTI\SISCOM\SAC110NOVO.PRG" name="verobs" args="<vcodi>, <li>, <ci>, <t>, <mzero> " scope="PUBLIC" type="ptFunction" line="1010">
+   <tag filename="C:\HTI\SISCOM\SAC111NOVO.PRG" name="sac111oi" args=" " scope="PUBLIC" type="ptFunction" line="326">
+   <tag filename="C:\HTI\SISCOM\SAC111NOVO.PRG" name="sac111" args="<mcodigo>, <op> " scope="PUBLIC" type="ptFunction" line="4">
+   <tag filename="C:\HTI\SISCOM\SAC111NOVO.PRG" name="sac111sv" args=" " scope="PUBLIC" type="ptFunction" line="525">
+   <tag filename="C:\HTI\SISCOM\SAC111NOVO.PRG" name="sac111df" args=" " scope="PUBLIC" type="ptFunction" line="428">
    <tag filename="C:\SQLRDD997\include\mysql.h" name="simple_command" args="<mysql>, <command>, <arg>, <length>, <skip_check> " scope="PUBLIC" type="ptPseudoFUNC" line="830">
    <tag filename="C:\SQLRDD997\include\mysql.h" name="IS_BLOB" args="<n> " scope="PUBLIC" type="ptPseudoFUNC" line="75">
    <tag filename="C:\SQLRDD997\include\mysql.h" name="IS_PRI_KEY" args="<n> " scope="PUBLIC" type="ptPseudoFUNC" line="73">
