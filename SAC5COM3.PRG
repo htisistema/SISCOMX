@@ -436,7 +436,7 @@ WHILE .T.
         ENDIF           
         mtipo := 'periodo: '+DTOC(mdata1)+' a '+DTOC(mdata2)
         IF ! EMPTY(mcod_merc)
-                mtipo := mtipo + ' - Cod.Prod.:'+mcod_merc
+                mtipo := mtipo + ' - Cod.Prod.:'+STRZERO(mcod_merc,5)
         ENDIF
 
         IF mimp_tipo = 4
@@ -619,17 +619,13 @@ WHILE .T.
 ****************************************************
         mtit := 'Relatorio de Vendas e Comissao (GERAL) ** MONTADOR **'
         mtipo := 'periodo: '+DTOC(mdat_ini)+' a '+DTOC(mdat_fim)
-        mcod_forn := mcod_cli := mtot_geral := mtot_item := ;
+        mtot_geral := mtot_item := ;
         mvlr_venda := mtot_venda := mcomissao := mvlr_com := mtot_com := ;
-        mcod_vend := mcom_ven := mtot_cota := ;
-        mgrupo := msubgrupo := mcod_merc := 0
-        mnome_vend := SPACE(30)
-        mdata1 := mdata_sis - 31
-        mdata2 := mdata_sis
+        mtot_cota := 0
         mimp_tipo := 1
         setcor(1)
         mensagem('Aguarde um momento coletando dados para o relatorio....')
-        cComm  := "SELECT montador,codigo,COUNT(*),SUM(quantd),SUM(quantd*vl_vend),SUM(com_monta) "
+        cComm  := "SELECT montador,codigo,COUNT(*),SUM(quantd),SUM(quantd*vl_vend),SUM(quantd*vl_vend * (com_monta/100)) "
         cComm  := ccomm +" FROM sacmov m"
         cComm  := ccomm +" WHERE data_s_e >= "+sr_cdbvalue(mdat_ini)+" AND  data_s_e <= "+sr_cdbvalue(mdat_fim)
         cComm  := ccomm +" AND cancel is NULL AND  tipo = '02' AND  vl_vend > 0 "
@@ -650,7 +646,8 @@ WHILE .T.
                 ccomm := ccomm + " AND  gru_sub = "+sr_cdbvalue(STRZERO(mgrupo,3)+STRZERO(msubgrupo,2))
         ENDIF
         IF ! EMPTY(mcod_merc)
-                ccomm := ccomm + " AND  codigo = "+sr_cdbvalue(mcod_merc)
+                ccomm := ccomm + " AND  codigo = "+sr_cdbvalue(STRZERO(mcod_merc,5))
+                mtipo := mtipo + " - Produto: " + STRZERO(mcod_merc,5)
         ENDIF
         IF ! EMPTY(mcodemp)
                 ccomm := ccomm + " AND  empresa = "+sr_cdbvalue(mcodemp)
@@ -668,22 +665,21 @@ WHILE .T.
                         IF VAL(cons_mov[i,1]) = 0
                                 LOOP
                         ENDIF
-                        mcomissao := 0
-                        cons_prod:={}
-                        sr_getconnection():exec("SELECT com_mont FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(cons_mov[i,2]),,.t.,@cons_prod)
-                        sr_getconnection():exec('COMMIT',,.f.)
-                        IF LEN(cons_prod) > 0
-                                mcomissao:= cons_prod[1,1]
-                        ENDIF
+//                        mcomissao := 0
+//                        cons_prod:={}
+//                        sr_getconnection():exec("SELECT com_mont FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(cons_mov[i,2]),,.t.,@cons_prod)
+//                        sr_getconnection():exec('COMMIT',,.f.)
+//                        IF LEN(cons_prod) > 0
+//                                mcomissao:= cons_prod[1,1]
+//                        ENDIF
 
                         mponto := ASCAN(m_vendedor,cons_mov[i,1])
                         IF mponto > 0
-                                m_matriz[mponto,4] := m_matriz[mponto,4] + cons_mov[i,4]
-                                m_matriz[mponto,5] := m_matriz[mponto,5] + cons_mov[i,5]
-                                m_matriz[mponto,6] := m_matriz[mponto,6] + cons_mov[i,6] + mcomissao
-                                m_matriz[mponto,7] := m_matriz[mponto,7] + cons_mov[i,7]
+                                m_matriz[mponto,4] := m_matriz[mponto,4] + cons_mov[i,3]
+                                m_matriz[mponto,5] := m_matriz[mponto,5] + cons_mov[i,4]
+                                m_matriz[mponto,6] := m_matriz[mponto,6] + cons_mov[i,5]
+                                m_matriz[mponto,7] := m_matriz[mponto,7] + cons_mov[i,6]
                         ELSE
-                                m_matriz[mponto,6] := m_matriz[mponto,6] + mcomissao
                                 cons_sen:={}
                                 sr_getconnection():exec("SELECT * FROM insopera WHERE scod_op = "+sr_cdbvalue(cons_mov[i,1]),,.t.,@cons_sen)
                                 sr_getconnection():exec('COMMIT',,.f.)
@@ -720,7 +716,7 @@ WHILE .T.
 */
         ENDIF
 
-        cComm  := "SELECT montador1,codigo,COUNT(*),SUM(quantd),SUM(quantd*vl_vend),SUM(com_monta1) FROM sacmov"
+        cComm  := "SELECT montador1,codigo,COUNT(*),SUM(quantd),SUM(quantd*vl_vend),SUM(quantd*vl_vend * (com_monta1/100)) FROM sacmov"
 	cComm  := ccomm +" WHERE data_s_e >= "+sr_cdbvalue(mdat_ini)+" AND  data_s_e <= "+sr_cdbvalue(mdat_fim)
         cComm  := ccomm +" AND  cancel is NULL AND  tipo = '02' AND  vl_vend > 0 "
         cComm  := ccomm +" AND  ent_sai='S' AND NOT num_ped = 'CUPOME' AND ( documento like 'PD%' OR  documento like 'CP%')"
@@ -757,22 +753,21 @@ WHILE .T.
                         IF VAL(cons_mov[i,1]) = 0
                                 LOOP
                         ENDIF
-                        mcomissao := 0
-                        cons_prod:={}
-                        sr_getconnection():exec("SELECT com_mont FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(cons_mov[i,2]),,.t.,@cons_prod)
-                        sr_getconnection():exec('COMMIT',,.f.)
-                        IF LEN(cons_prod) > 0
-                                mcomissao:= cons_prod[1,1]
-                        ENDIF
+//                        mcomissao := 0
+//                        cons_prod:={}
+//                        sr_getconnection():exec("SELECT com_mont FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(cons_mov[i,2]),,.t.,@cons_prod)
+//                        sr_getconnection():exec('COMMIT',,.f.)
+//                        IF LEN(cons_prod) > 0
+//                                mcomissao:= cons_prod[1,1]
+//                        ENDIF
 
                         mponto := ASCAN(m_vendedor,cons_mov[i,1])
                         IF mponto > 0
-                                m_matriz[mponto,5] := m_matriz[mponto,5] + cons_mov[i,3]
-                                m_matriz[mponto,6] := m_matriz[mponto,6] + cons_mov[i,4]
-                                m_matriz[mponto,7] := m_matriz[mponto,7] + cons_mov[i,5] + mcomissao
-                                m_matriz[mponto,8] := m_matriz[mponto,8] + cons_mov[i,6]
+                                m_matriz[mponto,4] := m_matriz[mponto,4] + cons_mov[i,3]
+                                m_matriz[mponto,5] := m_matriz[mponto,5] + cons_mov[i,4]
+                                m_matriz[mponto,6] := m_matriz[mponto,6] + cons_mov[i,5]
+                                m_matriz[mponto,7] := m_matriz[mponto,7] + cons_mov[i,6]
                         ELSE
-                                m_matriz[mponto,6] := m_matriz[mponto,6] + mcomissao
                                 cons_sen:={}
                                 sr_getconnection():exec("SELECT * FROM insopera WHERE scod_op = "+sr_cdbvalue(cons_mov[i,1]),,.t.,@cons_sen)
                                 sr_getconnection():exec('COMMIT',,.f.)
@@ -801,7 +796,7 @@ WHILE .T.
         cabecalho(mpag,mtit,mtipo,mprg)
         imprt(mtipo_imp,'C')
         DEVPOS(PROW()+1,00);DEVOUT('Montador                      ')
-        DEVPOS(PROW(),PCOL()+1);DEVOUT('  Qtd.Item')
+        //DEVPOS(PROW(),PCOL()+1);DEVOUT('  Qtd.Item')
         DEVPOS(PROW(),PCOL()+2);DEVOUT('    Qtd.Prod')
         DEVPOS(PROW(),PCOL()+2);DEVOUT('Valor Vendas')
         DEVPOS(PROW(),PCOL()+9);DEVOUT('(% Comissao R$)')
@@ -810,7 +805,7 @@ WHILE .T.
         FOR i = 1 TO LEN(m_matriz)
                 DEVPOS(PROW()+1,00);DEVOUT(m_matriz[i,1]+'-'+LEFT(m_matriz[i,2],26))
                 //DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(m_matriz[i,10],'99,999.99'))
-                DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(m_matriz[i,4],'999,999.99'))
+                //DEVPOS(PROW(),PCOL()+1);DEVOUT(TRANSFORM(m_matriz[i,4],'999,999.99'))
                 DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(m_matriz[i,5],'9,999,999.99'))
                 DEVPOS(PROW(),PCOL()+2);DEVOUT(TRANSFORM(m_matriz[i,6],'9,999,999.99'))
                 DEVPOS(PROW(),PCOL()+4);DEVOUT(TRANSFORM(m_matriz[i,7]/m_matriz[i,6]*100,'9,999.99')+'%')
@@ -821,13 +816,13 @@ WHILE .T.
                 mtot_com := mtot_com + m_matriz[i,7]
         NEXT
         DEVPOS(PROW()+1,00);DEVOUT(mtraco)
-        IF mtipo_com <> 'M'
-                DEVPOS(PROW()+1,00);DEVOUT('T O T A L   G E R A L:')
-                DEVPOS(PROW(),31);DEVOUT(TRANSFORM(mtotal_item,'999,999.99'))
-                DEVPOS(PROW(),41);DEVOUT(TRANSFORM(mtot_item,'99,999,999.99'))
-                DEVPOS(PROW(),51);DEVOUT(TRANSFORM(mtot_venda,'99,999,999.99'))
-                DEVPOS(PROW(),69);DEVOUT(TRANSFORM(mtot_com,'999,999.99'))
-        ENDIF
+//        IF mtipo_com <> 'M'
+//                DEVPOS(PROW()+1,00);DEVOUT('T O T A L   G E R A L:')
+//                DEVPOS(PROW(),31);DEVOUT(TRANSFORM(mtotal_item,'999,999.99'))
+//                DEVPOS(PROW(),41);DEVOUT(TRANSFORM(mtot_item,'99,999,999.99'))
+//                DEVPOS(PROW(),51);DEVOUT(TRANSFORM(mtot_venda,'99,999,999.99'))
+//                DEVPOS(PROW(),69);DEVOUT(TRANSFORM(mtot_com,'999,999.99'))
+//        ENDIF
         DEVPOS(PROW()+2,00);DEVOUT(TIME())
         imprt(mtipo_imp,'N')
         EJECT

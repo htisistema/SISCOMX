@@ -21011,3 +21011,88 @@ INKEY     Linha : 0
 SAC0     Linha : 1438
 SENHA     Linha : 824
 MAIN     Linha : 1131	
+06/02/24 08:04:26: SQLExecDirect Error
+Dynamic SQL Error - Native error code 335544569
+Command sent to database : 
+SELECT montador,codigo,COUNT(*),SUM(quantd),SUM(quantd*vl_vend),com_monta  FROM sacmov m WHERE data_s_e >= '2024/01/01' AND  data_s_e <= '2024/02/06' AND cancel is NULL AND  tipo = '02' AND  vl_vend > 0  AND tipo = '02' AND  vl_vend > 0  AND ent_sai='S' AND NOT num_ped = 'CUPOME' AND ( documento like 'PD%' OR  documento like 'CP%') AND devolucao IS NULL AND (montador IS NOT NULL OR montador = '') GROUP BY montador, codigo
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+SAC5COM3_MONT     Linha : 663
+SAC5COM3     Linha : 74
+AFTERINKEY     Linha : 2437
+(b)SAC0     Linha : 1408
+INKEY     Linha : 0
+SAC0     Linha : 1438
+SENHA     Linha : 824
+MAIN     Linha : 1131	
+06/02/24 08:08:47: SQLExecDirect Error
+Dynamic SQL Error - Native error code 335544569
+Command sent to database : 
+SELECT montador,codigo,COUNT(*),SUM(quantd),SUM(quantd*vl_vend),SUMcom_monta  FROM sacmov m WHERE data_s_e >= '2024/01/01' AND  data_s_e <= '2024/02/06' AND cancel is NULL AND  tipo = '02' AND  vl_vend > 0  AND tipo = '02' AND  vl_vend > 0  AND ent_sai='S' AND NOT num_ped = 'CUPOME' AND ( documento like 'PD%' OR  documento like 'CP%') AND devolucao IS NULL AND (montador IS NOT NULL OR montador = '') GROUP BY montador, codigo
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+SAC5COM3_MONT     Linha : 663
+SAC5COM3     Linha : 74
+AFTERINKEY     Linha : 2437
+(b)SAC0     Linha : 1408
+INKEY     Linha : 0
+SAC0     Linha : 1438
+SENHA     Linha : 824
+MAIN     Linha : 1131	
+06/02/24 08:09:33: SQLExecDirect Error
+Dynamic SQL Error - Native error code 335544569
+Command sent to database : 
+SELECT montador,codigo,COUNT(*),SUM(quantd),SUM(quantd*vl_vend),SUMcom_monta  FROM sacmov m WHERE data_s_e >= '2024/01/01' AND  data_s_e <= '2024/02/06' AND cancel is NULL AND  tipo = '02' AND  vl_vend > 0  AND tipo = '02' AND  vl_vend > 0  AND ent_sai='S' AND NOT num_ped = 'CUPOME' AND ( documento like 'PD%' OR  documento like 'CP%') AND devolucao IS NULL AND (montador IS NOT NULL OR montador = '') GROUP BY montador, codigo
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+SAC5COM3_MONT     Linha : 663
+SAC5COM3     Linha : 74
+AFTERINKEY     Linha : 2437
+(b)SAC0     Linha : 1408
+INKEY     Linha : 0
+SAC0     Linha : 1438
+SENHA     Linha : 824
+MAIN     Linha : 1131	
+06/02/24 09:37:12: SQLExecDirect Error
+Dynamic SQL Error - Native error code 335544569
+Command sent to database : 
+SELECT montador,codigo,COUNT(*),SUM(quantd),SUM(quantd*vl_vend),SUM(quantd*vl_vend * (com_monta/100))  FROM sacmov m WHERE data_s_e >= '2024/01/01' AND  data_s_e <= '2024/01/31' AND cancel is NULL AND  tipo = '02' AND  vl_vend > 0  AND tipo = '02' AND  vl_vend > 0  AND ent_sai='S' AND NOT num_ped = 'CUPOME' AND ( documento like 'PD%' OR  documento like 'CP%') AND devolucao IS NULL AND (montador IS NOT NULL OR montador = '') AND  codigo1 = 27 GROUP BY montador, codigo
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+SAC5COM3_MONT     Linha : 660
+SAC5COM3     Linha : 74
+AFTERINKEY     Linha : 2437
+(b)SAC0     Linha : 1408
+INKEY     Linha : 0
+SAC0     Linha : 1438
+SENHA     Linha : 824
+MAIN     Linha : 1131	
+06/02/24 09:38:23: SQLExecDirect Error
+Dynamic SQL Error - Native error code 335544569
+Command sent to database : 
+SELECT montador,codigo,COUNT(*),SUM(quantd),SUM(quantd*vl_vend),SUM(quantd*vl_vend * (com_monta/100))  FROM sacmov m WHERE data_s_e >= '2024/01/01' AND  data_s_e <= '2024/01/31' AND cancel is NULL AND  tipo = '02' AND  vl_vend > 0  AND tipo = '02' AND  vl_vend > 0  AND ent_sai='S' AND NOT num_ped = 'CUPOME' AND ( documento like 'PD%' OR  documento like 'CP%') AND devolucao IS NULL AND (montador IS NOT NULL OR montador = '') AND  codigo1 = '00027' GROUP BY montador, codigo
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+SAC5COM3_MONT     Linha : 660
+SAC5COM3     Linha : 74
+AFTERINKEY     Linha : 2437
+(b)SAC0     Linha : 1408
+INKEY     Linha : 0
+SAC0     Linha : 1438
+SENHA     Linha : 824
+MAIN     Linha : 1131	
