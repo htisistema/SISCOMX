@@ -4072,27 +4072,31 @@ WHILE .T.
                                                         @ lcia+11,ccia+21 GET mvlr_ent PICT '99,999.99' VALID IF(EMPTY(mvlr_ent),.F.,.T.)
                                                         READ
                                                 ENDIF
+                                                i:=0
                                                 IF VAL(SUBSTR(mcond_veze,2,2)) > 0
-                                                        m_dia[1]:=IF(EMPTY(m_dia[1]),VAL(SUBSTR(cons_cli[1,40],1,2)),m_dia[1])
-                                                        m_dia[2]:=IF(EMPTY(m_dia[2]),VAL(SUBSTR(cons_cli[1,40],3,2)),m_dia[2])
-                                                        m_dia[3]:=IF(EMPTY(m_dia[3]),VAL(SUBSTR(cons_cli[1,40],5,2)),m_dia[3])
+                                                        FOR i = 1 TO VAL(SUBSTR(mcond_veze,2,2))
+                                                                m_dia[i]:= i * 30
+                                                        NEXT
+
+                                                        //m_dia[1]:=IF(EMPTY(m_dia[1]),VAL(SUBSTR(cons_cli[1,40],1,2)),m_dia[1])
+                                                        //m_dia[2]:=IF(EMPTY(m_dia[2]),VAL(SUBSTR(cons_cli[1,40],3,2)),m_dia[2])
+                                                        //m_dia[3]:=IF(EMPTY(m_dia[3]),VAL(SUBSTR(cons_cli[1,40],5,2)),m_dia[3])
                                                         DEVPOS(lcia+10,ccia+25);DEVOUT('Para os Dias:')
-                                                        @ lcia+10,ccia+39 GET m_dia[1] PICT '999' VALID ! EMPTY(m_dia[1])
-                                                        @ lcia+10,ccia+43 GET m_dia[2] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 2 VALID ! EMPTY(m_dia[2])
-                                                        @ lcia+10,ccia+47 GET m_dia[3] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 3 VALID ! EMPTY(m_dia[3])
-                                                        @ lcia+10,ccia+51 GET m_dia[4] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 4 VALID ! EMPTY(m_dia[4])
-                                                        @ lcia+10,ccia+55 GET m_dia[5] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 5 VALID ! EMPTY(m_dia[5])
-                                                        @ lcia+10,ccia+59 GET m_dia[6] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 6 VALID ! EMPTY(m_dia[6])
-                                                        @ lcia+10,ccia+63 GET m_dia[7] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 7 VALID ! EMPTY(m_dia[7])
-                                                        @ lcia+11,ccia+39 GET m_dia[8] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 8 VALID ! EMPTY(m_dia[8])
-                                                        @ lcia+11,ccia+43 GET m_dia[9] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 9 VALID ! EMPTY(m_dia[9])
-                                                        @ lcia+11,ccia+47 GET m_dia[10] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 10 VALID ! EMPTY(m_dia[10])
-                                                        @ lcia+11,ccia+51 GET m_dia[11] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 11 VALID ! EMPTY(m_dia[11])
-                                                        @ lcia+11,ccia+55 GET m_dia[12] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 12 VALID ! EMPTY(m_dia[12])
-                                                        @ lcia+11,ccia+59 GET m_dia[13] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 13 VALID ! EMPTY(m_dia[13])
-                                                        @ lcia+11,ccia+63 GET m_dia[14] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 14 VALID ! EMPTY(m_dia[14])
-                                                        @ lcia+12,ccia+39 GET m_dia[15] PICT '999' WHEN VAL(SUBSTR(mcond_veze,2,2)) >= 15 VALID ! EMPTY(m_dia[15])
-                                                        READ
+                                                        DEVPOS(lcia+10,ccia+39);DEVOUTPICT(m_dia[1],'999')
+                                                        DEVPOS(lcia+10,ccia+43);DEVOUTPICT(m_dia[2],'999')
+                                                        DEVPOS(lcia+10,ccia+47);DEVOUTPICT(m_dia[3],'999')
+                                                        DEVPOS(lcia+10,ccia+51);DEVOUTPICT(m_dia[4],'999')
+                                                        DEVPOS(lcia+10,ccia+55);DEVOUTPICT(m_dia[5],'999')
+                                                        DEVPOS(lcia+10,ccia+59);DEVOUTPICT(m_dia[6],'999')
+                                                        DEVPOS(lcia+10,ccia+63);DEVOUTPICT(m_dia[7],'999')
+                                                        DEVPOS(lcia+11,ccia+39);DEVOUTPICT(m_dia[8],'999')
+                                                        DEVPOS(lcia+11,ccia+43);DEVOUTPICT(m_dia[9],'999')
+                                                        DEVPOS(lcia+11,ccia+47);DEVOUTPICT(m_dia[10],'999')
+                                                        DEVPOS(lcia+11,ccia+51);DEVOUTPICT(m_dia[11],'999')
+                                                        DEVPOS(lcia+11,ccia+55);DEVOUTPICT(m_dia[12],'999')
+                                                        DEVPOS(lcia+11,ccia+59);DEVOUTPICT(m_dia[13],'999')
+                                                        DEVPOS(lcia+11,ccia+63);DEVOUTPICT(m_dia[14],'999')
+                                                        DEVPOS(lcia+12,ccia+39);DEVOUTPICT(m_dia[15],'999')
                                                 ENDIF
                                         CASE modo_pg = 4
                                                 mtipo_pg := 'FI'

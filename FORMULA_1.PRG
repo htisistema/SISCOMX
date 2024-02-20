@@ -441,23 +441,25 @@ IF mquantd > 0
                                                 DEVPOS(PROW()+1,m_set[1,6]+4);DEVOUT('Venc. :'+DTOC(mdata+mprazo_aux))
                                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('- R$:'+TRANSFORM(mtot_prazo,'999,999.99'))
                                         ENDIF
-                                        IF VAL(SUBSTR(imppedido[1,43],2)) >= 2
-                                                mc_dup := f := 0
-                                                FOR mc_dup = 1 TO VAL(SUBSTR(imppedido[1,43],2,2))
-                                                        IF f = 0
-                                                                DEVPOS(PROW()+1,m_set[1,6]+4);DEVOUT('')
+                                        IF SUBSTR(imppedido[1,44],1,2) <> 'CT'
+                                                IF VAL(SUBSTR(imppedido[1,43],2)) >= 2
+                                                        mc_dup := f := 0
+                                                        FOR mc_dup = 1 TO VAL(SUBSTR(imppedido[1,43],2,2))
+                                                                IF f = 0
+                                                                        DEVPOS(PROW()+1,m_set[1,6]+4);DEVOUT('')
+                                                                ENDIF
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Venc.'+ALLTRIM(STR(mc_dup))+':'+DTOC(mdata+m_dia[mc_dup]))
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('- R$:'+TRANSFORM((((mcust_real+mtot_ipi)-mvlr_ent-mtot_prazo)/VAL(SUBSTR(imppedido[1,43],2,2))),'999,999.99'))
+                                                                f ++
+                                                                IF f = 4
+                                                                        f = 0
+                                                                ENDIF
+                                                        NEXT
+                                                ELSE
+                                                        IF mcust_real-mvlr_ent-mtot_prazo > 0
+                                                                @ PROW()+1,m_set[1,6] SAY 'Venc.1:'+DTOC(mdata+m_dia[1])
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('- R$:'+TRANSFORM((mcust_real+mtot_ipi)-mvlr_ent-mtot_prazo,'999,999.99'))
                                                         ENDIF
-                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Venc.'+ALLTRIM(STR(mc_dup))+':'+DTOC(mdata+m_dia[mc_dup]))
-                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('- R$:'+TRANSFORM((((mcust_real+mtot_ipi)-mvlr_ent-mtot_prazo)/VAL(SUBSTR(imppedido[1,43],2,2))),'999,999.99'))
-                                                        f ++
-                                                        IF f = 4
-                                                                f = 0
-                                                        ENDIF
-                                                NEXT
-                                        ELSE
-                                                IF mcust_real-mvlr_ent-mtot_prazo > 0
-                                                        @ PROW()+1,m_set[1,6] SAY 'Venc.1:'+DTOC(mdata+m_dia[1])
-                                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('- R$:'+TRANSFORM((mcust_real+mtot_ipi)-mvlr_ent-mtot_prazo,'999,999.99'))
                                                 ENDIF
                                         ENDIF
                                 ELSEIF SUBSTR(imppedido[1,44],1,2) = 'FI'

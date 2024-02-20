@@ -21096,3 +21096,36 @@ INKEY     Linha : 0
 SAC0     Linha : 1438
 SENHA     Linha : 824
 MAIN     Linha : 1131	
+20/02/24 20:10:33: SQLExecDirect Error
+Dynamic SQL Error - Native error code 335544569
+Command sent to database : 
+UPDATE insopera SET terminal = 'Helio',data_acess = '2024/02/20',hora_acess = '20:10:33',sult_ent = '2024/02/20',shora_ini := '20:10:33',sh_i_c = 'HELIO1' WHERE scod_op = '999'
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+ALT_SENHA     Linha : 920
+SAC23PD1     Linha : 321
+AFTERINKEY     Linha : 1564
+(b)SAC0     Linha : 1408
+INKEY     Linha : 0
+SAC0     Linha : 1438
+SENHA     Linha : 824
+MAIN     Linha : 1131	
+20/02/24 20:10:43: SQLExecDirect Error
+Dynamic SQL Error - Native error code 335544569
+Command sent to database : 
+INSERT INTO sacped_s (pempresa,pnum_ped,ptermina,pdat_ped,pgru_sub,pcod_merc,pmerc,punidade,pespecie,penvelope,ppeso,ppeso_liq,pgramatura,pquantd,ppacote,ppecas,ppre_dig,pdesc,pvlr_fat,ppre_venda,ppr_venda1,pcust_real,pcust_merc,pcod_cli,pcgc,pcpf,pplaca,pcarro,pmodelo,pkm,pcod_fab,pfabrica,pcod_oper,pcomi_oper,pcod_vend,pvendedor,palimento ,pcod_fin  ,pcod_tab  ,pvlr_pres ,pcond_veze,pcond_inte,phora     ,ptp_vend  ,pvlr_ent  ,pisento   ,ppromocao ,pmontador ,pmontador1,pcomissao ,pcom_mont ,pprazo    ,pbebida   ,pipi      ,pobs_prod ,pind_icms ,pstat_item,psit_trib ,pobs1,pobs2,pobs3,pobs4,pobs5,pobs6,pobs7,pobs8,plocal,chassis,descri1,descri2,descri3,descri4,descri5,pproducao,pcod_tran,pos,data_so,data_app,convidado,cod_pres,tipo_ped,tipo_venda,sr_deleted) VALUES ('001','023905','HELIO-PC','2024/02/20','00201','00001','CD PLAYER PIONEER DEH-X1680UB','UN','0000','',0.000,0.000,0.000,2.0,0,0,359.000,0,359.000,359.000,-8.0000,232.0900,228.9200,1,'','','','','','','0001','PIONEER','999',0.00,'999','HTI SISTEMA','','000','000',0,0,'','20:10:29','',0,'T',0.00,'000','000',1.00,2.00,0,0.00,0.0000,'','','','','','','','','','','','','','','','','','','','','','','2024/02/20',NULL,'','00000',1,'1','')
+Steatment handle  :          0
+Connection handle : 
+RetCode           :         -1
+	SR_FIREBIRD:RUNTIMEERR     Linha : 726
+SR_FIREBIRD:EXEC     Linha : 299
+SAC23PD1     Linha : 3505
+AFTERINKEY     Linha : 1564
+(b)SAC0     Linha : 1408
+INKEY     Linha : 0
+SAC0     Linha : 1438
+SENHA     Linha : 824
+MAIN     Linha : 1131	

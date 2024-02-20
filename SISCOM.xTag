@@ -1,7 +1,7 @@
 <!--
 ################################################
 # xDevStudio Project - xdev@kssoftware.com.br  #
-# Created @ 19/02/2024 12:09:56                #
+# Created @ 20/02/2024 20:17:01                #
 #                                              #
 ### Standard xDev TagList - Layout v1.5 ########
 -->
@@ -824,7 +824,7 @@
    <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="CR" args=" " scope="STATIC" type="ptConstant" line="4">
    <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="ETX" args=" " scope="STATIC" type="ptConstant" line="3">
    <tag filename="C:\HTI\SISCOM\FORMULA.PRG" name="formula" args="<mdup_2>, <m_ava>, <mtipo_pag>, <mtp_email> " scope="PUBLIC" type="ptFunction" line="2">
-   <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="gerar_no_ped" args=" " scope="PUBLIC" type="ptFunction" line="4642">
+   <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="gerar_no_ped" args=" " scope="PUBLIC" type="ptFunction" line="4646">
    <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="fecha_pd" args="<mtip>, <magrupar>, <orc_tp> " scope="PUBLIC" type="ptFunction" line="3568">
    <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="sac23pd1" args="<orc>, <venda>, <m_altpd> " scope="PUBLIC" type="ptFunction" line="13">
    <tag filename="C:\HTI\SISCOM\SAC5PED1.PRG" name="sac5ped1" args="<mnum_p>, <orc>, <consult>, <tkt>, <mfrente>, <menu_print>, <mapp> " scope="PUBLIC" type="ptFunction" line="4">
