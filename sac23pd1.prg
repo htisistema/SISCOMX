@@ -3715,6 +3715,7 @@ WHILE .T.
                 DEVPOS(lcia+4,ccia+28);DEVOUT('| Media de dias em Atraso:')
                 DEVPOS(lcia+5,ccia+1);DEVOUT('CGC.:')
                 DEVPOS(lcia+5,ccia+28);DEVOUT('| Quantidade Documento...:')
+                DEVPOS(lcia+11,ccia+1);DEVOUT('Valor Entrada R$..:')
                 DEVPOS(lcia+16,ccia+1);DEVOUT('Previsao de Entrega......:')
                 DEVPOS(lcia+20,ccia+1);DEVOUT('Observacoes:')
         ELSE
@@ -4014,9 +4015,13 @@ WHILE .T.
                                 IF modo_pg = 1
                                         mtipo_pg := 'DN'
                                         mdinheiro := '*'
+                                        @ lcia+11,ccia+21 GET mvlr_ent PICT '99,999.99'
+                                        READ
                                 ELSEIF modo_pg = 3
                                         mtipo_pg := 'PX'
                                         mpix := '*'
+                                        @ lcia+11,ccia+21 GET mvlr_ent PICT '99,999.99'
+                                        READ
                                 ELSEIF modo_pg = 2
                                         mtipo_pg := 'CH'
                                         mcheque := '*'
@@ -4061,7 +4066,7 @@ WHILE .T.
                                                 mcartao := '*'
                                                 DEVPOS(lcia+9,ccia+1);DEVOUT('Condicoes de Pagamento: A PRAZO')
                                                 DEVPOS(lcia+10,ccia+1);DEVOUT('Quatidade de vezes:')
-                                                DEVPOS(lcia+11,ccia+1);devout('Valor Entrada R$..:')
+                                                DEVPOS(lcia+11,ccia+1);DEVOUT('Valor Entrada R$..:')
                                                 @ lcia+10,ccia+21 GET mcond_veze PICT '@@R 9-99' VALID IF(EMPTY(mcond_veze),.F.,IF(VAL(SUBSTR(mcond_veze,1,1))>1,.F.,.T.))
                                                 READ
                                                 IF m_dia[1] > m_set[1,49] .AND. ! aut_sen('Prazo Permitido '+TRANSFORM(m_set[1,49],'999')+' Solicitado '+STRZERO(m_dia[1],3)+' - Autorizacao:','LIB_PRZ',,mcod_cli)

@@ -631,6 +631,14 @@ IF mquantd > 0
                                         DEVPOS(PROW(),PCOL()+2);DEVOUT('-  Modo de Pagamento: CHEQUE')
                                 ELSEIF SUBSTR(imppedido[1,44],1,2) = 'DN'
                                         DEVPOS(PROW(),PCOL()+2);DEVOUT('-  Modo de Pagamento: DINHEIRO')
+                                        IF imppedido[1,46] # 0
+                                                DEVPOS(PROW()+1,00);DEVOUT('Valor da Entrada R$:'+TRANSFORM(imppedido[1,46],'99,999.99'))
+                                        ENDIF
+                                ELSEIF SUBSTR(imppedido[1,44],1,2) = 'PX'
+                                        DEVPOS(PROW()+1,00);DEVOUT('Modo de Pagamento: PIX')
+                                        IF imppedido[1,46] # 0
+                                                DEVPOS(PROW()+1,00);DEVOUT('Valor da Entrada R$:'+TRANSFORM(imppedido[1,46],'99,999.99'))
+                                        ENDIF
                                 ENDIF
                         ELSE
                                 //IF mcartao = '*' .AND. ver_serie() = '141440'
@@ -646,8 +654,9 @@ IF mquantd > 0
                                         ENDIF
                                         @ PROW(),PCOL()+1 SAY ' APRAZO: '+SUBSTR(imppedido[1,43],1,1)+' + '+SUBSTR(imppedido[1,43],2,2)+' p/ '+IF(! EMPTY(m_dia[1]),STRZERO(m_dia[1],3),'')+IF(! EMPTY(m_dia[2]),' + '+STRZERO(m_dia[2],3),'')+IF(! EMPTY(m_dia[3]),' + '+STRZERO(m_dia[3],3),'')+IF(! EMPTY(m_dia[4]),' + '+STRZERO(m_dia[4],3),'')+IF(! EMPTY(m_dia[5]),' + '+STRZERO(m_dia[5],3),'')+IF(! EMPTY(m_dia[6]),' + '+STRZERO(m_dia[6],3),'')+IF(! EMPTY(m_dia[7]),' + '+STRZERO(m_dia[7],3),'')+;
                                                                               IF(! EMPTY(m_dia[8]),' + '+STRZERO(m_dia[8],3),'')+IF(! EMPTY(m_dia[9]),' + '+STRZERO(m_dia[9],3),'')+IF(! EMPTY(m_dia[10]),' + '+STRZERO(m_dia[10],3),'')+IF(! EMPTY(m_dia[11]),' + '+STRZERO(m_dia[11],3),'')+IF(! EMPTY(m_dia[12]),' + '+STRZERO(m_dia[12],3),'')+IF(! EMPTY(m_dia[13]),' + '+STRZERO(m_dia[13],3),'')+IF(! EMPTY(m_dia[14]),' + '+STRZERO(m_dia[14],3),'')+IF(! EMPTY(m_dia[15]),' + '+STRZERO(m_dia[15],3),'')+' Dias'
-                                        IF VAL(SUBSTR(imppedido[1,43],1,1)) = 1
-                                                DEVPOS(PROW()+1,00);DEVOUT('Valor da Entrada R$:'+TRANSFORM(mvlr_ent,'99,999.99'))
+
+                                        IF imppedido[1,46] # 0
+                                                DEVPOS(PROW()+1,00);DEVOUT('Valor da Entrada R$:'+TRANSFORM(imppedido[1,46],'99,999.99'))
                                         ENDIF
                                         IF ! EMPTY(mtot_prazo)
                                                 DEVPOS(PROW()+1,00);DEVOUT('Venc. :'+DTOC(mdata+mprazo_aux))

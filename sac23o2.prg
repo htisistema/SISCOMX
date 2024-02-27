@@ -496,36 +496,37 @@ WHILE .T.
                         IF cons_merc[1,23] > 0
                                 @ li+1,ci+58 SAY mvlr_fat PICT ALLTRIM(m_set[1,98])
                         ELSE
-                                mensagem('Digite o valor do produto - <ESC>Sair')
-                                @ li+01,ci+58 GET mvlr_fat PICT ALLTRIM(m_set[1,98]) WHEN mexp = NIL
+                                mpreco_aux := mvlr_fat
+                                mensagem('Digite o valor do produto1 - <ESC>Sair')
+                                @ li+01,ci+58 GET mvlr_fat PICT ALLTRIM(m_set[1,98]) WHEN mexp = NIL VALID IF(mpreco_aux > mvlr_fat,.F.,.T.)
                                 READ
                                 IF LASTKEY() = 27
                                         LOOP
                                 ENDIF
-                                IF iat(cons_merc[1,46],m_set[1,103]) > mvlr_fat
-                                        IF ((iat(cons_merc[1,46],m_set[1,103]) - mvlr_fat)/iat(cons_merc[1,46],m_set[1,103]))*100 > m_set[1,33]
-                                                IF ! aut_sen('Desconto a maior.. senha de autorizacao:','LIB_DESC')
-                                                        LOOP
-                                                ENDIF
-                                        ENDIF
-                                ENDIF
-                                IF m_set[1,38] = 'C'
-                                        IF mvlr_fat < iat(cons_merc[1,46],m_set[1,103])
-                                                IF mvlr_fat < cons_merc[1,45]
-                                                        IF ! aut_sen('Senha de autorizacao:','LIB_DESC')
-                                                                LOOP
-                                                        ENDIF
-                                                ENDIF
-                                        ENDIF
-                                ELSEIF m_set[1,38] = 'V'
-                                        IF mvlr_fat < iat(cons_merc[1,46],m_set[1,103])
-                                                IF mvlr_fat < iat(cons_merc[1,46],m_set[1,103])
-                                                        IF ! aut_sen('Senha de autorizacao:','LIB_DESC')
-                                                                LOOP
-                                                        ENDIF
-                                                ENDIF
-                                        ENDIF
-                                ENDIF
+//                                IF iat(cons_merc[1,46],m_set[1,103]) > mvlr_fat
+//                                        IF ((iat(cons_merc[1,46],m_set[1,103]) - mvlr_fat)/iat(cons_merc[1,46],m_set[1,103]))*100 > m_set[1,33]
+//                                                IF ! aut_sen('Desconto a maior.. senha de autorizacao:','LIB_DESC')
+//                                                        LOOP
+//                                                ENDIF
+//                                        ENDIF
+//                                ENDIF
+//                                IF m_set[1,38] = 'C'
+//                                        IF mvlr_fat < iat(cons_merc[1,46],m_set[1,103])
+//                                                IF mvlr_fat < cons_merc[1,45]
+//                                                        IF ! aut_sen('Senha de autorizacao:','LIB_DESC')
+//                                                                LOOP
+//                                                        ENDIF
+//                                                ENDIF
+//                                        ENDIF
+//                                ELSEIF m_set[1,38] = 'V'
+//                                        IF mvlr_fat < iat(cons_merc[1,46],m_set[1,103])
+//                                                IF mvlr_fat < iat(cons_merc[1,46],m_set[1,103])
+//                                                        IF ! aut_sen('Senha de autorizacao:','LIB_DESC')
+//                                                                LOOP
+//                                                        ENDIF
+//                                                ENDIF
+//                                        ENDIF
+//                                ENDIF
                         ENDIF
 *                       IF ver_serie() = '141287' .OR. ver_serie() = '14128D'
                         IF m_set[1,37] = 'S'

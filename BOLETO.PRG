@@ -565,8 +565,14 @@ mdesconto := 0
                                         DEVPOS(PROW()+1,00);DEVOUT('Modo de Pagamento: CHEQUE')
                                 ELSEIF SUBSTR(imppedido[1,44],1,2) = 'DN'
                                         DEVPOS(PROW()+1,00);DEVOUT('Modo de Pagamento: DINHEIRO')
+                                        IF imppedido[1,46] # 0
+                                                DEVPOS(PROW()+1,00);DEVOUT('Valor da Entrada R$:'+TRANSFORM(imppedido[1,46],'99,999.99'))
+                                        ENDIF
                                 ELSEIF SUBSTR(imppedido[1,44],1,2) = 'PX'
                                         DEVPOS(PROW()+1,00);DEVOUT('Modo de Pagamento: PIX')
+                                        IF imppedido[1,46] # 0
+                                                DEVPOS(PROW()+1,00);DEVOUT('Valor da Entrada R$:'+TRANSFORM(imppedido[1,46],'99,999.99'))
+                                        ENDIF
                                 ENDIF
                         ELSEIF SUBSTR(imppedido[1,44],1,2) = 'DU' .OR. SUBSTR(imppedido[1,44],1,2) = 'CH' .OR. SUBSTR(imppedido[1,44],1,2) = 'CT'
                                 m_vlr[1] := (mcust_real-imppedido[1,46])/VAL(SUBSTR(imppedido[1,43],2,2))
@@ -581,7 +587,7 @@ mdesconto := 0
                                         ELSEIF SUBSTR(imppedido[1,44],1,2) = 'CT'
                                                 @ PROW()+1,00 SAY 'Pag.APRAZO CARTAO: '+SUBSTR(imppedido[1,43],1,1)+'+'+SUBSTR(imppedido[1,43],2,2)+' p/'+STRZERO(VAL(SUBSTR(imppedido[1,44],3,3)),3)+'+'+STRZERO(VAL(SUBSTR(imppedido[1,44],6,3)),3)+' Dias'
                                         ENDIF
-                                        IF VAL(SUBSTR(imppedido[1,43],1,1)) = 1
+                                        IF imppedido[1,46] # 0
                                                 DEVPOS(PROW()+1,00);DEVOUT('Valor da Entrada R$:'+TRANSFORM(imppedido[1,46],'99,999.99'))
                                         ENDIF
                                         DEVPOS(PROW()+1,00);DEVOUT('Venc.1o.:'+DTOC(imppedido[1,4]+VAL(SUBSTR(imppedido[1,44],3,3))))

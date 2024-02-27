@@ -245,6 +245,7 @@ IF mquantd > 0
                 mdesconto := mtot_volume := y:=0
                 FOR y = 1 TO LEN(imppedido)
                         imprt(mtipo_imp,'C')
+                        imprt(mtipo_imp,'N+')
                         cons_merc:={}
                         sr_getconnection():exec("SELECT cod_barr,ref,cod_fab,fabrica,pr_venda,local FROM sacmerc WHERE cod_merc = "+sr_cdbvalue(imppedido[y,6]),,.t.,@cons_merc)
                         sr_getconnection():exec('COMMIT',,.f.)
@@ -366,7 +367,6 @@ IF mquantd > 0
                         ENDIF
                 NEXT
                 imprt(mtipo_imp,'C')
-                imprt(mtipo_imp,'N+')
                 @ PROW()+(mpagina-PROW()),m_set[1,6] SAY 'Volumes:'
                 @ PROW(),PCOL()+1 SAY STRZERO(mtot_volume,6)
                 @ PROW(),PCOL()+2 SAY 'Qtd.Itens:'
@@ -416,6 +416,14 @@ IF mquantd > 0
                                         DEVPOS(PROW(),PCOL()+2);DEVOUT('-  Modo de Pagamento: CHEQUE')
                                 ELSEIF SUBSTR(imppedido[1,44],1,2) = 'DN'
                                         DEVPOS(PROW(),PCOL()+2);DEVOUT('-  Modo de Pagamento: DINHEIRO')
+                                        IF imppedido[1,46] # 0
+                                                DEVPOS(PROW()+1,m_set[1,6]);DEVOUT('Valor da Entrada R$:'+TRANSFORM(imppedido[1,46],'99,999.99'))
+                                        ENDIF
+                                ELSEIF SUBSTR(imppedido[1,44],1,2) = 'PX'
+                                        DEVPOS(PROW()+1,00);DEVOUT('Modo de Pagamento: PIX')
+                                        IF imppedido[1,46] # 0
+                                                DEVPOS(PROW()+1,m_set[1,6]);DEVOUT('Valor da Entrada R$:'+TRANSFORM(imppedido[1,46],'99,999.99'))
+                                        ENDIF
                                 ENDIF
                         ELSE
                                 //IF mcartao = '*' .AND. ver_serie() = '141440'
@@ -434,7 +442,8 @@ IF mquantd > 0
                                                 @ PROW()+1,m_set[1,6] SAY 'CARTAO'
                                                 @ PROW(),PCOL()+1 SAY ' APRAZO: '+SUBSTR(imppedido[1,43],1,1)+' + '+SUBSTR(imppedido[1,43],2,2)
                                         ENDIF
-                                        IF VAL(SUBSTR(imppedido[1,43],1,1)) = 1
+                                        // IF VAL(SUBSTR(imppedido[1,43],1,1)) = 1
+                                        IF imppedido[1,46] # 0
                                                 DEVPOS(PROW()+1,m_set[1,6]+4);DEVOUT('Valor da Entrada R$:'+TRANSFORM(mvlr_ent,'99,999.99'))
                                         ENDIF
                                         IF ! EMPTY(mtot_prazo)

@@ -35,7 +35,7 @@ LOCAL mprg:='SACNF_E',;
       mtot_imposto:=0,mbase_fcp := 0,mdif_aliq :=0,mvICMSUFDest := 0,mvICMSUFRemet:= 0,mtICMSUFDest := 0,mtICMSUFRemet:= 0,;
       mtFCPUFDest := 0,mdata_nfe:=CTOD('  /  /  '),mindIEDest:='',mv_outro:=0,;
       m_vbc := 0,m_vicms := 0,m_vbcst := 0,m_vicmsst := 0,mcrt:='',mcod_cid := '',;
-      nBotao_imp ,nBotao_pre_imp,mperc_frete := 0,lin1 := ' ',i:=0,mvlr_frete := {},x:=0
+      nBotao_imp ,nBotao_pre_imp,mperc_frete := 0,lin1 := ' ',i:=0,mvlr_frete := {},x:=0, mtot_ipi_dev:=0
 
 
 MEMVAR mcod_cli,mmodelo,mcod_nat1,msittrib,mdocumento
@@ -702,7 +702,7 @@ WHILE .T.
 
                 cons_cli[1,26] := STRTRAN(cons_cli[1,26],'-','')
                 cons_cli[1,26] := STRTRAN(cons_cli[1,26],'.','')
-                i := mbase_aux := mpr_fat := 0
+                i := mbase_aux := mpr_fat := mtot_ipi_dev := 0
                 SR_BEGINTRANSACTION()
                         FOR i = 1 TO LEN(m_nota)
                                 IF m_nota[i,5] = 0
@@ -1049,6 +1049,7 @@ WHILE .T.
         NEXT
         */
         mv_outro := mencargo / LEN(m_nota)
+        mtot_ipi_dev := 0
         FOR i = 1 TO LEN(m_nota)
                 IF m_nota[i,5] = 0
                         LOOP
@@ -1294,7 +1295,7 @@ WHILE .T.
                                                         sLinhas := slinhas +'[impostoDevol'+STRZERO(i,3)+']'+ m_qp+;
                                                                             'pDevol='+ALLTRIM(TRANSFORM(m_nota[i,40],'999999.99'))+ m_qp + ;
                                                                             'vIPIDevol='+ALLTRIM(TRANSFORM((iat(mpr_fat)*m_nota[i,5])*(m_nota[i,40]/100),'999999.99'))+ m_qp
-                                                        //mtot_ipi += (iat(mpr_fat)*m_nota[i,5])*(m_nota[i,40]/100)
+                                                        mtot_ipi_dev += (iat(mpr_fat)*m_nota[i,5])*(m_nota[i,40]/100)
                                                 ELSE
         	               				IF ! EMPTY(m_nota[i,24])
                                                                  sLinhas := slinhas +  '[IPI'+STRZERO(i,3)+']'+ m_qp + ;
@@ -1319,7 +1320,7 @@ WHILE .T.
 
 
                                                 ENDIF
-                                                IF ! (VAL(m_nota[i,35]) = 40 .OR. VAL(m_nota[i,35])= 41 .OR. VAL(m_nota[i,35]) = 50)
+                                                IF ! (VAL(m_nota[i,35]) = 40 .OR. VAL(m_nota[i,35])= 41 .OR. VAL(m_nota[i,35]) = 50) .AND. mtipo_nfe # '4'
                                                         sLinhas := slinhas +'[PIS'+STRZERO(i,3)+']'+ m_qp+;
                                                                             'CST='+m_nota[i,38]+ m_qp + ;
                                                                             'vBC='+ALLTRIM(TRANSFORM(iat((iat(mpr_fat,2) * m_nota[i,5]),2),'999999.99'))+ m_qp + ;
@@ -1393,8 +1394,8 @@ WHILE .T.
                                              'ValorNota='+ALLTRIM(TRANSFORM(iat(mtot_nota + mtot_icmf + mseguro + mtot_ipi + mvlr_icmsub + mencargo),STRTRAN(ALLTRIM(m_set[1,98]),',','')))+ m_qp
                 ENDIF
                 sLinhas := slinhas + 'ValorSeguro='+ALLTRIM(TRANSFORM(mseguro,'999999.99'))+ m_qp
-                IF mtipo_nfe # '4'
-                        sLinhas := slinhas + 'vIPIDevol=='+ALLTRIM(TRANSFORM(mtot_ipi,'999999.99'))+ m_qp
+                IF mtipo_nfe = '4'
+                        sLinhas := slinhas + 'vIPIDevol=='+ALLTRIM(TRANSFORM(mtot_ipi_dev,'999999.99'))+ m_qp
                 ENDIF
                 sLinhas := slinhas + 'VPIS='+ALLTRIM(TRANSFORM(mpis,'999999.99'))+ m_qp +;
                 'VCOFINS='+ALLTRIM(TRANSFORM(mconfis,'999999.99')) + m_qp + ;
@@ -1407,9 +1408,9 @@ WHILE .T.
                                 sLinhas := slinhas + 'vFCPUFDest='+ALLTRIM(TRANSFORM(0,'999999.99'))+ m_qp
                         ENDIF
                 ENDIF
-                IF mtipo_nfe = '4'
-                        sLinhas := slinhas + 'vIPIDevol='+ALLTRIM(TRANSFORM(mtot_ipi,'999999.99'))+ m_qp
-                ENDIF
+//                IF mtipo_nfe = '4'
+//                        sLinhas := slinhas + 'vIPIDevol='+ALLTRIM(TRANSFORM(mtot_ipi,'999999.99'))+ m_qp
+//                ENDIF
 
         ENDIF
         mcons_cid := {}
