@@ -1,2 +1,0 @@
-#define ID_MAINICON 100
-
