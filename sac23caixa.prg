@@ -842,6 +842,12 @@ WHILE .T.
                         ELSE
                                 mquantd := ROUND(mquantd,LEN(SUBSTR(mmasc_qtd,AT('.',mmasc_qtd)+1)))
                         ENDIF
+                        IF mped_merc[1,103] = 'S' .AND. mquantd > mped_merc[1,56]
+                                IF ! aut_sen('MERCADORIA BLOQUEADA para nao vender com SALDO A MENOR','LIB_SALDO',,,mcod_merc)
+                                        fecha_tela()
+                                        LOOP
+                                ENDIF
+                        ENDIF
                 ENDIF
                 IF ! EMPTY(m_set[1,154]) .AND. mquantd > m_set[1,154]
                         atencao('QUANTIDADE Solicitada maior que o MAXIMO Permitido')

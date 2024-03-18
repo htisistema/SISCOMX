@@ -43,7 +43,7 @@ WHILE .T.
         //DEVPOS(1,COL()+1);DEVOUT('Exp')
         DEVPOS(1,COL()+1);DEVOUT(' No.App')
         DEVPOS(1,COL()+1);DEVOUT('Flg')
-        DEVPOS(1,COL()+1);DEVOUT('Terminal')
+        //DEVPOS(1,COL()+1);DEVOUT('Terminal')
         DEVPOS(1,COL()+1);DEVOUT('Imp.Via')
         DEVPOS(1,COL()+1);DEVOUT('Qtd.Item')
         IF mmult_emp = 'S'
@@ -56,76 +56,85 @@ WHILE .T.
         mensagem('Aguarde um momento coletando informacoes para a consulta OK !!!')
         IF mped_orc = 2
                 IF mab_pg <> NIL
-                        cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND ppag = '*'"
+                        // cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND ppag = '*'"
+                        cComm  := "SELECT pempresa, pnum_ped, pdat_ped, pcod_cli, pcod_vend, pcod_oper, ptp_vend, phora, pos, pfecha, qtd_via, (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
+                                  + " FROM sacped_s orc WHERE sr_deleted = ' ' AND ppag = '*' group by 1,2,3,4,5,6,7,8, 9, 10, 11, 12 order by pnum_ped"
                 ELSE
-                        cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND (ppag IS NULL OR ppag = ' ')"
+                        // cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND (ppag IS NULL OR ppag = ' ')"
+                        cComm  := "SELECT pempresa, pnum_ped, pdat_ped, pcod_cli, pcod_vend, pcod_oper, ptp_vend, phora, pos, pfecha, qtd_via, (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
+                                  + " FROM sacped_s orc WHERE sr_deleted = ' ' AND (ppag IS NULL OR ppag = ' ') group by 1,2,3,4,5,6,7,8, 9, 10, 11, 12 order by pnum_ped"
                 ENDIF
         ELSE
                 IF mab_pg <> NIL
-                        cComm  := "SELECT  * FROM sacorcam WHERE sr_deleted = ' ' AND ppag = '*'"
+                        //cComm  := "SELECT  * FROM sacorcam WHERE sr_deleted = ' ' AND ppag = '*'"
+                        cComm  := "SELECT pempresa, pnum_ped, pdat_ped, pcod_cli, pcod_vend, pcod_oper, ptp_vend, phora, pos, pfecha, qtd_via, (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
+                                  + " FROM sacorcam orc WHERE sr_deleted = ' ' AND ppag = '*' group by 1,2,3,4,5,6,7,8, 9, 10, 11, 12 order by pnum_ped"
                 ELSE
-                        cComm  := "SELECT  * FROM sacorcam WHERE sr_deleted = ' ' AND (ppag IS NULL OR ppag = ' ')"
+                        //cComm  := "SELECT  * FROM sacorcam WHERE sr_deleted = ' ' AND (ppag IS NULL OR ppag = ' ')"
+                        cComm  := "SELECT pempresa, pnum_ped, pdat_ped, pcod_cli, pcod_vend, pcod_oper, ptp_vend, phora, pos, pfecha, qtd_via, (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
+                                  + " FROM sacorcam orc WHERE sr_deleted = ' ' AND (ppag IS NULL OR ppag = ' ') group by 1,2,3,4,5,6,7,8, 9, 10, 11, 12 order by pnum_ped"
                 ENDIF
         ENDIF
-        IF ! EMPTY(mcodemp)
-                ccomm := ccomm + " AND  pempresa = "+sr_cdbvalue(mcodemp)
-        ENDIF
-        cComm  := ccomm + " ORDER BY pnum_ped,ppag"
+//        IF ! EMPTY(mcodemp)
+//                ccomm := ccomm + " AND  pempresa = "+sr_cdbvalue(mcodemp)
+//        ENDIF
+//        cComm  := ccomm + " ORDER BY pnum_ped,ppag"
         cons_arq := {}
         sr_getconnection():exec(ccomm,,.t.,@cons_arq)
         sr_getconnection():exec('COMMIT',,.f.)
         m_codigo := {}
         m_posicao:= {}
-        mquantd_ped := mtot_ger := mtot_pv := 0
-        i := 0
+        mquantd_ped := mtot_ger := mtot_pv := i := 0
         FOR i = 1 TO LEN(cons_arq)
                 prog_imp(i,cons_arq[i,2])
-        	cons_cli := {}
-                sr_getconnection():exec("SELECT razao FROM saccli WHERE cod_cli = "+sr_cdbvalue(cons_arq[i,23]),,.t.,@cons_cli)
-                sr_getconnection():exec('COMMIT',,.f.)
-                IF LEN(cons_cli) = 0
-                        atencao('Cliente nao cadastrado !!!')
-                        LOOP
-                ENDIF
+//        	cons_cli := {}
+//                sr_getconnection():exec("SELECT razao FROM saccli WHERE cod_cli = "+sr_cdbvalue(cons_arq[i,23]),,.t.,@cons_cli)
+//                sr_getconnection():exec('COMMIT',,.f.)
+//                IF LEN(cons_cli) = 0
+//                        atencao('Cliente nao cadastrado !!!')
+//                        LOOP
+//                ENDIF
 
                 mcont_item:=0
-                mnum_pedido     := cons_arq[i,2]
-                mcod_vend       := cons_arq[i,32]
-                mcod_op         := cons_arq[i,34]
-                mdata_ped       := cons_arq[i,4]
-                mhora           := cons_arq[i,47]
-                mtipo_venda     := cons_arq[i,45]
-                mcod_cli        := cons_arq[i,23]
                 mcod_emp        := cons_arq[i,1]
-                mexp_por        := cons_arq[i,68]
-                mlib_por        := cons_arq[i,65]
-                mnum_os         := cons_arq[i,94]
-                mfecha          := cons_arq[i,100]
-                mqtd_via        := cons_arq[i,109]
-                mdesconto       := cons_arq[i,76]
+                mnum_pedido     := cons_arq[i,2]
+                mdata_ped       := cons_arq[i,3]
+                mcod_cli        := cons_arq[i,4]
+                mcod_vend       := cons_arq[i,5]
+                mcod_op         := cons_arq[i,6]
+                mtipo_venda     := cons_arq[i,7]
+                mhora           := cons_arq[i,8]
+                mnum_os         := cons_arq[i,9]
+                mfecha          := cons_arq[i,10]
+                mqtd_via        := cons_arq[i,11]
                 //mposicao := cons_arq[i,99]
 
                 mtot_ped := mtot_pv := mdesc_r := mdesc_p := 0
+                IF cons_arq[i,13] < cons_arq[i,14]
+	                mtot_ped := cons_arq[i,13]
+                ELSE
+	                mtot_ped := cons_arq[i,14]
+		ENDIF
 
-                WHILE mnum_pedido = cons_arq[i,2]
-                        IF cons_arq[i,20] < cons_arq[i,18]
-        	                mtot_pv := mtot_pv + cons_arq[i,14] * cons_arq[i,18]
-                        ELSE
-        	                mtot_pv := mtot_pv + cons_arq[i,14] * cons_arq[i,20]
-			ENDIF
-			*/
-                        mcont_item ++
-                        i := i + 1
-                        IF i > LEN(cons_arq)
-                                EXIT
-                        ENDIF
-                ENDDO
-        	i := i - 1
-		mtot_ped := mtot_pv - mdesconto
+//                WHILE mnum_pedido = cons_arq[i,2]
+//                        IF cons_arq[i,20] < cons_arq[i,18]
+//        	                mtot_pv := mtot_pv + cons_arq[i,14] * cons_arq[i,18]
+//                        ELSE
+//        	                mtot_pv := mtot_pv + cons_arq[i,14] * cons_arq[i,20]
+//			ENDIF
+//			*/
+//                        mcont_item ++
+//                        i := i + 1
+//                        IF i > LEN(cons_arq)
+//                                EXIT
+//                        ENDIF
+//                ENDDO
+//        	i := i - 1
+//		mtot_ped := mtot_pv - mdesconto
                 //IF m_set[1,109] = 'S'
 			//mtot_ped := mtot_ped - mdesconto
-	        	mdesc_r := mdesconto
-                	mdesc_p := (mdesc_r / mtot_ped) * 100
+//	        	mdesc_r := mdesconto
+//                	mdesc_p := (mdesc_r / mtot_ped) * 100
                 /*
                 ELSE
 	                IF mtot_pv > mtot_ped
@@ -136,14 +145,15 @@ WHILE .T.
 		*/
                 mtot_ger := mtot_ger + mtot_ped
                 mquantd_ped ++
-		              //      1               2              3                 4               5                   6                                7              8              9            10           11          12            13           14
-                AADD(m_codigo,mnum_pedido+' '+STR(mcod_cli,5)+' '+LEFT(cons_cli[1,1],22)+' '+mcod_vend+' '+DTOC(mdata_ped)+'-'+mhora+'  '+TRANSFORM(mtot_ped,'999,999.99')+'  '+mtipo_venda+' '+mcod_op+'  '+mnum_os+' '+mfecha+' '+cons_arq[1,3]+'  '+mqtd_via+'      '+STR(mcont_item,4))
+                //atencao(STR(mcod_cli,5)+' '+LEFT(cons_arq[i,12],22))
+                              //      1               2              3                 4               5                   6                                7              8              9            10           11          12            13           14
+                AADD(m_codigo,mnum_pedido+' '+STR(mcod_cli,5)+' '+LEFT(cons_arq[i,12],22)+' '+mcod_vend+' '+DTOC(mdata_ped)+'-'+mhora+'  '+TRANSFORM(mtot_ped,'999,999.99')+'  '+mtipo_venda+' '+mcod_op+'  '+mnum_os+' '+mfecha+'  '+mqtd_via+'      '+STR(mcont_item,4))
                 //AADD(m_codigo,mnum_pedido+' '+STR(mcod_cli,5)+' '+mcod_vend+' '+DTOC(mdata_ped)+'-'+mhora+' '+TRANSFORM(mtot_ped,'999,999.99')+' '+TRANSFORM(mdesc_r,'9,999.99')+' '+TRANSFORM(mdesc_p,'999.99')+'%  '+mtipo_venda+' '+mcod_op+' '+mlib_por+' '+mexp_por+'  '+mnum_os+'  '+mfecha+'  '+cons_arq[1,3]+' '+mqtd_via+'   '+STRZERO(mcont_item,4))
                 //AADD(m_codigo,' '+mnum_pedido+'  '+mcod_cli+'  '+mcod_vend+'  '+DTOC(mdata_ped)+'  '+mhora+'  '+TRANSFORM(mtot_ped,'9,999,999.99')+'  '+mtipo_venda+'  '+mcod_op+'   '+mcod_emp+'  '+mlib_por+' '+mexp_por+' '+mnum_os+'   '+cons_arq[1,100])
                 AADD(m_posicao,mnum_pedido)
-                IF i > LEN(cons_arq)
-                        EXIT
-                ENDIF
+//                IF i > LEN(cons_arq)
+//                        EXIT
+//                ENDIF
         NEXT
         IF LEN(m_codigo) = 0
                 atencao('Nenhum Pedido Pedente !!!')
