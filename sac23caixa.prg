@@ -844,7 +844,7 @@ WHILE .T.
                         ENDIF
                         IF mped_merc[1,103] = 'S' .AND. mquantd > mped_merc[1,56]
                                 IF ! aut_sen('MERCADORIA BLOQUEADA para nao vender com SALDO A MENOR','LIB_SALDO',,,mcod_merc)
-                                        fecha_tela()
+                                        //fecha_tela()
                                         LOOP
                                 ENDIF
                         ENDIF
