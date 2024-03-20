@@ -69,7 +69,7 @@ WHILE .T.
         DEVPOS(13,2);DEVOUT('Imprimir o Saldo do(s) Produtos [S/n]..............:')
         DEVPOS(14,2);DEVOUT('Imprimir Com Detalhe do(s) Produtos [S/n]..........:')
         DEVPOS(15,2);DEVOUT('Imprimir Com OBSERVACOES do(s) Produtos [S/n]......:')
-        DEVPOS(16,2);DEVOUT('Imprimir Preco de [V]enda ou Preco [C]usto........ :')
+        DEVPOS(16,2);DEVOUT('Imp.Preco [V]enda - [C]usto Merc - Vlr.[M]ercadoria:')
         DEVPOS(17,2);DEVOUT('Imprimir Aliquota do Produtos [S/n]................:')
         DEVPOS(18,2);DEVOUT('So Produtos c/Saldo Negativo [S/N].................:')
         DEVPOS(19,2);DEVOUT('So os Produtos em PROMOCAO [S/N]...................:')
@@ -122,7 +122,7 @@ WHILE .T.
         @ 13,54 GET msaldo PICT '@!' VALID msaldo $ 'S,N'
         @ 14,54 GET mdetalhe PICT '@!' VALID mdetalhe $ 'S,N'
         @ 15,54 GET mobs PICT '@!' VALID mobs $ 'S,N' WHEN mdetalhe = 'S'
-        @ 16,54 GET mimp_pr1 PICT '@!' WHEN ver_nivel(mprg+'CUST','ALTERAR TIPO DE PRECO NO RELATORIO (TABELA DE PRECO)','15',nivel_acess,'*') VALID mimp_pr1 $ 'V,C'
+        @ 16,54 GET mimp_pr1 PICT '@!' WHEN ver_nivel(mprg+'CUST','ALTERAR TIPO DE PRECO NO RELATORIO (TABELA DE PRECO)','15',nivel_acess,'*') VALID mimp_pr1 $ 'V,C,M'
         @ 17,54 GET maliq PICT '@!' VALID maliq $ 'S,N'
         @ 18,54 GET msaldo_neg PICT '@!' VALID msaldo_neg $ 'S,N'
         @ 19,54 GET mpromo PICT '@!' VALID mpromo $ 'S,N'
@@ -177,7 +177,7 @@ WHILE .T.
                 cComm  := ccomm +"sittrib   ,ind_icms,qtd_falta,gru_sub  ,isento   ,"
                 cComm  := ccomm +"bebida    ,ref     ,pis      ,confis   ,pr_venda4,"
                 cComm  := ccomm +"0         ,nbm     ,p_lucro  ,cust_real,local    ,"
-                cComm  := ccomm +"cust_merc "
+                cComm  := ccomm +"cust_merc ,vlr_merc"
                 //cComm  := ccomm +" FROM sacmerc WHERE cod_merc IS NOT NULL AND NOT disp = 'N'"
                 cComm  := ccomm +" FROM sacmerc WHERE cod_merc IS NOT NULL"
                 IF ! EMPTY(mpesquisa)
@@ -329,9 +329,12 @@ WHILE .T.
                         IF mimp_pr1 = 'V'
                                 mcol ++
                                 xlsWrite( nXls, f, mcol, 'TABELA')  
-                        ELSE
+                        ELSEIF mimp_pr1 = 'C'
                                 mcol ++
                                 xlsWrite( nXls, f, mcol, 'PRECO CUSTO')
+                        ELSE
+                                mcol ++
+                                xlsWrite( nXls, f, mcol, 'VLR.MERCADORIA')
                         ENDIF
                         IF ! EMPTY(mtab_pr1)
                                 mcol ++
@@ -398,9 +401,12 @@ WHILE .T.
                                 IF mimp_pr1 = 'V'
                                         mcol++
                                         xlsWrite( nXls, f,mcol,TRANSFORM(m_merc[i,13],'99,999.99'))
-                                ELSE
+                                ELSEIF mimp_pr1 = 'C'
                                         mcol++
                                         xlsWrite( nXls, f,mcol,TRANSFORM(m_merc[i,31],'99,999.99'))
+                                ELSE
+                                        mcol++
+                                        xlsWrite( nXls, f,mcol,TRANSFORM(m_merc[i,32],'99,999.99'))
                                 ENDIF
                                 IF ! EMPTY(mtab_pr1)
                                         cons_ := {}
@@ -527,8 +533,10 @@ WHILE .T.
                                                         ENDIF
                                                         IF mimp_pr1 = 'V'
                                                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('   Tabela')
-                                                        ELSE
+                                                        ELSEIF mimp_pr1 = 'C'
                                                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('Prc.Custo')
+                                                        ELSE
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Vlr.Merc.')
                                                         ENDIF
                                                         IF ! EMPTY(mtab_pr1)
                                                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('Tab.: '+STRZERO(mtab_pr1,3))
@@ -577,8 +585,10 @@ WHILE .T.
                                         ENDIF
                                         IF mimp_pr1 = 'V'
                                                 DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_merc[i,13],'99,999.99')
-                                        ELSE
+                                        ELSEIF mimp_pr1 = 'C'
                                                 DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_merc[i,31],'99,999.99')
+                                        ELSE
+                                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_merc[i,32],'99,999.99')
                                         ENDIF
                                         IF ! EMPTY(mtab_pr1)
                                                 cons_ := {}
@@ -701,8 +711,10 @@ WHILE .T.
                                                                         ENDIF
                                                                         IF mimp_pr1 = 'V'
                                                                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('   Tabela')
-                                                                        ELSE
+                                                                        ELSEIF mimp_pr1 = 'C'
                                                                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('Prc.Custo')
+                                                                        ELSE
+                                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Vlr.Merc.')
                                                                         ENDIF
                                                                         IF ! EMPTY(mtab_pr1)
                                                                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('Tab.: '+STRZERO(mtab_pr1,3))
@@ -764,8 +776,10 @@ WHILE .T.
                                         ENDIF
                                         IF mimp_pr1 = 'V'
                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('  Preco 1')
-                                        ELSE
+                                        ELSEIF mimp_pr1 = 'C'
                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Prc.Custo')
+                                        ELSE
+                                               DEVPOS(PROW(),PCOL()+1);DEVOUT('Vlr.Merc.')
                                         ENDIF
                                         IF ! EMPTY(mtab_pr1)
                                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('Tab.: '+STRZERO(mtab_pr1,3))
@@ -939,8 +953,10 @@ FOR f = 1 TO mquantd
                         ENDIF
                         IF mimp_pr1 = 'V'
                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('   Tabela')
-                        ELSE
+                        ELSEIF mimp_pr1 = 'C'
                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('Prc.Custo')
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Vlr.Merc.')
                         ENDIF
                         IF ! EMPTY(mtab_pr1)
                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('Tab.: '+STRZERO(mtab_pr1,3))
@@ -1000,8 +1016,10 @@ FOR f = 1 TO mquantd
                                 ENDIF
                                 IF mimp_pr1 = 'V'
                                         DEVPOS(PROW(),PCOL()+1);DEVOUT('   Tabela')
-                                ELSE
+                                ELSEIF mimp_pr1 = 'C'
                                         DEVPOS(PROW(),PCOL()+1);DEVOUT('Prc.Custo')
+                                ELSE
+                                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Vlr.Merc.')
                                 ENDIF
                                 IF ! EMPTY(mtab_pr1)
                                         DEVPOS(PROW(),PCOL()+1);DEVOUT('Tab.: '+STRZERO(mtab_pr1,3))
@@ -1044,8 +1062,10 @@ FOR f = 1 TO mquantd
                         ENDIF
                         IF mimp_pr1 = 'V'
                                 DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_merc[i,13],'99,999.99')
-                        ELSE
+                        ELSEIF mimp_pr1 = 'C'
                                 DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_merc[i,31],'99,999.99')
+                        ELSE
+                                DEVPOS(PROW(),PCOL()+1);DEVOUTPICT(m_merc[i,32],'99,999.99')
                         ENDIF
                         IF ! EMPTY(mtab_pr1)
                                 cons_ := {}
@@ -1167,8 +1187,10 @@ FOR f = 1 TO mquantd
                                                         ENDIF
                                                         IF mimp_pr1 = 'V'
                                                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('   Tabela')
-                                                        ELSE
+                                                        ELSEIF mimp_pr1 = 'C'
                                                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('Prc.Custo')
+                                                        ELSE
+                                                                DEVPOS(PROW(),PCOL()+1);DEVOUT('Vlr.Merc.')
                                                         ENDIF
                                                         IF ! EMPTY(mtab_pr1)
                                                                 DEVPOS(PROW(),PCOL()+1);DEVOUT('Tab.: '+STRZERO(mtab_pr1,3))
@@ -1217,8 +1239,10 @@ FOR f = 1 TO mquantd
                 ENDIF
                 IF mimp_pr1 = 'V'
                        DEVPOS(PROW(),PCOL()+1);DEVOUT('  Preco 1')
+                ELSEIF mimp_pr1 = 'C'
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Prc.Custo')
                 ELSE
-                       DEVPOS(PROW(),PCOL()+1);DEVOUT('Prc.Custo')
+                        DEVPOS(PROW(),PCOL()+1);DEVOUT('Vlr.Merc.')
                 ENDIF
                 IF ! EMPTY(mtab_pr1)
                         DEVPOS(PROW(),PCOL()+1);DEVOUT('Tab.: '+STRZERO(mtab_pr1,3))
