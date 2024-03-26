@@ -758,7 +758,7 @@ WHILE .T.
                                         LOOP
                                 ENDIF
                         ENDIF
-                        IF mtp_vend = 'AV'
+                        IF mtp_vend = 'AV' .AND. ver_serie() <> '141287'
                                 mcond_intev := 'DU00100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
                                 mcons_vezes := '001'
                         ENDIF
@@ -1072,7 +1072,7 @@ WHILE .T.
                         ENDIF
                         mtipo_comp = 'AV'
                ELSEIF mtipo_pg = 8
-                        op_tela(li+18,ci+28,li+22,ci+57,' RECEBIMENTO NO PIX ')
+                        op_tela(li+18,ci+28,li+22,ci+57,' RECEIMENTO NO PIX ')
                         mn_pix := ALLTRIM(STR(mnum_ped))+SPACE(8-LEN(ALLTRIM(STR(mnum_ped))))
                         mvencimento := mdata_sis
                         mvalor := mdiferenca
