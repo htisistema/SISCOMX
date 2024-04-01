@@ -564,6 +564,7 @@ WHILE .T.
                         IF LEN(q_caixa) > 0
                                 m_ped := q_caixa[1,4]
                         ENDIF
+                        cons_ped := {}
                         i:=0
                         FOR i = 1 TO LEN(q_caixa)
                                 prog_imp(i,q_caixa[i,4])
@@ -682,16 +683,16 @@ WHILE .T.
                                         DEVPOS(PROW(),127);DEVOUT('Valor')
                                         DEVPOS(PROW()+1,00);DEVOUT(REPLI('=',132))
                                 ENDIF
-                                IF mn_ped <> q_caixa[i,4]
-                                        IF mtipo_rel = 'G' .AND. mimp_prod = 'S'  .AND. SUBSTR(mn_ped,1,2) = 'PD'
+                                        IF mtipo_rel = 'G' .AND. mimp_prod = 'S'  .AND. SUBSTR(q_caixa[i,4],1,2) = 'PD' .AND. LEN(cons_ped) = 0
                                                 cons_ped := {}
-                                                cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(SUBSTR(mn_ped,3,6))
+                                                // cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(SUBSTR(mn_ped,3,6))
+                                                cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND pnum_ped = "+sr_cdbvalue(SUBSTR(q_caixa[i,4],3,6))
                                                 sr_getconnection():exec(ccomm,,.t.,@cons_ped)
                                                 sr_getconnection():exec('COMMIT',,.f.)
                                                 IF LEN(cons_ped) > 0
                                                         c_ped := 0
                                                         FOR c_ped = 1 TO LEN(cons_ped)
-                                	                        DEVPOS(PROW()+1,12);DEVOUT('Produto: '+cons_ped[c_ped,6]+'-'+cons_ped[c_ped,7]+' Quantd.: '+TRANSFORM(cons_ped[c_ped,14],'999,999.99')+' Vlr.Unit.: '+TRANSFORM(cons_ped[c_ped,18],'999,999.99')+' TOTAL: '+TRANSFORM(cons_ped[c_ped,14]+cons_ped[c_ped,18],'999,999.99'))
+                                	                        DEVPOS(PROW()+1,12);DEVOUT('Produto: '+cons_ped[c_ped,6]+'-'+cons_ped[c_ped,7]+' Quantd.: '+TRANSFORM(cons_ped[c_ped,14],'999,999.99')+' Vlr.Unit.: '+TRANSFORM(cons_ped[c_ped,18],'999,999.99')+' TOTAL: '+TRANSFORM(cons_ped[c_ped,14]*cons_ped[c_ped,18],'999,999.99'))
                                                                 IF PROW() >= 59
                                                                         EJECT
                                                                         mpag ++
@@ -705,6 +706,8 @@ WHILE .T.
                                                         NEXT
                                                 ENDIF
                                         ENDIF
+                                IF mn_ped <> q_caixa[i,4]
+                                        cons_ped := {}
                                         mn_ped := q_caixa[i,4]
                                 ENDIF
                         NEXT

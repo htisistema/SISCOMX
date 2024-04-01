@@ -3314,6 +3314,11 @@ IF mdbf = NIL .AND. ! SR_EXISTTABLE('sactabpg')
         matriz := matriz + ',preco  CHAR(1) '
         matriz := matriz +',sr_recno DECIMAL(15,0) NOT NULL '
         matriz := matriz +',sr_deleted CHAR(1)'
+        matriz := matriz +',tipo_pg CHAR(2)'
+        matriz := matriz +',cod_forn CHAR(4)'
+        matriz := matriz +',tipo_conta CHAR(4)'
+        matriz := matriz +',tipo_venda CHAR(1)'
+        matriz := matriz +',tef CHAR(1)'
         //DBCREATE('sactabpg  matriz,'SQLRDD')
         sr_getconnection():exec("CREATE GENERATOR SACTABPG",,.f.)
         sr_getconnection():exec("CREATE TABLE SACTABPG ("+matriz+" )",,.f.)

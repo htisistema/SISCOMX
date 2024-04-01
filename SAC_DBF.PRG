@@ -37,7 +37,6 @@ ENDIF
 mdata_pped := CTOD('14/03/2007')
 mdata_cheq := CTOD('25/06/2007')
 mdata_caixa:= CTOD('20/07/2008')
-mdata_tabpg:= CTOD('21/03/2009')
 mdata_cid  := CTOD('13/08/2009')
 mdata_obs  := CTOD('18/10/2009')
 mdata_roma := CTOD('03/05/2010')
@@ -79,6 +78,7 @@ mdata_logp := CTOD('08/03/2023')
 mdata_forn := CTOD('09/05/2023')
 mdata_merc := CTOD('04/09/2023')
 mdata_peds := CTOD('08/01/2024')
+mdata_tabpg:= CTOD('01/04/2024')
 IF mtp # 'HTI'
         IF mtp = 'arquivo'
 	       matualiza := mmerc := mmov := mmovnt := mos := mpeds := mcaix := mdupr := mdupp := ;
@@ -2465,6 +2465,41 @@ IF mtabpg = 'X' .AND. m_cfg[2] = 'S'
                 END
                 TRY
                         sr_getconnection():exec('ALTER TABLE sactabpg ADD PRECO VARCHAR(1)',,.f.)
+                        sr_committransaction()
+                CATCH E
+                        tracelog(valtoprg())
+                        sr_COMMITtransaction()
+                END
+                TRY
+                        sr_getconnection():exec('ALTER TABLE sactabpg ADD tipo_pg VARCHAR(2)',,.f.)
+                        sr_committransaction()
+                CATCH E
+                        tracelog(valtoprg())
+                        sr_COMMITtransaction()
+                END
+                TRY
+                        sr_getconnection():exec('ALTER TABLE sactabpg ADD cod_forn VARCHAR(4)',,.f.)
+                        sr_committransaction()
+                CATCH E
+                        tracelog(valtoprg())
+                        sr_COMMITtransaction()
+                END
+                TRY
+                        sr_getconnection():exec('ALTER TABLE sactabpg ADD tipo_conta VARCHAR(4)',,.f.)
+                        sr_committransaction()
+                CATCH E
+                        tracelog(valtoprg())
+                        sr_COMMITtransaction()
+                END
+                TRY
+                        sr_getconnection():exec('ALTER TABLE sactabpg ADD tipo_venda VARCHAR(1)',,.f.)
+                        sr_committransaction()
+                CATCH E
+                        tracelog(valtoprg())
+                        sr_COMMITtransaction()
+                END
+                TRY
+                        sr_getconnection():exec('ALTER TABLE sactabpg ADD tef VARCHAR(1)',,.f.)
                         sr_committransaction()
                 CATCH E
                         tracelog(valtoprg())
