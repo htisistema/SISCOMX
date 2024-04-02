@@ -1433,7 +1433,7 @@ LOCAL MPRG:="SACNFCE",;
       opcao,lci,lba,cba,i,mopcao,f,mtipo_comp,mtipo_pag,mtot_verif:=0,mperc_comissao,li,lb,cb,mdiferenca:=0,mtroco:=0,;
       m_recebe:={},mdinheiro,mn_banco,mn_cheque,mn_dup,mn_trans,mvencimento,mt_pag,mvalor,mn_fin,mtot_ipi,mbox_rece,;
       magencia,mc_c,mcorrente,mcartao_sn:=" ",aret:={},mvlr_cred:=0,mcredito_aux:=0,m_credito:={},Operacoes,;
-      mdesc_tot:=0,mvlr_cartao:=0,mpix := 0, mdebito:='  '
+      mdesc_tot:=0,mvlr_cartao:=0,mpix := 0, mdebito:='  ', mtot_qtd:=0
 
 MEMVAR mtot_nota,m_codigo,m_merc,m_matriz,mdocumento,mnum_ecf,mcod_bc,m_flag,mcgc,mcpf,minsc,mcliente,mcod_vend,mnum_ccf
 
@@ -1492,7 +1492,7 @@ WHILE .T.
         mensagem("Preencha os Campos - <ESC> p/Retornar ")
         mcom_ven := mcom_ap := mperc := mvl_vend := mperc_comissao := mprazo_cart := mdesc_cart := mtot_icm :=;
         mdinheiro := mcod_cart := mvalor := mtot_verif := mtot_ipi := mdiferenca := i := f := mtot_verif := mtot_rece := ;
-        mvlr_cred := mdesc_p := mdesc_r := mdesc_u := mdesconto := 0
+        mvlr_cred := mdesc_p := mdesc_r := mdesc_u := mdesconto := mtot_qtd := 0
         mcliente = SPACE(40)
         //mcpf := SPACE(11)
         //mcgc := SPACE(14)
@@ -2307,13 +2307,14 @@ WHILE .T.
                                                 ELSE
                                                         sLinhas := slinhas +'Unidade='+ALLTRIM(m_nota[i,8])+ m_qp
                                                 ENDIF
+
                                                 sLinhas := slinhas + 'Quantidade='+STRTRAN(ALLTRIM(TRANSFORM(m_nota[i,5],m_set[1,99])),',','')+ m_qp + ;
-                                                'Quantidade='+STRTRAN(ALLTRIM(TRANSFORM(m_nota[i,5],m_set[1,99])),',','')+ m_qp + ;
                                                 'ValorUnitario='+ALLTRIM(TRANSFORM(iat(mpr_fat,2),STRTRAN(ALLTRIM(m_set[1,98]),',','')))+ m_qp + ;
                                                 'ValorTotal='+ALLTRIM(TRANSFORM(iat(mpr_fat,2)*m_nota[i,5],STRTRAN(ALLTRIM(m_set[1,98]),',','')))+ m_qp + ;
                                                 '[ICMS'+STRZERO(mitem,3)+']'+ m_qp + ;
                                                 'Origem=0'+ m_qp
                                                 mtot_nota := mtot_nota + iat(mpr_fat*m_nota[i,5])
+
                                                 //MvCredICMSSN := (iat(mpr_fat,2)*m_nota[i,5]) * 0.05
                                                 IF m_set[1,126] = 'S'
                                                         sLinhas := slinhas +'CSOSN='+ALLTRIM(STR(VAL(m_nota[i,35])))+ m_qp +;
@@ -2375,11 +2376,15 @@ WHILE .T.
                                                         ENDIF
                                                 ENDIF
                                                 IF ! EMPTY(mcons_prod[1,117])
-                                                        sLinhas := slinhas +'[comb'+STRZERO(mitem,3)+']'+ m_qp +;
-                                                                            'cProdANP='+mcons_prod[1,117]+ m_qp + ;
-                                                                            'descANP=GLP'+ m_qp + ;
-                                                                            'pGLP=100.00'+ m_qp + ;     //'vPart=10.00'+ m_qp + ;
-                                                                            'UFCons='+m_set[1,19]+ m_qp
+                                                        mtot_qtd = mtot_qtd + m_nota[i,5]
+                                                        sLinhas := slinhas + 'qBCMonoRet='+STRTRAN(ALLTRIM(TRANSFORM(m_nota[i,5],m_set[1,99])),',','')+ m_qp + ;
+                                                                             'adRemICMSRet=1.22'+ m_qp +;
+                                                                             'vICMSMonoRet='+ALLTRIM(TRANSFORM(iat((iat(m_nota[i,20])/100) * iat((((iat(mpr_fat) * m_nota[i,5])*m_nota[i,34])),2),2),'999999.99'))+ m_qp +;
+                                                                             '[comb'+STRZERO(mitem,3)+']'+ m_qp +;
+                                                                             'cProdANP='+mcons_prod[1,117]+ m_qp + ;
+                                                                             'descANP=GLP'+ m_qp + ;
+                                                                             'pGLP=100.00'+ m_qp + ;     //'vPart=10.00'+ m_qp + ;
+                                                                             'UFCons='+m_set[1,19]+ m_qp
                                                 ENDIF
 
                 NEXT
@@ -2389,6 +2394,10 @@ WHILE .T.
                         'ValorICMS='+ALLTRIM(TRANSFORM(mtot_icm,'999999.99'))+ m_qp +; //                        'ValorFrete='+ALLTRIM(TRANSFORM(0,'999999.99'))+ m_qp
                         'ValorProduto='+ALLTRIM(TRANSFORM(mtot_nota,'999999.99'))+ m_qp + ;
                         'ValorNota='+ALLTRIM(TRANSFORM(iat(mtot_nota),'999999.99'))+ m_qp
+                IF ! EMPTY(mcons_prod[1,117])
+                        sLinhas := slinhas + 'qBCMonoRet='+ALLTRIM(TRANSFORM(mtot_qtd,'999999.99'))+ m_qp + ;
+                                             'vICMSMonoRet='+ALLTRIM(TRANSFORM(mtot_icm,'999999.99'))+ m_qp
+                ENDIF
                 //mcons_cid := {}
                 //cComm := "SELECT * FROM saccid WHERE (cidade = "+sr_cdbvalue(RTRIM(cons_cli[1,24]))+" OR cidade IS NULL) AND uf = "+sr_cdbvalue(RTRIM(cons_cli[1,25]))
                 sr_getconnection():exec(ccomm,,.t.,@mcons_cid)

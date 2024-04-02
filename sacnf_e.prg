@@ -1306,11 +1306,15 @@ WHILE .T.
                                                         ENDIF
                                                 ENDIF
                                                 IF ! EMPTY(mcons_prod[1,117])
-                                                        sLinhas := slinhas +'[COMB'+STRZERO(i,3)+']'+ m_qp +;
-                                                                            'cProdANP='+mcons_prod[1,117]+ m_qp + ;
-                                                                            'descANP=GLP'+ m_qp + ;
-                                                                            'pGLP=100.00'+ m_qp + ;
-                                                                            'UFCons='+cons_cli[1,25]+ m_qp
+                                                        mtot_qtd = mtot_qtd + m_nota[i,5]
+                                                        sLinhas := slinhas + 'qBCMonoRet='+STRTRAN(ALLTRIM(TRANSFORM(m_nota[i,5],m_set[1,99])),',','')+ m_qp + ;
+                                                                             'adRemICMSRet=1.22'+ m_qp +;
+                                                                             'vICMSMonoRet='+ALLTRIM(TRANSFORM(iat((iat(m_nota[i,20])/100) * iat((((iat(mpr_fat) * m_nota[i,5])*m_nota[i,34])),2),2),'999999.99'))+ m_qp +;
+                                                                             '[COMB'+STRZERO(i,3)+']'+ m_qp +;
+                                                                             'cProdANP='+mcons_prod[1,117]+ m_qp + ;
+                                                                             'descANP=GLP'+ m_qp + ;
+                                                                             'pGLP=100.00'+ m_qp + ;
+                                                                             'UFCons='+cons_cli[1,25]+ m_qp
 
                                                                             //'[ICMS61'+STRZERO(i,3)+']'+ m_qp + ;
                                                                             //'CST=61'+ m_qp +;
@@ -1408,6 +1412,11 @@ WHILE .T.
                                 sLinhas := slinhas + 'vFCPUFDest='+ALLTRIM(TRANSFORM(0,'999999.99'))+ m_qp
                         ENDIF
                 ENDIF
+                IF ! EMPTY(mcons_prod[1,117])
+                        sLinhas := slinhas + 'qBCMonoRet='+ALLTRIM(TRANSFORM(mtot_qtd,'999999.99'))+ m_qp + ;
+                                             'vICMSMonoRet='+ALLTRIM(TRANSFORM(mtot_icm,'999999.99'))+ m_qp
+                ENDIF
+
 //                IF mtipo_nfe = '4'
 //                        sLinhas := slinhas + 'vIPIDevol='+ALLTRIM(TRANSFORM(mtot_ipi,'999999.99'))+ m_qp
 //                ENDIF
