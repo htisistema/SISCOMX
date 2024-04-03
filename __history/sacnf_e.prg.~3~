@@ -35,8 +35,7 @@ LOCAL mprg:='SACNF_E',;
       mtot_imposto:=0,mbase_fcp := 0,mdif_aliq :=0,mvICMSUFDest := 0,mvICMSUFRemet:= 0,mtICMSUFDest := 0,mtICMSUFRemet:= 0,;
       mtFCPUFDest := 0,mdata_nfe:=CTOD('  /  /  '),mindIEDest:='',mv_outro:=0,;
       m_vbc := 0,m_vicms := 0,m_vbcst := 0,m_vicmsst := 0,mcrt:='',mcod_cid := '',;
-      nBotao_imp ,nBotao_pre_imp,mperc_frete := 0,lin1 := ' ',i:=0,mvlr_frete := {},x:=0, mtot_ipi_dev:=0,;
-      mtot_qtd := 0
+      nBotao_imp ,nBotao_pre_imp,mperc_frete := 0,lin1 := ' ',i:=0,mvlr_frete := {},x:=0, mtot_ipi_dev:=0
 
 
 MEMVAR mcod_cli,mmodelo,mcod_nat1,msittrib,mdocumento
@@ -1050,7 +1049,7 @@ WHILE .T.
         NEXT
         */
         mv_outro := mencargo / LEN(m_nota)
-        mtot_ipi_dev := mtot_qtd := 0
+        mtot_ipi_dev := 0
         FOR i = 1 TO LEN(m_nota)
                 IF m_nota[i,5] = 0
                         LOOP
