@@ -3319,6 +3319,7 @@ IF mdbf = NIL .AND. ! SR_EXISTTABLE('sactabpg')
         matriz := matriz +',tipo_conta CHAR(4)'
         matriz := matriz +',tipo_venda CHAR(1)'
         matriz := matriz +',tef CHAR(1)'
+        matriz := matriz +',sigla CHAR(2)'
         //DBCREATE('sactabpg  matriz,'SQLRDD')
         sr_getconnection():exec("CREATE GENERATOR SACTABPG",,.f.)
         sr_getconnection():exec("CREATE TABLE SACTABPG ("+matriz+" )",,.f.)

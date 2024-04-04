@@ -78,7 +78,7 @@ mdata_logp := CTOD('08/03/2023')
 mdata_forn := CTOD('09/05/2023')
 mdata_merc := CTOD('04/09/2023')
 mdata_peds := CTOD('08/01/2024')
-mdata_tabpg:= CTOD('01/04/2024')
+mdata_tabpg:= CTOD('04/04/2024')
 IF mtp # 'HTI'
         IF mtp = 'arquivo'
 	       matualiza := mmerc := mmov := mmovnt := mos := mpeds := mcaix := mdupr := mdupp := ;
@@ -2500,6 +2500,13 @@ IF mtabpg = 'X' .AND. m_cfg[2] = 'S'
                 END
                 TRY
                         sr_getconnection():exec('ALTER TABLE sactabpg ADD tef VARCHAR(1)',,.f.)
+                        sr_committransaction()
+                CATCH E
+                        tracelog(valtoprg())
+                        sr_COMMITtransaction()
+                END
+                TRY
+                        sr_getconnection():exec('ALTER TABLE sactabpg ADD sigla VARCHAR(2)',,.f.)
                         sr_committransaction()
                 CATCH E
                         tracelog(valtoprg())
