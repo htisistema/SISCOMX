@@ -1,15 +1,15 @@
 /*
  * xHarbour build 0.99.70 Intl. (SimpLex)
- * Generated C source code from <SISCOM.PRG>
- * Command: C:\xHarbour997\bin\harbour.exe C:\HTI\SISCOM\SISCOM.PRG /q /oC:\hti\SISCOM\SISCOM.c /M /N -DxHB -DXHB_0990 -DXHB_0991 -DXHB_0992 -DXHB_0993 -DXHB_0994 -DXHB_09941 -DXHB_09950 -DXHB_09951a -DXHB_09951 -DXHB_09951b -DXHB_0996 -DXHB_09960 -DXHB_09961 -DXHB_09961B -DXHB_0997 -DXHB_09970 
- * Created: 2024.04.04 11:55:01 (Borland C++ 5.5.1)
+ * Generated C source code from <SISCOM.002>
+ * Command: C:\xHarbour997\bin\harbour.exe C:\HTI\SISCOM\SISCOM.002 /q /oC:\hti\SISCOM\SISCOM.c /M /N -DxHB -DXHB_0990 -DXHB_0991 -DXHB_0992 -DXHB_0993 -DXHB_0994 -DXHB_09941 -DXHB_09950 -DXHB_09951a -DXHB_09951 -DXHB_09951b -DXHB_0996 -DXHB_09960 -DXHB_09961 -DXHB_09961B -DXHB_0997 -DXHB_09970 
+ * Created: 2024.04.09 10:27:30 (Borland C++ 5.5.1)
  */
 
 #include "hbvmpub.h"
 #include "hbpcode.h"
 #include "hbinit.h"
 
-#define __PRG_SOURCE__ "SISCOM.PRG"
+#define __PRG_SOURCE__ "SISCOM.002"
 
 HB_FUNC( MAIN );
 HB_FUNC( SHOWCLUE );
@@ -414,7 +414,7 @@ HB_FUNC( MAIN )
 	HB_P_POPLOCALNEAR, 20,	/* M_AUX */
 /* 00048 */ HB_P_LINEOFFSET, 45,	/* 79 */
 	HB_P_PUSHSTRSHORT, 10,	/* 10 */
-	'v', '2', '4', '.', '0', '4', '.', '0', '4', 0, 
+	'v', '2', '4', '.', '0', '4', '.', '0', '9', 0, 
 	HB_P_PUSHSTRSHORT, 7,	/* 7 */
 	'S', 'I', 'S', 'C', 'O', 'M', 0, 
 	HB_P_PUSHSTRSHORT, 41,	/* 41 */

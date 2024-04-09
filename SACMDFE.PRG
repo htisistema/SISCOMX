@@ -545,6 +545,12 @@ UF=
         ENDIF
                 op_tela(10,5,18,85,'FINALIZANDO O MDF-e....',,1)
                 prog(2,1,20,'CRIANDO A MDF-e No....: '+mretorno)
+                *mArq        := "NFE"+ALLTRIM(mdocumento)+".ini"
+                mArq        := fcreate("MDF"+ALLTRIM(STR(VAL(mdoc)))+".ini")
+                * mArq        := fcreate("NFE.ini" )
+                fwrite( mArq, @sLinhas, len( sLinhas ) )
+                FCLOSE(mArq)
+
                 mretorno := IBR_comando('MDFE.CRIARMDFE',{sLinhas},,.T.)
                 //WVW_DrawProgressBar( ,1,1,2,60,,25,50,155,,.f.,0 )
                 //atencao(mretorno)
