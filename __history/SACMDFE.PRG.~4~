@@ -441,21 +441,22 @@ UF=
                                 'xNome = '+mxnome                       + m_qp + ;
                                 'CPF = '+mcpf                           + m_qp
                                 IF ! EMPTY(reb_placa)
+
                                         sLinhas := sLinhas + '[REBOQUE01]'                      + m_qp + ;
-                                                                'cInt=1       '+mxnome          + m_qp + ;
-                                                                'reb_placa=   '+reb_placa       + m_qp + ;
-                                                                'reb_RENAVAM= '+reb_RENAVAM     + m_qp + ;
-                                                                'reb_tara=    '+reb_tara        + m_qp + ;
-                                                                'reb_capKG=   '+reb_capKG       + m_qp + ;
-                                                                'reb_capM3=   '+reb_capM3       + m_qp + ;
-                                                                'reb_UF=SP    '+reb_UF          + m_qp + ;
-                                                                'reb_CNPJCPF= '+reb_CNPJCPF     + m_qp + ;
-                                                                'reb_RNTRC=   '+reb_RNTRC       + m_qp + ;
-                                                                'reb_xNome=   '+reb_xNome       + m_qp + ;
-                                                                'reb_IE=      '+reb_IE          + m_qp + ;
-                                                                'reb_UFProp=  '+reb_UFProp      + m_qp + ;
-                                                                'reb_tpProp=  '+reb_tpProp      + m_qp + ;
-                                                                'reb_tpCar=   '+reb_tpCar       + m_qp
+                                                                'cInt=1       '                 + m_qp + ;
+                                                                'placa=   '+reb_placa       + m_qp + ;
+                                                                'RENAVAM= '+reb_RENAVAM     + m_qp + ;
+                                                                'tara=    '+reb_tara        + m_qp + ;
+                                                                'capKG=   '+reb_capKG       + m_qp + ;
+                                                                'capM3=   '+reb_capM3       + m_qp + ;
+                                                                'UF=SP    '+reb_UF          + m_qp + ;
+                                                                'CNPJCPF= '+reb_CNPJCPF     + m_qp + ;
+                                                                'RNTRC=   '+reb_RNTRC       + m_qp + ;
+                                                                'xNome=   '+reb_xNome       + m_qp + ;
+                                                                'IE=      '+reb_IE          + m_qp + ;
+                                                                'UFProp=  '+reb_UFProp      + m_qp + ;
+                                                                'tpProp=  '+reb_tpProp      + m_qp + ;
+                                                                'tpCar=   '+reb_tpCar       + m_qp
                                 ENDIF
                                 IF ! EMPTY(mpercuso1)
                                         sLinhas := sLinhas + '[PERC001]'+ m_qp +;
@@ -545,6 +546,12 @@ UF=
         ENDIF
                 op_tela(10,5,18,85,'FINALIZANDO O MDF-e....',,1)
                 prog(2,1,20,'CRIANDO A MDF-e No....: '+mretorno)
+                *mArq        := "NFE"+ALLTRIM(mdocumento)+".ini"
+                mArq        := fcreate("MDF"+ALLTRIM(STR(VAL(mdoc)))+".ini")
+                * mArq        := fcreate("NFE.ini" )
+                fwrite( mArq, @sLinhas, len( sLinhas ) )
+                FCLOSE(mArq)
+
                 mretorno := IBR_comando('MDFE.CRIARMDFE',{sLinhas},,.T.)
                 //WVW_DrawProgressBar( ,1,1,2,60,,25,50,155,,.f.,0 )
                 //atencao(mretorno)
