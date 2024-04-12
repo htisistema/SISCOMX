@@ -4055,10 +4055,23 @@ WHILE .T.
                                 @ lcia+8,ccia+25 PROMPT '2> Cartao'
                                 @ lcia+8,ccia+35 PROMPT '3> Duplicata'
                                 @ lcia+8,ccia+48 PROMPT '4> Financiamento'
+                                @ lcia+8,ccia+65 PROMPT '5> Cartao Debito'
                                 SET INTEN ON
                                 MENU TO modo_pg
                                 setcor(1)
                                 DO CASE
+                                        CASE modo_pg = 5
+                                                mtipo_pg := 'CT'
+                                                mcond_veze := '01 '
+                                                mcond_int := ' '
+                                                mcartao := '*'
+                                                DEVPOS(lcia+9,ccia+1);DEVOUT('Condicoes de Pagamento: A PRAZO')
+                                                DEVPOS(lcia+10,ccia+1);DEVOUT('Quatidade de vezes:')
+                                                DEVPOS(lcia+11,ccia+1);devout('Valor Entrada R$..:')
+                                                DEVPOS(lcia+10,ccia+21);devoutPICT(mcond_veze, '@@R 9-99')
+                                                m_dia[1] := 2
+                                                DEVPOS(lcia+10,ccia+25);DEVOUT('Para os Dias:')
+                                                DEVPOS(lcia+10,ccia+39);DEVOUTPICT(m_dia[1],'999')
                                         CASE modo_pg = 2
                                                 mtipo_pg := 'CT'
                                                 mcond_veze := '01 '
