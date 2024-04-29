@@ -306,12 +306,12 @@ WHILE .T.
         IF total_ped[1,1] > total_ped[1,2]
                 mt_pedido := total_ped[1,1]
                 msubtotal := total_ped[1,1]
-                mcons_ped[1,76] = 0
+                //mcons_ped[1,76] = 0
         ELSE
                 mt_pedido := total_ped[1,1]
                 msubtotal := total_ped[1,3]
-                mt_pedido = mt_pedido  - mcons_ped[1,76]
         ENDIF
+        mt_pedido = mt_pedido  - mcons_ped[1,76]
 
 
         /*

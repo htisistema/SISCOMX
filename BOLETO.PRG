@@ -532,7 +532,7 @@ mdesconto := 0
                 sr_getconnection():exec('COMMIT',,.f.)
                 IF total_ped[1,1] > total_ped[1,2]
                         mt_pedido = total_ped[1,1]
-                        imppedido[1,76] = 0
+                        //imppedido[1,76] = 0
                 ELSE
                         mt_pedido = total_ped[1,2]
                 ENDIF

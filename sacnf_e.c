@@ -2,7 +2,7 @@
  * xHarbour build 0.99.70 Intl. (SimpLex)
  * Generated C source code from <sacnf_e.prg>
  * Command: C:\xHarbour997\bin\harbour.exe C:\HTI\SISCOM\sacnf_e.prg /q /oC:\hti\SISCOM\sacnf_e.c /M /N -DxHB -DXHB_0990 -DXHB_0991 -DXHB_0992 -DXHB_0993 -DXHB_0994 -DXHB_09941 -DXHB_09950 -DXHB_09951a -DXHB_09951 -DXHB_09951b -DXHB_0996 -DXHB_09960 -DXHB_09961 -DXHB_09961B -DXHB_0997 -DXHB_09970 
- * Created: 2024.04.03 15:28:55 (Borland C++ 5.5.1)
+ * Created: 2024.04.18 10:49:50 (Borland C++ 5.5.1)
  */
 
 #include "hbvmpub.h"
@@ -600,7 +600,7 @@ HB_FUNC( SACNF_E )
 	HB_P_PUSHSYMNEAR, 26,	/* OP_TELA */
 	HB_P_PUSHNIL,
 	HB_P_ONE,
-	HB_P_PUSHBYTE, 40,	/* 40 */
+	HB_P_PUSHBYTE, 10,	/* 10 */
 	HB_P_PUSHBYTE, 46,	/* 46 */
 	HB_P_PUSHBYTE, 120,	/* 120 */
 	HB_P_PUSHSTRSHORT, 50,	/* 50 */
@@ -975,7 +975,7 @@ HB_FUNC( SACNF_E )
 	HB_P_ZERO,
 	HB_P_ONE,
 	HB_P_PUSHBYTE, 4,	/* 4 */
-	HB_P_PUSHBYTE, 79,	/* 79 */
+	HB_P_PUSHBYTE, 109,	/* 109 */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSTRSHORT, 9,	/* 9 */
 	' ', 'V', 'O', 'L', 'U', 'M', 'E', 'S', 0, 
@@ -1019,7 +1019,7 @@ HB_FUNC( SACNF_E )
 	HB_P_PUSHBYTE, 6,	/* 6 */
 	HB_P_ONE,
 	HB_P_PUSHBYTE, 28,	/* 28 */
-	HB_P_PUSHBYTE, 79,	/* 79 */
+	HB_P_PUSHBYTE, 109,	/* 109 */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSTRSHORT, 17,	/* 17 */
 	' ', 'O', 'B', 'S', 'E', 'R', 'V', 'A', 'C', 'A', 'O', ' ', 'N', 'O', 'T', 'A', 0, 
@@ -1030,7 +1030,7 @@ HB_FUNC( SACNF_E )
 	HB_P_PUSHBYTE, 30,	/* 30 */
 	HB_P_ONE,
 	HB_P_PUSHBYTE, 45,	/* 45 */
-	HB_P_PUSHBYTE, 79,	/* 79 */
+	HB_P_PUSHBYTE, 109,	/* 109 */
 	HB_P_PUSHNIL,
 	HB_P_PUSHSTRSHORT, 13,	/* 13 */
 	' ', 'D', 'u', 'p', 'l', 'i', 'c', 'a', 't', 'a', 's', ' ', 0, 
@@ -3571,7 +3571,7 @@ HB_FUNC( SACNF_E )
 	HB_P_FUNCTIONSHORT, 3,
 	HB_P_FUNCTIONSHORT, 1,
 	HB_P_PLUS,
-	HB_P_PUSHBYTE, 7,	/* 7 */
+	HB_P_PUSHBYTE, 12,	/* 12 */
 	HB_P_GREATER,
 	HB_P_JUMPFALSENEAR, 5,	/* 5 (abs: 07322) */
 	HB_P_FALSE,
@@ -16570,7 +16570,7 @@ HB_FUNC( SACNF_E )
 	HB_P_PUSHVARIABLE, 156, 0,	/* M_QP */
 	HB_P_PLUS,
 	HB_P_PUSHSTRSHORT, 11,	/* 11 */
-	'N', 'u', 'm', 'e', 'r', 'o', '=', '0', '1', '1', 0, 
+	'N', 'u', 'm', 'e', 'r', 'o', '=', '0', '1', '2', 0, 
 	HB_P_PLUS,
 	HB_P_PUSHVARIABLE, 156, 0,	/* M_QP */
 	HB_P_PLUS,

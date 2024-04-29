@@ -1,7 +1,7 @@
 <!--
 ################################################
 # xDevStudio Project - xdev@kssoftware.com.br  #
-# Created @ 10/04/2024 17:22:17                #
+# Created @ 26/04/2024 16:04:54                #
 #                                              #
 ### Standard xDev TagList - Layout v1.5 ########
 -->
@@ -483,8 +483,8 @@
    <tag filename="C:\HTI\SISCOM\SAC130.PRG" name="ENT_TXT" args=" " scope="STATIC" type="ptConstant" line="1">
    <tag filename="C:\HTI\SISCOM\SAC610.PRG" name="sac610" args="<mmanut> " scope="PUBLIC" type="ptFunction" line="6">
    <tag filename="C:\HTI\SISCOM\SAC530.PRG" name="sac611" args=" " scope="PUBLIC" type="ptFunction" line="5">
+   <tag filename="C:\HTI\SISCOM\SAC341.PRG" name="sac341_1" args="<mab_pg>, <mtp_orc>, <tipo_ali> " scope="PUBLIC" type="ptFunction" line="203">
    <tag filename="C:\HTI\SISCOM\SAC341.PRG" name="sac341" args="<mab_pg>, <mtp_orc>, <tipo_ali> " scope="PUBLIC" type="ptFunction" line="2">
-   <tag filename="C:\HTI\SISCOM\SAC341.PRG" name="sac341_1" args="<mab_pg>, <mtp_orc>, <tipo_ali> " scope="PUBLIC" type="ptFunction" line="199">
    <tag filename="C:\HTI\SISCOM\CON420.PRG" name="con420" args="<mtp_420> " scope="PUBLIC" type="ptFunction" line="4">
    <tag filename="C:\HTI\SISCOM\CON214.PRG" name="con214" args="<mfor>, <mdat1>, <mdat2>, <mtipo>, <mtip> " scope="PUBLIC" type="ptFunction" line="5">
    <tag filename="C:\HTI\SISCOM\CON423.PRG" name="con423" args="<mtp_423> " scope="PUBLIC" type="ptFunction" line="4">
@@ -843,7 +843,7 @@
    <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="CR" args=" " scope="STATIC" type="ptConstant" line="4">
    <tag filename="C:\HTI\SISCOM\sacnf_e.prg" name="ETX" args=" " scope="STATIC" type="ptConstant" line="3">
    <tag filename="C:\HTI\SISCOM\FORMULA.PRG" name="formula" args="<mdup_2>, <m_ava>, <mtipo_pag>, <mtp_email> " scope="PUBLIC" type="ptFunction" line="2">
-   <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="gerar_no_ped" args=" " scope="PUBLIC" type="ptFunction" line="4651">
+   <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="gerar_no_ped" args=" " scope="PUBLIC" type="ptFunction" line="4664">
    <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="fecha_pd" args="<mtip>, <magrupar>, <orc_tp> " scope="PUBLIC" type="ptFunction" line="3568">
    <tag filename="C:\HTI\SISCOM\sac23pd1.prg" name="sac23pd1" args="<orc>, <venda>, <m_altpd> " scope="PUBLIC" type="ptFunction" line="13">
    <tag filename="C:\HTI\SISCOM\SAC5PED1.PRG" name="sac5ped1" args="<mnum_p>, <orc>, <consult>, <tkt>, <mfrente>, <menu_print>, <mapp> " scope="PUBLIC" type="ptFunction" line="4">
@@ -959,9 +959,9 @@
    <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="dcrip" args="<mexp> " scope="PUBLIC" type="ptFunction" line="476">
    <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="crip" args="<mexp>, <q>, <mprod> " scope="PUBLIC" type="ptFunction" line="423">
    <tag filename="C:\HTI\SISCOM\SAUTORIZA.PRG" name="autorizacao" args="<mserie> " scope="PUBLIC" type="ptFunction" line="0">
-   <tag filename="C:\HTI\SISCOM\sac23caixa.prg" name="sac23caixa" args="<orc>, <venda>, <m_altpd> " scope="PUBLIC" type="ptFunction" line="11">
-   <tag filename="C:\HTI\SISCOM\sac23caixa.prg" name="sac30caixa" args="<mnum> " scope="PUBLIC" type="ptFunction" line="1129">
    <tag filename="C:\HTI\SISCOM\sac23caixa.prg" name="desconto_pdv" args=" " scope="PUBLIC" type="ptFunction" line="3274">
+   <tag filename="C:\HTI\SISCOM\sac23caixa.prg" name="sac30caixa" args="<mnum> " scope="PUBLIC" type="ptFunction" line="1129">
+   <tag filename="C:\HTI\SISCOM\sac23caixa.prg" name="sac23caixa" args="<orc>, <venda>, <m_altpd> " scope="PUBLIC" type="ptFunction" line="11">
    <tag filename="C:\HTI\SISCOM\SAC110NOVO.PRG" name="sac110site" args=" " scope="PUBLIC" type="ptFunction" line="1072">
    <tag filename="C:\HTI\SISCOM\SAC110NOVO.PRG" name="vercst" args="<m_cst>, <mtp> " scope="PUBLIC" type="ptFunction" line="1050">
    <tag filename="C:\HTI\SISCOM\SAC110NOVO.PRG" name="verobs" args="<vcodi>, <li>, <ci>, <t>, <mzero> " scope="PUBLIC" type="ptFunction" line="1010">

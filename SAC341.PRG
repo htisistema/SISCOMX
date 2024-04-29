@@ -57,22 +57,26 @@ WHILE .T.
         IF mped_orc = 2
                 IF mab_pg <> NIL
                         // cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND ppag = '*'"
-                        cComm  := "SELECT pempresa, pnum_ped, pdat_ped, pcod_cli, pcod_vend, pcod_oper, ptp_vend, phora, pos, pfecha, qtd_via, (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
-                                  + " FROM sacped_s orc WHERE sr_deleted = ' ' AND ppag = '*' group by 1,2,3,4,5,6,7,8, 9, 10, 11, 12 order by pnum_ped"
+                        cComm  := "SELECT pempresa, pnum_ped, max(pdat_ped), pcod_cli, max(pcod_vend),  max(pcod_oper), ptp_vend, max(phora), pos, pfecha, max(qtd_via), (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
+                                  + " FROM sacped_s orc WHERE sr_deleted = ' ' AND ppag = '*' group by 1,2,4,7,9, 10 order by pnum_ped"
                 ELSE
                         // cComm  := "SELECT * FROM sacped_s WHERE sr_deleted = ' ' AND (ppag IS NULL OR ppag = ' ')"
-                        cComm  := "SELECT pempresa, pnum_ped, pdat_ped, pcod_cli, pcod_vend, pcod_oper, ptp_vend, phora, pos, pfecha, qtd_via, (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
-                                  + " FROM sacped_s orc WHERE sr_deleted = ' ' AND (ppag IS NULL OR ppag = ' ') group by 1,2,3,4,5,6,7,8, 9, 10, 11, 12 order by pnum_ped"
+                        cComm  := "SELECT pempresa, pnum_ped, max(pdat_ped), pcod_cli, max(pcod_vend), max(pcod_oper), ptp_vend, max(phora), pos, pfecha, max(qtd_via), (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
+                                   + "FROM sacped_s orc WHERE sr_deleted = ' ' AND (ppag IS NULL OR ppag = ' ') group by 1,2,4,7,9, 10 order by pnum_ped"
+//                        cComm  := "SELECT pempresa, pnum_ped, pdat_ped, pcod_cli, pcod_vend, pcod_oper, ptp_vend, phora, pos, pfecha, qtd_via, (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
+//                                  + " FROM sacped_s orc WHERE sr_deleted = ' ' AND (ppag IS NULL OR ppag = ' ') group by 1,2,3,4,5,6,7,8, 9, 10, 11, 12 order by pnum_ped"
                 ENDIF
         ELSE
                 IF mab_pg <> NIL
                         //cComm  := "SELECT  * FROM sacorcam WHERE sr_deleted = ' ' AND ppag = '*'"
-                        cComm  := "SELECT pempresa, pnum_ped, pdat_ped, pcod_cli, pcod_vend, pcod_oper, ptp_vend, phora, pos, pfecha, qtd_via, (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
-                                  + " FROM sacorcam orc WHERE sr_deleted = ' ' AND ppag = '*' group by 1,2,3,4,5,6,7,8, 9, 10, 11, 12 order by pnum_ped"
+                        // cComm  := "SELECT pempresa, pnum_ped, pdat_ped, pcod_cli, pcod_vend, pcod_oper, ptp_vend, phora, pos, pfecha, qtd_via, (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
+                        cComm  := "SELECT pempresa, pnum_ped, max(pdat_ped), pcod_cli, max(pcod_vend),  max(pcod_oper), ptp_vend, max(phora), pos, pfecha, max(qtd_via), (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
+                                  + " FROM sacorcam orc WHERE sr_deleted = ' ' AND ppag = '*' group by 1,2,4,7,9, 10 order by pnum_ped"
                 ELSE
-                        //cComm  := "SELECT  * FROM sacorcam WHERE sr_deleted = ' ' AND (ppag IS NULL OR ppag = ' ')"
-                        cComm  := "SELECT pempresa, pnum_ped, pdat_ped, pcod_cli, pcod_vend, pcod_oper, ptp_vend, phora, pos, pfecha, qtd_via, (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
-                                  + " FROM sacorcam orc WHERE sr_deleted = ' ' AND (ppag IS NULL OR ppag = ' ') group by 1,2,3,4,5,6,7,8, 9, 10, 11, 12 order by pnum_ped"
+                        // cComm  := "SELECT  * FROM sacorcam WHERE sr_deleted = ' ' AND (ppag IS NULL OR ppag = ' ')"
+                        // cComm  := "SELECT pempresa, pnum_ped, pdat_ped, pcod_cli, pcod_vend, pcod_oper, ptp_vend, phora, pos, pfecha, qtd_via, (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
+                        cComm  := "SELECT pempresa, pnum_ped, max(pdat_ped), pcod_cli, max(pcod_vend),  max(pcod_oper), ptp_vend, max(phora), pos, pfecha, max(qtd_via), (SELECT razao FROM saccli cli WHERE cli.cod_cli = orc.pcod_cli) razao, sum(pquantd * pvlr_fat), sum(pquantd * ppre_venda)";
+                                  + " FROM sacorcam orc WHERE sr_deleted = ' ' AND (ppag IS NULL OR ppag = ' ') group by 1,2,4,7,9, 10 order by pnum_ped"
                 ENDIF
         ENDIF
 //        IF ! EMPTY(mcodemp)
@@ -110,11 +114,11 @@ WHILE .T.
                 //mposicao := cons_arq[i,99]
 
                 mtot_ped := mtot_pv := mdesc_r := mdesc_p := 0
-                IF cons_arq[i,13] < cons_arq[i,14]
+                // IF cons_arq[i,13] < cons_arq[i,14]
 	                mtot_ped := cons_arq[i,13]
-                ELSE
-	                mtot_ped := cons_arq[i,14]
-		ENDIF
+//                ELSE
+//	                mtot_ped := cons_arq[i,14]
+//		ENDIF
 
 //                WHILE mnum_pedido = cons_arq[i,2]
 //                        IF cons_arq[i,20] < cons_arq[i,18]

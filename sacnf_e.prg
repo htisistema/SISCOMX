@@ -63,7 +63,7 @@ IF ! mtipo_nota = 'N'
         mtot_peso   := ctot_peso
         mtot_liq    := ctot_liq
 ENDIF
-op_tela(01,40,46,120,' INFORMACOES ADICIONAIS DA NOTA FISCAL ELETRONICA',,'*')
+op_tela(01,10,46,120,' INFORMACOES ADICIONAIS DA NOTA FISCAL ELETRONICA',,'*')
 marq_sai := ALLTRIM(m_indiv[1,37])+"SAINFE.TXT"
 WHILE .T.
         exibi_prg(mprg)
@@ -102,12 +102,12 @@ WHILE .T.
         mtipo_imp := 'M'
 ****************************************************
         //mtot_quantd := mensagem2('Quantidade de item:',mtot_quantd,'999,999.99',,'N')
-        botao(00,01,04,79,,' VOLUMES')
+        botao(00,01,04,109,,' VOLUMES')
         DEVPOS(01,01);DEVOUT('Quantidade Item:')
         DEVPOS(02,01);DEVOUT('Peso Bruto.....:')
         DEVPOS(03,01);DEVOUT('Peso Liquido...:')
-        botao(06,01,28,79,,' OBSERVACAO NOTA')
-        botao(30,01,45,79,,' Duplicatas ')
+        botao(06,01,28,109,,' OBSERVACAO NOTA')
+        botao(30,01,45,109,,' Duplicatas ')
         DEVPOS(31,11);DEVOUT('Qt.Vezes:')
         DEVPOS(31,25);DEVOUT('Intervalos:')
 
@@ -370,7 +370,7 @@ WHILE .T.
                                         mvlr_dup6 := mvlr_dup7 := mvlr_dup8 := ;
                                         mvlr_dup9 := mvlr_dup10 := mvlr_dup11 := 0
                                         mnum_dup := STRZERO(mnum_ped,6)
-                                        @ 31,20 GET mcond_vezes PICT '@@R 9-99' VALID IF((VAL(SUBSTR(mcond_vezes,1,1))) + (VAL(SUBSTR(mcond_vezes,2,2))) > 7,.F.,.T.)
+                                        @ 31,20 GET mcond_vezes PICT '@@R 9-99' VALID IF((VAL(SUBSTR(mcond_vezes,1,1))) + (VAL(SUBSTR(mcond_vezes,2,2))) > 12,.F.,.T.)
                                         @ 31,36 GET mintev PICT '@@R - 999' VALID IF(EMPTY(mintev),.F.,.T.)
                                         @ 31,COL()+1 GET mintev1 PICT '@@R - 999' WHEN VAL(SUBSTR(mcond_vezes,2,2)) >= 2 VALID IF(EMPTY(mintev1),.F.,.T.)
                                         @ 31,COL()+1 GET mintev2 PICT '@@R - 999' WHEN VAL(SUBSTR(mcond_vezes,2,2)) >= 3 VALID IF(EMPTY(mintev2),.F.,.T.)
@@ -1541,7 +1541,7 @@ WHILE .T.
         ENDIF
         IF ! EMPTY(mnum_dup11) .AND. ! EMPTY(mvenci11)
                 sLinhas := slinhas + '[Duplicata012]'+ m_qp + ;
-                'Numero=011'+ m_qp + ;
+                'Numero=012'+ m_qp + ;
                 'DataVencimento='+DTOC(mvenci11)+ m_qp + ;
                 'Valor='+ALLTRIM(TRANSFORM(mvlr_dup11,'999999.99'))+ m_qp
         ENDIF

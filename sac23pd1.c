@@ -2,7 +2,7 @@
  * xHarbour build 0.99.70 Intl. (SimpLex)
  * Generated C source code from <sac23pd1.prg>
  * Command: C:\xHarbour997\bin\harbour.exe C:\HTI\SISCOM\sac23pd1.prg /q /oC:\hti\SISCOM\sac23pd1.c /M /N -DxHB -DXHB_0990 -DXHB_0991 -DXHB_0992 -DXHB_0993 -DXHB_0994 -DXHB_09941 -DXHB_09950 -DXHB_09951a -DXHB_09951 -DXHB_09951b -DXHB_0996 -DXHB_09960 -DXHB_09961 -DXHB_09961B -DXHB_0997 -DXHB_09970 
- * Created: 2024.04.12 13:10:58 (Borland C++ 5.5.1)
+ * Created: 2024.04.12 13:17:41 (Borland C++ 5.5.1)
  */
 
 #include "hbvmpub.h"
@@ -30562,7 +30562,7 @@ HB_FUNC( FECHA_PD )
 /* 00683 */ HB_P_LINEOFFSET, 38,	/* 3612 */
 	HB_P_LOCALNEARSETINT, 6, 24, 0,	/* LBAA 24*/
 /* 00689 */ HB_P_LINEOFFSET, 39,	/* 3613 */
-	HB_P_LOCALNEARSETINT, 7, 75, 0,	/* CBAA 75*/
+	HB_P_LOCALNEARSETINT, 7, 95, 0,	/* CBAA 95*/
 /* 00695 */ HB_P_LINEOFFSET, 40,	/* 3614 */
 	HB_P_PUSHSYM, 95, 1,	/* REPLICATE */
 	HB_P_PUSHNIL,
@@ -31065,7 +31065,7 @@ HB_FUNC( FECHA_PD )
 	HB_P_PUSHBYTE, 5,	/* 5 */
 	HB_P_PUSHBYTE, 10,	/* 10 */
 	HB_P_PUSHBYTE, 35,	/* 35 */
-	HB_P_PUSHBYTE, 85,	/* 85 */
+	HB_P_PUSHBYTE, 95,	/* 95 */
 	HB_P_PUSHSTRSHORT, 23,	/* 23 */
 	' ', 'F', 'E', 'C', 'H', 'A', 'M', 'E', 'N', 'T', 'O', ' ', 'D', 'O', ' ', 'P', 'E', 'D', 'I', 'D', 'O', ' ', 0, 
 	HB_P_DOSHORT, 5,

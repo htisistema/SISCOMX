@@ -3610,7 +3610,7 @@ CLEAR GETS
 lcia :=2
 ccia := 0
 lbaa := 24
-cbaa := 75
+cbaa := 95
 mtraco := REPLI('=',80)
 mlinha := lin := mlin := mtot_limite:= mlim_venc := mlim_avenc := mautoriza := ;
 mvlr_ent := 0
@@ -3678,7 +3678,7 @@ WHILE .T.
         EXIT
 ENDDO
 wvw_lclosewindow()
-op_tela(05,10,35,85,' FECHAMENTO DO PEDIDO ')
+op_tela(05,10,35,95,' FECHAMENTO DO PEDIDO ')
 WHILE .T.
         limpa(00,00,33,100)
         IF orc_tp = '*'
