@@ -497,7 +497,7 @@ WHILE .T.
                                 atencao('Nao tem autorizacao para operacao !!!')
                                 LOOP
                         ENDIF
-                        IF VAL(SUBSTR(msenha,9)) > 65
+                        IF VAL(SUBSTR(msenha,9)) > 65 .AND. VAL(SUBSTR(msenha,9)) # 181 .AND. VAL(SUBSTR(msenha,9)) # 366
                                 atencao('Senha Incorreta Tente Novamente')
                                 TONE(100,6)
                                 TONE(1600,6)
@@ -507,6 +507,11 @@ WHILE .T.
                                 ENDIF
                                 LOOP
                                 mdata_aux :=SPACE(11)
+                        ELSEIF VAL(SUBSTR(msenha,9)) = 181 .OR. VAL(SUBSTR(msenha,9)) = 366
+                                //mdata_sen := DATE() + VAL(SUBSTR(msenha,7))
+                                mdata_sen := DATE() + VAL(SUBSTR(msenha,9))
+                                //mdata_aux := SUBSTR(DTOC(mdata_sen),1,2)+SUBSTR(DTOC(mdata_sen),4,2)+SUBSTR(DTOC(mdata_sen),7,2) + SUBSTR(msenha,1,6)
+                                mdata_aux := SUBSTR(DTOC(mdata_sen),1,2)+SUBSTR(DTOC(mdata_sen),4,2)+SUBSTR(DTOC(mdata_sen),7,2) + SUBSTR(DTOC(DATE()),7,2)+SUBSTR(DTOC(DATE()),1,2)+SUBSTR(DTOC(DATE()),4,2)
                         ELSE
                                 //mdata_sen := DATE() + VAL(SUBSTR(msenha,7))
                                 mdata_sen := DATE() + VAL(SUBSTR(msenha,9))

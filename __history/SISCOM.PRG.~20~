@@ -1,0 +1,1279 @@
+* INICIO DO SIAC..: 14/11/1994
+* INICIO DO SISCOM: 14/07/2007
+******************************
+//#translate getactive() => MyHBGetActive()
+#include "wvwtools.ch"
+#include "inkey.ch"              // constantes de codigos das teclas
+#include "Fileio.ch"             // funcoes de leitura/gravacao de arquivo
+#include "set.ch"                // constantes da funcao SETKEY()
+#include "wingdi.ch"
+#include "winuser.ch"
+#include "common.ch"
+#include "setcurs.ch"
+#include "getexit.ch"
+#include "acbrlib.ch"
+//SQLRDD***************
+#include "sqlrdd.ch"
+//#include "pgs.ch"          // Needed if you plan to use native connection to Postgres
+//#include "mysql.ch"        // MySQL
+//#include "oracle.ch"       // Oracle
+#include "firebird.ch"       // Firebird
+#include "msg.ch"
+***********************
+//#define COM_CALE
+//#define ACBrLIB 'ACBrNFe32.dll'
+//#define eArqConfig 'ACBRLIB.INI' //if(eArqConfig = nil, '', eArqConfig)
+//#define eChaveCrypt 'ACBRMONITOR' //if(eChaveCrypt = nil, '', eChaveCrypt)
+
+GLOBAL oApp
+
+FUNCTION main(mtc,mecf,mtipo_tela)
+**********************************
+MEMVAR msist,getlist,nivel_acess
+LOCAL mprg := 'SISCOM',men,f,num,mcgc_aux,mponto,mtip_t:=' ',mtela_term,mmapear,lin,linha,linhas,marq:='',;
+      matriz:={},op:=' ',d:=0,m_aux:={},xcop,cons_lib,mcnpj_txt
+
+PUBLIC mversao      := 'v24.04.26',;
+       msit_tip     := 'SISCOM',;
+       sistema      := '.: SISCOM :. Sistema Automacao Comercial',;
+       memp_resa    :='.: HTI Sistemas Ltda :.',;
+       mcnpj_HTI    := '24494200000106',;
+       mim_HTI      := '066728339',;
+       mrazao_HTI   := 'M. EDUARDA B. B. CINTRA',;
+       mend_HTI     := 'Rua Cicero Monteiro',;
+       mnum_HTI     := '1040',;
+       mcomp_HTI    := '',;
+       mbairro_HTI  := 'Centro',;
+       mcidade_HTI  := 'Tacaimbo',;
+       muf_HTI      := 'PE',;
+       mcep_HTI     := '55140000',;
+       mfone_HTI    := '991269631',; //mfone1_HTI   := '         ',; //m_md5        := '7d539b303a4e568e4877cda1e4feadf9',;
+       mcgc_firm,;
+       minsc_firm,;
+       mend_firm,;
+       mcid_firm,;
+       mfone_firm,;
+       muf_firm,;
+       mens,;
+       sis_cidade,;
+       mcaminho:='',;
+       mtip_term,;
+       mcodempresa  := '001',;
+       mmult_emp    :='N',;
+       mdata_sis    :=DATE(),;
+       cod_operado  :='   ',;           //email_operado  :=SPACE(60),;
+       ntask,;
+       mnum_principal := NIL,;
+       m_cfg:={},;
+       m_set := {},;
+       cons_emp:={},;
+       ncnn:=0,ncnn1:=0,ncnn2:=0,m_line:='ON',m_qp := CHR(13)+CHR(10),;
+       cam_dba:={},;
+       mn_sac0,;
+       mnome_arq:='',;
+       mtipo_preco:=' ',;
+       sENDER   := '',;
+       m_indiv:={},;
+       mdefcam_imp:=Curdrive()+ ":\" + rtrim(curdir())+ "\",;
+       m_color := WVW_GetPalette(),;
+       mserie := ''
+
+       //mchv_priv    := 'E9D4E1CCA464B7E811C7746E43B11943EC2A03667F78AD66F01ABC50AF188FF76C083829B07AA8175E9E1F1B15CF3A39E48957C71A40E15713E9EF345E405CEFDFB5252BE32CB19A76E291C798CC01F64E19C5F25191CF41E666AE4738837E2FB3746123AEDF821578F09496C81634A6D784E4FBB0837C4EEEC3BAEF1B3F94C3'
+       //mchv_public  := 'CC55E628C3C90F93E5C7B550A9075A52CA999A89D6406CBDEA5508CF4112E00B4D0055E2DEA5BDF7E4AAAE4C4BB4C582DC0EBA14232D2444B949A6FF2DD23FD5B4CDBEAE7A8929D6A3774F4CCD737522F073E86F0724EE886EA493114780EDD87C59A173E0494D3F64DFF91AA7CFF6FD7F1D46AE5BDCA4418AF8E0261491F60D',;
+       //mpaf_ecf     := 'POL4322011',;
+       //mpaf_ver     := '2013.1',;
+
+//mtc := 'pinpad'
+// **************************
+// NA MESMA LINHA DAR SCROLL
+// *** '@S30@!' ******
+// *************************************
+// VERIFICAR DATA DE ALGUM ARQUIVO
+// mdt := directory('siscom.exe') [1][3]
+// *************************************
+//FUNCAO PARA FICAR CHECANDO ALGUMA FUNCAO
+/*
+nTask := HB_BACKGROUNDADD( {|| DisplayTime()},12000) // tempo em milisegundos
+SET BACKGROUND TASKS ON
+//atencao(hdserial('C:'))
+*/
+
+//IF mtc = '?'
+//        CLS
+//        atencao('SIAC :[S]=SIAC - [V]=VENDA - [C]=CAIXA - [M]=SIACVEND - [F]=FISCAL - [O]=SIACOPER - [R]eindexar',0)
+//        RETURN NIL
+//ENDIF
+//atencao(strzero( RGB(240,249,144), 8 ))
+// IMPRIMIR ARQUIVO .TXT
+//PrintFileRaw(GetDefaultPrinter(),"REC_HTI.REL","teste de impressao")
+/*
+if dllcall("USER32.DLL",32,"FindWindow", ,"siscom") > 0
+	   atencao("Programa Calculadora aberto.")
+endif
+
+Hb_Run( "net config server /autodisconnect:-1" ) // NAO DESCONECTAR DO SERVIDOR
+*/
+//REQUEST SR_ODBC            // Needed if you plan to connect with ODBC
+//REQUEST SR_MYSQL           // Needed if you plan to use native connection to MySQL
+//REQUEST SR_ORACLE          // Needed if you plan to use native connection to Oracle
+//REQUEST SR_PGS             // Needed if you plan to use native connection to Postgres
+
+//atencao(hdserial('C:'))
+
+// IMPRIMIR FIGURAS EM RELATORIOS
+// DEVPOS(00,03);DEVOUT('"HTItop.jpg"')
+
+    //eArqConfig := 'ACBRLIB.INI' //if(eArqConfig = nil, '', eArqConfig)
+    //eChaveCrypt:= 'ACBRMONITOR' //if(eChaveCrypt = nil, '', eChaveCrypt)
+
+//SET KEY K_CTRL_C TO Ctrl_c
+//SET KEY 3 TO Ctrl_c
+//SET KEY K_CTRL_V TO Ctrl_v
+
+REQUEST SQLRDD             // SQLRDD should be linked in
+REQUEST SR_FIREBIRD        // Needed if you plan to use native connection to Firebird
+REQUEST DBFCDX
+REQUEST DBFFPT
+*************************************************************************************
+REQUEST HB_CODEPAGE_PT850
+REQUEST HB_CODEPAGE_PTISO
+REQUEST HB_CODEPAGE_ES
+REQUEST HB_CODEPAGE_ESMWIN
+REQUEST HB_CODEPAGE_ESWIN
+REQUEST HB_NOSTARTUPWINDOW
+REQUEST HB_LANG_ES
+
+//HB_SETCODEPAGE( "UTF8" )
+
+
+//ATENCAO(HB_TRANSLATE( '[-]-\-^', "CP850", "UTF8 "))
+
+*/
+//limpa(00,00,50,120)
+//atencao(::oApp :cImagePath)
+*/
+/*
+WvW_SetMainCoord( .F. )
+WvW_SetMaxBMcache( 20 )
+WvW_SetCodePage( 0, 255 )
+WVW_CenterWindow(,.T.,.T.)
+WvW_SetGet( "RDD"         ,"DBFCDX")
+WvW_SetGet( "WIN_ROWS"    ,50)
+WvW_SetGet( "WIN_COLS"    ,120)
+wvw_SetVertCaret(.T.)
+wvw_lDevelopment := .T.
+wvw_enableshortcuts(0,.T.)
+wvw_setdeflinespacing(1.5)
+wvw_SetPaintRefresh(0)
+*/
+Setup()
+IF FILE("hti.ico")
+        wvw_seticon( , "hti.ico" )
+ELSE
+        wvw_seticon( , "HTI.ico" )
+ENDIF
+SETMODE(15,70)
+WITH OBJECT ( oApp := WvW_tApplication():New( CurDrive() + ":\" + CurDir() ))
+        //:cImagePath := CurDrive()+ ":\" + Curdir()      //+'\HTILOGO.JPG'
+        :Setup()
+        //:SetTitle(  sistema+" - "+mversao )
+        :setstyle( -1 )
+        //:SetTitle( sistema+' - '+mversao )
+        //:lDevelopment := .T.
+        //:setstyle( 20 )
+        //:Run( ,, .T. )
+END
+set scoreboard off
+set eventmask  to INKEY_ALL
+SET EVENTMASK TO 159
+SET CONS OFF
+SET WRAP ON
+SET DATE BRITI
+SET DELE ON
+SET EPOCH TO 1950
+//SETCURSOR(2)
+
+SETMODE(50,120)
+
+SR_SetMultiLang( .t. )
+SR_SetBaseLang( LANG_PT_BR )
+RDDSETDEFAULT('SQLRDD')
+
+mdata_sis := DATE()
+
+//ATENCAO(SUBSTR(m_cfg[4],1,AT(':',m_cfg[4])-1))
+//fecha_tela()
+i:=1
+IF ! FILE('HRBFIRMA.JPG')
+        frename('HRBFIRMA.JPG','HTIFIRMA.JPG')
+ENDIF
+      
+IF ! FILE('saccfg.ini')
+        mArq        := fcreate("saccfg.ini" )
+        sLinhas := '001 C Estacao               ='+NETNAME()                    +m_qp+ ;
+                   '002 C Tipo de Terminal      =S'                             +m_qp+ ;
+                   '003 C HTI                   = '                             +m_qp+ ;
+                   '004 C Caminho Banco Dados   =localhost:C:\SIAC\SISCOM.GDB'  +m_qp+ ;
+                   '005 C Versao do Sistema     ='+mversao                      +m_qp+ ;
+                   '006 C Tipo de Tela          ='                              +m_qp+ ;
+                   '007 C Codigo da Empresa     ='
+        fwrite( mArq, @sLinhas, len( sLinhas ) )
+        FCLOSE(mArq)
+        lin := MEMOLINE(MEMOREAD('saccfg.ini'),110,1,,)
+        linhas := linha := 0
+        linhas := MLCOUNT(MEMOREAD('saccfg.ini'),110)
+        m_cfg := {}
+        FOR linha = 1 TO  linhas
+                lin := MEMOLINE(MEMOREAD('saccfg.ini'),110,linha,,)
+                IF SUBSTR(lin,5,1) = 'C'
+                        AADD(m_cfg,ALLTRIM(SUBSTR(lin,30)))
+                ELSE
+                        AADD(m_cfg,VAL(SUBSTR(lin,30)))
+                ENDIF
+        NEXT
+        fclose('saccfg.ini')
+        saccfg('1')
+ENDIF
+linhas := linha := 0
+linhas := MLCOUNT(MEMOREAD('saccfg.ini'),110)
+m_cfg := {}
+FOR linha = 1 TO  linhas
+        lin := MEMOLINE(MEMOREAD('saccfg.ini'),110,linha,,)
+        IF SUBSTR(lin,5,1) = 'C'
+                AADD(m_cfg,ALLTRIM(SUBSTR(lin,30)))
+        ELSE
+                AADD(m_cfg,VAL(ALLTRIM(SUBSTR(lin,30))))
+        ENDIF
+NEXT
+fclose('saccfg.ini')
+IF LEN(m_cfg) < 7
+        mArq        := FCREATE('saccfg.ini')
+        sLinhas     := '001 C Estacao               ='+m_cfg[1]+m_qp
+        sLinhas     := sLinhas + '002 C Tipo de Terminal      ='+m_cfg[2]+m_qp
+        sLinhas     := sLinhas + '003 C HTI                   = '+m_qp
+        sLinhas     := sLinhas + '004 C Caminho Banco Dados   ='+m_cfg[4]+m_qp
+        sLinhas     := sLinhas + '005 C Versao do Sistema     ='+mversao+m_qp
+        sLinhas     := sLinhas + '006 C Tipo de Tela          ='+m_qp
+        sLinhas     := sLinhas + '007 C Codigo da Empresa     ='
+        FWRITE( mArq, @sLinhas, LEN( sLinhas ) )
+        FCLOSE(mArq)
+        lin := MEMOLINE(MEMOREAD('saccfg.ini'),110,1,,)
+        linhas := linha := 0
+        linhas := MLCOUNT(MEMOREAD('saccfg.ini'),110)
+        m_cfg := {}
+        FOR linha = 1 TO  linhas
+                lin := MEMOLINE(MEMOREAD('saccfg.ini'),110,linha,,)
+                IF SUBSTR(lin,5,1) = 'C'
+                        AADD(m_cfg,ALLTRIM(SUBSTR(lin,30)))
+                ELSE
+                        AADD(m_cfg,VAL(ALLTRIM(SUBSTR(lin,30))))
+                ENDIF
+        NEXT
+ENDIF
+//mnum_principal := 0
+//mnum_principal := wvw_nopenwindow('',00,00,50,120)
+//wvw_noclose()
+IF EMPTY(m_cfg[6])
+        //WVW_SetFont(,'times',12,11,)  // 800X600
+        WVW_SetFont(,'lucida console',12,11,)  // 800X600
+        //WVW_SetFont(,'lucida console',12,,FW_BOLD, PROOF_QUALITY )  // 800X600
+        //WVW_SetFont(,'lucida console',12, 11,FW_BOLD, PROOF_QUALITY )  // 800X600
+ELSE
+        WVW_SetFont(,'lucida console',12, 8, )  // 800X600
+ENDIF
+
+ncnn := 0
+//mcor := SETCOLOR('b/w+,B/w,,,GR+/B')
+//MYRUN ("openssl genrsa -out chave.pem 1024") // GERA CHAVE PRIVADA
+//MYRUN("openssl.exe rsa -in chave.pem -modulus -out modulo.txt")   // GERA MODULO DA CHAVE PRIVADA
+//atencao(GetIp())
+//MYRUN("Dir c:\*.XML /S /B /OD > Result.Tmp")
+//ATENCAO(criptografia('HELIO Beltr?o JR.','C')+' - '+criptografia(criptografia('HELIO Beltr?o JR.','C'),'D'))
+/*
+IF ! FILE('saccfg.ini')
+        mArq        := fcreate("saccfg.ini" )
+        sLinhas := '001 C Estacao               ='+NETNAME()                    +m_qp+ ;
+                   '002 C Tipo de Terminal      =S'                             +m_qp+ ;
+                   '003 C HTI                   = '                             +m_qp+ ;
+                   '004 C Caminho Banco Dados   =localhost:C:\SIAC\SISCOM.GDB'  +m_qp+ ;
+                   '005 C Versao do Sistema     ='+mversao                      +m_qp+ ;
+                   '006 C                       ='
+        fwrite( mArq, @sLinhas, len( sLinhas ) )
+        FCLOSE(mArq)
+        lin := MEMOLINE(MEMOREAD('saccfg.ini'),110,1,,)
+        linhas := linha := 0
+        linhas := MLCOUNT(MEMOREAD('saccfg.ini'),110)
+        m_cfg := {}
+        FOR linha = 1 TO  linhas
+                lin := MEMOLINE(MEMOREAD('saccfg.ini'),110,linha,,)
+                IF SUBSTR(lin,5,1) = 'C'
+                        AADD(m_cfg,ALLTRIM(SUBSTR(lin,30)))
+                ELSE
+                        AADD(m_cfg,VAL(SUBSTR(lin,30)))
+                ENDIF
+        NEXT
+        fclose('saccfg.ini')
+        saccfg('1')
+ENDIF
+lin := MEMOLINE(MEMOREAD('saccfg.ini'),110,1,,)
+linhas := linha := 0
+linhas := MLCOUNT(MEMOREAD('saccfg.ini'),110)
+m_cfg := {}
+FOR linha = 1 TO  linhas
+        lin := MEMOLINE(MEMOREAD('saccfg.ini'),110,linha,,)
+        IF SUBSTR(lin,5,1) = 'C'
+                AADD(m_cfg,ALLTRIM(SUBSTR(lin,30)))
+        ELSE
+                AADD(m_cfg,VAL(ALLTRIM(SUBSTR(lin,30))))
+        ENDIF
+NEXT
+fclose('saccfg.ini')
+*/
+
+IF LEN(m_cfg) = 0
+        atencao('Favor verificar o arquivo SACCFG.INI ou entrar em contato com a HTI Sistemas...' )
+        RETURN NIL
+ENDIF
+IF ! FILE('SACBKP.INI')
+	sacbkp('1')
+ENDIF
+IF mtc = 'REMOTO'
+        IF FILE('AnyDesk.exe')
+                MYRUN2('AnyDesk.exe')
+        ELSEIF FILE('AA_v3.exe')
+                MYRUN2('AA_v3.exe')
+        ELSEIF FILE('show.exe')
+                MYRUN2('show.exe')
+        ELSE
+                atencao('Nao foi possivel encontrar o programa especifico, favor entrar em contato com a HTI Sistemas (81)'+mfone_HTI+' ou baixa o aplicativo pelo site: www.htisistemas.com')
+        ENDIF
+        QUIT
+ENDIF
+op_tela(10,1,13,70,'TENTANDO CONEXAO COM O BANCO DE DADOS',,1)
+DEVPOS(00,01);DEVOUT('Tentando CONEXAO com o 1o. BANCO DE DADOS')
+DEVPOS(01,01);DEVOUT('Caminho: ['+ALLTRIM(m_cfg[4])+'], Aguarde um Momento......')
+IF m_cfg[2] = 'S' .AND. ! File('siscom.gdb')
+        IF SQL_SUCCESS = FBCreateDB('SISCOM.GDB','SYSDBA','masterkey',,)
+                atencao('Banco Criado com SUCESSO')
+                m_line := 'ON'
+                //nCnn := SR_AddConnection(CONNECT_FIREBIRD,'FIREBIRD='+ALLTRIM(m_cfg[4])+';uid=SYSDBA;pwd=masterkey;charset=ISO8859_1')
+                nCnn := SR_AddConnection(CONNECT_FIREBIRD,'FIREBIRD='+ALLTRIM(m_cfg[4])+';uid=SYSDBA;pwd=masterkey;charset=ANSI')
+                If nCnn < 0
+                        atencao("Nao foi possivel conectar ao BANCO DE DADOS. Verificar o Caminho do Banco de Dados no SACCFG.INI ["+ALLTRIM(m_cfg[4])+"] ou se o FIREBIRD estar Instalado, Caso nao tenha sucesso contactar com o Administrador da REDE")
+                        Quit
+                EndIf
+                sacsql()
+        ELSE
+                atencao('Nao foi possivel criar o BANCO DE DADOS...')
+                Quit
+        ENDIF
+ENDIF
+IF mtc = 'BACKUP' .OR. mtc = 'backup'
+	WVW_SetMousePos(,00,00)
+	op_tela(10,05,24,120,'PROCESSO DE BACKUP',,1)
+	limpa(00,00,30,200)
+	m_bkp := {}
+	lin := MEMOLINE(MEMOREAD('SACBKP.INI'),210,1,,)
+	linhas := linha := 0
+	linhas := MLCOUNT(MEMOREAD('SACBKP.INI'),210)
+	FOR linha = 1 TO  linhas
+	        lin := MEMOLINE(MEMOREAD('SACBKP.INI'),210,linha,,)
+	        IF SUBSTR(lin,5,1) = 'C'
+	                AADD(m_bkp,ALLTRIM(SUBSTR(lin,30))+' ')
+	        ELSE
+	                AADD(m_bkp,VAL(SUBSTR(lin,30)))
+	        ENDIF
+	NEXT
+        /*
+	fclose('sacbkp.ini')
+        IF ! FILE(ALLTRIM(m_bkp[1])+'instsvc.exe')
+                atencao('Nao foi possivel encontrar este arquivo: instsvc.exe'+m_qp+m_qp+'Neste Caminho: '+ALLTRIM(m_bkp[1])+'instsvc.exe'+m_qp+m_qp+'Entre em contato com o pessoal da HTI Sistemas')
+                QUIT
+        ENDIF
+        myrun2(ALLTRIM(m_bkp[1])+'instsvc.exe stop')
+        */
+        //sr_getconnection():exec("alter database begin backup",,.f.,)
+        //sr_getconnection():exec('COMMIT',,.f.)
+        //myrun('copy c:\helio\siachb\siscom.gdb C:\siacfg\')
+
+        IF LEN(m_bkp) > 0
+		**** ROTINA PARA BACKUP *****************
+		IF EMPTY(m_bkp[1]) .OR. EMPTY(m_bkp[2]) .OR. EMPTY(m_bkp[3]) .OR. EMPTY(m_bkp[4]) .OR. EMPTY(m_bkp[5]) 
+			atencao('O BACKUP nao estar configurado...')
+                        QUIT
+		ENDIF
+		mnome_arq := ALLTRIM(m_bkp[2])+'.RAR'
+                WHILE SR_PhFile((mnome_arq))
+                        IF ferase(mnome_arq) = -1
+                                IF 'N' = op_simnao('S',' Nao foi possivel apagar o arquivo: '+mnome_arq+' Deseja continuar tentando:')
+                                        atencao('Nao foi feito o BACKUP....')
+                                	QUIT
+                                ENDIF
+                        ENDIF
+                ENDDO
+		xcop := 'RAR A '+mnome_arq+' '+m_bkp[3]
+		DEVPOS(00,01);DEVOUT('Aguarde um momento compactanto os Arquivo(s): '+m_bkp[2])
+		DEVPOS(ROW()+1,01);DEVOUT('COMANDO: '+xcop)
+                //atencao('Aguarde o final do Compactacao.....')
+                MYRUN(xcop)
+		xcop := 'COPY '+mnome_arq+' '+ALLTRIM(m_bkp[4])+SUBSTR(DTOC(DATE()),1,2)+SUBSTR(DTOC(DATE()),4,2)+SUBSTR(DTOC(DATE()),7,2)+'.RAR'
+		DEVPOS(ROW()+1,01);DEVOUT('Aguarde um momento COPIANDO o Arquivo para: '+m_bkp[4])
+
+		DEVPOS(ROW()+1,01);DEVOUT('COMANDO: '+xcop)
+		MYRUN(xcop)
+		IF m_bkp[5] > 0
+			m_aux := DIRECTORY(ALLTRIM(m_bkp[4])+'*.RAR','D')
+			d := 0
+			FOR d = 1 TO LEN(m_aux)
+				IF (DATE() - m_bkp[5]) > CTOD(SUBSTR(m_aux[d,1],1,2)+'/'+SUBSTR(m_aux[d,1],3,2)+'/'+SUBSTR(m_aux[d,1],5,2))
+					xcop := 'DEL '+ALLTRIM(m_bkp[4])+m_aux[d,1]
+					MYRUN(xcop)
+				ENDIF
+			NEXT
+		ENDIF
+		IF ! EMPTY(m_bkp[6])
+			xcop := 'COPY '+mnome_arq+' '+ALLTRIM(m_bkp[6])+SUBSTR(DTOC(DATE()),1,2)+SUBSTR(DTOC(DATE()),4,2)+SUBSTR(DTOC(DATE()),7,2)+'.RAR'
+			DEVPOS(ROW()+1,01);DEVOUT('Aguarde um momento COPIANDO o Arquivo para: '+m_bkp[6]+SPACE(30))
+
+			DEVPOS(ROW()+1,01);DEVOUT('COMANDO: '+xcop)
+			MYRUN(xcop)
+			IF m_bkp[7] > 0
+				m_aux := DIRECTORY(ALLTRIM(m_bkp[6])+'*.RAR','D')
+				d := 0
+				FOR d = 1 TO LEN(m_aux)
+					IF DATE() - m_bkp[7] > CTOD(SUBSTR(m_aux[d,1],1,2)+'/'+SUBSTR(m_aux[d,1],3,2)+'/'+SUBSTR(m_aux[d,1],5,2))
+						xcop := 'DEL '+ALLTRIM(m_bkp[6])+m_aux[d,1]
+						MYRUN(xcop)
+					ENDIF
+				NEXT
+			ENDIF
+		ENDIF
+		IF ! EMPTY(m_bkp[8])
+			xcop := 'COPY '+mnome_arq+' '+ALLTRIM(m_bkp[8])+SUBSTR(DTOC(DATE()),1,2)+SUBSTR(DTOC(DATE()),4,2)+SUBSTR(DTOC(DATE()),7,2)+'.RAR'
+			DEVPOS(ROW()+1,01);DEVOUT('Aguarde um momento COPIANDO o Arquivo para: '+m_bkp[8]+SPACE(30))
+
+			DEVPOS(ROW()+1,01);DEVOUT('COMANDO: '+xcop)
+
+			MYRUN(xcop)
+			IF m_bkp[9] > 0
+				m_aux := DIRECTORY(ALLTRIM(m_bkp[8])+'*.RAR','D')
+				d := 0
+				FOR d = 1 TO LEN(m_aux)
+					IF DATE() - m_bkp[9] > CTOD(SUBSTR(m_aux[d,1],1,2)+'/'+SUBSTR(m_aux[d,1],3,2)+'/'+SUBSTR(m_aux[d,1],5,2))
+						xcop := 'DEL '+ALLTRIM(m_bkp[8])+m_aux[d,1]
+						MYRUN(xcop)
+					ENDIF
+				NEXT
+			ENDIF
+		ENDIF
+		IF ! EMPTY(m_bkp[10])
+			xcop := 'COPY '+mnome_arq+' '+ALLTRIM(m_bkp[10])+SUBSTR(DTOC(DATE()),1,2)+SUBSTR(DTOC(DATE()),4,2)+SUBSTR(DTOC(DATE()),7,2)+'.RAR'
+			DEVPOS(ROW()+1,01);DEVOUT('Aguarde um momento COPIANDO o Arquivo para: '+m_bkp[10]+SPACE(30))
+
+			DEVPOS(ROW()+1,01);DEVOUT('COMANDO: '+xcop)
+
+			MYRUN(xcop)
+			IF m_bkp[11] > 0
+				m_aux := DIRECTORY(ALLTRIM(m_bkp[10])+'*.RAR','D')
+				d := 0
+				FOR d = 1 TO LEN(m_aux)
+					IF DATE() - m_bkp[11] > CTOD(SUBSTR(m_aux[d,1],1,2)+'/'+SUBSTR(m_aux[d,1],3,2)+'/'+SUBSTR(m_aux[d,1],5,2))
+						xcop := 'DEL '+ALLTRIM(m_bkp[10])+m_aux[d,1]
+						MYRUN(xcop)
+					ENDIF
+				NEXT
+			ENDIF
+		ENDIF
+		IF ! EMPTY(m_bkp[12])
+			xcop := 'COPY '+mnome_arq+' '+ALLTRIM(m_bkp[12])+SUBSTR(DTOC(DATE()),1,2)+SUBSTR(DTOC(DATE()),4,2)+SUBSTR(DTOC(DATE()),7,2)+'.RAR'
+			DEVPOS(ROW()+1,01);DEVOUT('Aguarde um momento COPIANDO o Arquivo para: '+m_bkp[12]+SPACE(30))
+
+			DEVPOS(ROW()+1,01);DEVOUT('COMANDO: '+xcop)
+
+			MYRUN(xcop)
+			IF m_bkp[13] > 0
+				m_aux := DIRECTORY(ALLTRIM(m_bkp[12])+'*.RAR','D')
+				d := 0
+				FOR d = 1 TO LEN(m_aux)
+					IF DATE() - m_bkp[13] > CTOD(SUBSTR(m_aux[d,1],1,2)+'/'+SUBSTR(m_aux[d,1],3,2)+'/'+SUBSTR(m_aux[d,1],5,2))
+						xcop := 'DEL '+ALLTRIM(m_bkp[12])+m_aux[d,1]
+						MYRUN(xcop)
+					ENDIF
+				NEXT
+			ENDIF
+		ENDIF
+		IF ! EMPTY(m_bkp[14])
+			xcop := 'COPY '+mnome_arq+' '+ALLTRIM(m_bkp[14])+SUBSTR(DTOC(DATE()),1,2)+SUBSTR(DTOC(DATE()),4,2)+SUBSTR(DTOC(DATE()),7,2)+'.RAR'
+			DEVPOS(ROW()+1,01);DEVOUT('Aguarde um momento COPIANDO o Arquivo para: '+m_bkp[14]+SPACE(30))
+
+			DEVPOS(ROW()+1,01);DEVOUT('COMANDO: '+xcop)
+
+			MYRUN(xcop)
+			IF m_bkp[15] > 0
+				m_aux := DIRECTORY(ALLTRIM(m_bkp[14])+'*.RAR','D')
+				d := 0
+				FOR d = 1 TO LEN(m_aux)
+					IF DATE() - m_bkp[15] > CTOD(SUBSTR(m_aux[d,1],1,2)+'/'+SUBSTR(m_aux[d,1],3,2)+'/'+SUBSTR(m_aux[d,1],5,2))
+						xcop := 'DEL '+ALLTRIM(m_bkp[14])+m_aux[d,1]
+						MYRUN(xcop)
+					ENDIF
+				NEXT
+			ENDIF
+		ENDIF
+		***************************************
+		DEVPOS(ROW()+1,01);DEVOUT('F I N A L   D O   B A C K U P ...')
+		WVW_SetMouseMove(,.T.)
+		INKEY(5)
+	ELSE
+		atencao('O BACKUP nao estar configurado...')
+	ENDIF	        	
+        //sr_getconnection():exec("alter database end backup",,.f.,)
+        //sr_getconnection():exec('COMMIT',,.f.)
+//	atencao('O BACKUP concluido com sucesso...')
+        //myrun2('C:\Arquivos de Programas\Firebird\Firebird_2_5\bin\instsvc sta')
+        //alter database begin backup
+        //alter database end backup
+	QUIT
+ENDIF
+/*
+op_tela(10,10,13,100,'TENTANDO CONEXAO COM O BANCO DE DADOS')
+DEVPOS(00,01);DEVOUT('Tentando CONEXAO com o 1o. BANCO DE DADOS')
+DEVPOS(01,01);DEVOUT('Caminho: ['+ALLTRIM(m_cfg[4])+'], Aguarde um Momento......')
+RDDSETDEFAULT('SQLRDD')
+SR_SetMultiLang( .t. )
+SR_SetBaseLang( LANG_PT_BR )
+IF m_cfg[2] = 'S' .AND. ! File('siscom.gdb')
+        IF SQL_SUCCESS = FBCreateDB( 'SISCOM.GDB','SYSDBA','masterkey',300, 'ISO8859_1')
+                atencao('Banco Criado com SUCESSO')
+                m_line := 'ON'
+                //nCnn := SR_AddConnection(CONNECT_FIREBIRD,'FIREBIRD='+ALLTRIM(m_cfg[4])+';uid=SYSDBA;pwd=masterkey;charset=ISO8859_1')
+                nCnn := SR_AddConnection(CONNECT_FIREBIRD,'FIREBIRD='+ALLTRIM(m_cfg[4])+';uid=SYSDBA;pwd=masterkey;charset=NONE')
+                If nCnn < 0
+                        atencao("Nao foi possivel conectar ao BANCO DE DADOS. Verificar o Caminho do Banco de Dados no SACCFG.INI ["+ALLTRIM(m_cfg[4])+"] ou se o FIREBIRD estar Instalado, Caso nao tenha sucesso contactar com o Administrador da REDE")
+                        Quit
+                EndIf
+                sacsql()
+        ELSE
+                atencao('Nao foi possivel criar o BANCO DE DADOS...')
+                Quit
+        ENDIF
+ENDIF
+*/
+********** CONECTANDO AO FIREBIRD *************************************************
+
+        IF mtc <> NIL .AND. SUBSTR(mtc,1,3) = 'GDB'
+                nCnn := SR_AddConnection(CONNECT_FIREBIRD,'FIREBIRD='+ALLTRIM(SUBSTR(ALLTRIM(m_cfg[4]),1,LEN(ALLTRIM(m_cfg[4]))-10)+SUBSTR(mtc,4))+';uid=SYSDBA;pwd=masterkey;charset=ANSI')
+                If nCnn < 0
+                        atencao("Nao foi possivel conectar ao BANCO DE DADOS. Verificar o Caminho do Banco de Dados no SACCFG.INI ["+ALLTRIM(m_cfg[4])+"] ou se o FIREBIRD estar Instalado, Caso nao tenha sucesso contactar com o Administrador da REDE")
+                        Quit
+                EndIf
+        ELSE
+                nCnn := SR_AddConnection(CONNECT_FIREBIRD,'FIREBIRD='+ALLTRIM(m_cfg[4])+';uid=SYSDBA;pwd=masterkey;charset=ANSI')
+                If nCnn < 0
+                        atencao("Nao foi possivel conectar ao BANCO DE DADOS. Verificar o Caminho do Banco de Dados no SACCFG.INI ["+ALLTRIM(m_cfg[4])+"] ou se o FIREBIRD estar Instalado, Caso nao tenha sucesso contactar com o Administrador da REDE")
+                        Quit
+                EndIf
+                IF ! SR_EXISTTABLE('CAM_DBA')
+                        sacsql()
+                ENDIF
+                cam_dba:={}
+                sr_getconnection():exec("SELECT * FROM cam_dba",,.t.,@cam_dba)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(cam_dba) > 0
+                        IF ! EMPTY(cam_dba[1,1])
+                                nCnn1 := SR_AddConnection(CONNECT_FIREBIRD,'FIREBIRD='+ALLTRIM(cam_dba[1,1])+';uid=SYSDBA;pwd=masterkey;charset=ANSI')
+                                If nCnn1 < 0
+                                        atencao("Nao foi possivel conectar ao 2o. BANCO DE DADOS. Verificar o Caminho do Banco de Dados no SACCFG.INI ["+ALLTRIM(m_cfg[4])+"] ou se o FIREBIRD estar Instalado, Caso nao tenha sucesso contactar com o Administrador da REDE")
+                                EndIf
+                        ENDIF
+                        IF LEN(cam_dba) > 1
+                                IF ! EMPTY(cam_dba[2,1])
+                                        nCnn2 := SR_AddConnection(CONNECT_FIREBIRD,'FIREBIRD='+ALLTRIM(cam_dba[2,1])+';uid=SYSDBA;pwd=masterkey;charset=ANSI')
+                                        If nCnn2 < 0
+                                                atencao("Nao foi possivel conectar ao 2o. BANCO DE DADOS. Verificar o Caminho do Banco de Dados no SACCFG.INI ["+ALLTRIM(m_cfg[4])+"] ou se o FIREBIRD estar Instalado, Caso nao tenha sucesso contactar com o Administrador da REDE")
+                                        EndIf
+                                ENDIF
+                        ENDIF
+
+                ENDIF
+        ENDIF
+*/
+//ENDIF
+SR_SetActiveConnection(nCnn)
+m_line := 'ON'
+
+//cast(d.valor_item as numeric (15,3))
+
+*************************************************************************************
+//ver_ncm('10011010','1.102')
+//atencao(curdrive()+':\')
+//blat()
+//  MAPEAR UNIDADE E IMPRESSORAS
+//NETCANCEL("H:")
+//NETREDIR("H:", "\\10.1.1.126\SIAC")
+
+//op_tela(00,00,30,100)
+/*
+cls
+lOK1 := lOk2 := .F.
+nid1 := wvw_cxcreate(,10,01,10,20,"Teste 1",,{|| Testa1() },, .F. )
+nid2 := wvw_cxcreate(,12,01,12,20,"Texte 2",,{|| Testa2() },, .F. )
+WVW_CXEnable( , nid1, .T. )
+WVW_CXEnable( , nid2, .T. )
+inkey(0)
+inkey(0)
+fecha_tela()
+/*
+op_tela(00,00,30,100)
+T:=0
+WHILE .T.
+        botao(00,00,10,90)
+        WVW_DrawLabel(,3,58,'No.Pedido: 000000',,,VERMELHO,BRANCO, 'Arial Black',35,20,,,,,)
+        @ 30,00 SAY 'T: '  GET T PICT '99999'
+        READ
+        IF LASTKEY() = 27
+                QUIT
+        ENDIF  
+ENDDO
+wvw_lclosewindow()
+*/
+
+//wvw_lclosewindow()
+//op_tela(00,00,50,80,memp_resa+SPACE(20)+'.: SISCOM '+mversao+' :.'+SPACE(20)+'Data:'+DTOC(mdata_sis)+' - '+ver_dia(mdata_sis),,1)
+
+
+/*
+limpa(0,0,50,120)
+//WVW_CXCreate( ,0, 1, 40, 90,'cText', cImage/nImage, bBlock, aOffset,nStretchBitmap, lMap3DColors )
+//WVW_CreateDialogModal('cDialog|nResource|cDlgTemplate', NIL, 'bDlgProc|cDlgProc',nFlag,nHandle)
+id_dialogo := WVW_CreateDialogModal('cDialog|nResource|cDlgTemplate', NIL, 'bDlgProc|cDlgProc',,id_janela)
+WVW_LBAddString( id_janela, id_dialogo, 'cItem ')
+inkey(0,10)
+*/
+
+/*
+m_posicao:={}
+AADD(m_posicao,{1,2,40,90})
+m_indiv:={}
+sr_getconnection():exec("SELECT merc,cod_merc FROM sacmerc",,.t.,@m_indiv)
+
+wvw__MakeDlgTemplate(m_posicao,m_indiv)
+//ATENCAO('OK')
+*/
+
+IF mtc = 'SETUP'
+        dbf_sql(mecf,mtipo_tela)
+ELSEIF mtc = '5923'
+        CLOSE ALL
+        dbf2sql()
+ENDIF
+mensagem('Verificando o Arquivo -> MENUFOTO.DBF')
+IF ! FILE('MENUFOTO.DBF')
+        matriz:={ }
+        AADD(matriz,{'smenu','C',40,0})
+        AADD(matriz,{'snome','C',40,0})
+        DBCREATE('menufoto',matriz,'DBFCDX')
+ENDIF
+
+mensagem('Verificando o Arquivo -> SACCPRES.DBF')
+MYRUN('DEL saccpres.dbf')
+IF ! FILE('SACCPRES.DBF')
+        matriz:={ }
+        AADD(matriz,{'codmerc','C',5,0})
+        AADD(matriz,{'descricao','C',40,0})
+        AADD(matriz,{'quantd','N',14,3})
+        AADD(matriz,{'preco','N',14,3})
+        AADD(matriz,{'num_ped','C',6,0})
+        AADD(matriz,{'prioridade','C',1,0})
+        DBCREATE('SACCPRES',matriz,'DBFCDX')
+	USE 'saccpres' ALIAS 'cpres' EXCLUSIVE NEW VIA 'DBFCDX'
+	INDEX ON cpres->descricao TAG descr TO ('saccpres')
+ENDIF
+mensagem('Verificando o Arquivo -> SACCGRU.DBF')
+IF ! FILE('SACCGRU.DBF')
+        matriz:={ }
+        AADD(matriz,{'gru_sub','C',5,0})
+        AADD(matriz,{'merc','C',40,0})
+        AADD(matriz,{'data_cad','D',8,0})
+        DBCREATE('SACCGRU',matriz,'DBFCDX')
+	USE 'saccgru' ALIAS 'cgru' EXCLUSIVE NEW VIA 'DBFCDX'
+	INDEX ON cgru->gru_sub TAG grusub TO ('saccgru')
+	INDEX ON cgru->merc TAG merca TO ('saccgru')
+ENDIF
+IF ! FILE('COMPRAS.DBF')
+        matriz:={ }
+        AADD(matriz,{'cod_merc','C',5,0})
+        AADD(matriz,{'merc','C',40,0})
+        AADD(matriz,{'cod_barr','C',14,0})
+        AADD(matriz,{'est_min','N',15,3})
+        AADD(matriz,{'dat_ent','D',8,0})
+        AADD(matriz,{'pr_unit','N',15,3})
+        AADD(matriz,{'cust_merc','N',15,3})
+        AADD(matriz,{'saldo','N',15,3})
+        AADD(matriz,{'quantd1','N',15,3})
+        AADD(matriz,{'quantd2','N',15,3})
+        AADD(matriz,{'quantd3','N',15,3})
+        AADD(matriz,{'quantd4','N',15,3})
+        AADD(matriz,{'vlr1','N',15,3})
+        AADD(matriz,{'vlr2','N',15,3})
+        AADD(matriz,{'vlr3','N',15,3})
+        AADD(matriz,{'vlr4','N',15,3})
+        AADD(matriz,{'tot_qtd','N',15,3})
+        AADD(matriz,{'media','N',15,3})
+        AADD(matriz,{'disp','C',1,0})
+        AADD(matriz,{'med_cust','N',15,3})
+        AADD(matriz,{'unidade','C',3,0})
+        AADD(matriz,{'ref','C',13,0})
+        AADD(matriz,{'grupo_sub','C',5,0})
+        AADD(matriz,{'codfab','C',4,0})
+        AADD(matriz,{'fab','C',40,0})
+        AADD(matriz,{'mes1','C',5,0})
+        AADD(matriz,{'mes2','C',5,0})
+        AADD(matriz,{'mes3','C',5,0})
+        AADD(matriz,{'mes4','C',5,0})
+        AADD(matriz,{'qtd_mes','N',1,0})
+        AADD(matriz,{'dias_sug','N',5,0})
+        AADD(matriz,{'peso','N',8,3})
+        AADD(matriz,{'isento','C',1,0})
+        AADD(matriz,{'real_dol','C',1,0})
+        AADD(matriz,{'ipi','N',14,6})
+        AADD(matriz,{'quantd','N',15,3})
+        AADD(matriz,{'preco','N',15,3})
+        DBCREATE('compras',matriz,'DBFCDX')
+	USE 'compras' ALIAS 'comp' EXCLUSIVE NEW VIA 'DBFCDX'
+        INDEX ON comp->cod_merc TAG comp_cod TO ('compras')
+        INDEX ON comp->merc TAG comp_mer TO ('compras')
+ENDIF
+IF ! FILE('SACLOG.DBF')
+        matriz:={}
+        AADD(matriz,{'data_sis','D',8,0})
+        AADD(matriz,{'data','D',8,0})
+        AADD(matriz,{'hora','C',8,0})
+        AADD(matriz,{'tipo','C',10,0})
+        AADD(matriz,{'aut_oper','C',3,0})
+        AADD(matriz,{'cod_oper','C',3,0})
+        AADD(matriz,{'cod_vend','C',3,0})
+        AADD(matriz,{'cod_cli','C',5,0})
+        AADD(matriz,{'cod_forn','C',4,0})
+        AADD(matriz,{'cod_prod','C',5,0})
+        AADD(matriz,{'documento','C',10,0})
+        AADD(matriz,{'quantd1','N',14,3})
+        AADD(matriz,{'quantd2','N',14,3})
+        AADD(matriz,{'valor1','N',14,3})
+        AADD(matriz,{'valor2','N',14,3})
+        AADD(matriz,{'venc1','D',8,0})
+        AADD(matriz,{'venc2','D',8,0})
+        AADD(matriz,{'modulo','C',20,0})
+        AADD(matriz,{'descri','C',60,0})
+        AADD(matriz,{'cod_aut','C',17,0})
+        AADD(matriz,{'terminal','C',15,0})
+        DBCREATE('saclog',matriz,'DBFCDX')
+ENDIF
+*/
+MYRUN('MD '+curdrive()+':\SIACCFG')
+arq_bat()
+IF mtc = 'indexar' .OR. mtc = 'INDEXAR'
+        CLOSE ALL
+        saccdx('*',mecf)
+        wvw_lclosewindow()
+        fecha_conexaoDB()
+        QUIT
+ENDIF
+IF mtc = 'arquivo'
+        CLOSE ALL
+        sac_dbf(mtc)
+        wvw_lclosewindow()
+        fecha_conexaoDB()
+        QUIT
+ENDIF
+//atencao(m_cfg[2])
+IF m_cfg[2] = 'S'
+        //IF ! FILE("instsvc.exe")
+        //        atencao('Favor entrar em contato com a HTI Sistemas para que possa copia este arquivo do FIREBIRD: instsvc.exe')
+        //ENDIF
+        //MYRUN ("instsvc i ?s ?a ?g")
+        //MYRUN ("instsvc sta")
+	MYRUN('MD '+CURDRIVE()+':\'+CURDIR()+'\CLIENTE')
+	MYRUN('MD '+CURDRIVE()+':\'+CURDIR()+'\PRODUTO')
+	MYRUN('MD '+CURDRIVE()+':\'+CURDIR()+'\USUARIO')
+	MYRUN('MD '+CURDRIVE()+':\'+CURDIR()+'\NFE')
+	MYRUN('MD '+CURDRIVE()+':\'+CURDIR()+'\REMESSA')
+	MYRUN('MD '+CURDRIVE()+':\'+CURDIR()+'\RETORNO')
+	MYRUN('MD '+CURDRIVE()+':\'+CURDIR()+'\PDF')
+        sacsql()
+        IF ! saccdx()
+                atencao('Existe algum problema com os indices procure o suporte')
+                CLOSE ALL
+                QUIT
+        ENDIF
+        DBCLOSEALL()
+        sac_dbf()
+ENDIF
+/*
+m_indiv:={}
+sr_getconnection():exec("SELECT cod_cli,razao FROM saccli" ,,.t.,@m_indiv)
+FOR i = 1 to len(m_indiv)
+                sr_getconnection():exec("update sacDUPR set cliente ="+sr_cdbvalue(m_indiv[i,2])+" where FORNEC = "+sr_cdbvalue(m_indiv[i,1]) ,,.F.)
+NEXT
+        sr_getconnection():exec("COMMIT",,.f.)
+QUIT
+*/
+m_versao:={}
+sr_getconnection():exec("SELECT * FROM sacversao WHERE versao = "+sr_cdbvalue(mversao),,.t.,@m_versao)
+sr_getconnection():exec('COMMIT',,.f.)
+IF LEN(m_versao) = 0
+        sr_getconnection():exec('INSERT INTO sacversao (data,versao) VALUES ('+;
+        sr_cdbvalue(DATE())+','+; //1
+        sr_cdbvalue(mversao)+')',,.f.)
+ENDIF
+m_indiv:={}
+sr_getconnection():exec("SELECT * FROM sacindiv WHERE terminal = "+sr_cdbvalue(m_cfg[1]),,.t.,@m_indiv)
+sr_getconnection():exec('COMMIT',,.f.)
+IF LEN(m_indiv) = 0
+                mcampo_ped :='terminal  ,';//1
+                +'md5       ,';//2
+                +'cam_geral ,';//3
+                +'cam_pocket,';//4
+                +'cam_dosprt,';//5
+                +'cam_cfg   ,';//6
+                +'prt_ped1  ,';//7
+                +'prt_ped2  ,';//8
+                +'form_ped  ,';//9
+                +'tp_impped ,';//10
+                +'qtd_cop_pd,';//11
+                +'prt_orc1  ,';//12
+                +'prt_orc2  ,';//13
+                +'form_orc  ,';//14
+                +'qtd_cop_or,';//15
+                +'qtd_lin_av,';//16
+                +'prt_rel   ,';//17
+                +'tp_imprel ,';//18
+                +'nfe_n_c   ,';//19
+                +'prt_dup   ,';//20
+                +'tp_impdup ,';//21
+                +'qtd_cp_dup,';//22
+                +'prt_nf    ,';//23
+                +'prt_bole  ,';//24
+                +'tp_impbol ,';//25
+                +'autocaixa ,';//26
+                +'form_os   ,';//27
+                +'cam_ft_cli,';//28
+                +'cam_ft_pro,';//29
+                +'cam_ft_ani,';//30
+                +'cam_ft_usu,';//31
+                +'cam_ft_rac,';//32
+                +'hiper_req ,';//33
+                +'hiper_resp,';//34
+                +'dial_req  ,';//35
+                +'dial_resp ,';//36
+                +'cam_acbr  ,';//37
+                +'cam_reme  ,';//38
+                +'cam_boleto,';//39
+                +'cam_nfe   ,';//40
+                +'gerenciado,';//41
+                +'ip_acbr   ,';//42
+                +'ip_acbrnfe' //43
+                cComm  := 'INSERT INTO sacindiv ('+mcampo_ped+',sr_deleted) VALUES ('
+                m_indiv:={}
+                sr_getconnection():exec("SELECT * FROM sacindiv",,.t.,@m_indiv)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF LEN(m_indiv) > 0
+                        cComm  := ccomm + sr_cdbvalue(SUBSTR(m_cfg[1],1,20))+','+; //1
+                        sr_cdbvalue(m_indiv[1,2])+','+;//2
+                        sr_cdbvalue(m_indiv[1,3])+','+;//3
+                        sr_cdbvalue(m_indiv[1,4])+','+;//4
+                        sr_cdbvalue(m_indiv[1,5])+','+;//5
+                        sr_cdbvalue(m_indiv[1,6])+','+;//6
+                        sr_cdbvalue(m_indiv[1,7])+','+;//7
+                        sr_cdbvalue(m_indiv[1,8])+','+;//8
+                        sr_cdbvalue(m_indiv[1,9])+','+;//9
+                        sr_cdbvalue(m_indiv[1,10])+','+;//10
+                        sr_cdbvalue(m_indiv[1,11])+','+;//11
+                        sr_cdbvalue(m_indiv[1,12])+','+;//12
+                        sr_cdbvalue(m_indiv[1,13])+','+;//13
+                        sr_cdbvalue(m_indiv[1,14])+','+;//14
+                        sr_cdbvalue(m_indiv[1,15])+','+;//15
+                        sr_cdbvalue(m_indiv[1,16])+','+;//16
+                        sr_cdbvalue(m_indiv[1,17])+','+;//17
+                        sr_cdbvalue(m_indiv[1,18])+','+;//18
+                        sr_cdbvalue(m_indiv[1,19])+','+;//19
+                        sr_cdbvalue(m_indiv[1,20])+','+;//20
+                        sr_cdbvalue(m_indiv[1,21])+','+;//21
+                        sr_cdbvalue(m_indiv[1,22])+','+;//22
+                        sr_cdbvalue(m_indiv[1,23])+','+;//23
+                        sr_cdbvalue(m_indiv[1,24])+','+;//24
+                        sr_cdbvalue(m_indiv[1,25])+','+;//25
+                        sr_cdbvalue(m_indiv[1,26])+','+;//26
+                        sr_cdbvalue(m_indiv[1,27])+','+;//27
+                        sr_cdbvalue(m_indiv[1,28])+','+;//28
+                        sr_cdbvalue(m_indiv[1,29])+','+;//29
+                        sr_cdbvalue(m_indiv[1,30])+','+;//30
+                        sr_cdbvalue(m_indiv[1,31])+','+;//31
+                        sr_cdbvalue(m_indiv[1,32])+','+;//32
+                        sr_cdbvalue(m_indiv[1,33])+','+;//33
+                        sr_cdbvalue(m_indiv[1,34])+','+;//34
+                        sr_cdbvalue(m_indiv[1,35])+','+;//35
+                        sr_cdbvalue(m_indiv[1,36])+','+;//36
+                        sr_cdbvalue(m_indiv[1,37])+','+;//37
+                        sr_cdbvalue(m_indiv[1,38])+','+;//38
+                        sr_cdbvalue(m_indiv[1,39])+','+;//39
+                        sr_cdbvalue(m_indiv[1,40])+','+;//40
+                        sr_cdbvalue(m_indiv[1,41])+','+;//41
+                        sr_cdbvalue(m_indiv[1,42])+','+;//42
+                        sr_cdbvalue(m_indiv[1,43])+','+;//43
+                        sr_cdbvalue(' ')+')'
+                ELSE
+                        cComm  := ccomm + sr_cdbvalue(SUBSTR(m_cfg[1],1,20))+','+; //1
+                        sr_cdbvalue('')+','+;//2
+                        sr_cdbvalue('C:\SIACCFG\')+','+;//3
+                        sr_cdbvalue('')+','+;//4
+                        sr_cdbvalue('C:\SIACCFG\')+','+;//5
+                        sr_cdbvalue('C:\SIACCFG\')+','+;//6
+                        sr_cdbvalue('LPT1')+','+;//7
+                        sr_cdbvalue('')+','+;//8
+                        sr_cdbvalue('B')+','+;//9
+                        sr_cdbvalue('J')+','+;//10
+                        sr_cdbvalue(1)+','+;//11
+                        sr_cdbvalue('LPT1')+','+;//12
+                        sr_cdbvalue('')+','+;//13
+                        sr_cdbvalue('B')+','+;//14
+                        sr_cdbvalue(1)+','+;//15
+                        sr_cdbvalue(12)+','+;//16
+                        sr_cdbvalue('LPT1')+','+;//17
+                        sr_cdbvalue('J')+','+;//18
+                        sr_cdbvalue('')+','+;//19
+                        sr_cdbvalue('LPT1')+','+;//20
+                        sr_cdbvalue('J')+','+;//21
+                        sr_cdbvalue(1)+','+;//22
+                        sr_cdbvalue('LPT1')+','+;//23
+                        sr_cdbvalue('LPT1')+','+;//24
+                        sr_cdbvalue('J')+','+;//25
+                        sr_cdbvalue('N')+','+;//26
+                        sr_cdbvalue('B')+','+;//27
+                        sr_cdbvalue('')+','+;//28
+                        sr_cdbvalue('')+','+;//29
+                        sr_cdbvalue('')+','+;//30
+                        sr_cdbvalue('')+','+;//31
+                        sr_cdbvalue('')+','+;//32
+                        sr_cdbvalue('C:\HIPERTEF\HIPERLINK\REQ\')+','+;//33
+                        sr_cdbvalue('C:\HIPERTEF\HIPERLINK\RESP\')+','+;//34
+                        sr_cdbvalue('C:\TEF_DIAL\REQ\')+','+;//35
+                        sr_cdbvalue('C:\TEF_DIAL\RESP\')+','+;//36
+                        sr_cdbvalue('C:\ACBRMONITORPLUS\')+','+;//37
+                        sr_cdbvalue('')+','+;//38
+                        sr_cdbvalue('')+','+;//39
+                        sr_cdbvalue('')+','+;//40
+                        sr_cdbvalue('PADRAO')+','+;//41
+                        sr_cdbvalue('localhost:3434')+','+;//42
+                        sr_cdbvalue('')+','+;//43
+                        sr_cdbvalue(' ')+')'
+                ENDIF
+                sr_getconnection():exec(ccomm,,.f.)
+                sr_getconnection():exec("COMMIT",,.f.)
+                m_indiv:={}
+                sr_getconnection():exec("SELECT * FROM sacindiv WHERE terminal = "+sr_cdbvalue(m_cfg[1]),,.t.,@m_indiv)
+                sr_getconnection():exec('COMMIT',,.f.)
+ENDIF
+m_set:={}
+sr_getconnection():exec("SELECT * FROM sacsetup",,.t.,@m_set)
+sr_getconnection():exec('COMMIT',,.f.)
+IF LEN(m_set) = 0
+        atencao('EMPRESA SEM NUMERO DE SERIE')
+        senha('*')
+        sr_getconnection():exec('INSERT INTO sacsetup (ver,sr_deleted) VALUES ('+ sr_cdbvalue(m_cfg[5])+','+sr_cdbvalue(" ")+')',,.f.)
+        sr_getconnection():exec("COMMIT",,.f.)
+        m_set:={}
+        sr_getconnection():exec("SELECT * FROM sacsetup",,.t.,@m_set)
+        sr_getconnection():exec('COMMIT',,.f.)
+        IF ! incl_firma('*')       // PRG HTIFUN
+                SET CURSOR ON
+                DBUNLOCK()
+                SETCOLOR('W/N,X')
+                DBCOMMITALL()
+                DBCLOSEALL()
+                CLEAR MEMORY
+                INKEY(2)
+                wvw_lclosewindow()
+                fecha_conexaoDB()
+                QUIT
+        ENDIF
+ENDIF
+wvw_lclosewindow()
+op_tela(00,00,50,80,memp_resa+SPACE(20)+'.: SISCOM '+mversao+' :.'+SPACE(20)+'Data:'+DTOC(mdata_sis)+' - '+ver_dia(mdata_sis),,1)
+
+IF ! VAL(m_set[1,123]) > 0
+        m_set[1,123] := IF(! EMPTY(m_set[1,123]),DCRIPTO(SUBSTR(m_set[1,123],1,14))+DCRIPTO(SUBSTR(m_set[1,123],15,6)),m_set[1,123])
+ENDIF
+//atencao(m_set[1,123])
+m_ver := CTOD(SUBSTR(mversao,7,2)+'/'+SUBSTR(mversao,4,2)+'/20'+STRZERO(VAL(SUBSTR(mversao,2,1)),2))
+m_verset := CTOD(SUBSTR(m_set[1,1],7,2)+'/'+SUBSTR(m_set[1,1],4,2)+'/20'+STRZERO(VAL(SUBSTR(m_set[1,1],2,1)),2))
+// CONTA USUARIOS
+//nuser:=contausuariofirebird(nomedobanco)
+//
+//IF EMPTY(ALLTRIM(m_set[1,126])) .AND. m_cfg[2] = 'S'
+//        sr_getconnection():exec("UPDATE sacsetup SET chv_public = " + sr_cdbvalue(mchv_public) + " WHERE sr_recno = 1 ",,.f.)
+//ENDIF
+
+IF m_verset > m_ver
+        atencao('A versao deste Computador nao estar atualizada, favor entrar em contato com o Administrador de Rede para ver qual o problema que o sistema nao estar copiando a versao mais atual...')
+ENDIF
+
+//Critica_CRT()
+tesc := CHR(27)
+memp_resa := SPACE(30)
+//ATENCAO(ALLTRIM(m_indiv[1,3])+'hticabe.jpg')
+IF FILE(ALLTRIM(m_indiv[1,3])+'hticabe.jpg')
+        MYRUN('COPY '+ALLTRIM(m_indiv[1,3])+'hticabe.jpg')
+ENDIF
+//ANVISA()
+
+WHILE .T.
+        mdata_sis := DATE()
+        mtip_term := m_cfg[2]
+        /*
+        IF VAL(m_set[1,180]) = 0 .AND. ! EMPTY(m_set[1,180])
+                sr_getconnection():exec("UPDATE sacsetup SET cod_acess = "+sr_cdbvalue(DCRIPTO(m_set[1,180])),,.f.)
+                sr_getconnection():exec("COMMIT",,.f.)
+        ENDIF
+        */
+        IF autorizacao(IF(EMPTY(m_set[1,123]),'',SUBSTR(m_set[1,123],15,6)))
+                num := 80
+                IF m_cfg[7] = '001' .OR. EMPTY(m_cfg[7])
+                        mcodempresa := '001'
+                        mcgc_aux := m_set[1,123]
+                        mcgc_firm := SUBSTR(mcgc_aux,1,2)+'.'+SUBSTR(mcgc_aux,3,3)+'.'+SUBSTR(mcgc_aux,6,3)+'/'+SUBSTR(mcgc_aux,9,4)+'-'+SUBSTR(mcgc_aux,13,2)
+                        minsc_firm := m_set[1,128]
+                        mend_firm := RTRIM(m_set[1,132])+', '+RTRIM(m_set[1,160])+IF(! EMPTY(m_set[1,161]),' - '+RTRIM(m_set[1,161]),'')
+                        mcid_firm := RTRIM(m_set[1,134])+'-'+m_set[1,19]
+                        mfone_firm := RTRIM(m_set[1,136])
+                        sis_cidade := RTRIM(m_set[1,134])
+                        IF m_set[1,131] = 'F'
+                                memp_resa := RTRIM(m_set[1,130])
+                        ELSE
+                                memp_resa := RTRIM(m_set[1,129])
+                        ENDIF
+                        // TESTE ERRORSYS
+                        //memp_resa := RTRIM(m_set[1,229])
+                ELSE
+                        cons_emp := {}
+                        sr_getconnection():exec("SELECT * FROM sacemp WHERE codemp = "+sr_cdbvalue(m_cfg[7]),,.t.,@cons_emp)
+                        sr_getconnection():exec('COMMIT',,.f.)
+                        IF EMPTY(cons_emp)
+                                atencao('Verificar o arquivo SACCFG.INI para ver na linha 06 o codigo da empresa...')
+                                wvw_lclosewindow()
+                                fecha_conexaoDB()
+                                RETURN NIL
+                        ENDIF
+                        mcodempresa := m_cfg[7]
+                        mcgc_aux := m_set[1,123]
+                        mcgc_firm := cons_emp[1,6]
+                        minsc_firm := cons_emp[1,5]
+                        mend_firm := cons_emp[1,10]
+                        mcid_firm := RTRIM(cons_emp[1,12])+'-'+cons_emp[1,14]
+                        mfone_firm := RTRIM(cons_emp[1,15])
+                        sis_cidade := RTRIM(cons_emp[1,12])
+                        IF cons_emp[1,9] = 'F'
+                                memp_resa := RTRIM(cons_emp[1,8])
+                        ELSE
+                                memp_resa := RTRIM(cons_emp[1,7])
+                        ENDIF
+                ENDIF
+                */
+                wvw_SetTitle(,memp_resa+SPACE(20)+'.: SISCOM '+mversao+' :.         Data:'+DTOC(mdata_sis)+' - '+ver_dia(mdata_sis)+'           .: HTI Sistemas - (81)'+mfone_HTI+' :.')
+                //Wvw_SetTitle( ,memp_resa+SPACE(20)+'.: SISCOM '+mversao+' :.            .: HTI Sistemas - (81)'+mfone_HTI+' :.')
+                ************
+                inicializa()
+                ************
+                // VERIFICA ARQUIVO DE LIBERACAO
+                ********************************
+                m_set1:={}
+                mcnpj_txt := tira_pontos(mcgc_firm)+'*.TXT'
+                lin := MEMOLINE(MEMOREAD(mcnpj_txt),110,1,,)
+                linhas := linha := 0
+                linhas := MLCOUNT(MEMOREAD(mcnpj_txt),110)
+                FOR linha = 1 TO linhas
+                        lin := MEMOLINE(MEMOREAD(mcnpj_txt),110,linha,,)
+                        AADD(m_set1,ALLTRIM(lin))
+                NEXT
+                mcnpj_txt := tira_pontos(mcgc_firm)+'.TXT'
+                IF FILE(mcnpj_txt)
+                        lin := MEMOLINE(MEMOREAD(mcnpj_txt),110,1,,)
+                        linhas := linha := 0
+                        linhas := MLCOUNT(MEMOREAD(mcnpj_txt),110)
+                        FOR linha = 1 TO linhas
+                                lin := MEMOLINE(MEMOREAD(mcnpj_txt),110,linha,,)
+                                AADD(m_set1,ALLTRIM(lin))
+                        NEXT
+                        //atencao(criptografia(m_set1[2],'D'))
+                        SR_BEGINTRANSACTION()
+                                sr_getconnection():exec("UPDATE sacsetup SET sysdatlm = "+sr_cdbvalue(criptografia(m_set1[2],'D')),,.f.)
+                                sr_committransaction()
+                        SR_ENDTRANSACTION()
+                        MYRUN('DEL '+mcnpj_txt)
+                ENDIF
+                setcor(1)
+                muf_firm := m_set[1,19]
+                cons_emp:={}
+                sr_getconnection():exec("SELECT COUNT(*) FROM sacemp",,.t.,@cons_emp)
+                sr_getconnection():exec('COMMIT',,.f.)
+                IF cons_emp[1,1] > 1;mmult_emp:='S';ENDIF
+                botao(00,00,50,110)
+                setcor(30)
+                limpa(0,0,50,120)
+                setcor(1)
+
+                //WVW_DrawImage( ,00,00,50,110,ALLTRIM(m_indiv[1,3])+'HTILOGO.JPG',.F.,.F.)
+                IF mtc = 'PINPAD' .OR. mtc = 'pinpad'
+                        //pinpad(,'teste','mensagens')
+                        SISPINPAD(mtc)
+                        QUIT
+                ELSE
+                        senha(mtc)
+                ENDIF
+                EXIT
+        ELSEIF EMPTY(m_set[1,123])
+                atencao('EMPRESA SEM NUMERO DE SERIE')
+                senha('*')
+                IF ! incl_firma('*')       // PRG HTIFUN
+                        SET CURSOR ON
+                        DBUNLOCK()
+                        SETCOLOR('W/N,X')
+                        DBCOMMITALL()
+                        DBCLOSEALL()
+                        CLEAR MEMORY
+                        INKEY(2)
+*                       DeAtivaScrnSave()       // DESATIVA A PROTECAO TELA
+                ENDIF
+                wvw_lclosewindow()
+                fecha_conexaoDB()
+                QUIT
+        ELSE
+                atencao('Numero de serie nao esta correto, procure a HTI Sistemas')
+                SR_BEGINTRANSACTION()
+                        sr_getconnection():exec("UPDATE sacsetup SET serie = "+sr_cdbvalue(''),,.f.)
+                        sr_committransaction()
+                SR_ENDTRANSACTION()
+                fecha_conexaoDB()
+                QUIT
+                //senha()
+                //LOOP
+        ENDIF
+ENDDO
+CLOSE ALL
+wvw_lclosewindow()
+fecha_conexaoDB()
+RETURN NIL
+************************** f i m ***************************
+FUNCTION ShowClue( ... )
+************************
+LOCAL xMessage
+STATIC lPostP, cMessage := ""
+IF ( lPostP = NIL )
+        cMessage := ""
+ENDIF
+FOR EACH xMessage IN HB_aParams()
+        lIsArray := .F.
+        SWITCH ValType( xMessage )
+        CASE "C"
+        CASE "M"
+                EXIT
+        CASE "N"
+                xMessage := LTrim( Str( xMessage ) )
+                EXIT
+        CASE "D"
+                xMessage := DToC( xMessage )
+                EXIT
+        CASE "L"
+                xMessage := IF( xMessage, ".T.", ".F." )
+                EXIT
+        CASE "O"
+                xMessage := xMessage:className + " Object"
+                EXIT
+        CASE "B"
+                xMessage := "{||...}"
+                EXIT
+        CASE "A"
+                lPostP := lIsArray := .T.
+                EXIT
+                DEFAULT
+                xMessage := "NIL"
+        END
+        cMessage += ( "/" + xMessage )
+NEXT
+WvW_SBsetText( 1, 0, "* " +  cMessage )
+lPostP := NIL
+RETURN (.T.)
+************************** f i m ***************************
+FUNCTION DisplayTime
+********************
+  //if <alguma condi??o>
+    HB_BACKGROUNDACTIVE( nTask, .F. )  // desativar o timer
+    //sacapphti(1,1)
+    //atencao('ok')
+    //<esperar>       '
+    HB_BACKGROUNDACTIVE( nTask, .T. )  // reativar o timer
+  //endif
+return .t.
+*/
+
+FUNCTION TESTA1()
+if lOK1
+Alert("Voce desmarcou o checkbox")
+else
+Alert("Voce marcou o checkbox")
+endif
+lOK1 := !lOK1
+RETURN NIL
+
+FUNCTION TESTA2()
+if lOK2
+Alert("Voce desmarcou o checkbox")
+else
+Alert("Voce marcou o checkbox")
+endif
+lOK2 := !lOK2
+RETURN NIL
+*/
+************************ f i m *********************
+FUNCTION Setup()
+//****
+WvW_SetGet( "RDD"         ,"DBFCDX")
+WvW_SetGet( "WIN_ROWS"    ,50)
+WvW_SetGet( "WIN_COLS"    ,120)
+wvw_SetVertCaret(.T.)
+
+wvw_setcodepage(0,255)
+WVW_CenterWindow(,.T.,.T.)
+SetMode( 30, 88 )
+//
+WvW_SetPaintRefresh( 100 )
+WvW_SetVertCaret( .T. )
+WvW_SetAltF4Close( .F. )
+WvW_SetMouseMove( .T. )
+WvW_SetMainCoord( .F. )
+WVW_SetDefLineSpacing( 0 )
+WvW_SetMaxBMcache( 20 )
+//
+wvw_lDevelopment := .T.
+wvw_enableshortcuts(0,.T.)
+wvw_setdeflinespacing(1.5)
+WVW_SetLineSpacing( 0, 0 )
+WvW_SetCodePage( 0, 255 )
+WvW_SetPointer( 0, 1 )
+//
+Wvw_LoadPen( 1, 0, 1.0, cRGB( "Orange" ) )
+Wvw_LoadPen( 2, 0, 1.5, cRGB( "Orange" ) )
+Wvw_LoadPen( 3, 0, 2.0, cRGB( "Orange" ) )
+Wvw_LoadPen( 4, 0, 2.5, cRGB( "Orange" ) )
+Wvw_LoadPen( 5, 0, 3.0, cRGB( "Orange" ) )
+WvW_SetPen( 0, 1, RGB(201,201,201) )
+//
+//
+RETURN (.T.)
+
+
+
+
+
+
+

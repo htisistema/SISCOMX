@@ -10946,9 +10946,11 @@ IF (mdias_fecha <= 0 .OR. SUBSTR(m_set[1,82],12,1) = '*') .AND. ! EMPTY(m_set[1,
                                 fim(msit_tip,'*')
                                 //RETURN NIL
                         ENDIF
-                        IF VAL(SUBSTR(mcod_acesso,9)) > 65
-                                atencao('CODIGO DE ACESSO NAO CONFERE OS DIAS....')
+                        IF VAL(SUBSTR(mcod_acesso,9)) > 65 .AND. VAL(SUBSTR(mcod_acesso,9)) # 181 .AND. VAL(SUBSTR(mcod_acesso,9)) # 366
+                        //IF VAL(SUBSTR(mcod_acesso,9)) > 65
+                                atencao('CODIGO DE ACESSO NAO CONFERE OS DIAS....1')
                                 LOOP
+
                         ELSEIF LEN(ALLTRIM(mcod_acesso)) > 20
                                 IF EMPTY(SUBSTR(dcrip(mcod_acesso),1,14))
                                         LOOP
@@ -10972,7 +10974,7 @@ IF (mdias_fecha <= 0 .OR. SUBSTR(m_set[1,82],12,1) = '*') .AND. ! EMPTY(m_set[1,
                                         //CATCH e
                                 SR_ENDTRANSACTION()
                                 EXIT
-        		ELSEIF SUBSTR(mcod_acesso,1,8) = mdig1+mdig2+mdig3+mdig4+mdig5 .AND. LEN(ALLTRIM(mcod_acesso)) >= 10
+        		ELSEIF SUBSTR(mcod_acesso,1,8) = mdig1+mdig2+mdig3+mdig4+mdig5 .AND. LEN(ALLTRIM(mcod_acesso)) >= 11
                                 IF VAL(SUBSTR(mcod_acesso,9)) = 0
                                         mdata_aux :=SPACE(11)
                                 ELSE
@@ -10987,7 +10989,7 @@ IF (mdias_fecha <= 0 .OR. SUBSTR(m_set[1,82],12,1) = '*') .AND. ! EMPTY(m_set[1,
                                 SR_ENDTRANSACTION()
                                 EXIT
                         ELSE
-                                atencao('CODIGO DE ACESSO NAO CONFERE....')
+                                atencao('CODIGO DE ACESSO NAO CONFERE....2')
                                 LOOP
                         ENDIF
                 ENDDO
@@ -11018,8 +11020,9 @@ ELSEIF (mdias_fecha <= 3 .AND. ! EMPTY(m_set[1,82])) .OR. mtp_senha # NIL  //.AN
                 mdig4 := STRZERO(VAL(SUBSTR(DTOC(DATE()),1,2))+VAL(SUBSTR(DTOC(DATE()),1,2)),2)
                 mdig5 := SUBSTR(STRZERO(VAL(SUBSTR(DTOC(DATE()),7,2))+VAL(SUBSTR(DTOC(DATE()),1,2))+VAL(SUBSTR(DTOC(DATE()),4,2)),2),2,1)
                 */
-                IF VAL(SUBSTR(mcod_acesso,9)) > 65
-                        atencao('CODIGO DE ACESSO NAO CONFERE OS DIAS....')
+                IF VAL(SUBSTR(mcod_acesso,9)) > 65 .AND. VAL(SUBSTR(mcod_acesso,9)) # 181 .AND. VAL(SUBSTR(mcod_acesso,9)) # 366
+                //IF VAL(SUBSTR(mcod_acesso,9)) > 65
+                        atencao('CODIGO DE ACESSO NAO CONFERE OS DIAS....3')
                         LOOP
                 ELSEIF LEN(ALLTRIM(mcod_acesso)) > 20
                         IF EMPTY(SUBSTR(dcrip(mcod_acesso),1,14))
@@ -11043,7 +11046,8 @@ ELSEIF (mdias_fecha <= 3 .AND. ! EMPTY(m_set[1,82])) .OR. mtp_senha # NIL  //.AN
                                         sr_getconnection():exec('COMMIT',,.f.)
                         SR_ENDTRANSACTION()
                         EXIT
-                ELSEIF SUBSTR(mcod_acesso,1,8) = mdig1+mdig2+mdig3+mdig4+mdig5 .AND. LEN(ALLTRIM(mcod_acesso)) >= 10
+
+                ELSEIF SUBSTR(mcod_acesso,1,8) = mdig1+mdig2+mdig3+mdig4+mdig5 .AND. LEN(ALLTRIM(mcod_acesso)) >= 11
                         IF VAL(SUBSTR(mcod_acesso,9)) = 0 .AND. cod_operado # '999'
                                 atencao('Nao tem autorizacao para operacao !!!')
                                 LOOP
@@ -11063,7 +11067,8 @@ ELSEIF (mdias_fecha <= 3 .AND. ! EMPTY(m_set[1,82])) .OR. mtp_senha # NIL  //.AN
                         atencao('CODIGO DE ACESSO EFETUADO COM SUCESSO.... BOM TRABALHO')
                         EXIT
                 ELSE
-                        atencao('CODIGO DE ACESSO NAO CONFERE....')
+                        ATENCAO(SUBSTR(mcod_acesso,1,8)+' = '+mdig1+mdig2+mdig3+mdig4+mdig5+' .AND. '+str(LEN(ALLTRIM(mcod_acesso)))+' >= 12')
+                        atencao('CODIGO DE ACESSO NAO CONFERE....5')
                         LOOP
                 ENDIF
         ENDDO
